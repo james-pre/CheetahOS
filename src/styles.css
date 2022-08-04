@@ -5,3 +5,12 @@ body{
     margin: 0;
     
 }
+
+*{
+    box-sizing: border-box;
+}
+
+
+.primary-colors {
+    color: #0070f3;
+}
