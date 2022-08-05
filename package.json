@@ -1,6 +1,9 @@
 {
   "name": "cheetah-os",
   "version": "0.0.0",
+  "description": "Desktop environment in the browser",
+  "author": "CM",
+  "license": "GNU 3.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -9,6 +12,14 @@
     "lint": "ng lint",
     "prepare": "husky install",
     "test": "jest"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts}": "eslint --fix"
   },
   "private": true,
   "dependencies": {
@@ -45,13 +56,6 @@
     "karma-coverage": "~2.2.0",
     "lint-staged": "^13.0.3",
     "typescript": "~4.7.2"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{js,ts}": "eslint --fix"
   }
+
 }
