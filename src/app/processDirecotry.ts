@@ -1,11 +1,18 @@
 export class ProcessDirectory {
 
-    processList: string[] = []
-    constructor(processes:string[]){
-        this.processList = processes;
+    systemProcessList: string[]
+    userProcessList: string[] = []
+
+    constructor(){
+        this.systemProcessList = this.fetchProcessesList();
     }
 
     getProcess(): string[]{
-            return this.processList;
+            return this.systemProcessList;
+    }
+
+    private fetchProcessesList(): string[]{
+        this.systemProcessList = ['./system-apps/title/title.component'];
+        return this.systemProcessList;
     }
 }

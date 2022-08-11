@@ -1,5 +1,6 @@
 import {Component,AfterViewInit,ViewChild, ViewContainerRef} from '@angular/core';
 import { ProcessDirectory } from './processDirecotry';
+import { GeneralFunctions } from './shared/system-util/general.functions';
 
 @Component({
   selector: 'cos-root',
@@ -16,9 +17,16 @@ export class AppComponent implements AfterViewInit {
   public readonly itemViewContainer!: ViewContainerRef
 
   title = 'CheetahOS';
-  processes:string[] = ['./title/title.component'];
-  processDirectory: ProcessDirectory = new ProcessDirectory(this.processes)
-  processList:string[] = this.processDirectory.getProcess();
+  processId = 0;
+  processDirectory!: ProcessDirectory
+  processList:string[] 
+  generalFunction: GeneralFunctions = GeneralFunctions.getInstance()
+
+  constructor(){
+    this.processDirectory = new ProcessDirectory()
+    this.processList = this.processDirectory.getProcess();
+    this.processId = this.generalFunction.getNewProcessId()
+  }
 
   ngAfterViewInit(){
     this.loadApps()
@@ -29,8 +37,9 @@ export class AppComponent implements AfterViewInit {
   }
 
   private async lazyLoadTitleComponment() {
-    const {TitleComponent} = await import('./title/title.component');
-    this.itemViewContainer.createComponent(TitleComponent);
+
+     const {TitleComponent} = await import('./system-apps/title/title.component');
+     this.itemViewContainer.createComponent(TitleComponent);
   }
 
 }
