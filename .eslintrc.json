@@ -16,8 +16,10 @@
         "createDefaultProgram": true
       },
       "env": {
-        "browser": true,
         "es6": true,
+        "es2021": true,
+        "es2022":true,
+        "browser": true,
         "node": true
       },
       "extends": [
