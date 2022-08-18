@@ -1,13 +1,17 @@
 import {TestBed} from '@angular/core/testing';
 import {AppComponent} from './app.component';
-import { TitleComponent } from './system-apps/title/title.component';
+import {TitleComponent } from './system-apps/title/title.component';
+import {DesktopComponent} from './system-apps/desktop/desktop.component';
+import {WindowComponent} from './system-apps/window/window.component'
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [
-        TitleComponent,
         AppComponent,
+        DesktopComponent,
+        WindowComponent,
+        TitleComponent
       ],
     }).compileComponents();
   });
@@ -25,7 +29,7 @@ describe('AppComponent', () => {
   // });
 
   it('should render hello world', () => {
-    const fixture = TestBed.createComponent(AppComponent);
+    const fixture = TestBed.createComponent(TitleComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('h1')?.textContent)

@@ -1,10 +1,6 @@
 import { AfterViewInit, Component } from '@angular/core';
-declare let VANTA: {
-  WAVES: (arg0: {
-    el: string; // element selector string or DOM object reference
-    color: number; waveHeight: number; shininess: number; waveSpeed: number; zoom: number;
-  }) => void;
-};
+import {WAVES} from './vanta-object/wave';
+declare const VANTA:WAVES 
 
 @Component({
   selector: 'cos-desktop',
@@ -14,17 +10,12 @@ declare let VANTA: {
 export class DesktopComponent implements AfterViewInit{
 
   constructor() {//
+    
   }
 
   ngAfterViewInit(): void {
-    VANTA.WAVES({
-      el: '#vanta', // element selector string or DOM object reference
-      color: 0x5588,
-      waveHeight: 20,
-      shininess: 50,
-      waveSpeed: 1.5,
-      zoom: 0.75
-    })
+
+    VANTA.WAVES(new WAVES('#vanta',0x0000, 20, 50, 1.5, 0.75))
   }
 
 }
