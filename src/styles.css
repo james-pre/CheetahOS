@@ -11,3 +11,7 @@
 .primary-color{
     color: black;
 }
+
+ol, ul{
+    list-style: none;
+}

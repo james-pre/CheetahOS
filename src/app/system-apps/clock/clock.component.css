@@ -1,0 +1,7 @@
+.task-bar-clock{
+    background-color: aqua;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    width: 80px;
+}

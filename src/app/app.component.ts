@@ -38,7 +38,7 @@ export class AppComponent implements AfterViewInit {
 
   private async lazyLoadTitleComponment() {
 
-     const {TitleComponent} = await import('./system-apps/title/title.component');
+     const {TitleComponent} = await import('./user-apps/title/title.component');
      this.itemViewContainer.createComponent(TitleComponent);
   }
 

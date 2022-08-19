@@ -1,0 +1,8 @@
+.task-bar-entry{
+    background-color: blueviolet;
+    height: 100%;
+    left: 60px;
+    position: absolute;
+    right:80px;
+    width: 100%;
+}

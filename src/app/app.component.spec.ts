@@ -1,6 +1,6 @@
 import {TestBed} from '@angular/core/testing';
 import {AppComponent} from './app.component';
-import {TitleComponent } from './system-apps/title/title.component';
+import {TitleComponent } from './user-apps/title/title.component';
 import {DesktopComponent} from './system-apps/desktop/desktop.component';
 import {WindowComponent} from './system-apps/window/window.component'
 

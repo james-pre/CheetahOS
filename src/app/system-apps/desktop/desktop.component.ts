@@ -14,7 +14,7 @@ export class DesktopComponent implements AfterViewInit{
   }
 
   ngAfterViewInit(): void {
-
+    
     VANTA.WAVES(new WAVES('#vanta',0x5588, 20, 50, 1, 0.75))
   }
 
