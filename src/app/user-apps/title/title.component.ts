@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { GeneralFunctions } from 'src/app/shared/system-util/general.functions';
 
 @Component({
     selector:'cos-title',
@@ -7,5 +8,13 @@ import { Component } from '@angular/core';
 })
 
 export class TitleComponent{
+
+  processId = 0;
+  generalFunction: GeneralFunctions = GeneralFunctions.getInstance()
+
+
+  constructor(){
+    this.processId = this.generalFunction.getNewProcessId()
+  }
    
 }
