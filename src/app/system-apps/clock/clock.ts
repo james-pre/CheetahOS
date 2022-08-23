@@ -32,6 +32,17 @@ export class Clock{
         return this._hours;
     }
 
+    public getHourStyle(hourType:string):number{
+
+        if(hourType == '12hr'){
+            if(this._hours == 0)
+            this._hours = 12
+        else if(this._hours > 12)
+            this._hours = this._hours - 12
+        }
+        return this._hours
+    }
+
     public set setHours(hrs:number){
         if(hrs< 0 || hrs > 24)
             this._hours = 0;
