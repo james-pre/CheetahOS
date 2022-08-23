@@ -35,8 +35,12 @@ export class ClockComponent implements OnInit, AfterViewInit {
     timer(1000, 1000).subscribe(() => {
     
       this.taskBarClock.tick()
-      this.subscribeClock = `${this.taskBarClock.getHourStyle('12hr')}:${this.taskBarClock.getMinutes}`
+      this.subscribeClock = `${this.taskBarClock.getHourStyle('12hr')}:${this.padSingleDigits(this.taskBarClock.getMinutes)}`
     });
+  }
+
+  padSingleDigits(n:number){
+    return n > 9 ? "" + n: "0" + n;
   }
 
 }
