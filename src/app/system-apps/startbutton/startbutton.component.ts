@@ -9,19 +9,14 @@ import { faWindows } from '@fortawesome/free-brands-svg-icons';
 export class StartbuttonComponent implements OnInit {
 
   faWindows = faWindows;
-  simpleNum = 0;
-  simpleSqr = 0;
-  color = ''
   hover = false;
 
   constructor() { 
     //
-    this.simpleNum = 2;
   }
 
   ngOnInit(): void {
-   
-    this.simpleSqr = this.simpleNum * this.simpleNum;
+    1 + 1;
   }
   
 }

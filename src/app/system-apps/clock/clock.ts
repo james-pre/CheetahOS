@@ -3,11 +3,13 @@ export class Clock{
     private _seconds:number;
     private _minutes:number;
     private _hours:number;
+    private _meridian:string;
 
     constructor(second:number, minute:number, hour:number){
         this._seconds = second;
         this._minutes = minute;
         this._hours = hour;
+        this._meridian = ''
     }
 
     public get getSeconds(){
@@ -33,14 +35,19 @@ export class Clock{
     }
 
     public getHourStyle(hourType:string):number{
-
+        this._meridian = 'AM'
         if(hourType == '12hr'){
             if(this._hours == 0)
                 this._hours = 12
         else if(this._hours > 12)
                 this._hours = this._hours - 12
+                this._meridian = 'PM'
         }
         return this._hours
+    }
+
+    public get getMeridian(){
+        return this._meridian
     }
 
     public set setHours(hrs:number){
