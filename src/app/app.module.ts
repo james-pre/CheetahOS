@@ -11,6 +11,7 @@ import { StartbuttonComponent } from './system-apps/startbutton/startbutton.comp
 import { TaskbarentriesComponent } from './system-apps/taskbarentries/taskbarentries.component';
 import { TaskbarentryComponent } from './system-apps/taskbarentry/taskbarentry.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { StartbuttonHighlightDirective } from './system-apps/startbutton/startbutton.highlight.directive';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     ClockComponent,
     StartbuttonComponent,
     TaskbarentriesComponent,
-    TaskbarentryComponent
+    TaskbarentryComponent,
+    StartbuttonHighlightDirective
   ],
   imports: [
     BrowserModule,

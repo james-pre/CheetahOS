@@ -11,6 +11,7 @@ export class StartbuttonComponent implements OnInit {
   faWindows = faWindows;
   simpleNum = 0;
   simpleSqr = 0;
+  color = ''
 
   constructor() { 
     //
