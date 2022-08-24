@@ -12,6 +12,7 @@ export class StartbuttonComponent implements OnInit {
   simpleNum = 0;
   simpleSqr = 0;
   color = ''
+  hover = false;
 
   constructor() { 
     //
@@ -22,4 +23,5 @@ export class StartbuttonComponent implements OnInit {
    
     this.simpleSqr = this.simpleNum * this.simpleNum;
   }
+  
 }

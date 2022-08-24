@@ -1,5 +1,6 @@
-
-<button class="start-btn">
-    <fa-icon [icon]="faWindows" [startbtnhlight]="'yellow'" > </fa-icon>
+<button 
+    [ngStyle]=" hover ? 
+        {'color': 'blue'}:
+        {'color': 'white'}"  (mouseover)="hover=true" (mouseleave)="hover=false"> 
+    <fa-icon [icon]="faWindows"> </fa-icon>
 </button>
-
