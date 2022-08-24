@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { faCoffee } from '@fortawesome/free-solid-svg-icons';
+import { faWindows } from '@fortawesome/free-brands-svg-icons';
 
 @Component({
   selector: 'cos-startbutton',
@@ -8,6 +8,7 @@ import { faCoffee } from '@fortawesome/free-solid-svg-icons';
 })
 export class StartbuttonComponent implements OnInit {
 
+  faWindows = faWindows;
   simpleNum = 0;
   simpleSqr = 0;
 

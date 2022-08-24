@@ -10,6 +10,8 @@ import { ClockComponent } from './system-apps/clock/clock.component';
 import { StartbuttonComponent } from './system-apps/startbutton/startbutton.component';
 import { TaskbarentriesComponent } from './system-apps/taskbarentries/taskbarentries.component';
 import { TaskbarentryComponent } from './system-apps/taskbarentry/taskbarentry.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+
 
 @NgModule({
   declarations: [
@@ -24,7 +26,8 @@ import { TaskbarentryComponent } from './system-apps/taskbarentry/taskbarentry.c
     TaskbarentryComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    FontAwesomeModule
   ],
   providers: [],
   bootstrap: [AppComponent]
