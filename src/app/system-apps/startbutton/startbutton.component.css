@@ -6,6 +6,6 @@
     height: 100%;
     width: 60px;
     left: 0;
-    background-color: red;
+    background-color: unset;
     /* bottom: 0; */
 }

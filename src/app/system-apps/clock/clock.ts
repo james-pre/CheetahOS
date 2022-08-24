@@ -36,9 +36,9 @@ export class Clock{
 
         if(hourType == '12hr'){
             if(this._hours == 0)
-            this._hours = 12
+                this._hours = 12
         else if(this._hours > 12)
-            this._hours = this._hours - 12
+                this._hours = this._hours - 12
         }
         return this._hours
     }

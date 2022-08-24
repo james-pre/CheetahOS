@@ -15,3 +15,7 @@
 ol, ul{
     list-style: none;
 }
+
+button{
+    background-color: unset;
+}
