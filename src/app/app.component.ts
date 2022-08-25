@@ -1,8 +1,7 @@
 import {Component,AfterViewInit,ViewChild, ViewContainerRef, OnInit} from '@angular/core';
 import { ProcessDirectory } from './processDirecotry';
 import { GeneralFunctions } from './shared/system-util/general.functions';
-//import { FSModule } from 'browserfs/dist/node/core/FS';
-//import * as BrowserFS from 'browserfs';
+import { FileSystem } from './system-files/filessystem';
 
 @Component({
   selector: 'cos-root',
@@ -13,7 +12,7 @@ import { GeneralFunctions } from './shared/system-util/general.functions';
 /**
  *  This is the main app component
  */
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements AfterViewInit, OnInit {
  
   @ViewChild('processContainerRef', { read: ViewContainerRef, static: true })
   public readonly itemViewContainer!: ViewContainerRef
@@ -23,22 +22,18 @@ export class AppComponent implements AfterViewInit {
   processDirectory!: ProcessDirectory
   processList:string[] 
   generalFunction: GeneralFunctions = GeneralFunctions.getInstance()
+  oneFileSytem:FileSystem;
 
   constructor(){
     this.processDirectory = new ProcessDirectory()
     this.processList = this.processDirectory.getProcess();
     this.processId = this.generalFunction.getNewProcessId()
+    this.oneFileSytem = new FileSystem();
   }
-  // ngOnInit(){
 
-  //   BrowserFS.install(window);
-  //     // Configures BrowserFS to use the IndexedDb file system.
-  //   BrowserFS.configure({
-  //     fs: "IndexedDb"
-  //   }, ()=>{
-  //     BrowserFS.BFSRequire('fs')
-  //   });
-  // }
+  ngOnInit(): void {
+    1 + 1
+  }
 
   ngAfterViewInit(){
     this.loadApps()
@@ -52,6 +47,16 @@ export class AppComponent implements AfterViewInit {
 
      const {TitleComponent} = await import('./user-apps/title/title.component');
      this.itemViewContainer.createComponent(TitleComponent);
+  }
+
+  simpleReadWriteTest(){
+    const test = this.oneFileSytem.fsystem;
+
+    test.writeFile('/test.txt', 'Cool, I can do this in the browser!', function(err) {
+      test.readFile('/test.txt', function(err, contents) {
+        console.log(contents?.toString());
+      });
+    });
   }
 
 }
