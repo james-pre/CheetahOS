@@ -1,25 +1,34 @@
 import * as BrowserFS from 'browserfs';
 import { FSModule } from 'browserfs/dist/node/core/FS';
+import publicFileSystemIndex from '../../public.json';
 
 export class FileSystem  {
 
-  fsystem:FSModule;
+  fileSystem!:FSModule;
 
   constructor() { 
-    
-    BrowserFS.install(window);
-        // Configures BrowserFS to use the IndexedDb file system.
-    BrowserFS.configure({
-        fs: "IndexedDB",
+      BrowserFS.configure({
+        fs: "OverlayFS",
         options:{
-          "storeName":"dankstore"
+          readable:{
+            fs: 'XmlHttpRequest',
+            options:{
+              index:publicFileSystemIndex
+            }
+          },
+          writeable:{
+            fs:"IndexedDB",
+            options: {
+              "storeName":"browserfs-cache"
+            }
+          }
         }
-    },
-    (e) =>{
-     if(e){  console.log('BFS Error:', e) }
-    });
-
-    this.fsystem = BrowserFS.BFSRequire('fs')
+      },
+      (e) =>{
+        if(e){  console.log('BFS Error:', e) }
+      });
+  
+    this.fileSystem = BrowserFS.BFSRequire('fs')
   }
 
 }

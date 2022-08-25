@@ -50,10 +50,10 @@ export class AppComponent implements AfterViewInit, OnInit {
   }
 
   simpleReadWriteTest(){
-    const test = this.oneFileSytem.fsystem;
+    const test = this.oneFileSytem.fileSystem;
 
-    test.writeFile('/test.txt', 'Cool, I can do this in the browser!', function(err) {
-      test.readFile('/test.txt', function(err, contents) {
+    test?.writeFile('/test.txt', 'Cool, I can do this in the browser!', function(err) {
+      test?.readFile('/test.txt', function(err, contents) {
         console.log(contents?.toString());
       });
     });
