@@ -1,6 +1,8 @@
-import {Component,AfterViewInit,ViewChild, ViewContainerRef} from '@angular/core';
+import {Component,AfterViewInit,ViewChild, ViewContainerRef, OnInit} from '@angular/core';
 import { ProcessDirectory } from './processDirecotry';
 import { GeneralFunctions } from './shared/system-util/general.functions';
+//import { FSModule } from 'browserfs/dist/node/core/FS';
+//import * as BrowserFS from 'browserfs';
 
 @Component({
   selector: 'cos-root',
@@ -27,6 +29,16 @@ export class AppComponent implements AfterViewInit {
     this.processList = this.processDirectory.getProcess();
     this.processId = this.generalFunction.getNewProcessId()
   }
+  // ngOnInit(){
+
+  //   BrowserFS.install(window);
+  //     // Configures BrowserFS to use the IndexedDb file system.
+  //   BrowserFS.configure({
+  //     fs: "IndexedDb"
+  //   }, ()=>{
+  //     BrowserFS.BFSRequire('fs')
+  //   });
+  // }
 
   ngAfterViewInit(){
     this.loadApps()
