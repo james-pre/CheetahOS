@@ -7,8 +7,8 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class TaskbarentryComponent implements OnInit {
 
-  @Input() taskBarIconImgUrl = 'favicon.ico'
-  @Input() title = 'test'
+  @Input() taskBarIconImgUrl = ''
+  @Input() taskBarIconTitle = ''
   constructor() { 
     //
   }
