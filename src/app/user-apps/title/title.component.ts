@@ -10,6 +10,8 @@ import { ProcessIDGenenrator } from 'src/app/system-files/process.id.generator';
 export class TitleComponent{
 
   processId = 0;
+  icon = ''
+  name = 'Hello World'
   generalFunction: ProcessIDGenenrator = ProcessIDGenenrator.getInstance()
 
 

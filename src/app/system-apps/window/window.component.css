@@ -1,8 +1,6 @@
-.section{
+section{
     font-size: 100px;
     text-align: center;
-}
-
-.windows-color{
     background-color: #808080;
+    /* position: absolute; */
 }
