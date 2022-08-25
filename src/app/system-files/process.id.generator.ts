@@ -1,21 +1,21 @@
 
-export class GeneralFunctions{
+export class ProcessIDGenenrator{
 
     private activeProcessIds: number[] = []
 
-    private static instance: GeneralFunctions;
+    private static instance: ProcessIDGenenrator;
 
     private constructor(){
         //
      }
 
-     public static getInstance(): GeneralFunctions 
+     public static getInstance(): ProcessIDGenenrator 
      {
-        if (!GeneralFunctions.instance) 
+        if (!ProcessIDGenenrator.instance) 
         {
-            GeneralFunctions.instance = new GeneralFunctions();
+            ProcessIDGenenrator.instance = new ProcessIDGenenrator();
         }
-        return GeneralFunctions.instance;
+        return ProcessIDGenenrator.instance;
      }
 
     public getNewProcessId(): number{

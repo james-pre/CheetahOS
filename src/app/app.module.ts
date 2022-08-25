@@ -11,7 +11,8 @@ import { StartbuttonComponent } from './system-apps/startbutton/startbutton.comp
 import { TaskbarentriesComponent } from './system-apps/taskbarentries/taskbarentries.component';
 import { TaskbarentryComponent } from './system-apps/taskbarentry/taskbarentry.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { DirectoryexplorerComponent } from './system-apps/directoryexplorer/directoryexplorer.component';
+import { FileexplorerComponent } from './system-apps/fileexplorer/fileexplorer.component';
+
 
 
 
@@ -26,7 +27,7 @@ import { DirectoryexplorerComponent } from './system-apps/directoryexplorer/dire
     StartbuttonComponent,
     TaskbarentriesComponent,
     TaskbarentryComponent,
-    DirectoryexplorerComponent
+    FileexplorerComponent
   ],
   imports: [
     BrowserModule,

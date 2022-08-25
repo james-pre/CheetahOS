@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { GeneralFunctions } from 'src/app/shared/system-util/general.functions';
+import { ProcessIDGenenrator } from 'src/app/system-files/process.id.generator';
 import { Clock } from './clock';
 import { timer } from 'rxjs';
 
@@ -12,7 +12,7 @@ export class ClockComponent implements OnInit, AfterViewInit {
 
   taskBarClock:Clock;
   processId = 0;
-  generalFunction: GeneralFunctions = GeneralFunctions.getInstance()
+  generalFunction: ProcessIDGenenrator = ProcessIDGenenrator.getInstance()
   subscribeClock!:string;
   currrentDate!:string
 

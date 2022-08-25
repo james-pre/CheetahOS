@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { GeneralFunctions } from 'src/app/shared/system-util/general.functions';
+import { ProcessIDGenenrator } from 'src/app/system-files/process.id.generator';
 
 @Component({
     selector:'cos-title',
@@ -10,7 +10,7 @@ import { GeneralFunctions } from 'src/app/shared/system-util/general.functions';
 export class TitleComponent{
 
   processId = 0;
-  generalFunction: GeneralFunctions = GeneralFunctions.getInstance()
+  generalFunction: ProcessIDGenenrator = ProcessIDGenenrator.getInstance()
 
 
   constructor(){

@@ -1,6 +1,6 @@
 import {Component,AfterViewInit,ViewChild, ViewContainerRef, OnInit} from '@angular/core';
 import { ProcessDirectory } from './processDirecotry';
-import { GeneralFunctions } from './shared/system-util/general.functions';
+import { ProcessIDGenenrator } from './system-files/process.id.generator';
 import { FileSystem } from './system-files/filessystem';
 
 @Component({
@@ -21,7 +21,7 @@ export class AppComponent implements AfterViewInit, OnInit {
   processId = 0;
   processDirectory!: ProcessDirectory
   processList:string[] 
-  generalFunction: GeneralFunctions = GeneralFunctions.getInstance()
+  generalFunction: ProcessIDGenenrator = ProcessIDGenenrator.getInstance()
   oneFileSytem:FileSystem;
 
   constructor(){
