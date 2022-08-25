@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'cos-taskbarentry',
@@ -7,16 +7,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TaskbarentryComponent implements OnInit {
 
-  simpleNum = 0;
-  simpleSqr = 0;
-
+  @Input() taskBarIconImgUrl = 'favicon.ico'
+  @Input() title = 'test'
   constructor() { 
     //
-    this.simpleNum = 2;
   }
 
   ngOnInit(): void {
-   
-    this.simpleSqr = this.simpleNum * this.simpleNum;
+    1 + 1
   }
 }
