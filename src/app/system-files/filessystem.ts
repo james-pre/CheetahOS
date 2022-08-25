@@ -10,17 +10,16 @@ export class FileSystem  {
     BrowserFS.install(window);
         // Configures BrowserFS to use the IndexedDb file system.
     BrowserFS.configure({
-        fs: "LocalStorage"
-    },function(e) {
-        if (e) {
-        // An error happened!
-        throw e;
+        fs: "IndexedDB",
+        options:{
+          "storeName":"dankstore"
         }
-        // Otherwise, BrowserFS is ready-to-use!
+    },
+    (e) =>{
+     if(e){  console.log('BFS Error:', e) }
     });
 
     this.fsystem = BrowserFS.BFSRequire('fs')
-  
   }
 
 }
