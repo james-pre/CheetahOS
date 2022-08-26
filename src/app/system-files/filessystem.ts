@@ -16,7 +16,7 @@ export class FileSystem  {
               index:publicFileSystemIndex
             }
           },
-          writeable:{
+          writable:{
             fs:"IndexedDB",
             options: {
               "storeName":"browserfs-cache"

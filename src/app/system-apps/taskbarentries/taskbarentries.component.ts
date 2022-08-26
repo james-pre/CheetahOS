@@ -13,14 +13,14 @@ export class TaskbarentriesComponent implements OnInit, AfterViewInit {
 
   private _processIdService;
   private _runningProcessService;
+  
+  runningProcess:Process[] = []
 
   hasWindow = false;
   icon = '';
   name = 'task bar entry';
   processId = 0;
   type = ComponentType.systemComponent
-
-  runningProcess:Process[] = []
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService) { 
     this._processIdService = processIdService;

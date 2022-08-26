@@ -45,11 +45,11 @@ export class AppComponent implements AfterViewInit, OnInit {
 
   ngOnInit(){
     1
-    //this.loadApps()
   }
 
   ngAfterViewInit(){ 
-    this.loadApps()
+    1
+    //this.loadApps()
   }
 
   async loadApps() {
@@ -73,11 +73,15 @@ export class AppComponent implements AfterViewInit, OnInit {
   simpleReadWriteTest(){
     const test = this._fileSytem.fileSystem;
 
-    test?.writeFile('/test.txt', 'Cool, I can do this in the browser!', function(err) {
-      test?.readFile('/test.txt', function(err, contents) {
-        console.log(contents?.toString());
-      });
-    });
+    test.readdir('/',(err, files) =>{
+      console.log(files);
+    })
+
+    // test?.writeFile('/test.txt', 'Cool, I can do this in the browser!', function(err) {
+    //   test?.readFile('/test.txt', function(err, contents) {
+    //     console.log(contents?.toString());
+    //   });
+    // });
   }
 
   onCloseBtnClicked(eventData:Process){
