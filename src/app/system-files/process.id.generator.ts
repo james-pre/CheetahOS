@@ -35,7 +35,17 @@ export class ProcessIDGenenrator{
         return Math.floor(Math.random() * (max - min + 1)) + min; 
     }
 
-    public removeProcessId():void{
-        //
+    public removeProcessId(pid:number):void{
+        
+       const pidIndex = this.activeProcessIds.indexOf(pid)
+       const deleteCount = 1;
+
+       if (pidIndex !== -1) {
+            this.activeProcessIds.splice(pidIndex, deleteCount);
+        }
+    }
+
+    public processCount():number{
+        return this.activeProcessIds.length;
     }
 }

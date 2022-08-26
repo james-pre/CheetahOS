@@ -1,5 +1,5 @@
 import {Component,AfterViewInit,ViewChild, ViewContainerRef, OnInit} from '@angular/core';
-import { ProcessDirectory } from './processDirecotry';
+import { ProcessDirectory } from './system-files/processDirecotry';
 import { ProcessIDGenenrator } from './system-files/process.id.generator';
 import { FileSystem } from './system-files/filessystem';
 
