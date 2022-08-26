@@ -12,7 +12,7 @@ export class TaskbarentryComponent implements OnInit {
   @Input() taskBarIconName = ''
   @Input() taskBarPid = ''
 
-  hasWinow = false;
+  hasWindow = false;
   icon = '';
   name = '';
   processId = '';

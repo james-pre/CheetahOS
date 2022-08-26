@@ -1,6 +1,6 @@
 import {Component,AfterViewInit,ViewChild, ViewContainerRef, OnInit} from '@angular/core';
 import { FileSystem } from './system-files/filessystem';
-import { ProcessIDServoce } from 'src/app/shared/system-service/process.id.service';
+import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { ComponentType } from './system-files/component.types';
 
 @Component({
@@ -21,14 +21,14 @@ export class AppComponent implements AfterViewInit, OnInit {
   private _oneFileSytem:FileSystem;
 
 
-  hasWinow = false;
+  hasWindow = false;
   icon = '';
   name = 'CheetahOS';
   processId = 0;
   //I know, I'm cheeting here
   type = ComponentType.systemComponent
 
-  constructor( processIdService:ProcessIDServoce ){
+  constructor( processIdService:ProcessIDService ){
     this._processIdService = processIdService
     this.processId = this._processIdService.getNewProcessId()
     this._oneFileSytem = new FileSystem();
@@ -36,10 +36,11 @@ export class AppComponent implements AfterViewInit, OnInit {
 
 
   ngOnInit(): void {
-    1 + 1
+    1 
   }
 
   ngAfterViewInit(){
+    
     this.loadApps()
   }
 

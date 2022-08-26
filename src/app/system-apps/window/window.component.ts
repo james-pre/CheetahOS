@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { ComponentType } from 'src/app/system-files/component.types';
 
 @Component({
   selector: 'cos-window',
@@ -7,7 +8,24 @@ import { Component } from '@angular/core';
 })
 export class WindowComponent {
 
-  constructor() {
+  @Input() taskBarIconImgUrl = ''
+  @Input() taskBarIconName = ''
+  @Input() taskBarPid = ''
+
+  hasWindow = false;
+  icon = '';
+  name = '';
+  processId = '';
+  type = ComponentType.systemComponent
+
+  constructor( ){
     //
-   }
+  }
+
+
+  // ngOnInit(): void {
+  //   this.icon = this.taskBarIconImgUrl;
+  //   this.name = this.taskBarIconName;
+  //   this.processId = this.taskBarPid;
+  // }
 }

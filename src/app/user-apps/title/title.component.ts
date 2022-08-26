@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ProcessIDServoce } from 'src/app/shared/system-service/process.id.service';
+import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { ComponentType } from 'src/app/system-files/component.types';
 
 @Component({
@@ -12,13 +12,13 @@ export class TitleComponent{
 
   private _processIdService;
 
-  hasWinow = true;
+  hasWindow = true;
   icon = '';
   name = 'hellow world';
   processId = 0;
   type = ComponentType.userComponent
 
-  constructor( processIdService:ProcessIDServoce ){
+  constructor( processIdService:ProcessIDService ){
     this._processIdService = processIdService
     this.processId = this._processIdService.getNewProcessId()
   }
