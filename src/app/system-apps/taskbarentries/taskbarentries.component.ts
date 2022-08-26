@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ProcessIDServoce } from 'src/app/shared/system-service/process.id.service';
+import { ComponentType } from 'src/app/system-files/component.types';
 
 @Component({
   selector: 'cos-taskbarentries',
@@ -7,17 +9,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TaskbarentriesComponent implements OnInit {
 
-  simpleNum = 0;
-  simpleSqr = 0;
+  private _processIdService;
 
-  constructor() { 
-    //
-    this.simpleNum = 2;
+  hasWinow = false;
+  icon = '';
+  name = 'file explorer';
+  processId = 0;
+  type = ComponentType.systemComponent
+
+  constructor( processIdService:ProcessIDServoce ){
+    this._processIdService = processIdService
+    this.processId = this._processIdService.getNewProcessId()
   }
 
   ngOnInit(): void {
-   
-    this.simpleSqr = this.simpleNum * this.simpleNum;
+    1
   }
 
 }

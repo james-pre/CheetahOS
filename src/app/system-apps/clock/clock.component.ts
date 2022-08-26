@@ -1,7 +1,8 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { ProcessIDGenenrator } from 'src/app/system-files/process.id.generator';
 import { Clock } from './clock';
 import { timer } from 'rxjs';
+import { ComponentType } from 'src/app/system-files/component.types';
+import { ProcessIDServoce } from 'src/app/shared/system-service/process.id.service';
 
 @Component({
   selector: 'cos-clock',
@@ -10,16 +11,23 @@ import { timer } from 'rxjs';
 })
 export class ClockComponent implements OnInit, AfterViewInit {
 
-  taskBarClock:Clock;
-  processId = 0;
-  generalFunction: ProcessIDGenenrator = ProcessIDGenenrator.getInstance()
+  private _processIdService;
+  private _taskBarClock:Clock;
   subscribeClock!:string;
   currrentDate!:string
 
-  constructor() { 
-   this.processId = this.generalFunction.getNewProcessId()
+
+  hasWinow = false;
+  icon = '';
+  name = 'clock';
+  processId = 0;
+  type = ComponentType.systemComponent
+
+  constructor(processIdService:ProcessIDServoce) { 
+    this._processIdService = processIdService
+    this.processId = this._processIdService.getNewProcessId()
     const dateTime = new Date()
-    this.taskBarClock = new Clock(dateTime.getSeconds(),dateTime.getMinutes(),dateTime.getHours())
+    this._taskBarClock = new Clock(dateTime.getSeconds(),dateTime.getMinutes(),dateTime.getHours())
     this.currrentDate = `${dateTime.getMonth()}/${this.padSingleDigits(dateTime.getDay())}/${dateTime.getFullYear()}`
   }
 
@@ -36,8 +44,8 @@ export class ClockComponent implements OnInit, AfterViewInit {
  
     timer(1000, 1000).subscribe(() => {
     
-      this.taskBarClock.tick()
-      this.subscribeClock = `${this.taskBarClock.getHourStyle('12hr')}:${this.padSingleDigits(this.taskBarClock.getMinutes)} ${this.taskBarClock.getMeridian}`
+      this._taskBarClock.tick()
+      this.subscribeClock = `${this._taskBarClock.getHourStyle('12hr')}:${this.padSingleDigits(this._taskBarClock.getMinutes)} ${this._taskBarClock.getMeridian}`
     });
   }
 

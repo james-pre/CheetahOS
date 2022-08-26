@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { ProcessIDGenenrator } from 'src/app/system-files/process.id.generator';
+import { ProcessIDServoce } from 'src/app/shared/system-service/process.id.service';
+import { ComponentType } from 'src/app/system-files/component.types';
 
 @Component({
     selector:'cos-title',
@@ -9,14 +10,17 @@ import { ProcessIDGenenrator } from 'src/app/system-files/process.id.generator';
 
 export class TitleComponent{
 
+  private _processIdService;
+
+  hasWinow = true;
+  icon = '';
+  name = 'hellow world';
   processId = 0;
-  icon = ''
-  name = 'Hello World'
-  generalFunction: ProcessIDGenenrator = ProcessIDGenenrator.getInstance()
+  type = ComponentType.userComponent
 
-
-  constructor(){
-    this.processId = this.generalFunction.getNewProcessId()
+  constructor( processIdService:ProcessIDServoce ){
+    this._processIdService = processIdService
+    this.processId = this._processIdService.getNewProcessId()
   }
    
 }

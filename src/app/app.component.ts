@@ -1,7 +1,7 @@
 import {Component,AfterViewInit,ViewChild, ViewContainerRef, OnInit} from '@angular/core';
-import { ProcessDirectory } from './system-files/processDirecotry';
-import { ProcessIDGenenrator } from './system-files/process.id.generator';
 import { FileSystem } from './system-files/filessystem';
+import { ProcessIDServoce } from 'src/app/shared/system-service/process.id.service';
+import { ComponentType } from './system-files/component.types';
 
 @Component({
   selector: 'cos-root',
@@ -17,19 +17,23 @@ export class AppComponent implements AfterViewInit, OnInit {
   @ViewChild('processContainerRef', { read: ViewContainerRef, static: true })
   public readonly itemViewContainer!: ViewContainerRef
 
-  title = 'CheetahOS';
-  processId = 0;
-  processDirectory!: ProcessDirectory
-  processList:string[] 
-  generalFunction: ProcessIDGenenrator = ProcessIDGenenrator.getInstance()
-  oneFileSytem:FileSystem;
+  private _processIdService;
+  private _oneFileSytem:FileSystem;
 
-  constructor(){
-    this.processDirectory = new ProcessDirectory()
-    this.processList = this.processDirectory.getProcess();
-    this.processId = this.generalFunction.getNewProcessId()
-    this.oneFileSytem = new FileSystem();
+
+  hasWinow = false;
+  icon = '';
+  name = 'CheetahOS';
+  processId = 0;
+  //I know, I'm cheeting here
+  type = ComponentType.systemComponent
+
+  constructor( processIdService:ProcessIDServoce ){
+    this._processIdService = processIdService
+    this.processId = this._processIdService.getNewProcessId()
+    this._oneFileSytem = new FileSystem();
   }
+
 
   ngOnInit(): void {
     1 + 1
@@ -50,7 +54,7 @@ export class AppComponent implements AfterViewInit, OnInit {
   }
 
   simpleReadWriteTest(){
-    const test = this.oneFileSytem.fileSystem;
+    const test = this._oneFileSytem.fileSystem;
 
     test?.writeFile('/test.txt', 'Cool, I can do this in the browser!', function(err) {
       test?.readFile('/test.txt', function(err, contents) {

@@ -4,7 +4,7 @@ import { Injectable } from "@angular/core";
     providedIn: 'root'
 })
 
-export class ProcessIDGenenrator{
+export class ProcessIDServoce{
 
     private _activeProcessIds: number[];
 
