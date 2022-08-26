@@ -14,11 +14,11 @@ export class Process{
         this._type = type
     }
 
-    get getProcessId(){
+    public get getProcessId(){
         return this._processId
     }
 
-    get getProcessName(){
+    public get getProcessName(){
         return this._processName
     }
 
@@ -26,11 +26,11 @@ export class Process{
         return this._icon
     }
 
-    get getHasWindow(){
+    public get getHasWindow(){
         return this._hasWindow
     }
 
-    get getType(){
+    public get getType(){
         return this._type
     }
 }

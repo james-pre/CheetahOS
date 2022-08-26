@@ -1,7 +1,9 @@
-import {Component,AfterViewInit,ViewChild, ViewContainerRef, OnInit} from '@angular/core';
+import {Component,AfterViewInit,ViewChild, ViewContainerRef, OnInit, ComponentRef, ViewRef} from '@angular/core';
 import { FileSystem } from './system-files/filessystem';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { ComponentType } from './system-files/component.types';
+import { RunningProcessService } from './shared/system-service/running.process.service';
+import { Process } from './system-files/process';
 
 @Component({
   selector: 'cos-root',
@@ -14,11 +16,14 @@ import { ComponentType } from './system-files/component.types';
  */
 export class AppComponent implements AfterViewInit, OnInit {
  
-  @ViewChild('processContainerRef', { read: ViewContainerRef, static: true })
-  public readonly itemViewContainer!: ViewContainerRef
+  @ViewChild('processContainerRef',  { read: ViewContainerRef })
+  private itemViewContainer!: ViewContainerRef
 
-  private _processIdService;
-  private _oneFileSytem:FileSystem;
+  private _processIdService:ProcessIDService;
+  private _runningProcessService;
+  private _fileSytem:FileSystem;
+  private _componentsReferences = Array<ComponentRef<any>>();
+  private _componentRefView!:ViewRef;
 
 
   hasWindow = false;
@@ -28,19 +33,22 @@ export class AppComponent implements AfterViewInit, OnInit {
   //I know, I'm cheeting here
   type = ComponentType.systemComponent
 
-  constructor( processIdService:ProcessIDService ){
+
+  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService ){
     this._processIdService = processIdService
     this.processId = this._processIdService.getNewProcessId()
-    this._oneFileSytem = new FileSystem();
+    this._fileSytem = new FileSystem();
+
+    this._runningProcessService = runningProcessService;
+    this._runningProcessService.addProcess(this.getComponentDetail());
   }
 
-
-  ngOnInit(): void {
-    1 
+  ngOnInit(){
+    1
+    //this.loadApps()
   }
 
-  ngAfterViewInit(){
-    
+  ngAfterViewInit(){ 
     this.loadApps()
   }
 
@@ -49,13 +57,21 @@ export class AppComponent implements AfterViewInit, OnInit {
   }
 
   private async lazyLoadTitleComponment() {
-
      const {TitleComponent} = await import('./user-apps/title/title.component');
-     this.itemViewContainer.createComponent(TitleComponent);
+     const componentRef =this.itemViewContainer.createComponent(TitleComponent);
+     this._componentsReferences.push(componentRef)
+
+     componentRef.instance.closeBtnClicked.subscribe(evt =>{
+          const evtData = evt;
+          this.onCloseBtnClicked(evtData);
+     });
+
+    //alert subscribers
+    this._runningProcessService.subject.next('')
   }
 
   simpleReadWriteTest(){
-    const test = this._oneFileSytem.fileSystem;
+    const test = this._fileSytem.fileSystem;
 
     test?.writeFile('/test.txt', 'Cool, I can do this in the browser!', function(err) {
       test?.readFile('/test.txt', function(err, contents) {
@@ -64,6 +80,24 @@ export class AppComponent implements AfterViewInit, OnInit {
     });
   }
 
+  onCloseBtnClicked(eventData:Process){
+   
+    const componentToDelete = this._componentsReferences.filter(x => x.instance.processId == eventData.getProcessId)[0];
+    this._componentRefView = componentToDelete.hostView;
+
+    // eslint-disable-next-line prefer-const
+    let iVCntr  = this.itemViewContainer.indexOf(this._componentRefView);
+    this.itemViewContainer.remove(iVCntr);
+
+    this._runningProcessService.removeProcess(eventData)
+    this._processIdService.removeProcessId(eventData.getProcessId);
+
+    //alert subscribers
+    this._runningProcessService.subject.next('')
+  }
+
+  private getComponentDetail():Process{
+    return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type)
+  }
+
 }
-
-

@@ -22,12 +22,11 @@ export class DesktopComponent implements AfterViewInit{
   processId = 0;
   type = ComponentType.systemComponent
 
-  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService) { 
+  constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
-    this._runningProcessService.addProcess(this.getComponentDetail());
-
     this.processId = this._processIdService.getNewProcessId()
+    this._runningProcessService.addProcess(this.getComponentDetail());
   }
 
 

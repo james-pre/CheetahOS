@@ -1,5 +1,7 @@
 <ol> 
-     <cos-taskbarentry taskBarIconImgUrl="favicon.ico"  taskBarIconName="Hello World"> </cos-taskbarentry> 
+     <li *ngFor="let rProcess of runningProcess">
+          <cos-taskbarentry [taskBarIconImgUrl]="rProcess.getIcon"  [taskBarIconName]="rProcess.getProcessName"> </cos-taskbarentry> 
+     </li>
      <!-- <cos-taskbarentry [taskBarIconImgUrl]="" [taskBarIconTitle]="" > </cos-taskbarentry>  -->
 </ol>
 

@@ -25,8 +25,8 @@ export class StartbuttonComponent implements OnInit {
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
-    this._runningProcessService.addProcess(this.getComponentDetail());
     this.processId = this._processIdService.getNewProcessId()
+    this._runningProcessService.addProcess(this.getComponentDetail());
   }
 
 

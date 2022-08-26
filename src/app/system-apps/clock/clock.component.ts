@@ -29,8 +29,10 @@ export class ClockComponent implements OnInit, AfterViewInit {
   constructor(processIdService:ProcessIDService,runningProcessService:RunningProcessService) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
+    
+    this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail());
-    this.processId = this._processIdService.getNewProcessId();
+
     const dateTime = new Date()
     this._taskBarClock = new Clock(dateTime.getSeconds(),dateTime.getMinutes(),dateTime.getHours());
     this.currrentDate = `${dateTime.getMonth()}/${this.padSingleDigits(dateTime.getDay())}/${dateTime.getFullYear()}`;

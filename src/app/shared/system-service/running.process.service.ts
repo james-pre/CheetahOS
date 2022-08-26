@@ -1,5 +1,7 @@
 import { Injectable } from "@angular/core";
+import { Subject } from "rxjs";
 import { Process } from "src/app/system-files/process";
+
 
 @Injectable({
     providedIn: 'root'
@@ -8,6 +10,7 @@ import { Process } from "src/app/system-files/process";
 export class RunningProcessService{
 
     private _runningProcesses:Process[]
+    subject: Subject<string> = new Subject<string>();
 
     constructor(){
         this._runningProcesses = []
@@ -28,6 +31,10 @@ export class RunningProcessService{
         if(procIndex != -1){
             this._runningProcesses.splice(procIndex, deleteCount)
         }
+    }
+
+    getProcess(): Process[]{
+        return this._runningProcesses;
     }
 
     processCount():number{

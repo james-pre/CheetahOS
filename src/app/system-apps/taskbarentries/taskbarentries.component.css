@@ -5,3 +5,10 @@ ol{
     right:80px;
     /* width: 100%; */
 }
+
+li{
+    display: flex;
+    height: 100%;
+    max-width: 161px;
+    border-bottom: 2px solid #76B9ED;
+}
