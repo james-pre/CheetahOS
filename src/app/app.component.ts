@@ -31,7 +31,7 @@ export class AppComponent implements AfterViewInit, OnInit {
   name = 'CheetahOS';
   processId = 0;
   //I know, I'm cheeting here
-  type = ComponentType.systemComponent
+  type = ComponentType.systemComponent;
 
 
   constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService ){
@@ -48,8 +48,7 @@ export class AppComponent implements AfterViewInit, OnInit {
   }
 
   ngAfterViewInit(){ 
-    1
-    //this.loadApps()
+    this.loadApps()
   }
 
   async loadApps() {
