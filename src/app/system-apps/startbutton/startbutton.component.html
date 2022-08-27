@@ -1,6 +1,7 @@
 <button 
     [ngStyle]=" hover ? 
-        {'color': '#76B9ED'}:
+        {'color': '#76B9ED', 
+        'background-color': 'hsla(0,0%,25%,60%)'}:
         {'color': 'white'}"  (mouseover)="hover=true" (mouseleave)="hover=false"> 
     <fa-icon [icon]="faWindows"> </fa-icon>
 </button>

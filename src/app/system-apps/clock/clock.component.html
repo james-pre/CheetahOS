@@ -1,1 +1,6 @@
-<time> {{subscribeClock}}</time>
+<time 
+    [ngStyle]=" hover ? 
+    {'background-color': 'hsla(0,0%,25%,60%)'}:
+    {'color': 'white'}"  (mouseover)="hover=true" (mouseleave)="hover=false">
+    {{subscribeClock}}
+</time>

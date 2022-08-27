@@ -21,6 +21,7 @@ export class ClockComponent implements OnInit, AfterViewInit {
 
 
   hasWindow = false;
+  hover = false;
   icon = '';
   name = 'clock';
   processId = 0;

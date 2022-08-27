@@ -13,10 +13,11 @@ export class TaskbarentryComponent implements OnInit {
   @Input() taskBarPid = ''
 
   hasWindow = false;
+  hover = false;
   icon = '';
   name = '';
   processId = '';
-  type = ComponentType.systemComponent
+  type = ComponentType.systemComponent;
 
   constructor( ){
     //
