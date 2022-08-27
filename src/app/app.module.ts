@@ -11,6 +11,7 @@ import { TaskbarentriesComponent } from './system-apps/taskbarentries/taskbarent
 import { TaskbarentryComponent } from './system-apps/taskbarentry/taskbarentry.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FileexplorerComponent } from './system-apps/fileexplorer/fileexplorer.component';
+import { WindowComponent } from './system-apps/window/window.component';
 
 
 
@@ -25,7 +26,8 @@ import { FileexplorerComponent } from './system-apps/fileexplorer/fileexplorer.c
     StartbuttonComponent,
     TaskbarentriesComponent,
     TaskbarentryComponent,
-    FileexplorerComponent
+    FileexplorerComponent,
+    WindowComponent
   ],
   imports: [
     BrowserModule,

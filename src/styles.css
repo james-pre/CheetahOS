@@ -24,14 +24,3 @@ button{
     background-color: transparent;
     font-family: inherit;
 }
-
-section{
-    font-size: 100px;
-    text-align: center;
-    background-color: #808080;
-    /* position: absolute; */
-
-    /*I added these for testing*/
-    position: relative;
-    z-index:1;
-}
