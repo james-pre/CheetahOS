@@ -1,4 +1,4 @@
-import {Component,AfterViewInit,ViewChild, ViewContainerRef, OnInit, ComponentRef, ViewRef} from '@angular/core';
+import {Component,AfterViewInit,ViewChild, ViewContainerRef, ComponentRef, ViewRef} from '@angular/core';
 import { FileSystem } from './system-files/filessystem';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { ComponentType } from './system-files/component.types';
@@ -14,7 +14,7 @@ import { Process } from './system-files/process';
 /**
  *  This is the main app component
  */
-export class AppComponent implements AfterViewInit, OnInit {
+export class AppComponent implements AfterViewInit {
  
   @ViewChild('processContainerRef',  { read: ViewContainerRef })
   private itemViewContainer!: ViewContainerRef
@@ -43,12 +43,10 @@ export class AppComponent implements AfterViewInit, OnInit {
     this._runningProcessService.addProcess(this.getComponentDetail());
   }
 
-  ngOnInit(){
-    1
-  }
 
   ngAfterViewInit(){ 
-    this.loadApps()
+    1
+    //this.loadApps()
   }
 
   async loadApps() {

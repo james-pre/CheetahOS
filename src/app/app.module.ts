@@ -12,6 +12,7 @@ import { TaskbarentryComponent } from './system-apps/taskbarentry/taskbarentry.c
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FileexplorerComponent } from './system-apps/fileexplorer/fileexplorer.component';
 import { WindowComponent } from './system-apps/window/window.component';
+import { FilemanagerComponent } from './system-apps/filemanager/filemanager.component';
 
 
 
@@ -27,7 +28,8 @@ import { WindowComponent } from './system-apps/window/window.component';
     TaskbarentriesComponent,
     TaskbarentryComponent,
     FileexplorerComponent,
-    WindowComponent
+    WindowComponent,
+    FilemanagerComponent
   ],
   imports: [
     BrowserModule,
