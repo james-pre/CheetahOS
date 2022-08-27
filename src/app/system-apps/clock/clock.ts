@@ -37,11 +37,13 @@ export class Clock{
     public getHourStyle(hourType:string):number{
         this._meridian = 'AM'
         if(hourType == '12hr'){
-            if(this._hours == 0)
+            if(this._hours == 0){
                 this._hours = 12
-        else if(this._hours > 12)
+            }
+            else if(this._hours > 12){
                 this._hours = this._hours - 12
                 this._meridian = 'PM'
+            }
         }
         return this._hours
     }
