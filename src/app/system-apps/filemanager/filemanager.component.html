@@ -1,5 +1,5 @@
 <ol>
-    <li *ngFor="let file in files">
+    <li *ngFor="let file of files">
         <button>
             <figure>
                 <img [src]="file.getIcon" [alt]="file.getPath" />

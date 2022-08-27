@@ -3,6 +3,9 @@
   "compileOnSave": false,
   "compilerOptions": {
     "types" : ["filesystem","jest"],
+    "paths": {
+      "path":["./node_modules/path-browserify"]
+    },
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
