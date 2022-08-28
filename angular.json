@@ -27,7 +27,9 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "./src/desktop"
+              "./src/desktop",
+              "./src/osdrive",
+              "./src/picture"
             ],
             "styles": [
               "src/styles.css"

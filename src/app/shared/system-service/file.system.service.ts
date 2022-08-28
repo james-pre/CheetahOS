@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import * as BrowserFS from 'browserfs';
 import { FSModule } from 'browserfs/dist/node/core/FS';
-import publicFileSystemIndex from '../../public.json';
+import osDriveFileSystemIndex from '../../../osdrive.json';
 
 @Injectable({
     providedIn: 'root'
@@ -19,7 +19,7 @@ export class FileSystemService{
             readable:{
               fs: 'XmlHttpRequest',
               options:{
-                index:publicFileSystemIndex
+                index:osDriveFileSystemIndex
               }
             },
             writable:{

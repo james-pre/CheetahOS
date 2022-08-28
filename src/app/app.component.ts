@@ -154,9 +154,9 @@ export class AppComponent implements AfterViewInit {
 
   simpleReadTest(){
     const test = this._fileSytem.fileSystem;
-    const dirPath = '/';
+    const dirPath = '/picture';
     //const filePath = '/desktop/heat.txt';
-    const filePath = '/desktop/heat.txt';
+    const filePath = '/picture/favicon.ico';
     //const filePath = '../favicon.ico'; // this worked
 
     test.readdir(dirPath, function(err, contents = []) {
