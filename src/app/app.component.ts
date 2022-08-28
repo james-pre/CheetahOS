@@ -32,6 +32,7 @@ export class AppComponent implements AfterViewInit {
   processId = 0;
   //I know, I'm cheeting here
   type = ComponentType.systemComponent;
+  _files!:string[];
 
 
   constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService ){
@@ -46,8 +47,46 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit(){ 
     1
-    //this.loadApps()
+    //this.simpleReadWriteTest();
+
+    const dirPath = '/desktop';
+
+    this.simpleReadWriteTestAsync2(dirPath);
   }
+
+
+  simpleReadWriteTestAsync2(dirPath:string){
+    const test = this._fileSytem.fileSystem;
+
+    // eslint-disable-next-line prefer-const
+    let arr:string[] = [];
+      new Promise(function(resolve, reject) {
+
+        const interval = setInterval(async () => {
+
+            test.readdir(dirPath, function(err, contents = []) {
+              if(err){
+                  console.log('Getting Directory List:', err)
+                  reject(err); 
+              }else{
+                console.log('this is content:',contents);
+                arr = contents;
+                clearInterval(interval);
+                resolve(contents);
+              }
+            });
+
+        }, 50);
+
+      }).then((arr) => { 
+        this._files = arr as string[];
+      }).then(() => { 
+        
+        console.log('whats in files',this._files) 
+      });
+  }
+
+
 
   async loadApps() {
     this.lazyLoadTitleComponment();
@@ -67,19 +106,79 @@ export class AppComponent implements AfterViewInit {
     this._runningProcessService.subject.next('')
   }
 
-  simpleReadWriteTest(){
+
+  simpleReadWriteTestAsync(){
+    const test = this._fileSytem.fileSystem;
+    const dirPath = '/desktop';
+
+    // eslint-disable-next-line prefer-const, no-var
+    var result:string[] =  [];
+    // eslint-disable-next-line prefer-const
+    const checkExist = setInterval(function(){
+
+        test.readdir(dirPath, function(err, contents = []) {
+          if(err){
+              console.log('Getting Directory List:', err)
+          }else{
+            result = contents;
+            console.log('this is content:',contents);
+            clearInterval(checkExist);
+          }
+        });
+    }, 80); 
+
+    if(result.length > 0)
+        console.log('this is result:',result);
+
+  }
+
+
+  simpleReadWriteTestAsync3(dirPath:string){
     const test = this._fileSytem.fileSystem;
 
-    test.readdir('/',(err, files) =>{
-      console.log(files);
+
+    new Promise(function(resolve, reject) {
+      test.readdir(dirPath, function(err, contents = []) {
+        if(err){
+            console.log('Getting Directory List:', err)
+            reject(err); 
+        }else{
+          console.log('this is content:',contents);
+          resolve(contents);
+        }
+      });
+
     })
 
-    // test?.writeFile('/test.txt', 'Cool, I can do this in the browser!', function(err) {
-    //   test?.readFile('/test.txt', function(err, contents) {
-    //     console.log(contents?.toString());
-    //   });
-    // });
   }
+
+
+
+  simpleReadWriteTest(){
+    const test = this._fileSytem.fileSystem;
+    const dirPath = '/desktop';
+
+    // eslint-disable-next-line prefer-const, no-var
+    var result:string[] =  [];
+    // eslint-disable-next-line prefer-const
+    const checkExist = setInterval(function(){
+
+        test.readdir(dirPath, function(err, contents = []) {
+          if(err){
+              console.log('Getting Directory List:', err)
+          }else{
+            result = contents;
+            console.log('this is content:',contents);
+            clearInterval(checkExist);
+          }
+        });
+    }, 80); 
+
+    if(result.length > 0)
+        console.log('this is result:',result);
+
+  }
+
 
   onCloseBtnClicked(eventData:Process){
    
