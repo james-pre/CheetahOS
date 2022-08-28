@@ -6,6 +6,7 @@ import {extname, basename, resolve} from 'path';
 import { Constants } from "src/app/system-files/constants";
 import { FSModule } from "browserfs/dist/node/core/FS";
 import { FileEntry } from 'src/app/system-files/fileentry';
+import { Subject } from "rxjs";
 import ini from 'ini';
 
 @Injectable({
@@ -18,7 +19,10 @@ export class FileService{
     private _fileSystemService: FileSystemService;
     private _consts:Constants = new Constants();
     private _fs!:FSModule;
+    private _directoryFile:string[]=[];
     private _directoryFileEntires:FileEntry[]=[];
+    dirFilesReady: Subject<void> = new Subject<void>();
+    filesEntriesReady: Subject<void> = new Subject<void>();
 
     constructor(fileSystemService:FileSystemService){
         this._fileSystemService = fileSystemService;
@@ -38,14 +42,26 @@ export class FileService{
             this._fileInfo.setIcon='fdfd';
             this._fileInfo.setPath = '';
         }else{
-            this._fileInfo.setIcon='/icon/unkown.svg';
-            this._fileInfo.setPath = '';
+            this._fileInfo.setIcon='/favicon.ico';
+            this._fileInfo.setPath = 'Test';
         }
 
         return this._fileInfo;
     }
 
     public getShortCut(path: string):ShortCut {
+
+        const contents = this._fs.readFileSync(path);
+
+        const stage = contents? contents.toString(): Buffer.from('').toString();
+        const shortCut = ini.parse(stage) as ShortCut;
+        console.log('Getting ShortCut Passed:', shortCut);
+        return shortCut;
+
+    }
+
+
+    public getShortCutAsync(path: string):ShortCut {
 
         this._fs.readFile(path, function(err, contents) {
             if(err){
@@ -74,22 +90,45 @@ export class FileService{
     //     });
     // }
 
-    private getFilesFromDirectory(dirPath:string):string[]{
-        
-        this._fs.readdir(dirPath, function(err, contents = []) {
-            if(err){
-                console.log('Getting Directory List:', err)
-            }
-            return contents;
+    public getFilesFromDirectory(dirPath:string){
+        const fs = this._fs;
+
+        // eslint-disable-next-line prefer-const
+        let arr:string[] = [];
+
+        new Promise(function(resolve) {
+    
+            const interval = setInterval(() => {
+    
+                fs.readdir(dirPath, function(err, contents = []) {
+                  if(err){
+                      console.log("Oops! a boo boo happened, filesystem wasn't ready:", err)
+                  }else{
+                    arr = contents
+                    //console.log('this is content:',arr);
+                    clearInterval(interval);
+                    resolve(arr);
+                  }
+                });
+    
+            }, 50);
+        }).then(()=>{
+            //console.log("This is result:",arr)
+            this._directoryFile = arr;
+            //alert subscribers
+            this.dirFilesReady.next();
         });
-        return [];
+    
+        //return res;
+    }
+    
+    get directoryFiles(){
+        return this._directoryFile;
     }
 
-    public getFileEntriesFromDirectory(directory:string):FileEntry[]{
+    public  getFileEntriesFromDirectory(fileList:string[], directory:string):FileEntry[]{
 
-        // remane to just fileservice
-        const fileList = this.getFilesFromDirectory(directory);
-    
+
         for(let i = 0; i < fileList.length; i++){
             const  file = fileList[i];
             const fileEntry = new FileEntry()
@@ -98,5 +137,5 @@ export class FileService{
             this._directoryFileEntires.push(fileEntry)
         }
         return this._directoryFileEntires;
-      }
+    }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import * as BrowserFS from 'browserfs';
 import { FSModule } from 'browserfs/dist/node/core/FS';
-import publicFileSystemIndex from '../../../public.json';
+import publicFileSystemIndex from '../../public.json';
 
 @Injectable({
     providedIn: 'root'
