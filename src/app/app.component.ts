@@ -49,43 +49,41 @@ export class AppComponent implements AfterViewInit {
     1
     //this.simpleReadWriteTest();
 
-    const dirPath = '/desktop';
+    // const dirPath = '/desktop';
 
-    this.simpleReadWriteTestAsync2(dirPath);
+    //  const result = await this.simpleReadWriteTestAsync2(dirPath);
+    //  console.log('this is result:',result);
   }
 
 
   simpleReadWriteTestAsync2(dirPath:string){
     const test = this._fileSytem.fileSystem;
 
-    // eslint-disable-next-line prefer-const
-    let arr:string[] = [];
-      new Promise(function(resolve, reject) {
+      // eslint-disable-next-line prefer-const
+      let arr:string[] = [];
+      const res = new Promise(function(resolve, reject) {
 
-        const interval = setInterval(async () => {
+        const interval = setInterval(() => {
 
             test.readdir(dirPath, function(err, contents = []) {
               if(err){
                   console.log('Getting Directory List:', err)
                   reject(err); 
               }else{
-                console.log('this is content:',contents);
+
                 arr = contents;
+                console.log('this is content:',arr);
                 clearInterval(interval);
-                resolve(contents);
+                resolve(arr);
               }
             });
 
         }, 50);
 
-      }).then((arr) => { 
-        this._files = arr as string[];
-      }).then(() => { 
-        
-        console.log('whats in files',this._files) 
-      });
-  }
+      })
 
+    return res;
+  }
 
 
   async loadApps() {
@@ -154,28 +152,27 @@ export class AppComponent implements AfterViewInit {
 
 
 
-  simpleReadWriteTest(){
+  simpleReadTest(){
     const test = this._fileSytem.fileSystem;
-    const dirPath = '/desktop';
+    const dirPath = '/';
+    //const filePath = '/desktop/heat.txt';
+    const filePath = '/desktop/heat.txt';
+    //const filePath = '../favicon.ico'; // this worked
 
-    // eslint-disable-next-line prefer-const, no-var
-    var result:string[] =  [];
-    // eslint-disable-next-line prefer-const
-    const checkExist = setInterval(function(){
+    test.readdir(dirPath, function(err, contents = []) {
+      if(err){
+          console.log('Getting Directory List:', err)
+      }else{
+        console.log('this is dir content:',contents);
+      }
+    });
 
-        test.readdir(dirPath, function(err, contents = []) {
-          if(err){
-              console.log('Getting Directory List:', err)
-          }else{
-            result = contents;
-            console.log('this is content:',contents);
-            clearInterval(checkExist);
-          }
-        });
-    }, 80); 
+    test.readFile(filePath, function(err, contents) {
+      if(err)
+          console.log('Oops!:',err)
 
-    if(result.length > 0)
-        console.log('this is result:',result);
+      console.log('content:',contents);
+    });
 
   }
 
