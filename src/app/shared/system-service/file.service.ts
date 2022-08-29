@@ -52,12 +52,18 @@ export class FileService{
     public getShortCut(path: string):ShortCut {
 
         const contents = this._fs.readFileSync(path);
-
         const stage = contents? contents.toString(): Buffer.from('').toString();
-        const shortCut = ini.parse(stage) as ShortCut;
-        console.log('Getting ShortCut Passed:', shortCut);
-        return shortCut;
+        const shortCut = ini.parse(stage) as unknown || {InternetShortcut:{ URL:'hi', IconFile:''}};
+    
+        if (typeof shortCut === 'object') {
+           const iSCut = (shortCut as {InternetShortcut:unknown})?.['InternetShortcut'];
+           const  url=  (iSCut as {URL:unknown})?.['URL'] as string;
+           const iconFile = (iSCut as {IconFile:unknown})?.['IconFile'] as string;
 
+           return  new ShortCut(iconFile,url);
+        }
+
+        return  new ShortCut('','');
     }
 
 
@@ -68,7 +74,8 @@ export class FileService{
                 console.log('Getting ShortCut Failed:', err)
             }
             const stage = contents? contents.toString(): Buffer.from('').toString();
-            const shortCut = ini.parse(stage) as ShortCut;
+            //const shortCut = ini.parse(stage) as ShortCut;
+            const shortCut = ini.parse(stage) as Map<string, string>;
             console.log('Getting ShortCut Passed:', shortCut);
             return shortCut;
         });
@@ -77,18 +84,6 @@ export class FileService{
         return new ShortCut('','');
     }
 
-    // public getFilesFromDirectory(dirPath:string):string[]{
-
-    //     this._fs.readFile(dirPath, function(err, contents) {
-    //         if(err){
-    //             console.log('Getting Directory List:', err)
-    //         }
-    //         const stage = contents? contents.toString(): Buffer.from('').toString();
-    //         const shortCut = ini.parse(stage) as ShortCut;
-    //         console.log('Getting Directory List:', shortCut);
-    //         return shortCut;
-    //     });
-    // }
 
     public getFilesFromDirectory(dirPath:string){
         const fs = this._fs;

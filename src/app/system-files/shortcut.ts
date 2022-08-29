@@ -2,9 +2,9 @@ export class ShortCut{
     private _iconFile:string;
     private _url:string;
 
-    constructor(iconFile:string, url:string){
-        this._iconFile = iconFile;
-        this._url = url;
+    constructor(IconFile:string, URL:string){
+        this._iconFile = IconFile;
+        this._url = URL;
     }
 
     get getIconFile(){

@@ -47,15 +47,11 @@ export class FilemanagerComponent implements OnInit {
 
   private  loadFilesInfo(){
     const dirFileEntries =  this._fileService.directoryFiles;
-    console.log("this is file entry content:", dirFileEntries)
     this._directoryFilesEntires = this._fileService.getFileEntriesFromDirectory(dirFileEntries,this.directory);
-    //console.log("this is file entry content:", this._directoryFilesEntires )
-
+ 
       for(let i = 0; i < this._directoryFilesEntires .length; i++){
         const fileEntry = this._directoryFilesEntires [i];
-        console.log("this is file entry", fileEntry)
         const fileInfo = this._fileService.getFileInfo(fileEntry.getPath);
-        console.log("this is fileInfo content:", fileInfo)
         this.files.push(fileInfo)
       }
   }

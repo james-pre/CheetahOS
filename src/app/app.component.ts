@@ -86,72 +86,6 @@ export class AppComponent implements AfterViewInit {
   }
 
 
-  async loadApps() {
-    this.lazyLoadTitleComponment();
-  }
-
-  private async lazyLoadTitleComponment() {
-     const {TitleComponent} = await import('./user-apps/title/title.component');
-     const componentRef =this.itemViewContainer.createComponent(TitleComponent);
-     this._componentsReferences.push(componentRef)
-
-     componentRef.instance.closeBtnClicked.subscribe(evt =>{
-          const evtData = evt;
-          this.onCloseBtnClicked(evtData);
-     });
-
-    //alert subscribers
-    this._runningProcessService.subject.next('')
-  }
-
-
-  simpleReadWriteTestAsync(){
-    const test = this._fileSytem.fileSystem;
-    const dirPath = '/desktop';
-
-    // eslint-disable-next-line prefer-const, no-var
-    var result:string[] =  [];
-    // eslint-disable-next-line prefer-const
-    const checkExist = setInterval(function(){
-
-        test.readdir(dirPath, function(err, contents = []) {
-          if(err){
-              console.log('Getting Directory List:', err)
-          }else{
-            result = contents;
-            console.log('this is content:',contents);
-            clearInterval(checkExist);
-          }
-        });
-    }, 80); 
-
-    if(result.length > 0)
-        console.log('this is result:',result);
-
-  }
-
-
-  simpleReadWriteTestAsync3(dirPath:string){
-    const test = this._fileSytem.fileSystem;
-
-
-    new Promise(function(resolve, reject) {
-      test.readdir(dirPath, function(err, contents = []) {
-        if(err){
-            console.log('Getting Directory List:', err)
-            reject(err); 
-        }else{
-          console.log('this is content:',contents);
-          resolve(contents);
-        }
-      });
-
-    })
-
-  }
-
-
-
   simpleReadTest(){
     const test = this._fileSytem.fileSystem;
     const dirPath = '/picture';
@@ -175,6 +109,26 @@ export class AppComponent implements AfterViewInit {
     });
 
   }
+
+
+  async loadApps() {
+    this.lazyLoadTitleComponment();
+  }
+
+  private async lazyLoadTitleComponment() {
+     const {TitleComponent} = await import('./user-apps/title/title.component');
+     const componentRef =this.itemViewContainer.createComponent(TitleComponent);
+     this._componentsReferences.push(componentRef)
+
+     componentRef.instance.closeBtnClicked.subscribe(evt =>{
+          const evtData = evt;
+          this.onCloseBtnClicked(evtData);
+     });
+
+    //alert subscribers
+    this._runningProcessService.subject.next('')
+  }
+
 
 
   onCloseBtnClicked(eventData:Process){
