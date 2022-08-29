@@ -1,7 +1,7 @@
 .main-desktop{
     height: 100vh;
     width: 100vw;
-    overflow: hidden;
+    /* overflow: hidden; overflow no longer needed since position is now fixed */  
     position: fixed;
     left: 0;
     right: 0;
