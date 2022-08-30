@@ -21,8 +21,8 @@ export class FileService{
     private _fs!:FSModule;
     private _directoryFile:string[]=[];
     private _directoryFileEntires:FileEntry[]=[];
-    dirFilesReady: Subject<void> = new Subject<void>();
-    filesEntriesReady: Subject<void> = new Subject<void>();
+    dirFilesReadyNotify: Subject<void> = new Subject<void>();
+    filesEntriesReadyNotify: Subject<void> = new Subject<void>();
 
     constructor(fileSystemService:FileSystemService){
         this._fileSystemService = fileSystemService;
@@ -111,7 +111,7 @@ export class FileService{
             //console.log("This is result:",arr)
             this._directoryFile = arr;
             //alert subscribers
-            this.dirFilesReady.next();
+            this.dirFilesReadyNotify.next();
         });
     
         //return res;

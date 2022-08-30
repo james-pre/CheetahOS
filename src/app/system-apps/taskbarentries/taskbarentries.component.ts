@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
@@ -10,11 +10,11 @@ import { Process } from 'src/app/system-files/process';
   templateUrl: './taskbarentries.component.html',
   styleUrls: ['./taskbarentries.component.css']
 })
-export class TaskbarentriesComponent implements OnInit, AfterViewInit, OnDestroy {
+export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
 
   private _processIdService;
   private _runningProcessService;
-  private _sub!: Subscription;
+  private _processListChangeSub!: Subscription;
   
   runningProcess:Process[] = []
 
@@ -29,12 +29,7 @@ export class TaskbarentriesComponent implements OnInit, AfterViewInit, OnDestroy
     this._runningProcessService = runningProcessService;
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail());
-    this._sub = this._runningProcessService.processListChange.subscribe(() =>{this.updateRunningProcess();})
-  }
-
-
-  ngOnInit(): void {
-    1
+    this._processListChangeSub = this._runningProcessService.processListChangeNotify.subscribe(() =>{this.updateRunningProcess();})
   }
   
   ngAfterViewInit(): void {
@@ -43,7 +38,7 @@ export class TaskbarentriesComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   ngOnDestroy(): void {
-    this._sub?.unsubscribe();
+    this._processListChangeSub?.unsubscribe();
   }
 
   updateRunningProcess(){

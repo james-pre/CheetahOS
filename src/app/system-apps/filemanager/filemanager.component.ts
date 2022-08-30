@@ -20,7 +20,7 @@ export class FilemanagerComponent implements OnInit, OnDestroy {
   private _runningProcessService;
   private _fileService:FileService
   private _directoryFilesEntires!:FileEntry[];
-  private _sub!: Subscription;
+  private _dirFilesReadySub!: Subscription;
 
   hasWindow = true;
   icon = '';
@@ -37,18 +37,16 @@ export class FilemanagerComponent implements OnInit, OnDestroy {
     this._fileService = fileInfoService;
     this.processId = this._processIdService.getNewProcessId();
     this._runningProcessService.addProcess(this.getComponentDetail());
-    this._sub = this._fileService.dirFilesReady.subscribe(() =>{this.loadFilesInfo();})
+    this._dirFilesReadySub = this._fileService.dirFilesReadyNotify.subscribe(() =>{this.loadFilesInfo();})
   
   }
 
   ngOnInit(){
-   1
-    //this.loadFilesInfo();
     this._fileService.getFilesFromDirectory(this.directory);
   }
 
   ngOnDestroy(): void {
-    this._sub?.unsubscribe();
+    this._dirFilesReadySub?.unsubscribe();
   }
   private  loadFilesInfo(){
     const dirFileEntries =  this._fileService.directoryFiles;

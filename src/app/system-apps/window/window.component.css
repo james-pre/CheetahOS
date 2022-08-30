@@ -13,4 +13,5 @@ section{
     /*I added these for testing*/
     position: relative;
     z-index:1;
+    max-width: 50%;
 }

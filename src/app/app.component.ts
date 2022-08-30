@@ -46,7 +46,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
     this._componentReferenceService = componentReferenceService;
     this._runningProcessService = runningProcessService;
-    this._runningProcessService.closeProcess.subscribe((p) =>{this.onCloseBtnClicked(p)})
+    this._runningProcessService.closeProcessNotify.subscribe((p) =>{this.onCloseBtnClicked(p)})
     this._runningProcessService.addProcess(this.getComponentDetail());
   }
 
@@ -74,13 +74,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     const pid = componentRef.instance.processId;
     this._componentReferenceService.addComponentReference(pid, componentRef);
 
-    componentRef.instance.closeBtnClicked.subscribe(evt =>{
-         const evtData = evt;
-         this.onCloseBtnClicked(evtData);
-    });
-
    //alert subscribers
-   this._runningProcessService.processListChange.next()
+   this._runningProcessService.processListChangeNotify.next()
  }
 
  onCloseBtnClicked(eventData:Process){
@@ -97,7 +92,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   this._processIdService.removeProcessId(eventData.getProcessId);
 
   //alert subscribers
-  this._runningProcessService.processListChange.next()
+  this._runningProcessService.processListChangeNotify.next()
 }
 
 

@@ -10,8 +10,8 @@ import { Process } from "src/app/system-files/process";
 export class RunningProcessService{
 
     private _runningProcesses:Process[]
-    processListChange: Subject<void> = new Subject<void>();
-    closeProcess: Subject<Process> = new Subject<Process>();
+    processListChangeNotify: Subject<void> = new Subject<void>();
+    closeProcessNotify: Subject<Process> = new Subject<Process>();
 
     constructor(){
         this._runningProcesses = []
