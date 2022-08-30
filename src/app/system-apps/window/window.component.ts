@@ -25,6 +25,7 @@ import { CdkDragMove } from '@angular/cdk/drag-drop';
    name = '';
    processId = 0;
    type = ComponentType.systemComponent
+   hover = false;
    windowMinimize = false;
    windowMaximize = true;
    currentStyles: Record<string, string> = {};

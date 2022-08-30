@@ -13,17 +13,14 @@ section{
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 50%);
     outline: 1px solid rgba(0, 0, 0, 20%);
     /*I added these for testing*/
-    position: absolute;
+    position: relative;
     z-index:1;
     /* max-width: 50%; */
     width: 50%;
     height: 50%;
 }
 
-button{
-    background-color: transparent;
-    width: 100%;
-}
+
 
 /* 
 .window-dd-box {
@@ -70,3 +67,56 @@ button{
     position: absolute;
     background-color: red;
   } */
+
+
+  header{
+    display: flex;
+    background-color: blue;
+    height: 30px;
+  }
+
+  h1{
+    color: #fff;
+    font-size: 11.5px;
+    font-weight: normal;
+    height: 29px;
+    width: 35px;
+    flex-grow: 1;
+    left: 0;
+  }
+
+  img{
+    height: 18px;
+    width: 18px;
+    margin: 0 8px;
+
+  }
+
+  figure{
+    display: flex;
+    align-items: center;
+    height: 29px;
+  }
+
+  button{
+    width: 45px;
+    color: #fff;
+    font-size: 20px;
+    display: flex;
+    place-content: center;
+    place-items: center;
+  }
+  
+nav{
+    display: flex;
+    position: absolute;
+    right: 0;
+}
+
+div{
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    position:relative;
+    z-index: 1;
+}

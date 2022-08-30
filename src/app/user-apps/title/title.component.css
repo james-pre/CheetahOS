@@ -1,6 +1,8 @@
-h1{
+.title{
     font-size: 50px;
     text-align: center;
     /* width: 40%; */
-    background-color: red;
+    background-color: orange;
+    width: inherit;
+    height: inherit;
 }
