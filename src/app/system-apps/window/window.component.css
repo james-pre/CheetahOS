@@ -16,6 +16,11 @@ section{
     max-width: 50%;
 }
 
+button{
+    background-color: transparent;
+    width: 100%;
+}
+
 
 .window-dd-box {
     width: 100vw;

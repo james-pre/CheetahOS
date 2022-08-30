@@ -48,8 +48,6 @@ import { CdkDragMove } from '@angular/cdk/drag-drop';
     return this.resizeBox.nativeElement;
   }
 
-
-
   get dragHandleRightElement(): HTMLElement {
     return this.dragHandleRight.nativeElement;
   }
