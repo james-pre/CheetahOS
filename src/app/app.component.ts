@@ -53,7 +53,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(){ 
     1
-    //this.loadApps();
+    this.loadApps();
   }
 
   ngOnDestroy(): void {
