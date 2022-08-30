@@ -22,12 +22,10 @@ export class RunningProcessService{
     }
 
     removeProcess(proccessToRemove:Process): void{
-        
+        const deleteCount = 1;
         const procIndex = this._runningProcesses.findIndex((process) => {
             return process.getProcessId === proccessToRemove.getProcessId;
           });
-
-        const deleteCount = 1;
 
         if(procIndex != -1){
             this._runningProcesses.splice(procIndex, deleteCount)
@@ -39,7 +37,8 @@ export class RunningProcessService{
             return process.getProcessId === processId;
         });
 
-        return process || new Process(0,'','',false,'');
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return process!;
     }
 
     isProcessRunning(appName:string):boolean{

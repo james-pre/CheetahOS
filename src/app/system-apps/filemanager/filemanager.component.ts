@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FileService } from 'src/app/shared/system-service/file.service';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
@@ -6,19 +6,21 @@ import { ComponentType } from 'src/app/system-files/component.types';
 import { Process } from 'src/app/system-files/process';
 import { FileEntry } from 'src/app/system-files/fileentry';
 import { FileInfo } from 'src/app/system-files/fileinfo';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'cos-filemanager',
   templateUrl: './filemanager.component.html',
   styleUrls: ['./filemanager.component.css']
 })
-export class FilemanagerComponent implements OnInit {
+export class FilemanagerComponent implements OnInit, OnDestroy {
 
 
   private _processIdService;
   private _runningProcessService;
   private _fileService:FileService
   private _directoryFilesEntires!:FileEntry[];
+  private _sub!: Subscription;
 
   hasWindow = true;
   icon = '';
@@ -35,7 +37,7 @@ export class FilemanagerComponent implements OnInit {
     this._fileService = fileInfoService;
     this.processId = this._processIdService.getNewProcessId();
     this._runningProcessService.addProcess(this.getComponentDetail());
-    this._fileService.dirFilesReady.subscribe(() =>{this.loadFilesInfo();})
+    this._sub = this._fileService.dirFilesReady.subscribe(() =>{this.loadFilesInfo();})
   
   }
 
@@ -45,6 +47,9 @@ export class FilemanagerComponent implements OnInit {
     this._fileService.getFilesFromDirectory(this.directory);
   }
 
+  ngOnDestroy(): void {
+    this._sub?.unsubscribe();
+  }
   private  loadFilesInfo(){
     const dirFileEntries =  this._fileService.directoryFiles;
     this._directoryFilesEntires = this._fileService.getFileEntriesFromDirectory(dirFileEntries,this.directory);
@@ -75,6 +80,8 @@ export class FilemanagerComponent implements OnInit {
 
     alert('I will open'+ appName)
   }
+
+
 
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type);

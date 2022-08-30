@@ -24,16 +24,15 @@ export class ProcessIDService{
     }
 
     private generateProcessId(): number{
-       const min = Math.ceil(1000);
-       const max = Math.floor(9999);
+        const min = Math.ceil(1000);
+        const max = Math.floor(9999);
         return Math.floor(Math.random() * (max - min + 1)) + min; 
     }
 
     public removeProcessId(pid:number):void{
         
-       const pidIndex = this._activeProcessIds.indexOf(pid)
        const deleteCount = 1;
-
+       const pidIndex = this._activeProcessIds.indexOf(pid)
        if (pidIndex !== -1) {
             this._activeProcessIds.splice(pidIndex, deleteCount);
         }

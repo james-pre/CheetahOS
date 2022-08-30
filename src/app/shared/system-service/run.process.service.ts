@@ -22,7 +22,7 @@ export class RunProcessService{
     }
 
 
-    startApplication(appName:string){
+    startApplication(appName:string):void{
 
         if(this._appDirectory.appExist(appName)){
 

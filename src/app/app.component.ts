@@ -1,9 +1,10 @@
-import {Component,AfterViewInit,ViewChild, ViewContainerRef, ViewRef} from '@angular/core';
+import {Component,AfterViewInit,ViewChild, ViewContainerRef, ViewRef, OnDestroy} from '@angular/core';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { ComponentType } from './system-files/component.types';
 import { RunningProcessService } from './shared/system-service/running.process.service';
 import { Process } from './system-files/process';
 import { ComponentReferenceService } from './shared/system-service/component.reference.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'cos-root',
@@ -14,7 +15,7 @@ import { ComponentReferenceService } from './shared/system-service/component.ref
 /**
  *  This is the main app component
  */
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements AfterViewInit, OnDestroy {
  
   @ViewChild('processContainerRef',  { read: ViewContainerRef })
   private itemViewContainer!: ViewContainerRef
@@ -23,6 +24,11 @@ export class AppComponent implements AfterViewInit {
   private _runningProcessService:RunningProcessService;
   private _componentReferenceService:ComponentReferenceService;
   private _componentRefView!:ViewRef;
+
+  private _closeProcessSub!:Subscription;
+  private _startProcessSub!:Subscription;
+  private _appNotFoundSub!:Subscription;
+  private _appIsRunningSub!:Subscription;  
 
 
   hasWindow = false;
@@ -48,6 +54,13 @@ export class AppComponent implements AfterViewInit {
   ngAfterViewInit(){ 
     1
     this.loadApps();
+  }
+
+  ngOnDestroy(): void {
+    this._closeProcessSub?.unsubscribe();
+    this._startProcessSub?.unsubscribe();
+    this._appNotFoundSub?.unsubscribe();
+    this._appIsRunningSub ?.unsubscribe();
   }
 
   async loadApps() {
