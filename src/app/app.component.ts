@@ -4,6 +4,7 @@ import { ProcessIDService } from 'src/app/shared/system-service/process.id.servi
 import { ComponentType } from './system-files/component.types';
 import { RunningProcessService } from './shared/system-service/running.process.service';
 import { Process } from './system-files/process';
+import { ComponentReferenceService } from './shared/system-service/component.reference.service';
 
 @Component({
   selector: 'cos-root',
@@ -20,9 +21,10 @@ export class AppComponent implements AfterViewInit {
   private itemViewContainer!: ViewContainerRef
 
   private _processIdService:ProcessIDService;
-  private _runningProcessService;
-  private _fileSytem:FileSystem;
-  private _componentsReferences = Array<ComponentRef<any>>();
+  private _runningProcessService:RunningProcessService;
+  private _componentReferenceService:ComponentReferenceService;
+  // private _fileSytem:FileSystem;
+  // private _componentsReferences = Array<ComponentRef<any>>();
   private _componentRefView!:ViewRef;
 
 
@@ -33,16 +35,15 @@ export class AppComponent implements AfterViewInit {
   //I know, I'm cheeting here
   type = ComponentType.systemComponent;
   _files!:string[];
-  windowMaximize = false;
-  windowMinimize = false;
 
 
-  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService ){
+  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService,componentReferenceService:ComponentReferenceService ){
     this._processIdService = processIdService
     this.processId = this._processIdService.getNewProcessId()
-    this._fileSytem = new FileSystem();
 
+    this._componentReferenceService = componentReferenceService;
     this._runningProcessService = runningProcessService;
+    this._runningProcessService.closeProcess.subscribe((p) =>{this.onCloseBtnClicked(p)})
     this._runningProcessService.addProcess(this.getComponentDetail());
   }
 
@@ -56,37 +57,40 @@ export class AppComponent implements AfterViewInit {
     this.lazyLoadTitleComponment();
   }
 
+
   private async lazyLoadTitleComponment() {
-     const {TitleComponent} = await import('./user-apps/title/title.component');
-     const componentRef =this.itemViewContainer.createComponent(TitleComponent);
-     this._componentsReferences.push(componentRef)
+    const {TitleComponent} = await import('./user-apps/title/title.component');
+    const componentRef =this.itemViewContainer.createComponent(TitleComponent);
+    const pid = componentRef.instance.processId;
+    this._componentReferenceService.addComponentReference(pid, componentRef);
 
-     componentRef.instance.closeBtnClicked.subscribe(evt =>{
-          const evtData = evt;
-          this.onCloseBtnClicked(evtData);
-     });
+    componentRef.instance.closeBtnClicked.subscribe(evt =>{
+         const evtData = evt;
+         this.onCloseBtnClicked(evtData);
+    });
 
-    //alert subscribers
-    this._runningProcessService.subject.next('')
-  }
+   //alert subscribers
+   this._runningProcessService.processListChange.next()
+ }
 
-
-
-  onCloseBtnClicked(eventData:Process){
+ onCloseBtnClicked(eventData:Process){
    
-    const componentToDelete = this._componentsReferences.filter(x => x.instance.processId == eventData.getProcessId)[0];
-    this._componentRefView = componentToDelete.hostView;
+  const componentToDelete = this._componentReferenceService.getComponentReference(eventData.getProcessId);
+  this._componentRefView = componentToDelete.hostView;
 
-    // eslint-disable-next-line prefer-const
-    let iVCntr  = this.itemViewContainer.indexOf(this._componentRefView);
-    this.itemViewContainer.remove(iVCntr);
+  // eslint-disable-next-line prefer-const
+  let iVCntr  = this.itemViewContainer.indexOf(this._componentRefView);
+  this.itemViewContainer.remove(iVCntr);
 
-    this._runningProcessService.removeProcess(eventData)
-    this._processIdService.removeProcessId(eventData.getProcessId);
+  this._runningProcessService.removeProcess(eventData)
+  this._componentReferenceService.removeComponentReference(eventData.getProcessId);
+  this._processIdService.removeProcessId(eventData.getProcessId);
 
-    //alert subscribers
-    this._runningProcessService.subject.next('')
-  }
+  //alert subscribers
+  this._runningProcessService.processListChange.next()
+}
+
+
 
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type)

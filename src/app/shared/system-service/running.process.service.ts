@@ -10,7 +10,8 @@ import { Process } from "src/app/system-files/process";
 export class RunningProcessService{
 
     private _runningProcesses:Process[]
-    subject: Subject<string> = new Subject<string>();
+    processListChange: Subject<void> = new Subject<void>();
+    closeProcess: Subject<Process> = new Subject<Process>();
 
     constructor(){
         this._runningProcesses = []
@@ -33,7 +34,15 @@ export class RunningProcessService{
         }
     }
 
-    getProcess(): Process[]{
+    getProcess(processId:number): Process{
+        const process = this._runningProcesses.find((process) => {
+            return process.getProcessId === processId;
+        });
+
+        return process || new Process(0,'','',false,'');
+    }
+
+    getProcesses(): Process[]{
         return this._runningProcesses;
     }
 

@@ -28,7 +28,7 @@ export class TaskbarentriesComponent implements OnInit, AfterViewInit {
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail());
 
-    this._runningProcessService.subject.subscribe(() =>{this.updateRunningProcess();})
+    this._runningProcessService.processListChange.subscribe(() =>{this.updateRunningProcess();})
   }
 
 
@@ -37,12 +37,12 @@ export class TaskbarentriesComponent implements OnInit, AfterViewInit {
   }
   
   ngAfterViewInit(): void {
-    this.runningProcess = this._runningProcessService.getProcess().filter(p => p.getType == ComponentType.userComponent);
+    this.runningProcess = this._runningProcessService.getProcesses().filter(p => p.getType == ComponentType.userComponent);
     console.log('count of proc:', this._runningProcessService.processCount())
   }
 
   updateRunningProcess(){
-    this.runningProcess = this._runningProcessService.getProcess().filter(p => p.getType == ComponentType.userComponent);
+    this.runningProcess = this._runningProcessService.getProcesses().filter(p => p.getType == ComponentType.userComponent);
     console.log('updated count of proc:', this._runningProcessService.processCount())
   }
 
