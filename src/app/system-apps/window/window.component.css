@@ -10,7 +10,7 @@ section{
     font-size: 100px;
     text-align: center;
     background-color: #808080;
-    /*I added these for testing
+    /*I added these for testing*/
     position: relative;
-    z-index:1;*/
+    z-index:1;
 }

@@ -1,1 +1,24 @@
-<section> <ng-content> </ng-content> </section>
+<section> 
+    <header>
+        <h6>
+            <figure>
+                <img src="/favicon.ico" alt="test"/>
+                <figcaption> test </figcaption>
+            </figure>
+        </h6>
+        <nav>
+            <button (click)="showProcessInfo()">
+                    <fa-icon [icon]="faWinMin"> MIN</fa-icon>
+            </button>
+            <button>
+                    <fa-icon [icon]="faWinMax"> </fa-icon>
+            </button>
+            <button>
+                    <fa-icon [icon]="faWinClose"> </fa-icon>
+            </button>
+        </nav>
+    </header>
+    
+<ng-content> </ng-content> 
+
+</section>

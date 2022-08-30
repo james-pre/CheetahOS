@@ -33,6 +33,8 @@ export class AppComponent implements AfterViewInit {
   //I know, I'm cheeting here
   type = ComponentType.systemComponent;
   _files!:string[];
+  windowMaximize = false;
+  windowMinimize = false;
 
 
   constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService ){
@@ -47,69 +49,8 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit(){ 
     1
-    //this.simpleReadWriteTest();
-
-    // const dirPath = '/desktop';
-
-    //  const result = await this.simpleReadWriteTestAsync2(dirPath);
-    //  console.log('this is result:',result);
+    this.loadApps();
   }
-
-
-  simpleReadWriteTestAsync2(dirPath:string){
-    const test = this._fileSytem.fileSystem;
-
-      // eslint-disable-next-line prefer-const
-      let arr:string[] = [];
-      const res = new Promise(function(resolve, reject) {
-
-        const interval = setInterval(() => {
-
-            test.readdir(dirPath, function(err, contents = []) {
-              if(err){
-                  console.log('Getting Directory List:', err)
-                  reject(err); 
-              }else{
-
-                arr = contents;
-                console.log('this is content:',arr);
-                clearInterval(interval);
-                resolve(arr);
-              }
-            });
-
-        }, 50);
-
-      })
-
-    return res;
-  }
-
-
-  simpleReadTest(){
-    const test = this._fileSytem.fileSystem;
-    const dirPath = '/picture';
-    //const filePath = '/desktop/heat.txt';
-    const filePath = '/picture/favicon.ico';
-    //const filePath = '../favicon.ico'; // this worked
-
-    test.readdir(dirPath, function(err, contents = []) {
-      if(err){
-          console.log('Getting Directory List:', err)
-      }else{
-        console.log('this is dir content:',contents);
-      }
-    });
-
-    test.readFile(filePath, function(err, contents) {
-      if(err)
-          console.log('Oops!:',err)
-
-      console.log('content:',contents);
-    });
-
-  }
-
 
   async loadApps() {
     this.lazyLoadTitleComponment();
