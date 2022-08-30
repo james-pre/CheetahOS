@@ -1,4 +1,4 @@
-import { ComponentRef, Injectable, ViewContainerRef } from "@angular/core";
+import { ComponentRef, Injectable } from "@angular/core";
 
 @Injectable({
     providedIn: 'root'
@@ -7,7 +7,6 @@ import { ComponentRef, Injectable, ViewContainerRef } from "@angular/core";
 export class ComponentReferenceService{
 
     private _componentsReferences:Map<number, ComponentRef<any>>; 
-    private _defaultViewContainer!: ViewContainerRef
     
     constructor(){
         this._componentsReferences = new Map<number, ComponentRef<any>>();

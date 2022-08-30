@@ -1,5 +1,4 @@
-import {Component,AfterViewInit,ViewChild, ViewContainerRef, ComponentRef, ViewRef} from '@angular/core';
-import { FileSystem } from './system-files/filessystem';
+import {Component,AfterViewInit,ViewChild, ViewContainerRef, ViewRef} from '@angular/core';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { ComponentType } from './system-files/component.types';
 import { RunningProcessService } from './shared/system-service/running.process.service';
@@ -23,8 +22,6 @@ export class AppComponent implements AfterViewInit {
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _componentReferenceService:ComponentReferenceService;
-  // private _fileSytem:FileSystem;
-  // private _componentsReferences = Array<ComponentRef<any>>();
   private _componentRefView!:ViewRef;
 
 

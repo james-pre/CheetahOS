@@ -1,6 +1,6 @@
 <ol>
     <li *ngFor="let file of files">
-        <button>
+        <button  (dblclick)="runProcess(file.getPath)" >
             <figure>
                 <img [src]="file.getIcon" [alt]="file.getPath" />
                 <figcaption>

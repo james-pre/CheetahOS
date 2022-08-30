@@ -70,6 +70,12 @@ export class FilemanagerComponent implements OnInit {
   //     }
   // }
 
+  runProcess(appName:string):void{
+    //
+
+    alert('I will open'+ appName)
+  }
+
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type);
   }
