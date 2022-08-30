@@ -42,6 +42,18 @@ export class RunningProcessService{
         return process || new Process(0,'','',false,'');
     }
 
+    isProcessRunning(appName:string):boolean{
+        const process = this._runningProcesses.find((process) => {
+            return process.getProcessName === appName;
+        });
+
+        if(process)
+            return true;
+        
+        return false;
+    }
+
+
     getProcesses(): Process[]{
         return this._runningProcesses;
     }
