@@ -1,4 +1,4 @@
-<section [ngStyle]="currentStyles" > 
+<section  #resizeBox  class="window-dd-box" [ngStyle]="currentStyles" cdkDrag> 
     <header>
         <h6>
             <figure>
@@ -14,12 +14,15 @@
                     <fa-icon [icon]="faWinMax"> </fa-icon>
             </button> -->
             <button (click)="onCloseBtnClick()">
-                    <fa-icon [icon]="faWinClose"> </fa-icon>
+                <fa-icon [icon]="faWinClose"> </fa-icon>
             </button>
         </nav>
     </header>
+
+    <span #dragHandleRight cdkDragLockAxis="x" class="dragHandle right" cdkDrag (cdkDragMoved)="dragMove(dragHandleRight, $event)"></span>
+    <span #dragHandleBottom cdkDragLockAxis="y" class="dragHandle bottom" cdkDrag (cdkDragMoved)="dragMove(dragHandleBottom, $event)"></span>
     
-    <div [ngStyle]="currentStyles"  >
+    <div  [ngStyle]="currentStyles">
         <ng-content > </ng-content> 
     </div>
 
