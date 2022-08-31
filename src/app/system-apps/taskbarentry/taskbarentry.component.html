@@ -1,9 +1,9 @@
 <li>
     <figure  [ngStyle]=" hover ? 
             {'background-color': 'hsla(0,0%,25%,60%)'}:
-            {'color': 'white'}"  (mouseover)="hover=true" (mouseleave)="hover=false">
+            {'background-color': 'transparent'}"  (mouseover)="hover=true" (mouseleave)="hover=false">
         <img [src]="icon" [alt]="name">
-        <figcaption>{{name}}</figcaption>
+        <!-- <figcaption>{{name}}</figcaption> -->
     </figure>
 </li>
 

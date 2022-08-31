@@ -108,6 +108,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   }
 
 
+  ontskBarBtnDblClicked(eventData:Process){
+    
+    const componentToRestore = this._componentReferenceService.getComponentReference(eventData.getProcessId);
+    
+
+  }
 
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type)

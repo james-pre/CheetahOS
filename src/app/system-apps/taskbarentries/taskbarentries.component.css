@@ -9,6 +9,6 @@ ol{
 li{
     display: flex;
     height: 100%;
-    max-width: 161px;
+    max-width: 30px;
     border-bottom: 2px solid #76B9ED;
 }
