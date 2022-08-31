@@ -12,8 +12,8 @@ import { Process } from 'src/app/system-files/process';
 })
 export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
 
-  private _processIdService;
-  private _runningProcessService;
+  private _processIdService:ProcessIDService;
+  private _runningProcessService:RunningProcessService;
   private _processListChangeSub!: Subscription;
   
   runningProcess:Process[] = []
@@ -48,6 +48,14 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
 
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type)
+  }
+
+  restoreOrMinizeWindow(processId:number){
+
+    const theProcess = this._runningProcessService.getProcess(processId);
+    console.log('close evt triggered for pid:'+ theProcess.getProcessId +'----'+'pname:'+theProcess.getProcessName);
+    this._runningProcessService.restoreOrMinimizeWindowNotify.next(theProcess)
+
   }
 
 }

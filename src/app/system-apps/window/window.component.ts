@@ -1,17 +1,19 @@
-import { Component, Input, OnInit, AfterViewInit  } from '@angular/core';
+import { Component, Input, OnInit, AfterViewInit, OnDestroy  } from '@angular/core';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { faWindowClose, faWindowMaximize, faWindowMinimize } from '@fortawesome/free-solid-svg-icons';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
+import { Subscription } from 'rxjs';
 
  @Component({
    selector: 'cos-window',
    templateUrl: './window.component.html',
    styleUrls: ['./window.component.css']
  })
- export class WindowComponent implements OnInit,AfterViewInit {
+ export class WindowComponent implements OnInit,OnDestroy {
 
    @Input() runningProcessID = 0;  
    private _runningProcessService:RunningProcessService;
+   private _restoreOrMinSub!:Subscription
 
   faWinClose = faWindowClose;
   faWinMin = faWindowMinimize;
@@ -30,6 +32,7 @@ import { RunningProcessService } from 'src/app/shared/system-service/running.pro
 
    constructor(runningProcessService:RunningProcessService){
       this._runningProcessService = runningProcessService;
+      this._restoreOrMinSub = this._runningProcessService.restoreOrMinimizeWindowNotify.subscribe((p) => {this.restorOrMinimzeWinddow(p.getProcessId)})
    }
 
 
@@ -37,11 +40,10 @@ import { RunningProcessService } from 'src/app/shared/system-service/running.pro
      this.processId = this.runningProcessID;
    }
 
+   ngOnDestroy(): void {
+    this._restoreOrMinSub.unsubscribe();
+   }
 
-   ngAfterViewInit() {
-  
-    1
-  }
 
    setCurrentStyles() {
       // CSS styles: set per current state of component properties
@@ -94,6 +96,21 @@ import { RunningProcessService } from 'src/app/shared/system-service/running.pro
       }
       this.setCurrentStyles()
    }
+
+   restorOrMinimzeWinddow(pid:number){
+
+    if(this.processId == pid){
+     if(this.windowMinimize && !this.windowRestore){
+          this.windowRestore = true;
+          this.windowMinimize = false;
+      }else{
+        this.windowRestore = false;
+        this.windowMinimize = true;
+      }
+      this.setCurrentStyles()
+    }
+
+ }
 
    onCloseBtnClick(){
 

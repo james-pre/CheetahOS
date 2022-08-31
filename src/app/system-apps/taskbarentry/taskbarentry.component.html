@@ -1,7 +1,7 @@
 <li>
     <figure  [ngStyle]=" hover ? 
             {'background-color': 'hsla(0,0%,25%,60%)'}:
-            {'background-color': 'transparent'}"  (mouseover)="hover=true" (mouseleave)="hover=false">
+            {'background-color': 'transparent'}"  (mouseover)="hover=true" (mouseleave)="hover=false"  (click)="restoreOrMinizeWindow()  ">
         <img [src]="icon" [alt]="name">
         <!-- <figcaption>{{name}}</figcaption> -->
     </figure>
