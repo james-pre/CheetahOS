@@ -5,7 +5,7 @@ import { RunningProcessService } from './shared/system-service/running.process.s
 import { Process } from './system-files/process';
 import { ComponentReferenceService } from './shared/system-service/component.reference.service';
 import { Subscription } from 'rxjs';
-import { RunProcessService } from './shared/system-service/run.process.service';
+import { StartProcessService } from './shared/system-service/start.process.service';
 
 @Component({
   selector: 'cos-root',
@@ -24,7 +24,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _componentReferenceService:ComponentReferenceService;
-  private _startProcessService:RunProcessService;
+  private _startProcessService:StartProcessService;
   private _componentRefView!:ViewRef;
 
   private _closeProcessSub!:Subscription;
@@ -42,7 +42,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   _files!:string[];
 
 
-  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService,componentReferenceService:ComponentReferenceService, startProcessService:RunProcessService ){
+  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService,componentReferenceService:ComponentReferenceService, startProcessService:StartProcessService ){
     this._processIdService = processIdService
     this.processId = this._processIdService.getNewProcessId()
 
@@ -51,6 +51,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this._startProcessService = startProcessService;
 
     this._startProcessSub = this._startProcessService.startProcessNotify.subscribe((appName) =>{this.loadApps(appName)})
+    this._startProcessSub = this._startProcessService.appNotFoundNotify.subscribe((appName) =>{this.loadApps(appName)})
     this._runningProcessService.closeProcessNotify.subscribe((p) =>{this.onCloseBtnClicked(p)})
     this._runningProcessService.addProcess(this.getComponentDetail());
   }
@@ -70,11 +71,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   async loadApps(appName:string):Promise<void>{
 
 
-    if(appName == 'hello'){
+    if(appName == 'Hello'){
       console.log('I am starting:',appName)
       this.lazyLoadTitleComponment();
+    }else{
+      alert(`The app: ${appName} was not found. It could have been deleted or location changed.`)
     }
-   
   }
 
 

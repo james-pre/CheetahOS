@@ -7,7 +7,7 @@ import { AppDirectory } from "src/app/system-files/app.directory";
     providedIn: 'root'
 })
 
-export class RunProcessService{
+export class StartProcessService{
 
     private _runningProcessService:RunningProcessService;
     private _appDirectory:AppDirectory;
@@ -30,10 +30,10 @@ export class RunProcessService{
                 this.startProcessNotify.next(appName);
                 return
             }
-            this.appNotFoundNotify.next('The App:'+ appName +' is running');
+            this.appNotFoundNotify.next(appName);
             return;
         }
-        this.appNotFoundNotify.next('The App:'+ appName +' was not found');
+        this.appNotFoundNotify.next(appName);
         return;
     }
 

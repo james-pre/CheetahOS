@@ -9,7 +9,8 @@ export class AppDirectory {
     }
 
     appExist(appName:string):boolean{
-        return (this._systemProcessList.includes(appName) || this._userProcessList.includes(appName))
+        const strString = appName.trim();
+        return (this._systemProcessList.includes(strString) || this._userProcessList.includes(strString))
     }
 
 
@@ -19,7 +20,7 @@ export class AppDirectory {
     }
 
     private fetchUserApp(): string[]{
-        this._userProcessList = ['hello'];
+        this._userProcessList = ['Hello'];
         return this._userProcessList;
     }
 } 

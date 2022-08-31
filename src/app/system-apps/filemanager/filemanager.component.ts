@@ -7,7 +7,7 @@ import { Process } from 'src/app/system-files/process';
 import { FileEntry } from 'src/app/system-files/fileentry';
 import { FileInfo } from 'src/app/system-files/fileinfo';
 import { Subscription } from 'rxjs';
-import { RunProcessService } from 'src/app/shared/system-service/run.process.service';
+import { StartProcessService } from 'src/app/shared/system-service/start.process.service';
 
 @Component({
   selector: 'cos-filemanager',
@@ -22,7 +22,7 @@ export class FilemanagerComponent implements OnInit, OnDestroy {
   private _fileService:FileService
   private _directoryFilesEntires!:FileEntry[];
   private _dirFilesReadySub!: Subscription;
-  private _startProcessService:RunProcessService;
+  private _startProcessService:StartProcessService;
 
   hasWindow = true;
   icon = '';
@@ -36,7 +36,7 @@ export class FilemanagerComponent implements OnInit, OnDestroy {
 
 
 
-  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, startProcessService:RunProcessService) { 
+  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, startProcessService:StartProcessService) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this._fileService = fileInfoService;
