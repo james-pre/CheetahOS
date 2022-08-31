@@ -5,6 +5,7 @@ import { RunningProcessService } from './shared/system-service/running.process.s
 import { Process } from './system-files/process';
 import { ComponentReferenceService } from './shared/system-service/component.reference.service';
 import { Subscription } from 'rxjs';
+import { RunProcessService } from './shared/system-service/run.process.service';
 
 @Component({
   selector: 'cos-root',
@@ -23,6 +24,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _componentReferenceService:ComponentReferenceService;
+  private _startProcessService:RunProcessService;
   private _componentRefView!:ViewRef;
 
   private _closeProcessSub!:Subscription;
@@ -40,12 +42,15 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   _files!:string[];
 
 
-  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService,componentReferenceService:ComponentReferenceService ){
+  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService,componentReferenceService:ComponentReferenceService, startProcessService:RunProcessService ){
     this._processIdService = processIdService
     this.processId = this._processIdService.getNewProcessId()
 
     this._componentReferenceService = componentReferenceService;
     this._runningProcessService = runningProcessService;
+    this._startProcessService = startProcessService;
+
+    this._startProcessSub = this._startProcessService.startProcessNotify.subscribe((appName) =>{this.loadApps(appName)})
     this._runningProcessService.closeProcessNotify.subscribe((p) =>{this.onCloseBtnClicked(p)})
     this._runningProcessService.addProcess(this.getComponentDetail());
   }
@@ -53,7 +58,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(){ 
     1
-    this.loadApps();
   }
 
   ngOnDestroy(): void {
@@ -63,8 +67,14 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this._appIsRunningSub ?.unsubscribe();
   }
 
-  async loadApps() {
-    this.lazyLoadTitleComponment();
+  async loadApps(appName:string):Promise<void>{
+
+
+    if(appName == 'hello'){
+      console.log('I am starting:',appName)
+      this.lazyLoadTitleComponment();
+    }
+   
   }
 
 
@@ -78,22 +88,22 @@ export class AppComponent implements AfterViewInit, OnDestroy {
    this._runningProcessService.processListChangeNotify.next()
  }
 
- onCloseBtnClicked(eventData:Process){
-   
-  const componentToDelete = this._componentReferenceService.getComponentReference(eventData.getProcessId);
-  this._componentRefView = componentToDelete.hostView;
+  onCloseBtnClicked(eventData:Process){
+    
+    const componentToDelete = this._componentReferenceService.getComponentReference(eventData.getProcessId);
+    this._componentRefView = componentToDelete.hostView;
 
-  // eslint-disable-next-line prefer-const
-  let iVCntr  = this.itemViewContainer.indexOf(this._componentRefView);
-  this.itemViewContainer.remove(iVCntr);
+    // eslint-disable-next-line prefer-const
+    let iVCntr  = this.itemViewContainer.indexOf(this._componentRefView);
+    this.itemViewContainer.remove(iVCntr);
 
-  this._runningProcessService.removeProcess(eventData)
-  this._componentReferenceService.removeComponentReference(eventData.getProcessId);
-  this._processIdService.removeProcessId(eventData.getProcessId);
+    this._runningProcessService.removeProcess(eventData)
+    this._componentReferenceService.removeComponentReference(eventData.getProcessId);
+    this._processIdService.removeProcessId(eventData.getProcessId);
 
-  //alert subscribers
-  this._runningProcessService.processListChangeNotify.next()
-}
+    //alert subscribers
+    this._runningProcessService.processListChangeNotify.next()
+  }
 
 
 

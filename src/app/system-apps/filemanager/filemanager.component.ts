@@ -7,6 +7,7 @@ import { Process } from 'src/app/system-files/process';
 import { FileEntry } from 'src/app/system-files/fileentry';
 import { FileInfo } from 'src/app/system-files/fileinfo';
 import { Subscription } from 'rxjs';
+import { RunProcessService } from 'src/app/shared/system-service/run.process.service';
 
 @Component({
   selector: 'cos-filemanager',
@@ -16,11 +17,12 @@ import { Subscription } from 'rxjs';
 export class FilemanagerComponent implements OnInit, OnDestroy {
 
 
-  private _processIdService;
-  private _runningProcessService;
+  private _processIdService:ProcessIDService;
+  private _runningProcessService:RunningProcessService;
   private _fileService:FileService
   private _directoryFilesEntires!:FileEntry[];
   private _dirFilesReadySub!: Subscription;
+  private _startProcessService:RunProcessService;
 
   hasWindow = true;
   icon = '';
@@ -33,10 +35,13 @@ export class FilemanagerComponent implements OnInit, OnDestroy {
   highLightBtn: Record<string, string> = {};
 
 
-  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService) { 
+
+  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, startProcessService:RunProcessService) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this._fileService = fileInfoService;
+    this._startProcessService = startProcessService;
+
     this.processId = this._processIdService.getNewProcessId();
     this._runningProcessService.addProcess(this.getComponentDetail());
     this._dirFilesReadySub = this._fileService.dirFilesReadyNotify.subscribe(() =>{this.loadFilesInfo();})
@@ -89,7 +94,9 @@ setBtnStyles(mouseHover:boolean) {
 
   runProcess(appName:string):void{
 
-    alert('I will open'+ appName)
+    console.log('I will open'+ appName)
+    this._startProcessService.startApplication(appName);
+
   }
 
   private getComponentDetail():Process{

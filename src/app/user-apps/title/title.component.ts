@@ -19,7 +19,7 @@ export class TitleComponent{
 
   hasWindow = true;
   icon = 'favicon.ico';
-  name = 'hello world';
+  name = 'hello';
   processId = 0;
   type = ComponentType.userComponent
 
