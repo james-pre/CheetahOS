@@ -1,5 +1,5 @@
-<!-- <section  #resizeBox  class="window-dd-box" [ngStyle]="currentStyles" cdkDrag>  -->
-<section  #resizeBox > 
+<section  #resizeBox  class="window-dd-box" [ngStyle]="currentStyles" cdkDrag> 
+<!-- <section  #resizeBox >  -->
     <header>
         <h1>
             <figure>
@@ -26,9 +26,7 @@
         </nav>
     </header>
 
-    <!-- <span #dragHandleRight cdkDragLockAxis="x" class="dragHandle right" cdkDrag (cdkDragMoved)="dragMove(dragHandleRight, $event)"></span>
-    <span #dragHandleBottom cdkDragLockAxis="y" class="dragHandle bottom" cdkDrag (cdkDragMoved)="dragMove(dragHandleBottom, $event)"></span> -->
-    
+
     <!-- <div  [ngStyle]="currentStyles">
         <ng-content > </ng-content> 
     </div> -->
@@ -36,5 +34,7 @@
     <div >
         <ng-content > </ng-content> 
     </div>
-
+    <span #dragHandleRight cdkDragLockAxis="x" class="dragHandle right" cdkDrag (cdkDragMoved)="dragMove(dragHandleRight, $event)"></span>
+    <span #dragHandleBottom cdkDragLockAxis="y" class="dragHandle bottom" cdkDrag (cdkDragMoved)="dragMove(dragHandleBottom, $event)"></span>
+    
 </section>

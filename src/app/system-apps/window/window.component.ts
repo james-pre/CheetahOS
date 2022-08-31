@@ -41,68 +41,67 @@ import { CdkDragMove } from '@angular/cdk/drag-drop';
 
 
    ngAfterViewInit() {
-    1
-    //this.setAllHandleTransform();
+    this.setAllHandleTransform();
   }
 
 
-  // get resizeBoxElement(): HTMLElement {
-  //   return this.resizeBox.nativeElement;
-  // }
+  get resizeBoxElement(): HTMLElement {
+    return this.resizeBox.nativeElement;
+  }
 
-  // get dragHandleRightElement(): HTMLElement {
-  //   return this.dragHandleRight.nativeElement;
-  // }
+  get dragHandleRightElement(): HTMLElement {
+    return this.dragHandleRight.nativeElement;
+  }
 
-  // get dragHandleBottomElement(): HTMLElement {
-  //   return this.dragHandleBottom.nativeElement;
-  // }
+  get dragHandleBottomElement(): HTMLElement {
+    return this.dragHandleBottom.nativeElement;
+  }
 
 
-  // setAllHandleTransform() {
-  //   const rect = this.resizeBoxElement.getBoundingClientRect();
-  //   this.setHandleTransform(this.dragHandleRightElement, rect, 'x');
-  //   this.setHandleTransform(this.dragHandleBottomElement, rect, 'y');
-  // }
+  setAllHandleTransform() {
+    const rect = this.resizeBoxElement.getBoundingClientRect();
+    this.setHandleTransform(this.dragHandleRightElement, rect, 'x');
+    this.setHandleTransform(this.dragHandleBottomElement, rect, 'y');
+  }
 
-  // setHandleTransform(
-  //   dragHandle: HTMLElement,
-  //   targetRect: ClientRect | DOMRect,
-  //   position: 'x' | 'y' 
-  // ) {
-  //   const dragRect = dragHandle.getBoundingClientRect();
-  //   const translateX = targetRect.width - dragRect.width;
-  //   const translateY = targetRect.height - dragRect.height;
+  setHandleTransform(
+    dragHandle: HTMLElement,
+    targetRect: ClientRect | DOMRect,
+    position: 'x' | 'y' 
+  ) {
+    const dragRect = dragHandle.getBoundingClientRect();
+    const translateX = targetRect.width - dragRect.width;
+    const translateY = targetRect.height - dragRect.height;
 
-  //   if (position === 'x') {
-  //     dragHandle.style.transform = `translate(${translateX}px, 0)`;
-  //   }
+    if (position === 'x') {
+      dragHandle.style.transform = `translate(${translateX}px, 0)`;
+    }
 
-  //   if (position === 'y') {
-  //     dragHandle.style.transform = `translate(0, ${translateY}px)`;
-  //   }
+    if (position === 'y') {
+      dragHandle.style.transform = `translate(0, ${translateY}px)`;
+    }
 
-  // }
+  }
 
-  // // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // dragMove(dragHandle: HTMLElement, $event: CdkDragMove<any>) {
-  //   this.ngZone.runOutsideAngular(() => {
-  //     this.resize(dragHandle, this.resizeBoxElement);
-  //   });
-  // }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  dragMove(dragHandle: HTMLElement, $event: CdkDragMove<any>) {
+    this.ngZone.runOutsideAngular(() => {
+      this.resize(dragHandle, this.resizeBoxElement);
+    });
+  }
 
-  // resize(dragHandle: HTMLElement, target: HTMLElement) {
-  //   const dragRect = dragHandle.getBoundingClientRect();
-  //   const targetRect = target.getBoundingClientRect();
+  resize(dragHandle: HTMLElement, target: HTMLElement) {
+    const dragRect = dragHandle.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
 
-  //   const width = dragRect.left - targetRect.left + dragRect.width;
-  //   const height = dragRect.top - targetRect.top + dragRect.height;
+    const width = dragRect.left - targetRect.left + dragRect.width;
+    const height = dragRect.top - targetRect.top + dragRect.height;
 
-  //   target.style.width = width + 'px';
-  //   target.style.height = height + 'px';
+    target.style.width = width + 'px';
+    target.style.height = height + 'px';
 
-  //   this.setAllHandleTransform();
-  // }
+    this.setAllHandleTransform();
+  }
 
    showProcessInfo(){
 
