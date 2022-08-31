@@ -29,6 +29,8 @@ import { CdkDragMove } from '@angular/cdk/drag-drop';
    windowMinimize = false;
    windowMaximize = true;
    currentStyles: Record<string, string> = {};
+   height = 0;
+   width = 0;
 
    constructor(runningProcessService:RunningProcessService , private ngZone: NgZone){
       this._runningProcessService = runningProcessService;
@@ -64,14 +66,20 @@ import { CdkDragMove } from '@angular/cdk/drag-drop';
     this.setHandleTransform(this.dragHandleBottomElement, rect, 'y');
   }
 
-  setHandleTransform(
-    dragHandle: HTMLElement,
-    targetRect: ClientRect | DOMRect,
-    position: 'x' | 'y' 
-  ) {
+  setHandleTransform( dragHandle: HTMLElement, targetRect: ClientRect | DOMRect, position: 'x' | 'y') {
     const dragRect = dragHandle.getBoundingClientRect();
+    // const translateX = targetRect.width - dragRect.width;
+    // const translateY = targetRect.height - dragRect.height;
+
     const translateX = targetRect.width - dragRect.width;
     const translateY = targetRect.height - dragRect.height;
+
+    console.log('dragRect.width:', dragRect.width);
+    console.log('dragRect.height:', dragRect.height);
+    console.log('targetRect.width:', targetRect.width);
+    console.log('targetRect.height:', targetRect.height);
+    console.log('translateX:', translateX);
+    console.log('translateY:', translateY);
 
     if (position === 'x') {
       dragHandle.style.transform = `translate(${translateX}px, 0)`;
