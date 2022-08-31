@@ -6,12 +6,12 @@
 } */
 
 
-section{
+.section{
     font-size: 100px;
     text-align: center;
     background-color: #808080;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 50%);
-    outline: 1px solid rgba(0, 0, 0, 20%);
+    /* outline: 1px solid rgba(0, 0, 0, 20%); */
     position: absolute;
     z-index:1;
     width: 50%;
@@ -24,7 +24,7 @@ section{
 
 
 
-/* .window-dd-box {
+.window-dd-box {
     color: rgba(0, 0, 0, 0.87);
     cursor: move;
     justify-content: center;
@@ -43,7 +43,7 @@ section{
                 0 8px 10px 1px rgba(0, 0, 0, 0.14),
                 0 3px 14px 2px rgba(0, 0, 0, 0.12);
   }
-   */
+  
 
 
 .dragHandle.right {
@@ -114,4 +114,13 @@ div{
     /* margin: 0 auto;
     position:relative;
     z-index: 1; */
+}
+
+
+.ng-draggable {
+  cursor: grab;
+}
+
+.ng-dragging {
+  cursor: grabbing;
 }

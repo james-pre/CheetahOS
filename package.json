@@ -39,6 +39,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.1.2",
     "browserfs": "github:jvilk/BrowserFS",
     "ini": "^2.0.0",
+    "ngx-draggable-resize": "^0.1.1",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
