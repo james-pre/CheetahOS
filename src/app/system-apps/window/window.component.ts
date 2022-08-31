@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, AfterViewInit, OnDestroy  } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy  } from '@angular/core';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { faWindowClose, faWindowMaximize, faWindowMinimize } from '@fortawesome/free-solid-svg-icons';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
@@ -28,11 +28,12 @@ import { Subscription } from 'rxjs';
   windowMaximize = false;
   windowRestore = false;
   currentStyles: Record<string, string> = {};
+  color = 'rgb(26,26,26)'
 
 
    constructor(runningProcessService:RunningProcessService){
       this._runningProcessService = runningProcessService;
-      this._restoreOrMinSub = this._runningProcessService.restoreOrMinimizeWindowNotify.subscribe((p) => {this.restorOrMinimzeWinddow(p.getProcessId)})
+      this._restoreOrMinSub = this._runningProcessService.restoreOrMinimizeWindowNotify.subscribe((p) => {this.restorOrMinimzeWinddow(p)})
    }
 
 
@@ -113,7 +114,6 @@ import { Subscription } from 'rxjs';
  }
 
    onCloseBtnClick(){
-
     const processToClose = this._runningProcessService.getProcess(this.processId);
     // console.log('this is process name:', processToClose.getProcessName)
     // console.log('this is process id:', processToClose.getProcessId)

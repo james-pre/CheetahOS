@@ -14,6 +14,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FileexplorerComponent } from './system-apps/fileexplorer/fileexplorer.component';
 import { WindowComponent } from './system-apps/window/window.component';
 import { FilemanagerComponent } from './system-apps/filemanager/filemanager.component';
+import { HighlightDirective } from './system-apps/window/window.btn.highlight.directives';
 
 
 
@@ -30,7 +31,8 @@ import { FilemanagerComponent } from './system-apps/filemanager/filemanager.comp
     TaskbarentryComponent,
     FileexplorerComponent,
     WindowComponent,
-    FilemanagerComponent
+    FilemanagerComponent,
+    HighlightDirective
   ],
   imports: [
     BrowserModule,

@@ -1,4 +1,4 @@
-import {Component,AfterViewInit,ViewChild, ViewContainerRef, ViewRef, OnDestroy} from '@angular/core';
+import {Component,ViewChild, ViewContainerRef, ViewRef, OnDestroy} from '@angular/core';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { ComponentType } from './system-files/component.types';
 import { RunningProcessService } from './shared/system-service/running.process.service';
@@ -16,7 +16,7 @@ import { StartProcessService } from './shared/system-service/start.process.servi
 /**
  *  This is the main app component
  */
-export class AppComponent implements AfterViewInit, OnDestroy {
+export class AppComponent implements OnDestroy {
  
   @ViewChild('processContainerRef',  { read: ViewContainerRef })
   private itemViewContainer!: ViewContainerRef
@@ -39,8 +39,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   processId = 0;
   //I know, I'm cheeting here
   type = ComponentType.systemComponent;
-  _files!:string[];
-
 
   constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService,componentReferenceService:ComponentReferenceService, startProcessService:StartProcessService ){
     this._processIdService = processIdService
@@ -56,29 +54,20 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this._runningProcessService.addProcess(this.getComponentDetail());
   }
 
-
-  ngAfterViewInit(){ 
-    1
-  }
-
   ngOnDestroy(): void {
     this._closeProcessSub?.unsubscribe();
     this._startProcessSub?.unsubscribe();
     this._appNotFoundSub?.unsubscribe();
-    this._appIsRunningSub ?.unsubscribe();
+    this._appIsRunningSub?.unsubscribe();
   }
 
   async loadApps(appName:string):Promise<void>{
-
-
     if(appName == 'Hello'){
-      console.log('I am starting:',appName)
       this.lazyLoadTitleComponment();
     }else{
       alert(`The app: ${appName} was not found. It could have been deleted or location changed.`)
     }
   }
-
 
   private async lazyLoadTitleComponment() {
     const {TitleComponent} = await import('./user-apps/title/title.component');
@@ -88,7 +77,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
    //alert subscribers
    this._runningProcessService.processListChangeNotify.next()
- }
+  }
 
   onCloseBtnClicked(eventData:Process){
     
@@ -105,14 +94,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
     //alert subscribers
     this._runningProcessService.processListChangeNotify.next()
-  }
-
-
-  ontskBarBtnDblClicked(eventData:Process){
-    
-    const componentToRestore = this._componentReferenceService.getComponentReference(eventData.getProcessId);
-    
-
   }
 
   private getComponentDetail():Process{

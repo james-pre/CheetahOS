@@ -12,7 +12,7 @@ export class RunningProcessService{
     private _runningProcesses:Process[]
     processListChangeNotify: Subject<void> = new Subject<void>();
     closeProcessNotify: Subject<Process> = new Subject<Process>();
-    restoreOrMinimizeWindowNotify: Subject<Process> = new Subject<Process>();
+    restoreOrMinimizeWindowNotify: Subject<number> = new Subject<number>();
 
     constructor(){
         this._runningProcesses = []

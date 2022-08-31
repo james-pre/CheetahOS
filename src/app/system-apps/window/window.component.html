@@ -8,21 +8,17 @@
             </figure>
         </h1>
         <nav>
-            <button [ngStyle]=" hover ? 
-            {'background-color': 'rgb(26,26,26)'}:
-            {'background-color': 'transparent'}"  (mouseover)="hover=true" (mouseleave)="hover=false" (click)="onMinimizeBtnClick()">
+            <button [appHighlight]="color" defaultColor="violet" (click)="onMinimizeBtnClick()">
                 <fa-icon [icon]="faWinMin"> </fa-icon>
             </button>
-            <button [ngStyle]=" hover ? 
-            {'background-color': 'rgb(26,26,26)'}:
-            {'background-color': 'transparent'}"  (mouseover)="hover=true" (mouseleave)="hover=false" (click)="onMaximizeBtnClick()" >
+            <button  [appHighlight]="color" defaultColor="violet"(click)="onMaximizeBtnClick()" >
                 <fa-icon [icon]="faWinMax"> </fa-icon>
             </button>
-            <button [ngStyle]=" hover ? 
+            <!-- <button [ngStyle]=" hover ? 
             {'background-color': 'rgb(232,17,35)', 'transition':'background-color 0.3s ease'  }:
             {'background-color': 'transparent'}"  (mouseover)="hover=true" (mouseleave)="hover=false" (click)="onCloseBtnClick()">
                 <fa-icon [icon]="faWinClose"> </fa-icon>
-            </button>
+            </button> -->
         </nav>
     </header>
     <ng-content > </ng-content> 

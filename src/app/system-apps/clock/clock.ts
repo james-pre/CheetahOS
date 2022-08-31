@@ -2,15 +2,15 @@ export class Clock{
 
     private _seconds:number;
     private _minutes:number;
+    private hours:number;
     private _hours:number;
-    private _hours_military:number;
     private _meridian:string;
 
     constructor(second:number, minute:number, hour:number){
         this._seconds = second;
         this._minutes = minute;
+        this.hours = hour;
         this._hours = hour;
-        this._hours_military = hour;
         this._meridian = ''
     }
 
@@ -33,25 +33,25 @@ export class Clock{
     }
 
     public get getHours(){
-        return this._hours;
+        return this.hours;
     }
 
     public getHourStyle(hourType:string):number{
         this._meridian = 'AM';
         if(hourType == '12hr'){
-            if(this._hours_military == 0){
-                this._hours = 12;
+            if(this._hours == 0){
+                this.hours = 12;
             }
-            else if(this._hours_military >= 12){
+            else if(this._hours >= 12){
 
-                if(this._hours_military > 12){
-                    this._hours = this._hours_military;
-                    this._hours = this._hours - 12;
+                if(this._hours > 12){
+                    this.hours = this._hours;
+                    this.hours = this.hours - 12;
                 }
                 this._meridian = 'PM';
             }
         }
-        return this._hours
+        return this.hours
     }
 
     public get getMeridian(){
@@ -60,7 +60,7 @@ export class Clock{
 
     public set setHours(hrs:number){
         if(hrs< 0 || hrs > 24)
-            this._hours = 0;
+            this.hours = 0;
     }
 
     public tick():void{
@@ -75,14 +75,14 @@ export class Clock{
 
         if(this._minutes >= 60){
 
+            this.hours++;
             this._hours++;
-            this._hours_military++;
             this._minutes = 0;
         }
 
-        if(this._hours_military >= 24){
+        if(this._hours >= 24){
 
-            this._hours_military = 0
+            this._hours = 0
         }
     }
     
