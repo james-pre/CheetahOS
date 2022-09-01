@@ -8,8 +8,9 @@
     z-index:1;
     min-width: 5%;
     min-height: 5%;
-    right: 200px;
-    top: 100px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .window-dd-box {
