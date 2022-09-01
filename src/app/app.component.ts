@@ -1,4 +1,4 @@
-import {Component,ViewChild, ViewContainerRef, ViewRef, OnDestroy} from '@angular/core';
+import {Component,ViewChild, ViewContainerRef, ViewRef, OnDestroy, Type} from '@angular/core';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { ComponentType } from './system-files/component.types';
 import { RunningProcessService } from './shared/system-service/running.process.service';
@@ -6,6 +6,9 @@ import { Process } from './system-files/process';
 import { ComponentReferenceService } from './shared/system-service/component.reference.service';
 import { Subscription } from 'rxjs';
 import { StartProcessService } from './shared/system-service/start.process.service';
+import { BaseComponent } from './system-base/base/base.component';
+import { TitleComponent } from './user-apps/title/title.component';
+import { GreetingComponent } from './user-apps/greeting/greeting.component';
 
 @Component({
   selector: 'cos-root',
@@ -40,6 +43,11 @@ export class AppComponent implements OnDestroy {
   //I know, I'm cheeting here
   type = ComponentType.systemComponent;
 
+  private userApps: {type: Type<BaseComponent>}[] =[
+    {type: TitleComponent},
+    {type: GreetingComponent}
+  ];
+
   constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService,componentReferenceService:ComponentReferenceService, startProcessService:StartProcessService ){
     this._processIdService = processIdService
     this.processId = this._processIdService.getNewProcessId()
@@ -63,17 +71,21 @@ export class AppComponent implements OnDestroy {
 
   async loadApps(appName:string):Promise<void>{
     if(appName == 'Hello'){
-      this.lazyLoadTitleComponment();
+      this.lazyLoadComponment();
     }else{
       alert(`The app: ${appName} was not found. It could have been deleted or location changed.`)
     }
   }
 
-  private async lazyLoadTitleComponment() {
-    const {TitleComponent} = await import('./user-apps/title/title.component');
-    const componentRef =this.itemViewContainer.createComponent(TitleComponent);
-    const pid = componentRef.instance.processId;
+
+  private async lazyLoadComponment() {
+    const input = 0;
+    const componentToLoad = this.userApps[input];
+    const componentRef = this.itemViewContainer.createComponent<BaseComponent>(componentToLoad.type);
+
+    const pid = 1234
     this._componentReferenceService.addComponentReference(pid, componentRef);
+
 
    //alert subscribers
    this._runningProcessService.processListChangeNotify.next()

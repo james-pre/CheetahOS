@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
+import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { Process } from 'src/app/system-files/process';
 
@@ -10,7 +11,7 @@ import { Process } from 'src/app/system-files/process';
   styleUrls: ["./title.component.css"]
 })
 
-export class TitleComponent{
+export class TitleComponent implements BaseComponent{
 
   @Output() closeBtnClicked: EventEmitter<Process> =new EventEmitter<Process>();
   private _processIdService;
