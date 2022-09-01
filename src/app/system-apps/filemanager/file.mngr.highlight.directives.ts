@@ -9,7 +9,7 @@ export class FlieManagerHighlightDirective {
   constructor(private el: ElementRef) { }
 
   backgroundColor = 'hsla(0,0%,50%,25%)';
-  border = '2px solid hsla(0,0%,50%,25%)'
+  border = '3px solid hsla(0,0%,50%,25%)'
   padding = '0'
 
   @HostListener('mouseenter') onMouseEnter() {
@@ -27,10 +27,3 @@ export class FlieManagerHighlightDirective {
     this.el.nativeElement.style.padding = paddding;
   }
 }
-
-
-/*
-Copyright Google LLC. All Rights Reserved.
-Use of this source code is governed by an MIT-style license that
-can be found in the LICENSE file at https://angular.io/license
-*/
