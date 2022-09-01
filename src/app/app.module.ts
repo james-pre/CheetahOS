@@ -15,6 +15,7 @@ import { FileexplorerComponent } from './system-apps/fileexplorer/fileexplorer.c
 import { WindowComponent } from './system-apps/window/window.component';
 import { FilemanagerComponent } from './system-apps/filemanager/filemanager.component';
 import { HighlightDirective } from './system-apps/window/window.btn.highlight.directives';
+import { FlieManagerHighlightDirective } from './system-apps/filemanager/file.mngr.highlight.directives';
 
 
 
@@ -32,7 +33,8 @@ import { HighlightDirective } from './system-apps/window/window.btn.highlight.di
     FileexplorerComponent,
     WindowComponent,
     FilemanagerComponent,
-    HighlightDirective
+    HighlightDirective,
+    FlieManagerHighlightDirective
   ],
   imports: [
     BrowserModule,

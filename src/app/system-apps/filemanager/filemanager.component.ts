@@ -31,9 +31,6 @@ export class FilemanagerComponent implements OnInit, OnDestroy {
   type = ComponentType.systemComponent
   directory ='/desktop';
   files:FileInfo[] = [];
-  hover = false;
-  highLightBtn: Record<string, string> = {};
-
 
 
   constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, startProcessService:StartProcessService) { 
@@ -80,23 +77,10 @@ export class FilemanagerComponent implements OnInit, OnDestroy {
   //     }
   // }
 
-setBtnStyles(mouseHover:boolean) {
-  // CSS styles: set per current state of component properties
-    this.hover =mouseHover
-    this.highLightBtn = {
-      'background-color': this.hover ? 'hsla(0,0%,50%,25%)' : 'transparent',
-      'border': this.hover ? '2px solid hsla(0,0%,50%,25%)' : 'transparent',
-      'padding': this.hover? '0' :'transparent'
-    };
-  
-}
-
 
   runProcess(appName:string):void{
 
-    console.log('I will open'+ appName)
     this._startProcessService.startApplication(appName);
-
   }
 
   private getComponentDetail():Process{
