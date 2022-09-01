@@ -8,12 +8,10 @@ export class HighlightDirective {
 
   constructor(private el: ElementRef) { }
 
-  @Input() defaultColor = '';
-
   @Input() appHighlight = '';
 
   @HostListener('mouseenter') onMouseEnter() {
-    this.highlight(this.appHighlight || this.defaultColor || 'red');
+    this.highlight(this.appHighlight);
   }
 
   @HostListener('mouseleave') onMouseLeave() {
@@ -21,6 +19,10 @@ export class HighlightDirective {
   }
 
   private highlight(color: string) {
+    
+    if(this.el.nativeElement.id == "closeBtn")
+        this.el.nativeElement.style.transition = 'background-color 0.3s ease';
+
     this.el.nativeElement.style.backgroundColor = color;
   }
 }

@@ -29,6 +29,7 @@ import { Subscription } from 'rxjs';
   windowRestore = false;
   currentStyles: Record<string, string> = {};
   color = 'rgb(26,26,26)'
+  closeBtnColor = 'rgb(232,17,35)'
 
 
    constructor(runningProcessService:RunningProcessService){
