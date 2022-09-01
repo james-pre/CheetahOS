@@ -33,7 +33,8 @@
               "./src/picture"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "node_modules/ngx-draggable-resize/css/resizable.min.css"
             ],
             "scripts": [
               "./src/scripts/three.min.js",

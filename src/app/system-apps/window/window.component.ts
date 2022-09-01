@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy  } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ElementRef, AfterViewInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { faWindowClose, faWindowMaximize, faWindowMinimize } from '@fortawesome/free-solid-svg-icons';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
@@ -9,7 +9,8 @@ import { Subscription } from 'rxjs';
    templateUrl: './window.component.html',
    styleUrls: ['./window.component.css']
  })
- export class WindowComponent implements OnInit,OnDestroy {
+ export class WindowComponent implements OnInit, AfterViewInit, OnDestroy {
+   @ViewChild('divWindow') divWindow!: ElementRef;
 
    @Input() runningProcessID = 0;  
    private _runningProcessService:RunningProcessService;
@@ -30,13 +31,19 @@ import { Subscription } from 'rxjs';
   currentStyles: Record<string, string> = {};
   color = 'rgb(26,26,26)'
   closeBtnColor = 'rgb(232,17,35)'
+  defaultWidthOnOpen = 0;
+  defaultHeightOnOpen = 0;
 
 
-   constructor(runningProcessService:RunningProcessService){
+   constructor(runningProcessService:RunningProcessService, private changeDetectorRef: ChangeDetectorRef){
       this._runningProcessService = runningProcessService;
       this._restoreOrMinSub = this._runningProcessService.restoreOrMinimizeWindowNotify.subscribe((p) => {this.restorOrMinimzeWinddow(p)})
+    
    }
 
+   get divWindowElement(): HTMLElement {
+    return this.divWindow.nativeElement;
+  }
 
    ngOnInit(): void {
      this.processId = this.runningProcessID;
@@ -46,6 +53,14 @@ import { Subscription } from 'rxjs';
     this._restoreOrMinSub.unsubscribe();
    }
 
+   ngAfterViewInit(): void {
+    this.defaultHeightOnOpen = this.divWindowElement.offsetHeight;
+    this.defaultWidthOnOpen  = this.divWindowElement.offsetWidth;
+
+    //tell angular to run additional detection cycle after 
+    this.changeDetectorRef.detectChanges();
+   }
+   
 
    setCurrentStyles() {
       // CSS styles: set per current state of component properties
