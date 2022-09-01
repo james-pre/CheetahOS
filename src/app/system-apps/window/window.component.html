@@ -8,13 +8,13 @@
             </figure>
         </h1>
         <nav>
-            <button [appHighlight]="color" (click)="onMinimizeBtnClick()">
+            <button appHighlight (click)="onMinimizeBtnClick()">
                 <fa-icon [icon]="faWinMin"> </fa-icon>
             </button>
-            <button  [appHighlight]="color" (click)="onMaximizeBtnClick()" >
+            <button  appHighlight (click)="onMaximizeBtnClick()" >
                 <fa-icon [icon]="faWinMax"> </fa-icon>
             </button>
-            <button id="closeBtn" [appHighlight]="closeBtnColor" (click)="onCloseBtnClick()">
+            <button id="closeBtn" appHighlight (click)="onCloseBtnClick()">
                 <fa-icon [icon]="faWinClose"> </fa-icon>
             </button>
         </nav>

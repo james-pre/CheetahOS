@@ -8,22 +8,25 @@ export class HighlightDirective {
 
   constructor(private el: ElementRef) { }
 
-  @Input() appHighlight = '';
+  color = 'rgb(26,26,26)';
+  closeBtnColor = 'rgb(232,17,35)';
 
   @HostListener('mouseenter') onMouseEnter() {
-    this.highlight(this.appHighlight);
+    this.highlight(this.color, this.closeBtnColor);
   }
 
   @HostListener('mouseleave') onMouseLeave() {
-    this.highlight('');
+    this.highlight('','');
   }
 
-  private highlight(color: string) {
+  private highlight(color: string, xBtnColor:string) {
     
-    if(this.el.nativeElement.id == "closeBtn")
-        this.el.nativeElement.style.transition = 'background-color 0.3s ease';
-
-    this.el.nativeElement.style.backgroundColor = color;
+    if(this.el.nativeElement.id == "closeBtn"){
+      this.el.nativeElement.style.backgroundColor = xBtnColor;
+      this.el.nativeElement.style.transition = 'background-color 0.3s ease';
+    }
+    else
+      this.el.nativeElement.style.backgroundColor = color;
   }
 }
 
