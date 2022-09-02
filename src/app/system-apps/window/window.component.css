@@ -15,7 +15,7 @@
 }
 
 .window-dd-box {
-    cursor: move;
+    cursor:none;
     justify-content: center;
     align-items: center;
     background: #fff;
@@ -69,6 +69,11 @@
     place-content: center;
     place-items: center;
   }
+
+  svg{
+    fill: #fff;
+    /* width: 10px; */
+  }
   
 nav{
     display: flex;
@@ -84,3 +89,4 @@ nav{
 .ng-dragging {
   cursor: grabbing;
 }
+

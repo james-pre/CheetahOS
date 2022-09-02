@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { faWindows } from '@fortawesome/free-brands-svg-icons';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { ComponentType } from 'src/app/system-files/component.types';
@@ -14,7 +13,6 @@ export class StartbuttonComponent implements OnInit {
   private _processIdService;
   private _runningProcessService;
 
-  faWindows = faWindows;
   hasWindow = false;
   hover = false;
   icon = '';
@@ -29,12 +27,10 @@ export class StartbuttonComponent implements OnInit {
     this._runningProcessService.addProcess(this.getComponentDetail());
   }
 
-
   ngOnInit(): void {
     1 
   }
   
-
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type)
   }

@@ -1,6 +1,5 @@
 import { Component, Input, OnInit, OnDestroy, ElementRef, AfterViewInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { ComponentType } from 'src/app/system-files/component.types';
-import { faWindowClose, faWindowMaximize, faWindowMinimize } from '@fortawesome/free-solid-svg-icons';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { Subscription } from 'rxjs';
 
@@ -16,9 +15,6 @@ import { Subscription } from 'rxjs';
    private _runningProcessService:RunningProcessService;
    private _restoreOrMinSub!:Subscription
 
-  faWinClose = faWindowClose;
-  faWinMin = faWindowMinimize;
-  faWinMax = faWindowMaximize;
   hasWindow = false;
   icon = '';
   name = 'Window';
@@ -85,7 +81,6 @@ import { Subscription } from 'rxjs';
           'height': '50%' 
         };
       }
-
    }
    
    onMinimizeBtnClick(){
@@ -114,6 +109,12 @@ import { Subscription } from 'rxjs';
         this.windowMaximize = true;
       }
       this.setCurrentStyles()
+   }
+
+   onRestoreBtnClick(){
+    this.windowRestore = true;
+    this.windowMaximize = false;
+    this.setCurrentStyles();
    }
 
    restorOrMinimzeWinddow(pid:number){
