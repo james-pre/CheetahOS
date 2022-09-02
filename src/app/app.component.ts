@@ -84,7 +84,7 @@ export class AppComponent implements OnDestroy {
 
 
   private async lazyLoadComponment() {
-    const input = 3;
+    const input = 3; // for the title component
     const componentToLoad = this.apps[input];
     const componentRef = this.itemViewContainer.createComponent<BaseComponent>(componentToLoad.type);
     const pid = componentRef.instance.processId
