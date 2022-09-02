@@ -16,7 +16,7 @@ export class TaskbarComponent implements OnInit {
 
   hasWindow = false;
   icon = '';
-  name = 'task bar';
+  name = 'taskbar';
   processId = 0;
   type = ComponentType.systemComponent
 

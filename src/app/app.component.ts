@@ -9,6 +9,8 @@ import { StartProcessService } from './shared/system-service/start.process.servi
 import { BaseComponent } from './system-base/base/base.component';
 import { TitleComponent } from './user-apps/title/title.component';
 import { GreetingComponent } from './user-apps/greeting/greeting.component';
+import { FileexplorerComponent } from './system-apps/fileexplorer/fileexplorer.component';
+import { TaskmanagerComponent } from './system-apps/taskmanager/taskmanager.component';
 
 @Component({
   selector: 'cos-root',
@@ -35,7 +37,6 @@ export class AppComponent implements OnDestroy {
   private _appNotFoundSub!:Subscription;
   private _appIsRunningSub!:Subscription;  
 
-
   hasWindow = false;
   icon = '';
   name = 'CheetahOS';
@@ -43,9 +44,13 @@ export class AppComponent implements OnDestroy {
   //I know, I'm cheeting here
   type = ComponentType.systemComponent;
 
-  private userApps: {type: Type<BaseComponent>}[] =[
+  //:TODO when you have more apps with a UI worth looking at, add a way to select the right component for the give
+  //appname
+  private apps: {type: Type<BaseComponent>}[] =[
+    {type: FileexplorerComponent},
+    {type: GreetingComponent},
+    {type: TaskmanagerComponent},
     {type: TitleComponent},
-    {type: GreetingComponent}
   ];
 
   constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService,componentReferenceService:ComponentReferenceService, startProcessService:StartProcessService ){
@@ -70,7 +75,7 @@ export class AppComponent implements OnDestroy {
   }
 
   async loadApps(appName:string):Promise<void>{
-    if(appName == 'Hello'){
+    if(appName == 'hello'){
       this.lazyLoadComponment();
     }else{
       alert(`The app: ${appName} was not found. It could have been deleted or location changed.`)
@@ -79,11 +84,10 @@ export class AppComponent implements OnDestroy {
 
 
   private async lazyLoadComponment() {
-    const input = 0;
-    const componentToLoad = this.userApps[input];
+    const input = 3;
+    const componentToLoad = this.apps[input];
     const componentRef = this.itemViewContainer.createComponent<BaseComponent>(componentToLoad.type);
-
-    const pid = 1234
+    const pid = componentRef.instance.processId
     this._componentReferenceService.addComponentReference(pid, componentRef);
 
 

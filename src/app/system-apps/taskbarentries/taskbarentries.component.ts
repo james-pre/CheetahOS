@@ -20,7 +20,7 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
 
   hasWindow = false;
   icon = '';
-  name = 'task bar entry';
+  name = 'taskbarentry';
   processId = 0;
   type = ComponentType.systemComponent
 

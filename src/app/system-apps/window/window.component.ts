@@ -21,7 +21,7 @@ import { Subscription } from 'rxjs';
   faWinMax = faWindowMaximize;
   hasWindow = false;
   icon = '';
-  name = '';
+  name = 'Window';
   processId = 0;
   type = ComponentType.systemComponent
   hover = false;

@@ -15,8 +15,8 @@ export class FileexplorerComponent implements OnInit {
   private _runningProcessService;
 
   hasWindow = true;
-  icon = '';
-  name = 'file explorer';
+  icon = 'fileexplorer.ico';
+  name = 'fileexplorer';
   processId = 0;
   type = ComponentType.systemComponent
 

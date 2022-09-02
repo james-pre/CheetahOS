@@ -17,6 +17,7 @@ import { FilemanagerComponent } from './system-apps/filemanager/filemanager.comp
 import { HighlightDirective } from './system-apps/window/window.btn.highlight.directives';
 import { FlieManagerHighlightDirective } from './system-apps/filemanager/file.mngr.highlight.directives';
 import { GreetingComponent } from './user-apps/greeting/greeting.component';
+import { TaskmanagerComponent } from './system-apps/taskmanager/taskmanager.component';
 
 
 
@@ -36,7 +37,8 @@ import { GreetingComponent } from './user-apps/greeting/greeting.component';
     FilemanagerComponent,
     HighlightDirective,
     FlieManagerHighlightDirective,
-    GreetingComponent
+    GreetingComponent,
+    TaskmanagerComponent
   ],
   imports: [
     BrowserModule,

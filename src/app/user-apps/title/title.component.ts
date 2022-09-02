@@ -31,13 +31,6 @@ export class TitleComponent implements BaseComponent{
     this._runningProcessService.addProcess(this.getComponentDetail());
   }
 
-  onCloseBtnClick(): void {
-    const pid = this.getComponentDetail().getProcessId;
-    const pname = this.getComponentDetail().getProcessName;
-    console.log('close evt triggered for pid:'+ pid +'----'+'pname:'+pname);
-    this.closeBtnClicked.emit(this.getComponentDetail());
-  }
-   
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type)
   }
