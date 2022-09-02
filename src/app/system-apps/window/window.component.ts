@@ -69,13 +69,13 @@ import { Subscription } from 'rxjs';
       }
       else if(this.windowMaximize){
         this.currentStyles = {
-          'display': 'block',
+          
           'max-width': '100%',
-          'max-height': 'calc(100% - 40px)', //This account for the tasbat height
-          'top': '5%',
-          'left': '8%',
+          'max-height': 'calc(100% - 40px)', //This accounts for the taskbar height
+          'top': '4.9%',
+          'left': '7.5%',
           'right': '0',
-          'bottom': '4%', //This account for the tasbat height
+          'bottom': '4%', //This accounts for the taskbar height
         };
       }
       else if(this.windowRestore){
