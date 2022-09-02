@@ -70,8 +70,12 @@ import { Subscription } from 'rxjs';
       else if(this.windowMaximize){
         this.currentStyles = {
           'display': 'block',
-          'width': '100%',
-          'height': '100%' 
+          'max-width': '100%',
+          'max-height': 'calc(100% - 40px)', //This account for the tasbat height
+          'top': '5%',
+          'left': '8%',
+          'right': '0',
+          'bottom': '4%', //This account for the tasbat height
         };
       }
       else if(this.windowRestore){
