@@ -12,24 +12,23 @@ export class SessionStateManagmentService{
         this._sessionStateManagmentService = new Map<number, Map<string, any>>();
     }
 
-    addState(processId:number, stateToAdd:Map<string, any>): void{
-        this._sessionStateManagmentService.set(processId,stateToAdd)
+    addState(id:number, stateToAdd:Map<string, any>): void{
+        this._sessionStateManagmentService.set(id,stateToAdd)
     }
 
-    getState(processId:number , stateToGet:string):any{
+    getState(id:number , stateToGet:string):any{
 
-        const stateData = this._sessionStateManagmentService.get(processId)?.get(stateToGet);
+        const stateData = this._sessionStateManagmentService.get(id)?.get(stateToGet);
    
         return stateData;
     }
 
-    removeState(processId:number , stateToRemove:string): void{
-        this._sessionStateManagmentService.get(processId)?.delete(stateToRemove);
+    removeState(id:number , stateToRemove:string): void{
+        this._sessionStateManagmentService.get(id)?.delete(stateToRemove);
     }
 
-    abandonState(processId:number): void{
-        this._sessionStateManagmentService.delete(processId)
+    abandonState(id:number): void{
+        this._sessionStateManagmentService.delete(id)
     }
-
 
 }
