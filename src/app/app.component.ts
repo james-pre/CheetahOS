@@ -1,4 +1,4 @@
-import {Component,ViewChild, ViewContainerRef, ViewRef, OnDestroy} from '@angular/core';
+import {Component,ViewChild, ViewContainerRef, ViewRef, OnDestroy, Type} from '@angular/core';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { ComponentType } from './system-files/component.types';
 import { RunningProcessService } from './shared/system-service/running.process.service';
@@ -6,6 +6,11 @@ import { Process } from './system-files/process';
 import { ComponentReferenceService } from './shared/system-service/component.reference.service';
 import { Subscription } from 'rxjs';
 import { StartProcessService } from './shared/system-service/start.process.service';
+import { BaseComponent } from './system-base/base/base.component';
+import { TitleComponent } from './user-apps/title/title.component';
+import { GreetingComponent } from './user-apps/greeting/greeting.component';
+import { FileexplorerComponent } from './system-apps/fileexplorer/fileexplorer.component';
+import { TaskmanagerComponent } from './system-apps/taskmanager/taskmanager.component';
 
 @Component({
   selector: 'cos-root',
@@ -32,13 +37,21 @@ export class AppComponent implements OnDestroy {
   private _appNotFoundSub!:Subscription;
   private _appIsRunningSub!:Subscription;  
 
-
   hasWindow = false;
   icon = '';
   name = 'CheetahOS';
   processId = 0;
   //I know, I'm cheeting here
   type = ComponentType.systemComponent;
+
+  //:TODO when you have more apps with a UI worth looking at, add a way to select the right component for the give
+  //appname
+  private apps: {type: Type<BaseComponent>}[] =[
+    {type: FileexplorerComponent},
+    {type: GreetingComponent},
+    {type: TaskmanagerComponent},
+    {type: TitleComponent},
+  ];
 
   constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService,componentReferenceService:ComponentReferenceService, startProcessService:StartProcessService ){
     this._processIdService = processIdService
@@ -62,18 +75,21 @@ export class AppComponent implements OnDestroy {
   }
 
   async loadApps(appName:string):Promise<void>{
-    if(appName == 'Hello'){
-      this.lazyLoadTitleComponment();
+    if(appName == 'hello'){
+      this.lazyLoadComponment();
     }else{
       alert(`The app: ${appName} was not found. It could have been deleted or location changed.`)
     }
   }
 
-  private async lazyLoadTitleComponment() {
-    const {TitleComponent} = await import('./user-apps/title/title.component');
-    const componentRef =this.itemViewContainer.createComponent(TitleComponent);
-    const pid = componentRef.instance.processId;
+
+  private async lazyLoadComponment() {
+    const input = 3; // for the title component
+    const componentToLoad = this.apps[input];
+    const componentRef = this.itemViewContainer.createComponent<BaseComponent>(componentToLoad.type);
+    const pid = componentRef.instance.processId
     this._componentReferenceService.addComponentReference(pid, componentRef);
+
 
    //alert subscribers
    this._runningProcessService.processListChangeNotify.next()

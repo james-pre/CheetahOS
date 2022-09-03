@@ -26,7 +26,7 @@ export class FilemanagerComponent implements OnInit, OnDestroy {
 
   hasWindow = true;
   icon = '';
-  name = 'file manager';
+  name = 'filemanager';
   processId = 0;
   type = ComponentType.systemComponent
   directory ='/desktop';

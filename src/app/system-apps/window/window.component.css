@@ -8,12 +8,14 @@
     z-index:1;
     min-width: 5%;
     min-height: 5%;
-    right: 200px;
-    top: 100px;
+    top: 20%;
+    left: 50%;
+    margin-top: -50px;
+    margin-left: -100px;
 }
 
 .window-dd-box {
-    cursor: move;
+    cursor:none;
     justify-content: center;
     align-items: center;
     background: #fff;
@@ -67,6 +69,11 @@
     place-content: center;
     place-items: center;
   }
+
+  svg{
+    fill: #fff;
+    /* width: 10px; */
+  }
   
 nav{
     display: flex;
@@ -82,3 +89,4 @@ nav{
 .ng-dragging {
   cursor: grabbing;
 }
+

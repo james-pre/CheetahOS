@@ -1,22 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
+import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { Process } from 'src/app/system-files/process';
 
 @Component({
-  selector: 'cos-taskbar',
-  templateUrl: './taskbar.component.html',
-  styleUrls: ['./taskbar.component.css']
+  selector: 'cos-taskmanager',
+  templateUrl: './taskmanager.component.html',
+  styleUrls: ['./taskmanager.component.css']
 })
-export class TaskbarComponent implements OnInit {
+export class TaskmanagerComponent implements BaseComponent {
 
   private _processIdService;
   private _runningProcessService;
-
-  hasWindow = false;
-  icon = '';
-  name = 'taskbar';
+  
+  hasWindow = true;
+  icon = 'taskmanager.ico';
+  name = 'taskmanager';
   processId = 0;
   type = ComponentType.systemComponent
 
@@ -27,13 +28,8 @@ export class TaskbarComponent implements OnInit {
     this._runningProcessService.addProcess(this.getComponentDetail());
   }
 
-
-  ngOnInit(): void {
-    1 
-  }
-  
-
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type)
   }
+
 }

@@ -15,12 +15,12 @@ export class AppDirectory {
 
 
     private fetchSystemApp(): string[]{
-        this._systemProcessList = ['file explorer'];
+        this._systemProcessList = ['fileexplorer','taskmanager'];
         return this._systemProcessList;
     }
 
     private fetchUserApp(): string[]{
-        this._userProcessList = ['Hello'];
+        this._userProcessList = ['hello','greeting'];
         return this._userProcessList;
     }
 } 

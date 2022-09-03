@@ -1,6 +1,5 @@
 import { Component, Input, OnInit, OnDestroy, ElementRef, AfterViewInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { ComponentType } from 'src/app/system-files/component.types';
-import { faWindowClose, faWindowMaximize, faWindowMinimize } from '@fortawesome/free-solid-svg-icons';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { Subscription } from 'rxjs';
 
@@ -16,12 +15,9 @@ import { Subscription } from 'rxjs';
    private _runningProcessService:RunningProcessService;
    private _restoreOrMinSub!:Subscription
 
-  faWinClose = faWindowClose;
-  faWinMin = faWindowMinimize;
-  faWinMax = faWindowMaximize;
   hasWindow = false;
   icon = '';
-  name = '';
+  name = 'Window';
   processId = 0;
   type = ComponentType.systemComponent
   hover = false;
@@ -69,9 +65,13 @@ import { Subscription } from 'rxjs';
       }
       else if(this.windowMaximize){
         this.currentStyles = {
-          'display': 'block',
-          'width': '100%',
-          'height': '100%' 
+          
+          'max-width': '100%',
+          'max-height': 'calc(100% - 40px)', //This accounts for the taskbar height
+          'top': '4.9%',
+          'left': '7.5%',
+          'right': '0',
+          'bottom': '4%', //This accounts for the taskbar height
         };
       }
       else if(this.windowRestore){
@@ -81,7 +81,6 @@ import { Subscription } from 'rxjs';
           'height': '50%' 
         };
       }
-
    }
    
    onMinimizeBtnClick(){
@@ -110,6 +109,12 @@ import { Subscription } from 'rxjs';
         this.windowMaximize = true;
       }
       this.setCurrentStyles()
+   }
+
+   onRestoreBtnClick(){
+    this.windowRestore = true;
+    this.windowMaximize = false;
+    this.setCurrentStyles();
    }
 
    restorOrMinimzeWinddow(pid:number){
