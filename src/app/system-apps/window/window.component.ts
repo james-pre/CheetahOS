@@ -132,6 +132,17 @@ import { Subscription } from 'rxjs';
 
  }
 
+  restoreOrignalDimensionAndPosition(){
+
+    //Look into a Map of Maps
+     
+    // const originalDnP = this._sessionService.get('window', 'window pid');
+
+    // this._sessionService ... get session data for app by this.pid 
+
+    // then, get window data object from  session data 
+  }
+
    onCloseBtnClick(){
     const processToClose = this._runningProcessService.getProcess(this.processId);
     // console.log('this is process name:', processToClose.getProcessName)
