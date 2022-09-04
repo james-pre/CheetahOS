@@ -4,7 +4,7 @@ import {Injectable } from "@angular/core";
     providedIn: 'root'
 })
 
-export class SessionStateManagmentService{
+export class StateManagmentService{
 
     private _sessionStateManagmentService:Map<number, Map<string, any>>; 
     
@@ -14,6 +14,7 @@ export class SessionStateManagmentService{
 
     addState(id:number, stateToAdd:Map<string, any>): void{
         this._sessionStateManagmentService.set(id,stateToAdd)
+
     }
 
     getState(id:number , stateToGet:string):any{
