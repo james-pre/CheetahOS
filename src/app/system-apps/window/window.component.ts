@@ -2,6 +2,7 @@ import { Component, Input, OnInit, OnDestroy, ElementRef, AfterViewInit, ViewChi
 import { ComponentType } from 'src/app/system-files/component.types';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { Subscription } from 'rxjs';
+import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 
  @Component({
    selector: 'cos-window',
@@ -13,7 +14,10 @@ import { Subscription } from 'rxjs';
 
    @Input() runningProcessID = 0;  
    private _runningProcessService:RunningProcessService;
+   private _stateManagmentService: StateManagmentService
+
    private _restoreOrMinSub!:Subscription
+
 
   hasWindow = false;
   icon = '';
@@ -29,10 +33,11 @@ import { Subscription } from 'rxjs';
   defaultHeightOnOpen = 0;
 
 
-   constructor(runningProcessService:RunningProcessService, private changeDetectorRef: ChangeDetectorRef){
+   constructor(runningProcessService:RunningProcessService, private changeDetectorRef: ChangeDetectorRef, stateManagmentService: StateManagmentService){
       this._runningProcessService = runningProcessService;
+      this._stateManagmentService = stateManagmentService;
       this._restoreOrMinSub = this._runningProcessService.restoreOrMinimizeWindowNotify.subscribe((p) => {this.restorOrMinimzeWinddow(p)})
-    
+  
    }
 
    get divWindowElement(): HTMLElement {
