@@ -4,41 +4,46 @@ import {Injectable } from "@angular/core";
     providedIn: 'root'
 })
 
-export class SessionStateManagmentService{
+export class SessionManagmentService{
 
     private sessionName = "main-session";
-    private _sessionManagmentService: Map<string, any>; 
+    private _sessionDataDict: Map<string, any>; 
     
     constructor(){
-        if(sessionStorage.getItem(this.sessionName) != undefined || sessionStorage.getItem(this.sessionName) != null){
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this._sessionManagmentService = JSON.parse(sessionStorage.getItem(this.sessionName)!) as  Map<string, any>
+        if(sessionStorage.getItem(this.sessionName)){
+            const sessData = sessionStorage.getItem(this.sessionName) as string;
+            this._sessionDataDict = new Map(JSON.parse(sessData));
         }
         else{
-            this._sessionManagmentService = new  Map<string, any>();
+            this._sessionDataDict = new  Map<string, any>();
         }
     }
 
-    addSession(key:string, sessToAdd:Map<string, any>): void{
-        this._sessionManagmentService.set(key,sessToAdd)
+    addSession(key:string, dataToAdd:any): void{
+
+        this._sessionDataDict.set(key,dataToAdd)
+        this.saveSession(this._sessionDataDict);
     }
 
-    getSession(key:string, stateToGet:string):any{
-        const stateData = this._sessionManagmentService.get(key)?.get(stateToGet);
+    getSession(key:string):any{
+        const stateData = this._sessionDataDict.get(key);
         return stateData;
     }
 
-    removeSession(key:string, stateToRemove:string): void{
-        this._sessionManagmentService.get(key)?.delete(stateToRemove);
+    removeSession(key:string): void{
+        this._sessionDataDict.delete(key)
+        this.saveSession(this._sessionDataDict);
     }
 
-    abandonSession(): void{
-        this._sessionManagmentService = new Map<string, any>;
-         sessionStorage.clear()
+    resetSession(): void{
+        this._sessionDataDict = new Map<string, any>;
+        sessionStorage.clear()
     }
 
-    saveSession(sessionData: Map<number, Map<string, any>>){
-        sessionStorage.setItem(this.sessionName, JSON.stringify(sessionData));
+    private saveSession(sessionData:Map<string, any>){
+
+        const data =  JSON.stringify(Array.from(sessionData.entries()));
+        sessionStorage.setItem(this.sessionName, data);
         
     }
 }

@@ -1,4 +1,4 @@
-import {Component,ViewChild, ViewContainerRef, ViewRef, OnDestroy, Type} from '@angular/core';
+import {Component,ViewChild, ViewContainerRef, ViewRef, OnDestroy, Type, AfterViewInit} from '@angular/core';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { ComponentType } from './system-files/component.types';
 import { RunningProcessService } from './shared/system-service/running.process.service';
@@ -11,6 +11,7 @@ import { TitleComponent } from './user-apps/title/title.component';
 import { GreetingComponent } from './user-apps/greeting/greeting.component';
 import { FileexplorerComponent } from './system-apps/fileexplorer/fileexplorer.component';
 import { TaskmanagerComponent } from './system-apps/taskmanager/taskmanager.component';
+import { SessionManagmentService } from './shared/system-service/session.management.service';
 
 @Component({
   selector: 'cos-root',
@@ -21,7 +22,7 @@ import { TaskmanagerComponent } from './system-apps/taskmanager/taskmanager.comp
 /**
  *  This is the main app component
  */
-export class AppComponent implements OnDestroy {
+export class AppComponent implements OnDestroy, AfterViewInit {
  
   @ViewChild('processContainerRef',  { read: ViewContainerRef })
   private itemViewContainer!: ViewContainerRef
@@ -30,12 +31,16 @@ export class AppComponent implements OnDestroy {
   private _runningProcessService:RunningProcessService;
   private _componentReferenceService:ComponentReferenceService;
   private _startProcessService:StartProcessService;
+  private _sessionMangamentServices:SessionManagmentService;
   private _componentRefView!:ViewRef;
 
   private _closeProcessSub!:Subscription;
   private _startProcessSub!:Subscription;
   private _appNotFoundSub!:Subscription;
   private _appIsRunningSub!:Subscription;  
+
+  private userOpenedAppsList: string[] = [];
+  private userOpenedAppsKey = "openedApps";
 
   hasWindow = false;
   icon = '';
@@ -53,13 +58,15 @@ export class AppComponent implements OnDestroy {
     {type: TitleComponent},
   ];
 
-  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService,componentReferenceService:ComponentReferenceService, startProcessService:StartProcessService ){
+  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService,componentReferenceService:ComponentReferenceService, startProcessService:StartProcessService,
+    sessionMangamentServices:SessionManagmentService){
     this._processIdService = processIdService
     this.processId = this._processIdService.getNewProcessId()
 
     this._componentReferenceService = componentReferenceService;
     this._runningProcessService = runningProcessService;
     this._startProcessService = startProcessService;
+    this._sessionMangamentServices = sessionMangamentServices;
 
     this._startProcessSub = this._startProcessService.startProcessNotify.subscribe((appName) =>{this.loadApps(appName)})
     this._startProcessSub = this._startProcessService.appNotFoundNotify.subscribe((appName) =>{this.loadApps(appName)})
@@ -74,6 +81,18 @@ export class AppComponent implements OnDestroy {
     this._appIsRunningSub?.unsubscribe();
   }
 
+  ngAfterViewInit():void{
+    
+    const openedAppList = this._sessionMangamentServices.getSession(this.userOpenedAppsKey) as string[];
+
+    if(openedAppList != null || openedAppList != undefined){
+      for(let i= 0; i < openedAppList.length; i++){
+          this.loadApps(openedAppList[i]);
+      }
+    }
+
+  }
+
   async loadApps(appName:string):Promise<void>{
     if(appName == 'hello'){
       this.lazyLoadComponment();
@@ -82,14 +101,13 @@ export class AppComponent implements OnDestroy {
     }
   }
 
-
   private async lazyLoadComponment() {
     const input = 3; // for the title component
     const componentToLoad = this.apps[input];
     const componentRef = this.itemViewContainer.createComponent<BaseComponent>(componentToLoad.type);
     const pid = componentRef.instance.processId
+    this.addEntryFromUserOpenedApps(componentRef.instance.name);
     this._componentReferenceService.addComponentReference(pid, componentRef);
-
 
    //alert subscribers
    this._runningProcessService.processListChangeNotify.next()
@@ -107,6 +125,7 @@ export class AppComponent implements OnDestroy {
     this._runningProcessService.removeProcess(eventData)
     this._componentReferenceService.removeComponentReference(eventData.getProcessId);
     this._processIdService.removeProcessId(eventData.getProcessId);
+    this.deleteEntryFromUserOpenedApps(eventData.getProcessName);
 
     //alert subscribers
     this._runningProcessService.processListChangeNotify.next()
@@ -115,5 +134,20 @@ export class AppComponent implements OnDestroy {
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type)
   }
+
+  private deleteEntryFromUserOpenedApps(proccessName:string){
+      const deleteCount = 1
+      const pidIndex = this.userOpenedAppsList.indexOf(proccessName)
+
+      if (pidIndex !== -1) 
+        this.userOpenedAppsList.splice(pidIndex, deleteCount);
+
+      this._sessionMangamentServices.addSession("openedApps", this.userOpenedAppsList)
+  }
+
+  private addEntryFromUserOpenedApps(proccessName:string){
+    this.userOpenedAppsList.push(proccessName);
+    this._sessionMangamentServices.addSession("openedApps", this.userOpenedAppsList)
+}
 
 }

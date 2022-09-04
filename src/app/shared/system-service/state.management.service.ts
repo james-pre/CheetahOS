@@ -14,13 +14,10 @@ export class StateManagmentService{
 
     addState(id:number, stateToAdd:Map<string, any>): void{
         this._sessionStateManagmentService.set(id,stateToAdd)
-
     }
 
     getState(id:number , stateToGet:string):any{
-
         const stateData = this._sessionStateManagmentService.get(id)?.get(stateToGet);
-   
         return stateData;
     }
 
