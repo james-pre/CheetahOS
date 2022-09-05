@@ -91,7 +91,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
               this.loadApps(openedAppList[i]);
           }
         }
-    }, 2000);
+    }, 1500);
   }
 
   async loadApps(appName:string):Promise<void>{

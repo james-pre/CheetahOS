@@ -103,6 +103,7 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
    }
    
    onMinimizeBtnClick(){
+    //TODO: on minimize, store the currect window size and postion before minimize
       this.windowMinimize = true;
       this.windowMaximize = false;
       this.windowRestore = false;
