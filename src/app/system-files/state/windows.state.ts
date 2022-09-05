@@ -2,15 +2,15 @@ export class WindowState{
     private _pid:number;
     private _height:number;
     private _width:number;
-    private _top:number;
-    private _left:number;
+    private _x_axis:number;
+    private _y_axis:number;
 
-    constructor(pid:number,height:number,width:number,top:number,left:number){
+    constructor(pid:number,height:number,width:number,x_axis:number,y_axis:number){
         this._pid = pid;
         this._height = height
         this._width = width
-        this._top = top
-        this._left = left
+        this._x_axis = x_axis
+        this._y_axis = y_axis
 
     }
 
@@ -35,18 +35,19 @@ export class WindowState{
         this._width = width;
     }
 
-    get getTop(){
-        return this._top;
+    get getYAxis(){
+        return this._y_axis;
     }
-    set setTop(top:number){
-        this._top = top;
+    set setYAxis(y_axis:number){
+        this._y_axis = y_axis;
     }
 
-    get getLeft(){
-        return this._left;
+    get getXAxis(){
+        return this._x_axis;
     }
-    set setLeft(left:number){
-        this._left = left;
+    set setXAxis(x_axis:number){
+
+        this._x_axis = x_axis;
     }
 
 }

@@ -6,26 +6,27 @@ import {Injectable } from "@angular/core";
 
 export class StateManagmentService{
 
-    private _sessionStateManagmentService:Map<number, Map<string, any>>; 
+    private _sessionStateManagmentService:Map<number, any>; 
     
     constructor(){
-        this._sessionStateManagmentService = new Map<number, Map<string, any>>();
+        this._sessionStateManagmentService = new Map<number, any>();
     }
 
-    addState(id:number, stateToAdd:Map<string, any>): void{
-        this._sessionStateManagmentService.set(id,stateToAdd)
+    addState(id:number, stateData:any): void{
+        this._sessionStateManagmentService.set(id,stateData)
     }
 
-    getState(id:number , stateToGet:string):any{
-        const stateData = this._sessionStateManagmentService.get(id)?.get(stateToGet);
+    getState(id:number):any{
+        const stateData = this._sessionStateManagmentService.get(id);
         return stateData;
     }
 
-    removeState(id:number , stateToRemove:string): void{
-        this._sessionStateManagmentService.get(id)?.delete(stateToRemove);
+    hasState(id:number):boolean{
+
+        return this._sessionStateManagmentService.has(id) ? true : false;
     }
 
-    abandonState(id:number): void{
+    removeState(id:number ): void{
         this._sessionStateManagmentService.delete(id)
     }
 

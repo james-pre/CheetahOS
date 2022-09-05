@@ -3,6 +3,7 @@ import { ComponentType } from 'src/app/system-files/component.types';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { Subscription } from 'rxjs';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
+import { WindowState } from 'src/app/system-files/state/windows.state';
 
  @Component({
    selector: 'cos-window',
@@ -17,7 +18,6 @@ import { StateManagmentService } from 'src/app/shared/system-service/state.manag
    private _stateManagmentService: StateManagmentService
 
    private _restoreOrMinSub!:Subscription
-
 
   hasWindow = false;
   icon = '';
@@ -56,10 +56,11 @@ import { StateManagmentService } from 'src/app/shared/system-service/state.manag
     this.defaultHeightOnOpen = this.divWindowElement.offsetHeight;
     this.defaultWidthOnOpen  = this.divWindowElement.offsetWidth;
 
+    this._stateManagmentService.addState(this.processId,new WindowState(this.processId,this.defaultHeightOnOpen, this.defaultWidthOnOpen,0,0))
+
     //tell angular to run additional detection cycle after 
     this.changeDetectorRef.detectChanges();
    }
-   
 
    setCurrentStyles() {
       // CSS styles: set per current state of component properties
@@ -80,11 +81,15 @@ import { StateManagmentService } from 'src/app/shared/system-service/state.manag
         };
       }
       else if(this.windowRestore){
-        this.currentStyles = {
-          'display': 'block',
-          'width': '50%',
-          'height': '50%' 
-        };
+        const windowState = this._stateManagmentService.getState(this.processId) as WindowState;
+        if(windowState.getPid == this.processId){
+          this.currentStyles = {
+            'display': 'block',
+            'width': `${String(windowState.getWidth)}px`, 
+            'height': `${String(windowState.getHeight)}px`, 
+            'transform': `translate(${String(windowState.getXAxis)}px, ${String(windowState.getXAxis)}px)`
+          };
+        }
       }
    }
    
@@ -103,6 +108,7 @@ import { StateManagmentService } from 'src/app/shared/system-service/state.manag
       this.windowRestore = false;
       this.setCurrentStyles();
    }
+
    onTitleBarDoubleClick(){
       if(!this.windowRestore && !this.windowMaximize)
           this.windowMaximize = true;
@@ -124,34 +130,47 @@ import { StateManagmentService } from 'src/app/shared/system-service/state.manag
 
    restorOrMinimzeWinddow(pid:number){
 
-    if(this.processId == pid){
-     if(this.windowMinimize && !this.windowRestore){
-          this.windowRestore = true;
-          this.windowMinimize = false;
-      }else{
-        this.windowRestore = false;
-        this.windowMinimize = true;
+      if(this.processId == pid){
+        if(this.windowMinimize && !this.windowRestore){
+              this.windowRestore = true;
+              this.windowMinimize = false;
+          }else{
+            this.windowRestore = false;
+            this.windowMinimize = true;
+          }
+          this.setCurrentStyles()
       }
-      this.setCurrentStyles()
+   }
+
+    onDragEnd(input:HTMLElement){
+      
+      const style = window.getComputedStyle(input);
+      const matrix1 = new WebKitCSSMatrix(style.transform);
+      const x_axis = matrix1.m41;
+      const y_axis = matrix1.m42;
+
+      const windowState = this._stateManagmentService.getState(this.processId) as WindowState 
+      windowState.setXAxis= x_axis;
+      windowState.setYAxis= y_axis;
+
+      this._stateManagmentService.addState(this.processId,windowState);
     }
 
- }
+    onRZStop(input:any){
+      const height = Number(input.size.height);
+      const width = Number(input.size.width);
 
-  restoreOrignalDimensionAndPosition(){
+      const windowState = this._stateManagmentService.getState(this.processId) as WindowState 
+      windowState.setHeight= height;
+      windowState.setWidth= width;
 
-    //Look into a Map of Maps
-     
-    // const originalDnP = this._sessionService.get('window', 'window pid');
+      this._stateManagmentService.addState(this.processId,windowState);
+    }
 
-    // this._sessionService ... get session data for app by this.pid 
-
-    // then, get window data object from  session data 
-  }
 
    onCloseBtnClick(){
     const processToClose = this._runningProcessService.getProcess(this.processId);
-    // console.log('this is process name:', processToClose.getProcessName)
-    // console.log('this is process id:', processToClose.getProcessId)
+    this._stateManagmentService.removeState(this.processId);
     this._runningProcessService.closeProcessNotify.next(processToClose)
    }
  }
