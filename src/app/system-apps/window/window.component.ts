@@ -19,6 +19,8 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
 
    private _restoreOrMinSub!:Subscription
 
+   private originalWindowsState!:WindowState;
+
   hasWindow = false;
   icon = '';
   name = 'Window';
@@ -31,6 +33,7 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
   currentStyles: Record<string, string> = {};
   defaultWidthOnOpen = 0;
   defaultHeightOnOpen = 0;
+  
 
 
    constructor(runningProcessService:RunningProcessService, private changeDetectorRef: ChangeDetectorRef, stateManagmentService: StateManagmentService){
@@ -55,8 +58,16 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
    ngAfterViewInit(): void {
     this.defaultHeightOnOpen = this.divWindowElement.offsetHeight;
     this.defaultWidthOnOpen  = this.divWindowElement.offsetWidth;
+    const leftOffSet = this.divWindowElement.offsetLeft;
+    const topOffSet = this.divWindowElement.offsetTop;
 
-    this._stateManagmentService.addState(this.processId,new WindowState(this.processId,this.defaultHeightOnOpen, this.defaultWidthOnOpen,0,0))
+
+    console.log('offsetLeft:', this.divWindowElement.offsetLeft)
+    console.log('offsetTop:', this.divWindowElement.offsetTop)
+
+    this.originalWindowsState = new WindowState(this.processId,this.defaultHeightOnOpen, this.defaultWidthOnOpen,0,0,leftOffSet,topOffSet);
+    console.log('orginal window state:', this.originalWindowsState)
+    this._stateManagmentService.addState(this.processId,new WindowState(this.processId,this.defaultHeightOnOpen, this.defaultWidthOnOpen,0,0,leftOffSet,topOffSet))
 
     //tell angular to run additional detection cycle after 
     this.changeDetectorRef.detectChanges();
@@ -149,6 +160,9 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
       const x_axis = matrix1.m41;
       const y_axis = matrix1.m42;
 
+      console.log('o_left:',input.offsetLeft)
+      console.log('o_top:',input.offsetTop)
+
       const windowState = this._stateManagmentService.getState(this.processId) as WindowState 
       windowState.setXAxis= x_axis;
       windowState.setYAxis= y_axis;
@@ -159,6 +173,10 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
     onRZStop(input:any){
       const height = Number(input.size.height);
       const width = Number(input.size.width);
+
+      console.log('input:',input)
+      console.log('o_left1:',input.position.left)
+      console.log('o_top1:',input.position.top)
 
       const windowState = this._stateManagmentService.getState(this.processId) as WindowState 
       windowState.setHeight= height;
