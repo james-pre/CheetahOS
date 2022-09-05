@@ -83,14 +83,15 @@ export class AppComponent implements OnDestroy, AfterViewInit {
 
   ngAfterViewInit():void{
     
-    const openedAppList = this._sessionMangamentServices.getSession(this.userOpenedAppsKey) as string[];
-
-    if(openedAppList != null || openedAppList != undefined){
-      for(let i= 0; i < openedAppList.length; i++){
-          this.loadApps(openedAppList[i]);
-      }
-    }
-
+    // This quiets the - Expression has changed after it was checked.
+      setTimeout(()=> {
+        const openedAppList = this._sessionMangamentServices.getSession(this.userOpenedAppsKey) as string[];
+        if(openedAppList != null || openedAppList != undefined){
+          for(let i= 0; i < openedAppList.length; i++){
+              this.loadApps(openedAppList[i]);
+          }
+        }
+    }, 2000);
   }
 
   async loadApps(appName:string):Promise<void>{
