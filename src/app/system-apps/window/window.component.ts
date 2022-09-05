@@ -28,6 +28,7 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
   type = ComponentType.systemComponent
   hover = false;
   windowMinimize = false;
+  windowUnMinimize = false;
   windowMaximize = false;
   windowRestore = false;
   currentStyles: Record<string, string> = {};
@@ -35,12 +36,11 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
   defaultHeightOnOpen = 0;
   
 
-
    constructor(runningProcessService:RunningProcessService, private changeDetectorRef: ChangeDetectorRef, stateManagmentService: StateManagmentService){
       this._runningProcessService = runningProcessService;
       this._stateManagmentService = stateManagmentService;
-      this._restoreOrMinSub = this._runningProcessService.restoreOrMinimizeWindowNotify.subscribe((p) => {this.restorOrMinimzeWinddow(p)})
-  
+      this._restoreOrMinSub = this._runningProcessService.restoreOrMinimizeWindowNotify.subscribe((p) => {this.restoreMinimzeWindow(p)})
+
    }
 
    get divWindowElement(): HTMLElement {
@@ -58,16 +58,9 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
    ngAfterViewInit(): void {
     this.defaultHeightOnOpen = this.divWindowElement.offsetHeight;
     this.defaultWidthOnOpen  = this.divWindowElement.offsetWidth;
-    const leftOffSet = this.divWindowElement.offsetLeft;
-    const topOffSet = this.divWindowElement.offsetTop;
 
-
-    console.log('offsetLeft:', this.divWindowElement.offsetLeft)
-    console.log('offsetTop:', this.divWindowElement.offsetTop)
-
-    this.originalWindowsState = new WindowState(this.processId,this.defaultHeightOnOpen, this.defaultWidthOnOpen,0,0,leftOffSet,topOffSet);
-    console.log('orginal window state:', this.originalWindowsState)
-    this._stateManagmentService.addState(this.processId,new WindowState(this.processId,this.defaultHeightOnOpen, this.defaultWidthOnOpen,0,0,leftOffSet,topOffSet))
+    this.originalWindowsState = new WindowState(this.processId,this.defaultHeightOnOpen, this.defaultWidthOnOpen,0,0);
+    this._stateManagmentService.addState(this.processId,this.originalWindowsState)
 
     //tell angular to run additional detection cycle after 
     this.changeDetectorRef.detectChanges();
@@ -80,9 +73,14 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
           'display': 'none' 
         };
       }
+      if(this.windowUnMinimize){
+        this.currentStyles = {
+          'display': 'block' 
+        };
+      }
       else if(this.windowMaximize){
         this.currentStyles = {
-          
+          'transform': 'translate(0px,0px)',
           'max-width': '100%',
           'max-height': 'calc(100% - 40px)', //This accounts for the taskbar height
           'top': '4.9%',
@@ -98,18 +96,17 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
             'display': 'block',
             'width': `${String(windowState.getWidth)}px`, 
             'height': `${String(windowState.getHeight)}px`, 
-            'transform': `translate(${String(windowState.getXAxis)}px, ${String(windowState.getXAxis)}px)`
+            'transform': `translate(${String(windowState.getXAxis)}px, ${String(windowState.getYAxis)}px)`
           };
         }
       }
    }
    
    onMinimizeBtnClick(){
-    // console.log('this is process name:', this.name)
-    // console.log('this is process id:', this.processId)
       this.windowMinimize = true;
       this.windowMaximize = false;
       this.windowRestore = false;
+      this.windowUnMinimize = false;
       this.setCurrentStyles();
    }
 
@@ -117,6 +114,7 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
       this.windowMaximize = true;
       this.windowMinimize = false;
       this.windowRestore = false;
+      this.windowUnMinimize = false;
       this.setCurrentStyles();
    }
 
@@ -139,14 +137,13 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
     this.setCurrentStyles();
    }
 
-   restorOrMinimzeWinddow(pid:number){
-
+   restoreMinimzeWindow(pid:number){
       if(this.processId == pid){
-        if(this.windowMinimize && !this.windowRestore){
-              this.windowRestore = true;
+        if(this.windowMinimize && !this.windowUnMinimize){
+              this.windowUnMinimize = true;
               this.windowMinimize = false;
           }else{
-            this.windowRestore = false;
+            this.windowUnMinimize = false;
             this.windowMinimize = true;
           }
           this.setCurrentStyles()
@@ -160,31 +157,25 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
       const x_axis = matrix1.m41;
       const y_axis = matrix1.m42;
 
-      console.log('o_left:',input.offsetLeft)
-      console.log('o_top:',input.offsetTop)
+      //ignore false drag
+      if( x_axis!= 0  && y_axis != 0){
+        const windowState = this._stateManagmentService.getState(this.processId) as WindowState 
+        windowState.setXAxis= x_axis;
+        windowState.setYAxis= y_axis;
 
-      const windowState = this._stateManagmentService.getState(this.processId) as WindowState 
-      windowState.setXAxis= x_axis;
-      windowState.setYAxis= y_axis;
-
-      this._stateManagmentService.addState(this.processId,windowState);
+        this._stateManagmentService.addState(this.processId,windowState);
+      }
     }
 
     onRZStop(input:any){
       const height = Number(input.size.height);
       const width = Number(input.size.width);
 
-      console.log('input:',input)
-      console.log('o_left1:',input.position.left)
-      console.log('o_top1:',input.position.top)
-
       const windowState = this._stateManagmentService.getState(this.processId) as WindowState 
       windowState.setHeight= height;
       windowState.setWidth= width;
-
       this._stateManagmentService.addState(this.processId,windowState);
     }
-
 
    onCloseBtnClick(){
     const processToClose = this._runningProcessService.getProcess(this.processId);

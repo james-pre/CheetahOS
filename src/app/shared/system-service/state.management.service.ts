@@ -13,6 +13,7 @@ export class StateManagmentService{
     }
 
     addState(id:number, stateData:any): void{
+        console.log('stateData:',stateData);
         this._sessionStateManagmentService.set(id,stateData)
     }
 
