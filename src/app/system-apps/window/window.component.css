@@ -12,6 +12,8 @@
     left: 50%;
     margin-top: -50px;
     margin-left: -100px;
+    outline: 1px hsl(0deg 0% 20%/70%);  /* 1px solid rgba(0, 0, 0, 25%); */
+    overflow:hidden
 }
 
 .window-dd-box {
@@ -40,9 +42,10 @@
 
   h1{
     color: #fff;
-    font-size: 11.5px;
+    font-size: 12px;
     font-weight: normal;
     height: 29px;
+    border-bottom: 1px solid blue;
     width: 35px;
     flex-grow: 1;
     left: 0;
@@ -61,17 +64,26 @@
     height: 30px;
   }
 
+  figcaption{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   button{
-    width: 45px;
+    border-left: 1px solid blue;
+    box-sizing: content-box;
     color: #fff;
-    font-size: 20px;
     display: flex;
+    font-size: 20px;
+    width: 45px;
     place-content: center;
     place-items: center;
   }
 
   svg{
     fill: #fff;
+    margin-bottom: 2px;
     /* width: 10px; */
   }
   

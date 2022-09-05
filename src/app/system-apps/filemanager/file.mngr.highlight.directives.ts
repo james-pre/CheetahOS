@@ -8,7 +8,7 @@ export class FlieManagerHighlightDirective {
 
   constructor(private el: ElementRef) { }
 
-  backgroundColor = 'hsla(0,0%,50%,25%)';
+  backgroundColor = 'hsl(206deg 77% 70%/20%)';
   border = '3px solid hsla(0,0%,50%,25%)'
   padding = '0'
 

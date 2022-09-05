@@ -41,9 +41,7 @@ export class SessionManagmentService{
     }
 
     private saveSession(sessionData:Map<string, any>){
-
         const data =  JSON.stringify(Array.from(sessionData.entries()));
         sessionStorage.setItem(this.sessionName, data);
-        
     }
 }
