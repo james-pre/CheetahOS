@@ -52,6 +52,7 @@ export class FilemanagerComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._dirFilesReadySub?.unsubscribe();
   }
+
   private  loadFilesInfo(){
     const dirFileEntries =  this._fileService.directoryFiles;
     this._directoryFilesEntires = this._fileService.getFileEntriesFromDirectory(dirFileEntries,this.directory);
@@ -59,9 +60,48 @@ export class FilemanagerComponent implements OnInit, OnDestroy {
       for(let i = 0; i < this._directoryFilesEntires .length; i++){
         const fileEntry = this._directoryFilesEntires[i];
         const fileInfo = this._fileService.getFileInfo(fileEntry.getPath);
-        this.files.push(fileInfo)
+        this.files.push(fileInfo);
       }
   }
+
+  onDragOver(event:DragEvent):void{
+    event.stopPropagation();
+    event.preventDefault();
+    //console.log('event-DragOver:', event);
+
+  }
+
+  onDrop(event:DragEvent):void{
+
+    event.preventDefault();
+    const dataTransfer = event.dataTransfer;
+    const droppedfile:File = dataTransfer?.files[0] || new File([],'');
+
+    console.log('droppedfile:', droppedfile);
+    this._fileService.writeFile(this.directory, droppedfile)
+
+    // const reader = new FileReader()
+
+    // reader.readAsArrayBuffer(droppedfile);
+
+    // reader.onload = function(e){
+    //   console.log('reader.onload:', e.target?.result);
+    //   fs.writeFile(curr_dir, droppedfile.name,Buffer.from(new Uint8Array(e.target?.result as ArrayBuffer)))
+    // }
+
+  }
+
+
+  runProcess(appName:string):void{
+
+    this._startProcessService.startApplication(appName);
+  }
+
+  private getComponentDetail():Process{
+    return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type);
+  }
+}
+
 
 
   // private async loadFilesInfo(){
@@ -76,16 +116,4 @@ export class FilemanagerComponent implements OnInit, OnDestroy {
   //       // this.files.push(fileInfo)
   //     }
   // }
-
-
-  runProcess(appName:string):void{
-
-    this._startProcessService.startApplication(appName);
-  }
-
-  private getComponentDetail():Process{
-    return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type);
-  }
-}
-
 

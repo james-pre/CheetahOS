@@ -1,4 +1,4 @@
-<ol>
+<ol (dragover)="onDragOver($event)"  (drop)="onDrop($event)">
     <li *ngFor="let file of files ">
         <button fileMngrHighlight (dblclick)="runProcess(file.getPath)" >
             <figure>

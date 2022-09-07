@@ -106,7 +106,7 @@ export class FileService{
                   }
                 });
     
-            }, 50);
+            }, 100);
         }).then(()=>{
             //console.log("This is result:",arr)
             this._directoryFile = arr;
@@ -120,6 +120,52 @@ export class FileService{
     get directoryFiles(){
         return this._directoryFile;
     }
+
+    public  writeFile(directory:string, file:File):void{
+
+        const fs = this._fs;
+        const fileReader = new FileReader()
+        fileReader.readAsArrayBuffer(file);
+
+        new Promise(function(resolve) {
+    
+            fileReader.onload = function(ev){
+                console.log('ev')
+                console.log('reader.onload:', ev.target?.result);
+                fs.writeFile(`${directory}/${file.name}`, ev.target?.result ,function(err: any){
+                    //Buffer.from(new Uint8Array(e.target?.result as ArrayBuffer))
+    
+                    // if(err){
+                    //     console.log('Error:', err)
+                    // }
+                    // else{
+                    //     console.log('file successfully written')
+                    // }
+                    console.log('file successfully written')
+                    resolve('file successfully written')
+                });
+            }
+
+        }).then(()=>{
+            // trigger the getFilesFromDirectory method
+            console.log('then was called')
+            this.getFilesFromDirectory(directory)
+        });
+    
+    
+        // fileReader.onload = function(e){
+        //     console.log('reader.onload:', e.target?.result);
+        //     fs.writeFile(`${directory}/${file.name}`, e.target?.result ,function(err: any){
+        //         //Buffer.from(new Uint8Array(e.target?.result as ArrayBuffer))
+
+        //         if(err){
+        //             console.log('Error:', err)
+        //         }
+        //         else
+        //     });
+        // }
+    }
+
 
     public  getFileEntriesFromDirectory(fileList:string[], directory:string):FileEntry[]{
 
