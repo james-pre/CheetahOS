@@ -43,7 +43,7 @@ export class FileService{
             this._fileInfo.setPath = '';
         }else{
             this._fileInfo.setIcon='/favicon2.png';
-            this._fileInfo.setPath = 'Test';
+            this._fileInfo.setPath = basename(path, extname(path)) ;
         }
 
         return this._fileInfo;
@@ -151,19 +151,6 @@ export class FileService{
             console.log('then was called')
             this.getFilesFromDirectory(directory)
         });
-    
-    
-        // fileReader.onload = function(e){
-        //     console.log('reader.onload:', e.target?.result);
-        //     fs.writeFile(`${directory}/${file.name}`, e.target?.result ,function(err: any){
-        //         //Buffer.from(new Uint8Array(e.target?.result as ArrayBuffer))
-
-        //         if(err){
-        //             console.log('Error:', err)
-        //         }
-        //         else
-        //     });
-        // }
     }
 
 

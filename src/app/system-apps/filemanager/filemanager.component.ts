@@ -53,22 +53,25 @@ export class FilemanagerComponent implements OnInit, OnDestroy {
     this._dirFilesReadySub?.unsubscribe();
   }
 
-  private  loadFilesInfo(){
+  private loadFilesInfo(){
+    console.log('I was called-loadFilesInfo')
     const dirFileEntries =  this._fileService.directoryFiles;
     this._directoryFilesEntires = this._fileService.getFileEntriesFromDirectory(dirFileEntries,this.directory);
  
-      for(let i = 0; i < this._directoryFilesEntires .length; i++){
-        const fileEntry = this._directoryFilesEntires[i];
-        const fileInfo = this._fileService.getFileInfo(fileEntry.getPath);
+    for(let i = 0; i < this._directoryFilesEntires .length; i++){
+      const fileEntry = this._directoryFilesEntires[i];
+      const fileInfo = this._fileService.getFileInfo(fileEntry.getPath);
+
+      // add to the files lik what doesn't exist
+      if(!this.files.find(e => e.setPath == e.getPath))
         this.files.push(fileInfo);
-      }
+    }
   }
+
 
   onDragOver(event:DragEvent):void{
     event.stopPropagation();
     event.preventDefault();
-    //console.log('event-DragOver:', event);
-
   }
 
   onDrop(event:DragEvent):void{
@@ -79,16 +82,6 @@ export class FilemanagerComponent implements OnInit, OnDestroy {
 
     console.log('droppedfile:', droppedfile);
     this._fileService.writeFile(this.directory, droppedfile)
-
-    // const reader = new FileReader()
-
-    // reader.readAsArrayBuffer(droppedfile);
-
-    // reader.onload = function(e){
-    //   console.log('reader.onload:', e.target?.result);
-    //   fs.writeFile(curr_dir, droppedfile.name,Buffer.from(new Uint8Array(e.target?.result as ArrayBuffer)))
-    // }
-
   }
 
 
