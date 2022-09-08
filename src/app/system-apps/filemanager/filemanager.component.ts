@@ -55,22 +55,16 @@ export class FilemanagerComponent implements OnInit, OnDestroy {
 
   private loadFilesInfo(){
     console.log('I was called-loadFilesInfo')
-    console.log('files:', this.files.length)
-
     const dirFileEntries =  this._fileService.directoryFiles;
     this._directoryFilesEntires = this._fileService.getFileEntriesFromDirectory(dirFileEntries,this.directory);
+
+    if(this.files.length > 0)
+      this.files = []
  
     for(let i = 0; i < this._directoryFilesEntires .length; i++){
       const fileEntry = this._directoryFilesEntires[i];
       const fileInfo = this._fileService.getFileInfo(fileEntry.getPath);
-
-      // add to the files lik what doesn't exist
-      if(!this.files.find(e => e.getPath == fileInfo.getPath))
-      {
-        console.log('FileInfo:', fileInfo.getPath)
-        this.files.push(fileInfo);
-      }
-
+      this.files.push(fileInfo);
     }
   }
 

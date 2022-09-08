@@ -121,6 +121,11 @@ export class FileService{
         return this._directoryFile;
     }
 
+    private resetDirectoryFiles(){
+        this._directoryFile = [];
+        this._directoryFileEntires=[]
+    }
+
     public  writeFile(directory:string, file:File):void{
 
         const fs = this._fs;
@@ -134,13 +139,6 @@ export class FileService{
                 console.log('reader.onload:', ev.target?.result);
                 fs.writeFile(`${directory}/${file.name}`, ev.target?.result ,function(err: any){
                     //Buffer.from(new Uint8Array(e.target?.result as ArrayBuffer))
-    
-                    // if(err){
-                    //     console.log('Error:', err)
-                    // }
-                    // else{
-                    //     console.log('file successfully written')
-                    // }
                     console.log('file successfully written')
                     resolve('file successfully written')
                 });
@@ -148,6 +146,7 @@ export class FileService{
 
         }).then(()=>{
             // trigger the getFilesFromDirectory method
+            this.resetDirectoryFiles()
             console.log('then was called')
             this.getFilesFromDirectory(directory)
         });
@@ -155,7 +154,6 @@ export class FileService{
 
 
     public  getFileEntriesFromDirectory(fileList:string[], directory:string):FileEntry[]{
-
 
         for(let i = 0; i < fileList.length; i++){
             const  file = fileList[i];
