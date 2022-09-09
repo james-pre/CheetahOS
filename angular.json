@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "allowedCommonJsDependencies": ["browserfs","ini","path"],
+            "allowedCommonJsDependencies": ["browserfs","ini","path", "js-dos"],
             "outputPath": "dist/cheetah-os",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -30,7 +30,9 @@
               "src/assets",
               "./src/desktop",
               "./src/osdrive",
-              "./src/picture"
+              "./src/picture",
+              {"glob": "**/*", "input": "./node_modules/js-dos/dist", "output": "/"}
+              
             ],
             "styles": [
               "src/styles.css",
@@ -38,7 +40,8 @@
             ],
             "scripts": [
               "./src/scripts/three.min.js",
-              "./src/scripts/vanta.waves.min.js"
+              "./src/scripts/vanta.waves.min.js",
+              "node_modules/js-dos/dist/js-dos.js"
             ]
           },
           "configurations": {

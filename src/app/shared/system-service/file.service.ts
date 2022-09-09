@@ -66,6 +66,14 @@ export class FileService{
         return  new ShortCut('','');
     }
 
+    public getFile(path: string):string {
+
+        const contents = this._fs.readFileSync(path);
+        const stage = contents? contents.toString(): Buffer.from('').toString();
+        return stage;
+
+    }
+
 
     public getShortCutAsync(path: string):ShortCut {
 

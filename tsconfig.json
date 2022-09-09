@@ -4,7 +4,8 @@
   "compilerOptions": {
     "types" : ["filesystem","jest"],
     "paths": {
-      "path":["./node_modules/path-browserify"]
+      "path":["./node_modules/path-browserify"],
+      "url":["./node_modules/url"]
     },
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",

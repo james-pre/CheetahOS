@@ -10,7 +10,6 @@ import { ClockComponent } from './system-apps/clock/clock.component';
 import { StartbuttonComponent } from './system-apps/startbutton/startbutton.component';
 import { TaskbarentriesComponent } from './system-apps/taskbarentries/taskbarentries.component';
 import { TaskbarentryComponent } from './system-apps/taskbarentry/taskbarentry.component';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FileexplorerComponent } from './system-apps/fileexplorer/fileexplorer.component';
 import { WindowComponent } from './system-apps/window/window.component';
 import { FilemanagerComponent } from './system-apps/filemanager/filemanager.component';
@@ -18,7 +17,7 @@ import { HighlightDirective } from './system-apps/window/window.btn.highlight.di
 import { FlieManagerHighlightDirective } from './system-apps/filemanager/file.mngr.highlight.directives';
 import { GreetingComponent } from './user-apps/greeting/greeting.component';
 import { TaskmanagerComponent } from './system-apps/taskmanager/taskmanager.component';
-import { VeightysixComponent } from './user-apps/veightysix/veightysix.component';
+import { JsdosComponent } from './user-apps/jsdos/jsdos.component';
 
 
 
@@ -39,11 +38,10 @@ import { VeightysixComponent } from './user-apps/veightysix/veightysix.component
     FlieManagerHighlightDirective,
     GreetingComponent,
     TaskmanagerComponent,
-    VeightysixComponent
+    JsdosComponent
   ],
   imports: [
     BrowserModule,
-    FontAwesomeModule,
     AngularDraggableModule
   ],
   providers: [],
