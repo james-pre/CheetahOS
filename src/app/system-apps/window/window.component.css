@@ -8,8 +8,8 @@
     z-index:1;
     min-width: 5%;
     min-height: 5%;
-    max-height: 25%;
-    max-width: 25%;
+    /* max-height: 25%;
+    max-width: 25%; */
     top: 20%;
     left: 50%;
     margin-top: -50px;
