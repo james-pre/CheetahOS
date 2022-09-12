@@ -25,8 +25,8 @@ export class JsdosComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    1
 
+    1
     // setTimeout(() => {
 
     //   console.log('doswindow:',this.dosWindow)
@@ -41,7 +41,6 @@ export class JsdosComponent implements OnInit, AfterViewInit {
     //   Dos(this.dosWindow.nativeElement).run("https://doszone-uploads.s3.dualstack.eu-central-1.amazonaws.com/original/2X/2/24b00b14f118580763440ecaddcc948f8cb94f14.jsdos")
       
     // }, 3000);
-
   }
 
 }
