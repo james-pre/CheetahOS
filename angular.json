@@ -17,7 +17,12 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "allowedCommonJsDependencies": ["browserfs","ini","path", "js-dos"],
+            "allowedCommonJsDependencies": [
+              "browserfs",
+              "ini",
+              "path",
+              "js-dos"
+            ],
             "outputPath": "dist/cheetah-os",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -31,8 +36,11 @@
               "./src/desktop",
               "./src/osdrive",
               "./src/picture",
-              {"glob": "**/*", "input": "./node_modules/js-dos/dist", "output": "/"}
-              
+              {
+                "glob": "**/*",
+                "input": "./node_modules/js-dos/dist",
+                "output": "/"
+              }
             ],
             "styles": [
               "src/styles.css",
@@ -130,5 +138,13 @@
       "@angular-eslint/schematics"
     ],
     "analytics": false
+  },
+  "schematics": {
+    "@angular-eslint/schematics:application": {
+      "setParserOptionsProject": true
+    },
+    "@angular-eslint/schematics:library": {
+      "setParserOptionsProject": true
+    }
   }
 }
