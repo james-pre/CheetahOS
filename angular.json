@@ -30,6 +30,8 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "css",
             "assets": [
+              "src/assets",
+              "src/osdrive",
               {
                 "glob": "**/*",
                 "input": "./node_modules/js-dos/dist",
