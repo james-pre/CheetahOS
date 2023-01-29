@@ -8,7 +8,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "npm run build:fs && ng build",
-    "build:fs": "cd public && node ../../node_modules/browserfs/dist/scripts/make_http_index.js > ../public.json",
+    "build:fs": "cd public && node ../../node_modules/browserfs/dist/scripts/make_http_index.js > ../osdrive.json",
     "watch": "ng build --watch --configuration development",
     "lint": "ng lint",
     "prepare": "husky install",

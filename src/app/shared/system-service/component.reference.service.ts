@@ -6,17 +6,17 @@ import { ComponentRef, Injectable } from "@angular/core";
 
 export class ComponentReferenceService{
 
-    private _componentsReferences:Map<number, ComponentRef<any>>; 
+    private _componentsReferences:Map<number, ComponentRef<unknown>>; 
     
     constructor(){
-        this._componentsReferences = new Map<number, ComponentRef<any>>();
+        this._componentsReferences = new Map<number, ComponentRef<unknown>>();
     }
 
-    addComponentReference(processId:number, componentToAdd:ComponentRef<any>): void{
+    addComponentReference(processId:number, componentToAdd:ComponentRef<unknown>): void{
         this._componentsReferences.set(processId,componentToAdd)
     }
 
-    getComponentReference(processId:number):ComponentRef<any>{
+    getComponentReference(processId:number):ComponentRef<unknown>{
 
         const componentRef = this._componentsReferences.get(processId);
    

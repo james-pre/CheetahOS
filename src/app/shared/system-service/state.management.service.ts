@@ -6,17 +6,17 @@ import {Injectable } from "@angular/core";
 
 export class StateManagmentService{
 
-    private _sessionStateManagmentService:Map<number, any>; 
+    private _sessionStateManagmentService:Map<number, unknown>; 
     
     constructor(){
-        this._sessionStateManagmentService = new Map<number, any>();
+        this._sessionStateManagmentService = new Map<number, unknown>();
     }
 
-    addState(id:number, stateData:any): void{
+    addState(id:number, stateData:unknown): void{
         this._sessionStateManagmentService.set(id,stateData)
     }
 
-    getState(id:number):any{
+    getState(id:number):unknown{
         const stateData = this._sessionStateManagmentService.get(id);
         return stateData;
     }
