@@ -42,7 +42,7 @@ export class FileService{
             this._fileInfo.setIcon='fdfd';
             this._fileInfo.setPath = '';
         }else{
-            this._fileInfo.setIcon='/favicon2.png';
+            this._fileInfo.setIcon='/osdrive/icons/unknown.ico';
             this._fileInfo.setPath = basename(path, extname(path)) ;
         }
 

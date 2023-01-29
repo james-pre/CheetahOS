@@ -30,12 +30,6 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "css",
             "assets": [
-              "src/favicon.ico",
-              "src/favicon2.png",
-              "src/assets",
-              "./src/desktop",
-              "./src/osdrive",
-              "./src/picture",
               {
                 "glob": "**/*",
                 "input": "./node_modules/js-dos/dist",

@@ -29,7 +29,7 @@ export class FilemanagerComponent implements OnInit, OnDestroy {
   name = 'filemanager';
   processId = 0;
   type = ComponentType.systemComponent
-  directory ='/desktop';
+  directory ='/osdrive/desktop';
   files:FileInfo[] = [];
 
 
