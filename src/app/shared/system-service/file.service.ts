@@ -82,7 +82,7 @@ export class FileService{
            this._fileInfo.setPath = sc.getUrl;
         }
         else if(this._consts.IMAGE_FILE_EXTENSIONS.includes(extension)){    
-            const sc = await this.getImageFileAsync(path) as ShortCut;
+            const sc = await this.getImageFileB64DataUrlAsync(path) as ShortCut;
             this._fileInfo.setIcon = sc.getIconFile;
             this._fileInfo.setPath = sc.getUrl;
         }else{
@@ -118,7 +118,7 @@ export class FileService{
         });
     }
 
-    public async getImageFileAsync(path: string):Promise<unknown> {
+    public async getImageFileB64DataUrlAsync(path: string):Promise<unknown> {
         await this.initBrowserFsAsync();
 
         return new Promise((resolve, reject) =>{
@@ -133,15 +133,43 @@ export class FileService{
         });
     }
 
-    public async getDraggedAndDropFileData(file:File): Promise<unknown>{
-        return new Promise((resolve) =>{
-            const fileReader = new FileReader()
-            fileReader.readAsDataURL(file);
-            fileReader.onload = (evt) =>{
-                resolve(evt.target?.result)
-            }
-        })
-    }
+    //NIU-not in use
+    // public async getImageFileB64ToBlobAsync(path: string):Promise<unknown> {
+    //     await this.initBrowserFsAsync();
+
+    //     return new Promise((resolve, reject) =>{
+    //         this._fileSystem.readFile(path,'utf-8',(err, b64Ed) =>{
+    //             if(err){
+    //                 console.log('getImageFileAsync error:',err)
+    //                 reject(err)
+    //             }
+    //             const b64EncodedData = b64Ed as string
+    //             const decodedString = atob(b64EncodedData.split(',')[1]);
+    //             const arrBuffer = new ArrayBuffer(decodedString.length);
+    //             const buffer = new Uint8Array(arrBuffer);
+                
+    //             for (let i = 0; i < decodedString.length; i++) {
+    //                 buffer[i] = decodedString.charCodeAt(i);
+    //             }
+
+    //             const blob = new Blob([buffer], { type: 'image/jpeg' });
+    //             const imageUrl = URL.createObjectURL(blob);
+
+    //             resolve(new ShortCut(imageUrl, basename(path, extname(path))));
+    //         });
+    //     });
+    // }
+
+    //NIU-not in use
+    // public async getDraggedAndDropFileData(file:File): Promise<unknown>{
+    //     return new Promise((resolve) =>{
+    //         const fileReader = new FileReader()
+    //         fileReader.readAsDataURL(file);
+    //         fileReader.onload = (evt) =>{
+    //             resolve(evt.target?.result)
+    //         }
+    //     })
+    // }
 
     public async writeFileAsync(directory:string, file:File,): Promise<void>{
         new Promise<void>((resolve, reject) =>{
