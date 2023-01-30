@@ -19,7 +19,7 @@ export class TitleComponent implements BaseComponent{
 
 
   hasWindow = true;
-  icon = 'favicon.ico';
+  icon = 'osdrive/picture/favicon.ico';
   name = 'hello';
   processId = 0;
   type = ComponentType.userComponent

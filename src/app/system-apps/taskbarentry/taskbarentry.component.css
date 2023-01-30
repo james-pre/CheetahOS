@@ -6,15 +6,20 @@ li{
 figure{
     align-items: center;
     display: flex;
+    padding: 4px;
 }
 
 figcaption{
     color: rgba(255, 255, 255, 0.8);
     font-size: 12px;
+    margin-left: 4px;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 img{
     height: 25px;
-    margin: 0 5px;
     width: 25px;
+    image-rendering: pixelated;
 }

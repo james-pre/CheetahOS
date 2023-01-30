@@ -64,8 +64,11 @@ export class FilemanagerComponent implements  AfterViewInit, OnDestroy {
     const dataTransfer = event.dataTransfer;
     const droppedfile:File = dataTransfer?.files[0] || new File([],'');
 
-    //console.log('droppedfile:', droppedfile) TBD;
-    await this._fileService.writeFileAsync(this.directory, droppedfile)
+    if(droppedfile){
+      //console.log('droppedfile:', droppedfile) TBD;
+      await this._fileService.writeFileAsync(this.directory, droppedfile)
+    }
+
   }
 
   private async loadFilesInfoAsync(){
