@@ -1,18 +1,14 @@
 import { Injectable } from "@angular/core";
 import { FileInfo } from "src/app/system-files/fileinfo";
 import { ShortCut } from "src/app/system-files/shortcut";
-import { FileSystemService } from "./file.system.service";
 import {extname, basename, resolve} from 'path';
 import { Constants } from "src/app/system-files/constants";
 import { FSModule } from "browserfs/dist/node/core/FS";
 import { FileEntry } from 'src/app/system-files/fileentry';
 import { Subject } from "rxjs";
-// import { Injectable } from "@angular/core";
 import * as BrowserFS from 'browserfs';
-// import { FSModule } from 'browserfs/dist/node/core/FS';
 import osDriveFileSystemIndex from '../../../osdrive.json';
 import ini from 'ini';
-import { DomSanitizer } from "@angular/platform-browser";
 
 @Injectable({
     providedIn: 'root'
@@ -21,61 +17,42 @@ import { DomSanitizer } from "@angular/platform-browser";
 export class FileService{
 
     private _fileInfo!:FileInfo;
-    private _fileSystemService: FileSystemService;
-    private _domSanitizer: DomSanitizer;
     private _consts:Constants = new Constants();
-    private _fs!:FSModule;
-    private _directoryFile:string[]=[];
+    private _fileSystem!:FSModule;
     private _directoryFileEntires:FileEntry[]=[];
     dirFilesReadyNotify: Subject<void> = new Subject<void>();
     dirFilesUpdateNotify: Subject<void> = new Subject<void>();
-    // filesEntriesReadyNotify: Subject<void> = new Subject<void>();
 
-    constructor(fileSystemService:FileSystemService, domSanitizer:DomSanitizer){
-        this._fileSystemService = fileSystemService;
-        this._domSanitizer = domSanitizer
-        //this._fs = this._fileSystemService.getFileSystemAsync()
+    constructor(){
+        1
     }
 
-    get directoryFiles(){
-        return this._directoryFile;
-    }
-
-    private async setupBrowserFs(){
-        return new Promise<void>((resolve, reject) => {
-            BrowserFS.configure({
-                fs: "OverlayFS",
-                options:{
-                  readable:{
-                    fs: 'XmlHttpRequest',
+    private async initBrowserFsAsync():Promise<void>{
+        if(!this._fileSystem){
+            return new Promise<void>((resolve, reject) => {
+                BrowserFS.configure({
+                    fs: "OverlayFS",
                     options:{
-                      index:osDriveFileSystemIndex
-                    }
-                  },
-                  writable:{
-                    fs:"IndexedDB",
-                    options: {
-                      "storeName":"browserfs-cache"
-                    }
-                  }
-                }
-            },
-              (e) =>{
-                if(e){  
-                    console.log('BFS Error:', e)
-                    reject(e); 
-                }
+                      readable:{fs: 'XmlHttpRequest', options:{ index:osDriveFileSystemIndex}},
+                      writable:{fs:"IndexedDB", options: {"storeName":"browserfs-cache"}}
+                    }},
+                (e) =>{
+                    if(e){  
+                        console.log('initBrowserFs Error:', e)
+                        reject(e); 
+                    } });
+
+                this._fileSystem = BrowserFS.BFSRequire('fs')
+                resolve();
             });
-            this._fs = BrowserFS.BFSRequire('fs')
-            resolve();
-        });
+        }
     }
 
-    public async getFilesFromDirectoryAsync(dirPath:string){
-        await this.setupBrowserFs()
+    public async getFilesFromDirectoryAsync(dirPath:string):Promise<unknown>{
+        await this.initBrowserFsAsync();
 
         return new Promise((resolve, reject) => {
-            const fs = this._fs;
+            const fs = this._fileSystem;
             const interval = setInterval(() => {
                 fs.readdir(dirPath, function(err, files) {
                   if(err){
@@ -113,15 +90,12 @@ export class FileService{
         return this._fileInfo;
     }
 
-
-
     public async getShortCutAsync(path: string) {
-
-        await this.setupBrowserFs()
+        await this.initBrowserFsAsync();
 
         return new Promise((resolve, reject) =>{
 
-            this._fs.readFile(path, function(err, contents = Buffer.from('')){
+            this._fileSystem.readFile(path, function(err, contents = Buffer.from('')){
                 if(err){
                     console.log('getShortCutAsync error:',err)
                     reject(err)
@@ -141,41 +115,38 @@ export class FileService{
         });
     }
 
-    public async getImageFileAsync(path: string) {
-        await this.setupBrowserFs()
+    public async getImageFileAsync(path: string):Promise<unknown> {
+        await this.initBrowserFsAsync();
 
         return new Promise((resolve, reject) =>{
-            this._fs.readFile(path, function(err, contents = Buffer.from('')){
+            this._fileSystem.readFile(path, function(err, contents = Buffer.from('')){
                 if(err){
                     console.log('getImageFileAsync error:',err)
                     reject(err)
                 }
-                const imgData = URL.createObjectURL(new Blob([new Uint8Array(contents)]))
-                resolve(new ShortCut(imgData, path));
+                const imgUrl = URL.createObjectURL(new Blob([new Uint8Array(contents)]))
+                resolve(new ShortCut(imgUrl, path));
             });
         });
     }
 
-    public async writeFileAsync(directory:string, file:File){
- 
+    public async writeFileAsync(directory:string, file:File):Promise<void>{
+        await this.initBrowserFsAsync();
+
         new Promise<void>((resolve) => {
-            const fs = this._fs;
+            const fs = this._fileSystem;
             const fileReader = new FileReader()
             fileReader.readAsArrayBuffer(file);
 
             fileReader.onload = function(ev){
-                console.log('ev')
+                console.log('ev:', ev)
                 console.log('reader.onload:', ev.target?.result);
-                fs.writeFile(
-                    `${directory}/${file.name}`, 
-                    ev.target?.result,
-                    function(err){
+                fs.writeFile(`${directory}/${file.name}`,ev.target?.result,(err) =>{
                         if(err){
-                            console.log('writeFileAsync:', err);
+                            console.log('writeFileAsync error:', err);
                         }
                         resolve();
-                    }
-                );
+                });
             }
         }).then(()=>{
             //Send update notification
@@ -194,7 +165,6 @@ export class FileService{
         }
         return this._directoryFileEntires;
     }
-
 
     public bufferToUrl(buffer:Buffer):string{
        return URL.createObjectURL(new Blob([new Uint8Array(buffer)]));

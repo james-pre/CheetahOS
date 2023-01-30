@@ -1,44 +1,44 @@
-import { Injectable } from "@angular/core";
-import * as BrowserFS from 'browserfs';
-import { FSModule } from 'browserfs/dist/node/core/FS';
-import osDriveFileSystemIndex from '../../../osdrive.json';
+// import { Injectable } from "@angular/core";
+// import * as BrowserFS from 'browserfs';
+// import { FSModule } from 'browserfs/dist/node/core/FS';
+// import osDriveFileSystemIndex from '../../../osdrive.json';
 
-@Injectable({
-    providedIn: 'root'
-})
+// @Injectable({
+//     providedIn: 'root'
+// })
 
 
-export class FileSystemService{
+// export class FileSystemService{
 
-    private _fileSystem:FSModule;
+//     private _fileSystem:FSModule;
 
-    constructor() { 
-        BrowserFS.configure({
-          fs: "OverlayFS",
-          options:{
-            readable:{
-              fs: 'XmlHttpRequest',
-              options:{
-                index:osDriveFileSystemIndex
-              }
-            },
-            writable:{
-              fs:"IndexedDB",
-              options: {
-                "storeName":"browserfs-cache"
-              }
-            }
-          }
-        },
-        (e) =>{
-          if(e){  console.log('BFS Error:', e) }
-        });
+//     constructor() { 
+//         BrowserFS.configure({
+//           fs: "OverlayFS",
+//           options:{
+//             readable:{
+//               fs: 'XmlHttpRequest',
+//               options:{
+//                 index:osDriveFileSystemIndex
+//               }
+//             },
+//             writable:{
+//               fs:"IndexedDB",
+//               options: {
+//                 "storeName":"browserfs-cache"
+//               }
+//             }
+//           }
+//         },
+//         (e) =>{
+//           if(e){  console.log('BFS Error:', e) }
+//         });
     
-      this._fileSystem = BrowserFS.BFSRequire('fs')
-    }
+//       this._fileSystem = BrowserFS.BFSRequire('fs')
+//     }
 
 
-    get getFileSystem(){
-        return this._fileSystem;
-    }
-}
+//     get getFileSystem(){
+//         return this._fileSystem;
+//     }
+// }

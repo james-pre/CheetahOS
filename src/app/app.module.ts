@@ -18,6 +18,7 @@ import { FlieManagerHighlightDirective } from './system-apps/filemanager/file.mn
 import { GreetingComponent } from './user-apps/greeting/greeting.component';
 import { TaskmanagerComponent } from './system-apps/taskmanager/taskmanager.component';
 import { JsdosComponent } from './user-apps/jsdos/jsdos.component';
+import { SafeUrlPipe } from './system-apps/filemanager/safe.resource.url.pipe';
 
 
 
@@ -38,7 +39,8 @@ import { JsdosComponent } from './user-apps/jsdos/jsdos.component';
     FlieManagerHighlightDirective,
     GreetingComponent,
     TaskmanagerComponent,
-    JsdosComponent
+    JsdosComponent,
+    SafeUrlPipe
   ],
   imports: [
     BrowserModule,
