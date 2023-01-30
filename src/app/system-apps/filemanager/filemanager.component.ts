@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FileService } from 'src/app/shared/system-service/file.service';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
@@ -14,7 +14,7 @@ import { StartProcessService } from 'src/app/shared/system-service/start.process
   templateUrl: './filemanager.component.html',
   styleUrls: ['./filemanager.component.css']
 })
-export class FilemanagerComponent implements OnInit, OnDestroy {
+export class FilemanagerComponent implements OnInit,AfterViewInit,  OnDestroy {
 
 
   private _processIdService:ProcessIDService;
@@ -41,33 +41,22 @@ export class FilemanagerComponent implements OnInit, OnDestroy {
 
     this.processId = this._processIdService.getNewProcessId();
     this._runningProcessService.addProcess(this.getComponentDetail());
-    this._dirFilesReadySub = this._fileService.dirFilesReadyNotify.subscribe(() =>{this.loadFilesInfo();})
+    this._dirFilesReadySub = this._fileService.dirFilesUpdateNotify.subscribe(() =>{this.loadFilesInfoAsync();})
   
   }
 
   ngOnInit(){
-    this._fileService.getFilesFromDirectory(this.directory);
+    //this._fileService.getFilesFromDirectory(this.directory);
+    1
+  }
+
+  ngAfterViewInit(){
+   this.loadFilesInfoAsync();
   }
 
   ngOnDestroy(): void {
     this._dirFilesReadySub?.unsubscribe();
   }
-
-  private loadFilesInfo(){
-    console.log('I was called-loadFilesInfo')
-    const dirFileEntries =  this._fileService.directoryFiles;
-    this._directoryFilesEntires = this._fileService.getFileEntriesFromDirectory(dirFileEntries,this.directory);
-
-    if(this.files.length > 0)
-      this.files = []
- 
-    for(let i = 0; i < this._directoryFilesEntires .length; i++){
-      const fileEntry = this._directoryFilesEntires[i];
-      const fileInfo = this._fileService.getFileInfo(fileEntry.getPath);
-      this.files.push(fileInfo);
-    }
-  }
-
 
   onDragOver(event:DragEvent):void{
     event.stopPropagation();
@@ -81,9 +70,24 @@ export class FilemanagerComponent implements OnInit, OnDestroy {
     const droppedfile:File = dataTransfer?.files[0] || new File([],'');
 
     console.log('droppedfile:', droppedfile);
-    this._fileService.writeFile(this.directory, droppedfile)
+    this._fileService.writeFileAsync(this.directory, droppedfile)
   }
 
+  private async loadFilesInfoAsync(){
+
+    console.log('I was called-loadFilesInfo')
+    const dirFileEntries  = await this._fileService.getFilesFromDirectoryAsync(this.directory) as [];
+    this._directoryFilesEntires = this._fileService.getFileEntriesFromDirectory(dirFileEntries,this.directory);
+
+    console.log("this is file entry count:", dirFileEntries)
+    
+      for(let i = 0; i < dirFileEntries.length; i++){
+        const fileEntry = this._directoryFilesEntires[i];
+        console.log("this is file entry", fileEntry)
+        const fileInfo = await this._fileService.getFileInfoAsync(fileEntry.getPath);
+        this.files.push(fileInfo)
+      }
+  }
 
   runProcess(appName:string):void{
 
@@ -93,20 +97,22 @@ export class FilemanagerComponent implements OnInit, OnDestroy {
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type);
   }
+
+  // private loadFilesInfo(){
+ 
+  //   const dirFileEntries =  this._fileService.directoryFiles;
+  //   this._directoryFilesEntires = this._fileService.getFileEntriesFromDirectory(dirFileEntries,this.directory);
+
+  //   if(this.files.length > 0)
+  //     this.files = []
+ 
+  //   for(let i = 0; i < this._directoryFilesEntires .length; i++){
+  //     const fileEntry = this._directoryFilesEntires[i];
+  //     const fileInfo = this._fileService.getFileInfo(fileEntry.getPath);
+  //     this.files.push(fileInfo);
+  //   }
+  // }
 }
 
 
-
-  // private async loadFilesInfo(){
-  //   this._directoryFilesEntires = await this._fileService.getFileEntriesFromDirectory(this.directory);
-  //   const dirFileEntries = this._directoryFilesEntires;
-  //   console.log("this is file entry count:", this._directoryFilesEntires.length)
-    
-  //     for(let i = 0; i < dirFileEntries.length; i++){
-  //       const fileEntry = dirFileEntries[i];
-  //       console.log("this is file entry", fileEntry)
-  //       // const fileInfo = this._fileService.getFileInfo(fileEntry.getPath);
-  //       // this.files.push(fileInfo)
-  //     }
-  // }
 
