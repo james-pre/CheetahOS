@@ -31,10 +31,15 @@ export class FileService{
         if(!this._fileSystem){
             return new Promise<void>((resolve, reject) => {
                 BrowserFS.configure({
-                    fs: "OverlayFS",
+                    fs: "MountableFileSystem",
                     options:{
-                      readable:{fs: 'XmlHttpRequest', options:{ index:osDriveFileSystemIndex}},
-                      writable:{fs:"IndexedDB", options: {"storeName":"browserfs-cache"}}
+                        '/':{
+                            fs: 'OverlayFS',
+                            options:{
+                                readable:{fs: 'XmlHttpRequest', options:{index: osDriveFileSystemIndex}},
+                                writable:{fs:"IndexedDB", options: {storeName: "browser-fs-cache"}}
+                            },
+                        },  
                     }},
                 (e) =>{
                     if(e){  
@@ -77,11 +82,9 @@ export class FileService{
            this._fileInfo.setPath = sc.getUrl;
         }
         else if(this._consts.IMAGE_FILE_EXTENSIONS.includes(extension)){    
-
             const sc = await this.getImageFileAsync(path) as ShortCut;
             this._fileInfo.setIcon = sc.getIconFile;
             this._fileInfo.setPath = sc.getUrl;
-
         }else{
             this._fileInfo.setIcon='/osdrive/icons/unknown.ico';
             this._fileInfo.setPath = basename(path, extname(path)) ;
@@ -119,36 +122,42 @@ export class FileService{
         await this.initBrowserFsAsync();
 
         return new Promise((resolve, reject) =>{
-            this._fileSystem.readFile(path, function(err, contents = Buffer.from('')){
+            this._fileSystem.readFile(path, 'utf-8',(err, b64Ed) =>{
                 if(err){
                     console.log('getImageFileAsync error:',err)
                     reject(err)
                 }
-                const imgUrl = URL.createObjectURL(new Blob([new Uint8Array(contents)]))
-                resolve(new ShortCut(imgUrl, path));
+                const b64EncodedData = b64Ed as string
+                resolve(new ShortCut(b64EncodedData, basename(path, extname(path))));
             });
         });
     }
 
-    public async writeFileAsync(directory:string, file:File):Promise<void>{
-        await this.initBrowserFsAsync();
-
-        new Promise<void>((resolve) => {
-            const fs = this._fileSystem;
+    public async getDraggedAndDropFileData(file:File): Promise<unknown>{
+        return new Promise((resolve) =>{
             const fileReader = new FileReader()
-            fileReader.readAsArrayBuffer(file);
+            fileReader.readAsDataURL(file);
+            fileReader.onload = (evt) =>{
+                resolve(evt.target?.result)
+            }
+        })
+    }
 
-            fileReader.onload = function(ev){
-                console.log('ev:', ev)
-                console.log('reader.onload:', ev.target?.result);
-                fs.writeFile(`${directory}/${file.name}`,ev.target?.result,(err) =>{
-                        if(err){
-                            console.log('writeFileAsync error:', err);
-                        }
-                        resolve();
+    public async writeFileAsync(directory:string, file:File,): Promise<void>{
+        new Promise<void>((resolve, reject) =>{
+            const fileReader = new FileReader()
+            fileReader.readAsDataURL(file);
+
+            fileReader.onload = (evt) =>{
+                this._fileSystem.writeFile(`${directory}/${file.name}`,evt.target?.result,(err) =>{  
+                    if(err){
+                        console.log('writeFileAsync Error:',err);
+                        reject(err);
+                    }
+                    resolve();
                 });
             }
-        }).then(()=>{
+         }).then(()=>{
             //Send update notification
             this.dirFilesUpdateNotify.next();
         });
@@ -168,5 +177,10 @@ export class FileService{
 
     public bufferToUrl(buffer:Buffer):string{
        return URL.createObjectURL(new Blob([new Uint8Array(buffer)]));
+    }
+
+    public uint8ToBase64(arr:Uint8Array):string{
+        const base64String = btoa(String.fromCharCode(...new Uint8Array(arr)));
+        return base64String;
     }
 }
