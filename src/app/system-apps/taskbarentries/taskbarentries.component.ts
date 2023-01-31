@@ -33,8 +33,13 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
   }
   
   ngAfterViewInit(): void {
-    this.runningProcess = this._runningProcessService.getProcesses().filter(p => p.getType == ComponentType.userComponent);
-    //console.log('count of proc:', this._runningProcessService.processCount())
+    //change detection is the better solution
+    setTimeout(() => {
+      this.runningProcess = this._runningProcessService.getProcesses().filter(p => p.getHasWindow == true);
+      //console.log('processs:',this.runningProcess) TBD
+    }, 1500);
+    //.filter(p => p.getType == ComponentType.userComponent); TBD
+    //console.log('count of proc:', this._runningProcessService.processCount()) //TBD
   }
 
   ngOnDestroy(): void {
@@ -42,8 +47,8 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
   }
 
   updateRunningProcess(){
-    this.runningProcess = this._runningProcessService.getProcesses().filter(p => p.getType == ComponentType.userComponent);
-    //console.log('updated count of proc:', this._runningProcessService.processCount())
+    this.runningProcess = this._runningProcessService.getProcesses().filter(p => p.getHasWindow == true);
+    //console.log('updated count of proc:', this._runningProcessService.processCount()) TBD
   }
 
   private getComponentDetail():Process{
@@ -51,8 +56,8 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
   }
 
   restoreOrMinizeWindow(processId:number){
-    //const theProcess = this._runningProcessService.getProcess(processId);
-    //console.log('close evt triggered for pid:'+ theProcess.getProcessId +'----'+'pname:'+theProcess.getProcessName);
+    //const theProcess = this._runningProcessService.getProcess(processId); TBD
+    //console.log('close evt triggered for pid:'+ theProcess.getProcessId +'----'+'pname:'+theProcess.getProcessName); //TBD
     this._runningProcessService.restoreOrMinimizeWindowNotify.next(processId)
 
   }

@@ -76,21 +76,44 @@ export class FileService{
         const extension = extname(path);
         this._fileInfo = new FileInfo();
 
-        if(extension == '.url'){
-           const sc = await this.getShortCutAsync(path) as ShortCut;
-           this._fileInfo.setIcon = sc.getIconFile;
-           this._fileInfo.setPath = sc.getUrl;
-        }
-        else if(this._consts.IMAGE_FILE_EXTENSIONS.includes(extension)){    
-            const sc = await this.getImageFileB64DataUrlAsync(path) as ShortCut;
+        if(!extension){
+            const sc = await this.getFolderAsync(path) as ShortCut;
             this._fileInfo.setIcon = sc.getIconFile;
             this._fileInfo.setPath = sc.getUrl;
-        }else{
-            this._fileInfo.setIcon='/osdrive/icons/unknown.ico';
-            this._fileInfo.setPath = basename(path, extname(path)) ;
         }
-
+        else{
+            if(extension == '.url'){
+                const sc = await this.getShortCutAsync(path) as ShortCut;
+                this._fileInfo.setIcon = sc.getIconFile;
+                this._fileInfo.setPath = sc.getUrl;
+             }
+             else if(this._consts.IMAGE_FILE_EXTENSIONS.includes(extension)){    
+                 const sc = await this.getImageFileB64DataUrlAsync(path) as ShortCut;
+                 this._fileInfo.setIcon = sc.getIconFile;
+                 this._fileInfo.setPath = sc.getUrl;
+             }else{
+                 this._fileInfo.setIcon='/osdrive/icons/unknown.ico';
+                 this._fileInfo.setPath = basename(path, extname(path)) ;
+             }
+     
+        }
         return this._fileInfo;
+    }
+
+    public async getFolderAsync(path: string) {
+        await this.initBrowserFsAsync();
+
+        return new Promise((resolve, reject) =>{
+            this._fileSystem.stat(path,(err, stats) =>{
+                if(err){
+                    console.log('getFolderAsync error:',err)
+                    reject(err)
+                }
+                const isDirectory = stats ? stats.isDirectory() : false
+                const iconFile = `/osdrive/icons/${isDirectory ? 'folder.ico' : 'unknown.ico'}`
+                resolve(new ShortCut(iconFile, basename(path, extname(path)) ));
+            });
+        });
     }
 
     public async getShortCutAsync(path: string) {
@@ -103,7 +126,6 @@ export class FileService{
                     console.log('getShortCutAsync error:',err)
                     reject(err)
                 }
-
                 const stage = contents? contents.toString(): Buffer.from('').toString();
                 const shortCut = ini.parse(stage) as unknown || {InternetShortcut:{ URL:'hi', IconFile:''}};
                 if (typeof shortCut === 'object') {

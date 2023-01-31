@@ -82,12 +82,12 @@ export class FileexplorerComponent implements OnInit, AfterViewInit, OnDestroy, 
     const dirFileEntries  = await this._fileService.getFilesFromDirectoryAsync(this.directory) as [];
     this._directoryFilesEntires = this._fileService.getFileEntriesFromDirectory(dirFileEntries,this.directory);
 
-    console.log("this is file entry count:", dirFileEntries)//TBD
-    console.log("this is file entry count:", this._directoryFilesEntires)//TBD
+    //console.log("this is file entry count:", dirFileEntries)//TBD
+    //console.log("this is file entry count:", this._directoryFilesEntires)//TBD
     for(let i = 0; i < dirFileEntries.length; i++){
       const fileEntry = this._directoryFilesEntires[i];
-      console.log('',)
       const fileInfo = await this._fileService.getFileInfoAsync(fileEntry.getPath);
+      console.log("this is fileInfo:", fileInfo)//TBD
       this.files.push(fileInfo)
     }
   }
