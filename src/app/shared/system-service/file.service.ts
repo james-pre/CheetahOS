@@ -129,7 +129,7 @@ export class FileService{
                 const isDirectory = stats ? stats.isDirectory() : false
                 const iconFile = `/osdrive/icons/${isDirectory ? 'folder.ico' : 'unknown.ico'}`
                 const fileType = 'folder';
-                const opensWith ='fileexlporer'
+                const opensWith ='fileexplorer'
                 resolve(new ShortCut(iconFile, basename(path, extname(path)),fileType,basename(path, extname(path)) ,opensWith ));
             });
         });
