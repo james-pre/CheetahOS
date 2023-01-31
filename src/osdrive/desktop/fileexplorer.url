@@ -1,3 +1,6 @@
 [InternetShortcut]
-URL=fileexplorer
+URL=File Explorer
 IconFile=/osdrive/icons/file_explorer.ico
+FileType=folder
+ShortUrl=File E..
+OpensWith=fileexplorer

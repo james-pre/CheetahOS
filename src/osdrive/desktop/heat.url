@@ -1,3 +1,6 @@
 [InternetShortcut]
 URL=heat
 IconFile=/osdrive/picture/heat.png
+FileType=.png
+ShortUrl=heat
+OpensWith=imageviewer

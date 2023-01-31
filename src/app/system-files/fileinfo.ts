@@ -1,13 +1,17 @@
 export class FileInfo{
     private _icon:string;
-    private _pid:string;
     private _path:string;
+    private _fileType:string;
+    private _shortUrl:string;
+    private _opensWith:string;
 
 
     constructor(){
         this._icon = '';
         this._path = '';
-        this._pid = '';
+        this._fileType = '';
+        this._shortUrl = '';
+        this._opensWith = '';
     }
 
     get getIcon(){
@@ -24,11 +28,24 @@ export class FileInfo{
          this._path = path;
     }
 
-    get getPid(){
-        return this._pid;
+    get getFileType(){
+        return this._fileType;
     }
-    set setPid(pid:string){
-        this._pid = pid
+    set setFileType(fileType:string){
+        this._fileType = fileType
     }
 
+    get getShortUrl(){
+        return this._shortUrl;
+    }
+    set setShortUrl(shortUrl:string){
+        this._shortUrl = shortUrl
+    }
+
+    get getOpensWith(){
+        return this._opensWith;
+    }
+    set setOpensWith(opensWith:string){
+        this._opensWith = opensWith
+    }
 }

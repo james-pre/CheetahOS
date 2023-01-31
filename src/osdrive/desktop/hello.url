@@ -1,3 +1,6 @@
 [InternetShortcut]
 URL=hello
 IconFile=/osdrive/picture/favicon.ico
+FileType=unknown
+ShortUrl=hello
+OpensWith=hello

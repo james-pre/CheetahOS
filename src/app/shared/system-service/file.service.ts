@@ -80,18 +80,35 @@ export class FileService{
             const sc = await this.getFolderAsync(path) as ShortCut;
             this._fileInfo.setIcon = sc.getIconFile;
             this._fileInfo.setPath = sc.getUrl;
+            this._fileInfo.setFileType = sc.getFileType;
+            this._fileInfo.setShortUrl = sc.getShortUrl;
+            this._fileInfo.setOpensWith = sc.getOpensWith;
         }
         else{
             if(extension == '.url'){
                 const sc = await this.getShortCutAsync(path) as ShortCut;
                 this._fileInfo.setIcon = sc.getIconFile;
                 this._fileInfo.setPath = sc.getUrl;
+                this._fileInfo.setFileType = sc.getFileType;
+                this._fileInfo.setShortUrl = sc.getShortUrl;
+                this._fileInfo.setOpensWith = sc.getOpensWith;
              }
              else if(this._consts.IMAGE_FILE_EXTENSIONS.includes(extension)){    
                  const sc = await this.getImageFileB64DataUrlAsync(path) as ShortCut;
                  this._fileInfo.setIcon = sc.getIconFile;
                  this._fileInfo.setPath = sc.getUrl;
-             }else{
+                 this._fileInfo.setFileType = extension;
+                 this._fileInfo.setShortUrl = sc.getShortUrl;
+                 this._fileInfo.setOpensWith = 'imageviewer';
+             }
+             else if(extension == '.txt' || extension == '.properties'){
+                this._fileInfo.setIcon = '/osdrive/icons/file.ico';
+                this._fileInfo.setPath = basename(path, extname(path));
+                this._fileInfo.setFileType = extname(path);
+                this._fileInfo.setShortUrl = basename(path, extname(path));
+                this._fileInfo.setOpensWith = 'textopener';
+             }
+             else{
                  this._fileInfo.setIcon='/osdrive/icons/unknown.ico';
                  this._fileInfo.setPath = basename(path, extname(path)) ;
              }
@@ -111,7 +128,9 @@ export class FileService{
                 }
                 const isDirectory = stats ? stats.isDirectory() : false
                 const iconFile = `/osdrive/icons/${isDirectory ? 'folder.ico' : 'unknown.ico'}`
-                resolve(new ShortCut(iconFile, basename(path, extname(path)) ));
+                const fileType = 'folder';
+                const opensWith ='fileexlporer'
+                resolve(new ShortCut(iconFile, basename(path, extname(path)),fileType,basename(path, extname(path)) ,opensWith ));
             });
         });
     }
@@ -127,15 +146,18 @@ export class FileService{
                     reject(err)
                 }
                 const stage = contents? contents.toString(): Buffer.from('').toString();
-                const shortCut = ini.parse(stage) as unknown || {InternetShortcut:{ URL:'hi', IconFile:''}};
+                const shortCut = ini.parse(stage) as unknown || {InternetShortcut:{ URL:'hi', IconFile:'', FileType:'', ShortUrl:'', OpensWith:''}};
                 if (typeof shortCut === 'object') {
                     const iSCut = (shortCut as {InternetShortcut:unknown})?.['InternetShortcut'];
                     const  url=  (iSCut as {URL:unknown})?.['URL'] as string;
                     const iconFile = (iSCut as {IconFile:unknown})?.['IconFile'] as string;
-                    resolve(new ShortCut(iconFile,url));
+                    const fileType = (iSCut as {FileType:unknown})?.['FileType'] as string;
+                    const shortUrl = (iSCut as {ShortUrl:unknown})?.['ShortUrl'] as string;
+                    const opensWith = (iSCut as {OpensWith:unknown})?.['OpensWith'] as string;
+                    resolve(new ShortCut(iconFile,url,fileType,shortUrl,opensWith));
                 }
 
-                resolve(new ShortCut('',''));
+                resolve(new ShortCut('','','','',''));
             });
         });
     }
@@ -150,7 +172,7 @@ export class FileService{
                     reject(err)
                 }
                 const b64EncodedData = b64Ed as string
-                resolve(new ShortCut(b64EncodedData, basename(path, extname(path))));
+                resolve(new ShortCut(b64EncodedData, basename(path, extname(path)),'',basename(path, extname(path)),''));
             });
         });
     }
