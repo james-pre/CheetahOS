@@ -14,11 +14,11 @@ import { FileexplorerComponent } from './system-apps/fileexplorer/fileexplorer.c
 import { WindowComponent } from './system-apps/window/window.component';
 import { FilemanagerComponent } from './system-apps/filemanager/filemanager.component';
 import { HighlightDirective } from './system-apps/window/window.btn.highlight.directives';
-import { FlieManagerHighlightDirective } from './system-apps/filemanager/file.mngr.highlight.directives';
+import { FlieManagerHighlightDirective } from './shared/system-directive/file.mngr.highlight.directives';
 import { GreetingComponent } from './user-apps/greeting/greeting.component';
 import { TaskmanagerComponent } from './system-apps/taskmanager/taskmanager.component';
 import { JsdosComponent } from './user-apps/jsdos/jsdos.component';
-import { SafeUrlPipe } from './system-apps/filemanager/safe.resource.url.pipe';
+import { SafeUrlPipe } from './shared/system-pipes/safe.resource.url.pipe';
 
 
 

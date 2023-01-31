@@ -3,8 +3,8 @@
     <header (dblclick)="onTitleBarDoubleClick()">
         <h1>
             <figure>
-                <img src="/osdrive/picture/favicon.ico" alt="test"/>
-                <figcaption> test </figcaption>
+                <img [src]="this.icon" [alt]="this.name"/>
+                <figcaption> {{this.name}} </figcaption>
             </figure>
         </h1>
         <nav>

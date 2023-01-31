@@ -14,6 +14,8 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
    @ViewChild('divWindow') divWindow!: ElementRef;
 
    @Input() runningProcessID = 0;  
+   @Input() processAppIcon = '';  
+   @Input() processAppName = '';  
    private _runningProcessService:RunningProcessService;
    private _stateManagmentService: StateManagmentService
 
@@ -49,6 +51,8 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
 
    ngOnInit(): void {
      this.processId = this.runningProcessID;
+     this.icon = this.processAppIcon;
+     this.name = this.processAppName;
    }
 
    ngOnDestroy(): void {

@@ -12,6 +12,7 @@ import { GreetingComponent } from './user-apps/greeting/greeting.component';
 import { FileexplorerComponent } from './system-apps/fileexplorer/fileexplorer.component';
 import { TaskmanagerComponent } from './system-apps/taskmanager/taskmanager.component';
 import { SessionManagmentService } from './shared/system-service/session.management.service';
+import { AppDirectory } from './system-files/app.directory';
 
 @Component({
   selector: 'cos-root',
@@ -33,6 +34,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   private _startProcessService:StartProcessService;
   private _sessionMangamentServices:SessionManagmentService;
   private _componentRefView!:ViewRef;
+  private _appDirectory:AppDirectory;
 
   private _closeProcessSub!:Subscription;
   private _startProcessSub!:Subscription;
@@ -53,10 +55,11 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   //appname
   private apps: {type: Type<BaseComponent>}[] =[
     {type: FileexplorerComponent},
-    {type: GreetingComponent},
     {type: TaskmanagerComponent},
     {type: TitleComponent},
+    {type: GreetingComponent},
   ];
+
 
   constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService,componentReferenceService:ComponentReferenceService, startProcessService:StartProcessService,
     sessionMangamentServices:SessionManagmentService){
@@ -72,6 +75,8 @@ export class AppComponent implements OnDestroy, AfterViewInit {
     this._startProcessSub = this._startProcessService.appNotFoundNotify.subscribe((appName) =>{this.loadApps(appName)})
     this._runningProcessService.closeProcessNotify.subscribe((p) =>{this.onCloseBtnClicked(p)})
     this._runningProcessService.addProcess(this.getComponentDetail());
+
+    this._appDirectory = new AppDirectory();
   }
 
   ngOnDestroy(): void {
@@ -82,7 +87,6 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit():void{
-    
     // This quiets the - Expression has changed after it was checked.
       setTimeout(()=> {
         const openedAppList = this._sessionMangamentServices.getSession(this.userOpenedAppsKey) as string[];
@@ -95,16 +99,15 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   }
 
   async loadApps(appName:string):Promise<void>{
-    if(appName == 'hello'){
-      this.lazyLoadComponment();
+    if(this._appDirectory.appExist(appName)){
+        this.lazyLoadComponment(this._appDirectory.getAppPosition(appName));
     }else{
       alert(`The app: ${appName} was not found. It could have been deleted or location changed.`)
     }
   }
 
-  private async lazyLoadComponment() {
-    const input = 3; // for the title component
-    const componentToLoad = this.apps[input];
+  private async lazyLoadComponment(appPosition:number) {
+    const componentToLoad = this.apps[appPosition];
     const componentRef = this.itemViewContainer.createComponent<BaseComponent>(componentToLoad.type);
     const pid = componentRef.instance.processId
     this.addEntryFromUserOpenedApps(componentRef.instance.name);

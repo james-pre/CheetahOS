@@ -24,7 +24,7 @@ export class FilemanagerComponent implements  AfterViewInit, OnDestroy {
   private _dirFilesUpdatedSub!: Subscription;
   private _startProcessService:StartProcessService;
 
-  hasWindow = true;
+  hasWindow = false;
   icon = '';
   name = 'filemanager';
   processId = 0;
@@ -73,6 +73,7 @@ export class FilemanagerComponent implements  AfterViewInit, OnDestroy {
 
   private async loadFilesInfoAsync(){
     this.files = [];
+    this._fileService.resetDirectoryFiles();
     //console.log('I was called-loadFilesInfo')TBD
     const dirFileEntries  = await this._fileService.getFilesFromDirectoryAsync(this.directory) as [];
     this._directoryFilesEntires = this._fileService.getFileEntriesFromDirectory(dirFileEntries,this.directory);

@@ -23,7 +23,7 @@ export class FileService{
     dirFilesReadyNotify: Subject<void> = new Subject<void>();
     dirFilesUpdateNotify: Subject<void> = new Subject<void>();
 
-    constructor(){
+    constructor(){ 
         1
     }
 
@@ -201,6 +201,10 @@ export class FileService{
             this._directoryFileEntires.push(fileEntry)
         }
         return this._directoryFileEntires;
+    }
+
+    public resetDirectoryFiles(){
+        this._directoryFileEntires=[]
     }
 
     public bufferToUrl(buffer:Buffer):string{
