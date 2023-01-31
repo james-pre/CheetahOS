@@ -88,6 +88,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
 
   ngAfterViewInit():void{
     // This quiets the - Expression has changed after it was checked.
+    //change detection is the better solution
       setTimeout(()=> {
         const openedAppList = this._sessionMangamentServices.getSession(this.userOpenedAppsKey) as string[];
         if(openedAppList != null || openedAppList != undefined){
