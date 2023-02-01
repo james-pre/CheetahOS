@@ -6,5 +6,6 @@ export interface BaseComponent {
   hasWindow:boolean,
   icon:string
   processId:number;
-  type: ComponentType
+  type: ComponentType;
+  displayName: string;
 }

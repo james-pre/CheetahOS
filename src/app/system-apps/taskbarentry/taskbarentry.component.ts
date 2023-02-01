@@ -19,6 +19,7 @@ export class TaskbarentryComponent implements OnInit {
   name = '';
   processId = 0;
   type = ComponentType.systemComponent;
+  displayName = '';
 
   constructor( ){
     //

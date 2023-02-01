@@ -49,8 +49,8 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   icon = '';
   name = 'CheetahOS';
   processId = 0;
-  //I know, I'm cheeting here
   type = ComponentType.systemComponent;
+  displayName = '';
 
   //:TODO when you have more apps with a UI worth looking at, add a way to select the right component for the give
   //appname

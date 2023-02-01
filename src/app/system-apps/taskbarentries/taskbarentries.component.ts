@@ -22,7 +22,8 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
   icon = '';
   name = 'taskbarentry';
   processId = 0;
-  type = ComponentType.systemComponent
+  type = ComponentType.systemComponent;
+  displayName = '';
 
   constructor(processIdService:ProcessIDService,runningProcessService:RunningProcessService) { 
     this._processIdService = processIdService;

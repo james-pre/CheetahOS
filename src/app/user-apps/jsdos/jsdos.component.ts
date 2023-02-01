@@ -19,16 +19,16 @@ declare const emulators:Emulators
 export class JsdosComponent implements BaseComponent, OnInit, AfterViewInit {
   @ViewChild('doswindow') dosWindow!: ElementRef; 
 
-
   private _fileService:FileService;
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
 
-  name= 'JS-Dos';
+  name= 'jsdos';
   hasWindow = true;
   icon = '';
   processId = 0;
-  type = ComponentType.systemComponent;
+  type = ComponentType.userComponent;
+  displayName = 'JS-Dos';
 
   dosOptions:DosPlayerOptions = {
     style: "none",
@@ -54,18 +54,16 @@ export class JsdosComponent implements BaseComponent, OnInit, AfterViewInit {
 
     setTimeout( async () => {
 
-      console.log('doswindow:',this.dosWindow)
+      //console.log('doswindow:',this.dosWindow) TBD
       //emulators.pathPrefix = 'https://cdn.jsdelivr.net/npm/js-dos@7.4.7/dist/'
       emulators.pathPrefix= '/'
-      console.log('emulator:',emulators)
+      //console.log('emulator:',emulators) TBD
   
       // eslint-disable-next-line prefer-const
       let data = await this._fileService.getFileAsync('/osdrive/desktop/test.jsdos');
-      console.log('data:',data) //TBD
+      //console.log('data:',data) //TBD 
   
-      Dos(this.dosWindow.nativeElement, this.dosOptions).run(data)
-      //Dos(this.dosWindow.nativeElement, this.dosOptions).run("https://doszone-uploads.s3.dualstack.eu-central-1.amazonaws.com/original/2X/2/24b00b14f118580763440ecaddcc948f8cb94f14.jsdos")
-      
+      Dos(this.dosWindow.nativeElement, this.dosOptions).run(data);
     }, 3000);
   }
 

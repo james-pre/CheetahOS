@@ -19,6 +19,7 @@ export class TaskbarComponent implements OnInit {
   name = 'taskbar';
   processId = 0;
   type = ComponentType.systemComponent
+  displayName = ''
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService) { 
     this._processIdService = processIdService;

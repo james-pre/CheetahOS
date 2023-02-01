@@ -3,11 +3,12 @@ ol{
     left: 60px;
     position: absolute;
     right:80px;
+    display: flex;
     /* width: 100%; */
 }
 
 li{
-    display: flex;
+    /* display: flex; */
     height: 100%;
     max-width: 30px;
     border-bottom: 2px solid #76B9ED;

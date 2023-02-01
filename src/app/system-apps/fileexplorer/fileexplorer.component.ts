@@ -16,13 +16,13 @@ export class FileexplorerComponent implements BaseComponent {
   private _processIdService;
   private _runningProcessService;
 
-
   hasWindow = true;
   icon = 'osdrive/icons/file_explorer.ico';
-  name = 'File Explorer';
+  name = 'fileexplorer';
   processId = 0;
-  type = ComponentType.systemComponent
+  type = ComponentType.systemComponent;
   directory ='/osdrive/';
+  displayName = 'File Explorer';
 
   constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService) { 
     this._processIdService = processIdService;
@@ -32,7 +32,7 @@ export class FileexplorerComponent implements BaseComponent {
   }
 
   updateIconAndName(updatedData:FileInfo):void{
-    console.log('updatedData:',updatedData);
+    //console.log('updatedData:',updatedData); TBD
     this.directory = updatedData.getPath;
     this.name = updatedData.getFileName;
     this.icon = updatedData.getIcon;

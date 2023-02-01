@@ -8,7 +8,7 @@ ol{
     column-gap: 1px;
     display: grid;
     grid-auto-flow: column;
-    grid-template-columns:  repeat(auto-fill,80px);
+    grid-template-columns:  repeat(auto-fill,90px);
     grid-template-rows: repeat(auto-fill,70px);
     height: calc(100% - 40px);
     padding: 5px 0 ;
@@ -31,7 +31,8 @@ figcaption{
                 0 2px 2px rgba(0, 0, 0, 50%),
                 0 2px 3px rgba(0, 0, 0, 25%);
     padding: 2px 0;
-
+    top: -1px;
+    position: relative;
 }
 
 img{

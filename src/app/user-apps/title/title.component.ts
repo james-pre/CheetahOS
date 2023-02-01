@@ -22,7 +22,8 @@ export class TitleComponent implements BaseComponent{
   icon = 'osdrive/picture/favicon.ico';
   name = 'Hello';
   processId = 0;
-  type = ComponentType.userComponent
+  type = ComponentType.userComponent;
+  displayName = 'Hello';
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService) { 
     this._processIdService = processIdService;

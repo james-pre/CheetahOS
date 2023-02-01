@@ -30,7 +30,8 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   icon = '';
   name = 'filemanager';
   processId = 0;
-  type = ComponentType.systemComponent
+  type = ComponentType.systemComponent;
+  displayName = '';
   directory ='/osdrive/desktop';
   files:FileInfo[] = [];
 
@@ -50,7 +51,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     if(this.folderPath === '')
         this.directory = '/osdrive/desktop';
     else
-      this.directory = `/${this.folderPath}`
+      this.directory = `/${this.folderPath}`;
   }
 
 

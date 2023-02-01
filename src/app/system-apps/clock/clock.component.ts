@@ -25,7 +25,8 @@ export class ClockComponent implements OnInit, AfterViewInit {
   icon = '';
   name = 'clock';
   processId = 0;
-  type = ComponentType.systemComponent
+  type = ComponentType.systemComponent;
+  displayName = '';
 
   constructor(processIdService:ProcessIDService,runningProcessService:RunningProcessService) { 
     this._processIdService = processIdService;

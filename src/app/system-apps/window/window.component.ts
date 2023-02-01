@@ -26,7 +26,8 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
   icon = '';
   name = 'Window';
   processId = 0;
-  type = ComponentType.systemComponent
+  type = ComponentType.systemComponent;
+  displayName = '';
   hover = false;
   windowMinimize = false;
   windowUnMinimize = false;

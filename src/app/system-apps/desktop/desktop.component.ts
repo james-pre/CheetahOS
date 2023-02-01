@@ -20,7 +20,8 @@ export class DesktopComponent implements AfterViewInit{
   icon = '';
   name = 'desktop';
   processId = 0;
-  type = ComponentType.systemComponent
+  type = ComponentType.systemComponent;
+  displayName = '';
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService) { 
     this._processIdService = processIdService;

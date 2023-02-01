@@ -20,6 +20,7 @@ export class TaskmanagerComponent implements BaseComponent {
   name = 'taskmanager';
   processId = 0;
   type = ComponentType.systemComponent
+  displayName = 'Task Manager'
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService) { 
     this._processIdService = processIdService;
