@@ -8,6 +8,9 @@ export class Constants{
         '.ico',
         '.jpeg',
         '.tiff',
-        '.tif'
+        '.tif',
+        '.svg',
+        '.webp',
+        '.xlm'
     ]
 }

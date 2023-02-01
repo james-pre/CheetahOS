@@ -19,7 +19,7 @@ export class FileexplorerComponent implements BaseComponent {
 
   hasWindow = true;
   icon = 'osdrive/icons/file_explorer.ico';
-  name = 'fileexplorer';
+  name = 'File Explorer';
   processId = 0;
   type = ComponentType.systemComponent
   directory ='/osdrive/';

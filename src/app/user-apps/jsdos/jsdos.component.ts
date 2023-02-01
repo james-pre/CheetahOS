@@ -24,7 +24,7 @@ export class JsdosComponent implements BaseComponent, OnInit, AfterViewInit {
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
 
-  name= '';
+  name= 'JS-Dos';
   hasWindow = true;
   icon = '';
   processId = 0;
