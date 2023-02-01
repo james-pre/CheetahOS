@@ -1,6 +1,6 @@
 <ol (dragover)="onDragOver($event)"  (drop)="onDrop($event)">
     <li *ngFor="let file of files ">
-        <button fileMngrHighlight (dblclick)="runProcess(file.getPath)" >
+        <button fileMngrHighlight (dblclick)="runProcess(file)" >
             <figure>
                 <img [src]="file.getIcon | safeResourceUrl" [alt]="file.getPath" />
                 <figcaption>

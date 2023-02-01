@@ -172,6 +172,11 @@ export class FileService{
                     reject(err)
                 }
                 const b64EncodedData = b64Ed as string
+
+                if(b64EncodedData.includes('\x00') || b64EncodedData.includes('\u0000')){
+                    resolve(new ShortCut(path, basename(path, extname(path)),'',basename(path, extname(path)),''));
+                }
+                    
                 resolve(new ShortCut(b64EncodedData, basename(path, extname(path)),'',basename(path, extname(path)),''));
             });
         });

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy, ElementRef, AfterViewInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ElementRef, AfterViewInit,OnChanges, ViewChild, ChangeDetectorRef, SimpleChanges } from '@angular/core';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { Subscription } from 'rxjs';
@@ -10,7 +10,7 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
    templateUrl: './window.component.html',
    styleUrls: ['./window.component.css']
  })
- export class WindowComponent implements OnInit, AfterViewInit, OnDestroy {
+ export class WindowComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
    @ViewChild('divWindow') divWindow!: ElementRef;
 
    @Input() runningProcessID = 0;  
@@ -47,6 +47,11 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
 
    get divWindowElement(): HTMLElement {
     return this.divWindow.nativeElement;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('WINDOW CHANGES:',changes)
+    this.name = this.processAppName;
   }
 
    ngOnInit(): void {

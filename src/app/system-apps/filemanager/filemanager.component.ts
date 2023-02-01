@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { FileService } from 'src/app/shared/system-service/file.service';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
@@ -6,7 +6,7 @@ import { ComponentType } from 'src/app/system-files/component.types';
 import { Process } from 'src/app/system-files/process';
 import { FileEntry } from 'src/app/system-files/fileentry';
 import { FileInfo } from 'src/app/system-files/fileinfo';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { StartProcessService } from 'src/app/shared/system-service/start.process.service';
 
 @Component({
@@ -14,15 +14,19 @@ import { StartProcessService } from 'src/app/shared/system-service/start.process
   templateUrl: './filemanager.component.html',
   styleUrls: ['./filemanager.component.css']
 })
-export class FilemanagerComponent implements  AfterViewInit, OnDestroy {
-
-
+export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
+ 
+  @Input() folderPath = '';  
+  @Output() updateExplorerIconAndName = new EventEmitter<string>();
+  
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _fileService:FileService
   private _directoryFilesEntires!:FileEntry[];
   private _dirFilesUpdatedSub!: Subscription;
   private _startProcessService:StartProcessService;
+
+  // openFolderInFileExplorer: Subject<string> = new Subject<string>();
 
   hasWindow = false;
   icon = '';
@@ -44,6 +48,15 @@ export class FilemanagerComponent implements  AfterViewInit, OnDestroy {
     this._dirFilesUpdatedSub = this._fileService.dirFilesUpdateNotify.subscribe(() =>{this.loadFilesInfoAsync();})
   
   }
+
+  ngOnInit(): void {
+
+    if(this.folderPath === '')
+        this.directory = '/osdrive/desktop';
+    else
+      this.directory = `/${this.folderPath}`
+  }
+
 
   ngAfterViewInit(){
    this.loadFilesInfoAsync();
@@ -78,16 +91,32 @@ export class FilemanagerComponent implements  AfterViewInit, OnDestroy {
     const dirFileEntries  = await this._fileService.getFilesFromDirectoryAsync(this.directory) as [];
     this._directoryFilesEntires = this._fileService.getFileEntriesFromDirectory(dirFileEntries,this.directory);
 
-    //console.log("this is file entry count:", dirFileEntries)TBD
+    //console.log("this is file entry count:", dirFileEntries)//TBD
+    //console.log("this is file entry count:", this._directoryFilesEntires)//TBD
     for(let i = 0; i < dirFileEntries.length; i++){
       const fileEntry = this._directoryFilesEntires[i];
       const fileInfo = await this._fileService.getFileInfoAsync(fileEntry.getPath);
+      console.log("this is fmgr. fileInfo:", fileInfo)//TBD
       this.files.push(fileInfo)
     }
   }
 
-  runProcess(appName:string):void{
-    this._startProcessService.startApplication(appName);
+  async runProcess(file:FileInfo):Promise<void>{
+    console.log('what was clicked:',file.getOpensWith +'---'+ file.getPath +'----'+ file.getIcon)
+    const path = '/osdrive/icons'
+
+    if((file.getOpensWith == 'fileexplorer' && file.getPath != 'File Explorer') && file.getFileType == 'folder'){
+        this.updateExplorerIconAndName.emit(path);
+        this.directory = path;
+
+        await this.loadFilesInfoAsync();
+        //this.openFolderInFileExplorer.next(path);
+    }else{
+
+      this._startProcessService.startApplication(file.getOpensWith);
+    }
+
+
   }
 
   private getComponentDetail():Process{
