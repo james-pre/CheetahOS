@@ -31,7 +31,7 @@ export class TaskbarentryComponent implements OnInit {
   }
 
   restoreOrMinizeWindow() {
-    //console.log(`restore/minimize window evt triggered for pid:${this.processId}`);
+    //console.log(`restore/minimize window evt triggered for pid:${this.processId}`); TBF
     this.restoreOrMinizeWindowEvent.emit( this.taskBarPid);
   }
 }
