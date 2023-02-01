@@ -19,6 +19,7 @@ import { GreetingComponent } from './user-apps/greeting/greeting.component';
 import { TaskmanagerComponent } from './system-apps/taskmanager/taskmanager.component';
 import { JsdosComponent } from './user-apps/jsdos/jsdos.component';
 import { SafeUrlPipe } from './shared/system-pipes/safe.resource.url.pipe';
+import { TaskBarEntryHighlightDirective } from './shared/system-directive/taskbar.entry.highlight.directives';
 
 
 
@@ -37,6 +38,7 @@ import { SafeUrlPipe } from './shared/system-pipes/safe.resource.url.pipe';
     FilemanagerComponent,
     HighlightDirective,
     FlieManagerHighlightDirective,
+    TaskBarEntryHighlightDirective,
     GreetingComponent,
     TaskmanagerComponent,
     JsdosComponent,

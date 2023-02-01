@@ -1,5 +1,5 @@
 <ol> 
-     <li *ngFor="let rProcess of runningProcess">
+     <li taskBarEntryHighlight *ngFor="let rProcess of runningProcess">
           <cos-taskbarentry [taskBarPid]="rProcess.getProcessId" [taskBarIconImgUrl]="rProcess.getIcon"  [taskBarIconName]="rProcess.getProcessName" (restoreOrMinizeWindowEvent)="restoreOrMinizeWindow($event)"> </cos-taskbarentry> 
      </li>
      <!-- <cos-taskbarentry [taskBarIconImgUrl]="" [taskBarIconTitle]="" > </cos-taskbarentry>  -->
