@@ -8,7 +8,7 @@ import { FileEntry } from 'src/app/system-files/fileentry';
 import { Subject } from "rxjs";
 import * as BrowserFS from 'browserfs';
 import osDriveFileSystemIndex from '../../../osdrive.json';
-import ini from 'ini';
+import ini  from 'ini';
 
 @Injectable({
     providedIn: 'root'
@@ -135,7 +135,7 @@ export class FileService{
         });
     }
 
-    public async getShortCutAsync(path: string) {
+    public async getShortCutAsync(path:string) {
         await this.initBrowserFsAsync();
 
         return new Promise((resolve, reject) =>{
@@ -162,7 +162,7 @@ export class FileService{
         });
     }
 
-    public async getImageFileB64DataUrlAsync(path: string):Promise<unknown> {
+    public async getImageFileB64DataUrlAsync(path:string):Promise<unknown> {
         await this.initBrowserFsAsync();
 
         return new Promise((resolve, reject) =>{
@@ -178,6 +178,21 @@ export class FileService{
                 }
                     
                 resolve(new ShortCut(stringData, basename(path, extname(path)),'',basename(path, extname(path)),''));
+            });
+        });
+    }
+
+    public async getFileAsync(path:string): Promise<string> {
+        await this.initBrowserFsAsync();
+
+        return new Promise((resolve, reject) =>{
+            this._fileSystem.readFile(path,(err, contents = Buffer.from('')) =>{
+                if(err){
+                    console.log('getFileAsync error:',err)
+                    reject(err)
+                }
+                const fileUrl = URL.createObjectURL(new Blob([new Uint8Array(contents)]))
+                resolve(fileUrl);
             });
         });
     }

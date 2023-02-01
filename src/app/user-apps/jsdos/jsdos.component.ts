@@ -52,21 +52,21 @@ export class JsdosComponent implements BaseComponent, OnInit, AfterViewInit {
 
   ngAfterViewInit() {
 
-    1
-    // setTimeout(() => {
+    setTimeout( async () => {
 
-    //   console.log('doswindow:',this.dosWindow)
-    //   //emulators.pathPrefix = 'https://cdn.jsdelivr.net/npm/js-dos@7.4.7/dist/'
-    //   emulators.pathPrefix= '/'
-    //   console.log('emulator:',emulators)
+      console.log('doswindow:',this.dosWindow)
+      //emulators.pathPrefix = 'https://cdn.jsdelivr.net/npm/js-dos@7.4.7/dist/'
+      emulators.pathPrefix= '/'
+      console.log('emulator:',emulators)
   
-    //   // eslint-disable-next-line prefer-const
-    //   //let data = this._fileService.getFile('/desktop/test.jsdos');
-    //   //console.log('data:',data)
+      // eslint-disable-next-line prefer-const
+      let data = await this._fileService.getFileAsync('/osdrive/desktop/test.jsdos');
+      console.log('data:',data) //TBD
   
+      Dos(this.dosWindow.nativeElement, this.dosOptions).run(data)
       //Dos(this.dosWindow.nativeElement, this.dosOptions).run("https://doszone-uploads.s3.dualstack.eu-central-1.amazonaws.com/original/2X/2/24b00b14f118580763440ecaddcc948f8cb94f14.jsdos")
       
-    // }, 3000);
+    }, 3000);
   }
 
 
