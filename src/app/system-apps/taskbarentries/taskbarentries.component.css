@@ -5,11 +5,13 @@ ol{
     right:80px;
     display: flex;
     /* width: 100%; */
+    column-gap: 4px;
+    margin: 0 3px
 }
 
 li{
     /* display: flex; */
     height: 100%;
-    max-width: 30px;
+    min-width: 0px;
     border-bottom: 2px solid #76B9ED;
 }

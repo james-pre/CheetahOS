@@ -18,6 +18,7 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
   
   runningProcess:Process[] = []
 
+  hover = false;
   hasWindow = false;
   icon = '';
   name = 'taskbarentry';
