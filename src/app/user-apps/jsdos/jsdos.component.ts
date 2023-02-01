@@ -7,6 +7,7 @@ import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { Process } from 'src/app/system-files/process';
+import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 declare const Dos: DosPlayerFactoryType;
 declare const emulators:Emulators
 
@@ -21,6 +22,7 @@ export class JsdosComponent implements BaseComponent, OnInit, AfterViewInit {
 
   private _fileService:FileService;
   private _processIdService:ProcessIDService;
+  private _runningProcessService:RunningProcessService;
 
   name= '';
   hasWindow = true;
@@ -35,10 +37,13 @@ export class JsdosComponent implements BaseComponent, OnInit, AfterViewInit {
     noSocialLinks:true
   }
 
-  constructor(fileService:FileService, processIdService:ProcessIDService) { 
+  constructor(fileService:FileService, processIdService:ProcessIDService, runningProcessService:RunningProcessService) { 
     this._fileService = fileService
     this._processIdService = processIdService;
     this.processId = this._processIdService.getNewProcessId()
+    
+    this._runningProcessService = runningProcessService;
+    this._runningProcessService.addProcess(this.getComponentDetail());
   }
 
   ngOnInit(): void {
@@ -59,7 +64,7 @@ export class JsdosComponent implements BaseComponent, OnInit, AfterViewInit {
     //   //let data = this._fileService.getFile('/desktop/test.jsdos');
     //   //console.log('data:',data)
   
-      Dos(this.dosWindow.nativeElement, this.dosOptions).run("https://doszone-uploads.s3.dualstack.eu-central-1.amazonaws.com/original/2X/2/24b00b14f118580763440ecaddcc948f8cb94f14.jsdos")
+      //Dos(this.dosWindow.nativeElement, this.dosOptions).run("https://doszone-uploads.s3.dualstack.eu-central-1.amazonaws.com/original/2X/2/24b00b14f118580763440ecaddcc948f8cb94f14.jsdos")
       
     // }, 3000);
   }

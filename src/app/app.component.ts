@@ -13,6 +13,7 @@ import { FileexplorerComponent } from './system-apps/fileexplorer/fileexplorer.c
 import { TaskmanagerComponent } from './system-apps/taskmanager/taskmanager.component';
 import { SessionManagmentService } from './shared/system-service/session.management.service';
 import { AppDirectory } from './system-files/app.directory';
+import { JsdosComponent } from './user-apps/jsdos/jsdos.component';
 
 @Component({
   selector: 'cos-root',
@@ -58,6 +59,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
     {type: TaskmanagerComponent},
     {type: TitleComponent},
     {type: GreetingComponent},
+    {type: JsdosComponent}
   ];
 
 
