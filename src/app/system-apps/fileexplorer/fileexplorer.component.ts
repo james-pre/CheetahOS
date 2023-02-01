@@ -3,6 +3,7 @@ import { ProcessIDService } from 'src/app/shared/system-service/process.id.servi
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { ComponentType } from 'src/app/system-files/component.types';
+import { FileInfo } from 'src/app/system-files/fileinfo';
 import { Process } from 'src/app/system-files/process';
 
 @Component({
@@ -30,10 +31,11 @@ export class FileexplorerComponent implements BaseComponent {
     this._runningProcessService.addProcess(this.getComponentDetail());
   }
 
-  updateIconAndFileName(updatedData:string):void{
+  updateIconAndName(updatedData:FileInfo):void{
     console.log('updatedData:',updatedData);
-    this.directory = updatedData;
-    this.name = 'sup'
+    this.directory = updatedData.getPath;
+    this.name = updatedData.getFileName;
+    this.icon = updatedData.getIcon;
   }
 
   private getComponentDetail():Process{

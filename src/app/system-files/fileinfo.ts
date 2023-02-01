@@ -2,7 +2,7 @@ export class FileInfo{
     private _icon:string;
     private _path:string;
     private _fileType:string;
-    private _shortUrl:string;
+    private _fileName:string;
     private _opensWith:string;
 
 
@@ -10,7 +10,7 @@ export class FileInfo{
         this._icon = '';
         this._path = '';
         this._fileType = '';
-        this._shortUrl = '';
+        this._fileName = '';
         this._opensWith = '';
     }
 
@@ -35,11 +35,11 @@ export class FileInfo{
         this._fileType = fileType
     }
 
-    get getShortUrl(){
-        return this._shortUrl;
+    get getFileName(){
+        return this._fileName;
     }
-    set setShortUrl(shortUrl:string){
-        this._shortUrl = shortUrl
+    set setFileName(fileName:string){
+        this._fileName = fileName
     }
 
     get getOpensWith(){

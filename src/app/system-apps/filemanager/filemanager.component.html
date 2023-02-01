@@ -2,9 +2,9 @@
     <li *ngFor="let file of files ">
         <button fileMngrHighlight (dblclick)="runProcess(file)" >
             <figure>
-                <img [src]="file.getIcon | safeResourceUrl" [alt]="file.getPath" />
+                <img [src]="file.getIcon | safeResourceUrl" [alt]="file.getFileName" />
                 <figcaption>
-                        {{file.getPath}}
+                        {{file.getFileName}}
                 </figcaption>
             </figure>
         </button>

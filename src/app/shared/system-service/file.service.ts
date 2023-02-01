@@ -79,40 +79,40 @@ export class FileService{
         if(!extension){
             const sc = await this.getFolderAsync(path) as ShortCut;
             this._fileInfo.setIcon = sc.getIconFile;
-            this._fileInfo.setPath = sc.getUrl;
+            this._fileInfo.setPath = path;
             this._fileInfo.setFileType = sc.getFileType;
-            this._fileInfo.setShortUrl = sc.getShortUrl;
+            this._fileInfo.setFileName = sc.geFileName;
             this._fileInfo.setOpensWith = sc.getOpensWith;
         }
         else{
             if(extension == '.url'){
                 const sc = await this.getShortCutAsync(path) as ShortCut;
                 this._fileInfo.setIcon = sc.getIconFile;
-                this._fileInfo.setPath = sc.getUrl;
+                this._fileInfo.setPath = path;
                 this._fileInfo.setFileType = sc.getFileType;
-                this._fileInfo.setShortUrl = sc.getShortUrl;
+                this._fileInfo.setFileName = sc.geFileName;
                 this._fileInfo.setOpensWith = sc.getOpensWith;
              }
              else if(this._consts.IMAGE_FILE_EXTENSIONS.includes(extension)){    
-                 const sc = await this.getImageFileB64DataUrlAsync(path) as ShortCut;
-                 this._fileInfo.setIcon = sc.getIconFile;
-                 this._fileInfo.setPath = sc.getUrl;
-                 this._fileInfo.setFileType = extension;
-                 this._fileInfo.setShortUrl = sc.getShortUrl;
-                 this._fileInfo.setOpensWith = 'imageviewer';
-             }
+                const sc = await this.getImageFileB64DataUrlAsync(path) as ShortCut;
+                this._fileInfo.setIcon = sc.getIconFile;
+                this._fileInfo.setPath = path;
+                this._fileInfo.setFileType = extension;
+                this._fileInfo.setFileName = sc.geFileName;
+                this._fileInfo.setOpensWith = 'imageviewer';
+            }
              else if(extension == '.txt' || extension == '.properties'){
                 this._fileInfo.setIcon = '/osdrive/icons/file.ico';
-                this._fileInfo.setPath = basename(path, extname(path));
+                this._fileInfo.setPath = path;
                 this._fileInfo.setFileType = extname(path);
-                this._fileInfo.setShortUrl = basename(path, extname(path));
+                this._fileInfo.setFileName = basename(path, extname(path));
                 this._fileInfo.setOpensWith = 'textopener';
-             }
+            }
              else{
-                 this._fileInfo.setIcon='/osdrive/icons/unknown.ico';
-                 this._fileInfo.setPath = basename(path, extname(path)) ;
-             }
-     
+                this._fileInfo.setIcon='/osdrive/icons/unknown.ico';
+                this._fileInfo.setPath = path;
+                this._fileInfo.setFileName = basename(path, extname(path));
+            }
         }
         return this._fileInfo;
     }
@@ -146,15 +146,15 @@ export class FileService{
                     reject(err)
                 }
                 const stage = contents? contents.toString(): Buffer.from('').toString();
-                const shortCut = ini.parse(stage) as unknown || {InternetShortcut:{ URL:'hi', IconFile:'', FileType:'', ShortUrl:'', OpensWith:''}};
+                const shortCut = ini.parse(stage) as unknown || {InternetShortcut:{ FileName:'hi', IconFile:'', FileType:'', ShortUrl:'', OpensWith:''}};
                 if (typeof shortCut === 'object') {
                     const iSCut = (shortCut as {InternetShortcut:unknown})?.['InternetShortcut'];
-                    const  url=  (iSCut as {URL:unknown})?.['URL'] as string;
+                    const  fileName=  (iSCut as {FileName:unknown})?.['FileName'] as string;
                     const iconFile = (iSCut as {IconFile:unknown})?.['IconFile'] as string;
                     const fileType = (iSCut as {FileType:unknown})?.['FileType'] as string;
                     const shortUrl = (iSCut as {ShortUrl:unknown})?.['ShortUrl'] as string;
                     const opensWith = (iSCut as {OpensWith:unknown})?.['OpensWith'] as string;
-                    resolve(new ShortCut(iconFile,url,fileType,shortUrl,opensWith));
+                    resolve(new ShortCut(iconFile,fileName,fileType,shortUrl,opensWith));
                 }
 
                 resolve(new ShortCut('','','','',''));
@@ -166,18 +166,18 @@ export class FileService{
         await this.initBrowserFsAsync();
 
         return new Promise((resolve, reject) =>{
-            this._fileSystem.readFile(path, 'utf-8',(err, b64Ed) =>{
+            this._fileSystem.readFile(path, 'utf-8',(err, data) =>{
                 if(err){
                     console.log('getImageFileAsync error:',err)
                     reject(err)
                 }
-                const b64EncodedData = b64Ed as string
+                const stringData = data as string
 
-                if(b64EncodedData.includes('\x00') || b64EncodedData.includes('\u0000')){
+                if(stringData.includes('\x00') || stringData.includes('\u0000')){
                     resolve(new ShortCut(path, basename(path, extname(path)),'',basename(path, extname(path)),''));
                 }
                     
-                resolve(new ShortCut(b64EncodedData, basename(path, extname(path)),'',basename(path, extname(path)),''));
+                resolve(new ShortCut(stringData, basename(path, extname(path)),'',basename(path, extname(path)),''));
             });
         });
     }

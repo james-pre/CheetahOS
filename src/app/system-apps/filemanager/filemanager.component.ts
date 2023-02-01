@@ -6,7 +6,7 @@ import { ComponentType } from 'src/app/system-files/component.types';
 import { Process } from 'src/app/system-files/process';
 import { FileEntry } from 'src/app/system-files/fileentry';
 import { FileInfo } from 'src/app/system-files/fileinfo';
-import { Subject, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { StartProcessService } from 'src/app/shared/system-service/start.process.service';
 
 @Component({
@@ -17,7 +17,7 @@ import { StartProcessService } from 'src/app/shared/system-service/start.process
 export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
  
   @Input() folderPath = '';  
-  @Output() updateExplorerIconAndName = new EventEmitter<string>();
+  @Output() updateExplorerIconAndName = new EventEmitter<FileInfo>();
   
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
@@ -25,8 +25,6 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   private _directoryFilesEntires!:FileEntry[];
   private _dirFilesUpdatedSub!: Subscription;
   private _startProcessService:StartProcessService;
-
-  // openFolderInFileExplorer: Subject<string> = new Subject<string>();
 
   hasWindow = false;
   icon = '';
@@ -46,11 +44,9 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     this.processId = this._processIdService.getNewProcessId();
     this._runningProcessService.addProcess(this.getComponentDetail());
     this._dirFilesUpdatedSub = this._fileService.dirFilesUpdateNotify.subscribe(() =>{this.loadFilesInfoAsync();})
-  
   }
 
   ngOnInit(): void {
-
     if(this.folderPath === '')
         this.directory = '/osdrive/desktop';
     else
@@ -96,33 +92,26 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     for(let i = 0; i < dirFileEntries.length; i++){
       const fileEntry = this._directoryFilesEntires[i];
       const fileInfo = await this._fileService.getFileInfoAsync(fileEntry.getPath);
-      console.log("this is fmgr. fileInfo:", fileInfo)//TBD
+      //console.log("this is fmgr. fileInfo:", fileInfo)//TBD
       this.files.push(fileInfo)
     }
   }
 
   async runProcess(file:FileInfo):Promise<void>{
-    console.log('what was clicked:',file.getOpensWith +'---'+ file.getPath +'----'+ file.getIcon)
-    const path = '/osdrive/icons'
-
-    if((file.getOpensWith == 'fileexplorer' && file.getPath != 'File Explorer') && file.getFileType == 'folder'){
-        this.updateExplorerIconAndName.emit(path);
-        this.directory = path;
+    // console.log('what was clicked:',file.getFileName +'-----' + file.getOpensWith +'---'+ file.getPath +'----'+ file.getIcon) TBD
+    if((file.getOpensWith == 'fileexplorer' && file.getFileName != 'File Explorer') && file.getFileType =='folder'){
+        this.updateExplorerIconAndName.emit(file);
+        this.directory = file.getPath;
 
         await this.loadFilesInfoAsync();
-        //this.openFolderInFileExplorer.next(path);
     }else{
-
-      this._startProcessService.startApplication(file.getOpensWith);
+        this._startProcessService.startApplication(file.getOpensWith);
     }
-
-
   }
 
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type);
   }
-
 }
 
 

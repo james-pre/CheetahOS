@@ -1,13 +1,13 @@
 export class ShortCut{
     private _iconFile:string;
-    private _url:string;
+    private _fileName:string;
     private _fileType:string;
     private _shortUrl:string;
     private _opensWith:string;
 
-    constructor(IconFile:string, URL:string, FileType:string, ShortUrl:string, OpensWith:string){
+    constructor(IconFile:string, FileName:string, FileType:string, ShortUrl:string, OpensWith:string){
         this._iconFile = IconFile;
-        this._url = URL;
+        this._fileName = FileName;
         this._fileType = FileType;
         this._shortUrl = ShortUrl;
         this._opensWith = OpensWith;
@@ -20,11 +20,11 @@ export class ShortCut{
         this._iconFile = iconFile;
     }
 
-    get getUrl(){
-        return this._url;
+    get geFileName(){
+        return this._fileName;
     }
-    set setUrl(url:string){
-        this._url = url
+    set setFileName(fileName:string){
+        this._fileName = fileName
     }
 
     get getShortUrl(){

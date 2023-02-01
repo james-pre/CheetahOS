@@ -16,11 +16,10 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
    @Input() runningProcessID = 0;  
    @Input() processAppIcon = '';  
    @Input() processAppName = '';  
+   
    private _runningProcessService:RunningProcessService;
    private _stateManagmentService: StateManagmentService
-
    private _restoreOrMinSub!:Subscription
-
    private originalWindowsState!:WindowState;
 
   hasWindow = false;
@@ -52,6 +51,7 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
   ngOnChanges(changes: SimpleChanges): void {
     console.log('WINDOW CHANGES:',changes)
     this.name = this.processAppName;
+    this.icon = this.processAppIcon;
   }
 
    ngOnInit(): void {
