@@ -4,13 +4,11 @@ ol{
     position: absolute;
     right:80px;
     display: flex;
-    /* width: 100%; */
-    column-gap: 4px;
-    margin: 0 3px
+    column-gap: 6px;
+    margin: 0 1px
 }
 
 li{
-    /* display: flex; */
     height: 100%;
     min-width: 0px;
     border-bottom: 2px solid #76B9ED;
