@@ -59,6 +59,8 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
      this.processId = this.runningProcessID;
      this.icon = this.processAppIcon;
      this.name = this.processAppName;
+
+     console.log('hey hey hey')
    }
 
    ngOnDestroy(): void {
@@ -192,5 +194,9 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
     const processToClose = this._runningProcessService.getProcess(this.processId);
     this._stateManagmentService.removeState(this.processId);
     this._runningProcessService.closeProcessNotify.next(processToClose)
+   }
+
+   setWindowToFocus(windowName:string, pid:number):void{
+    console.log('This is focusEvt data:', windowName +'------'+pid);
    }
  }
