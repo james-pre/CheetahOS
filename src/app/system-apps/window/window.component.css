@@ -94,11 +94,16 @@ nav{
     height: 30px;
 }
 
+/* change cursor style to normal*/
 .ng-draggable {
-  cursor: grab;
+  cursor: auto;
 }
 
 .ng-dragging {
-  cursor: grabbing;
+  cursor: auto;
 }
 
+/* Hide draggable corner*/
+.ng-resizable-diagonal{ 
+  border-bottom: 12px solid transparent; 
+}

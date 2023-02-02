@@ -13,7 +13,7 @@ export class WindowState{
         this._width = width;
         this._x_axis = x_axis;
         this._y_axis = y_axis;
-        this._z_index = 1;
+        this._z_index = 0;
     }
 
     get getPid(){
