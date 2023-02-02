@@ -33,9 +33,10 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
   windowUnMinimize = false;
   windowMaximize = false;
   windowRestore = false;
-  currentStyles: Record<string, string> = {};
+  currentStyles: Record<string, unknown> = {};
   defaultWidthOnOpen = 0;
   defaultHeightOnOpen = 0;
+  private readonly z_index = 25914523 // this number = zindex
   
 
    constructor(runningProcessService:RunningProcessService, private changeDetectorRef: ChangeDetectorRef, stateManagmentService: StateManagmentService){
@@ -49,18 +50,10 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
     return this.divWindow.nativeElement;
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log('WINDOW CHANGES:',changes)
-    this.name = this.processAppName;
-    this.icon = this.processAppIcon;
-  }
-
    ngOnInit(): void {
      this.processId = this.runningProcessID;
      this.icon = this.processAppIcon;
      this.name = this.processAppName;
-
-     console.log('hey hey hey')
    }
 
    ngOnDestroy(): void {
@@ -74,9 +67,17 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
     this.originalWindowsState = new WindowState(this.processId,this.defaultHeightOnOpen, this.defaultWidthOnOpen,0,0);
     this._stateManagmentService.addState(this.processId,this.originalWindowsState)
 
+    this.setWindowToTop(this.processId);
+
     //tell angular to run additional detection cycle after 
     this.changeDetectorRef.detectChanges();
    }
+
+   ngOnChanges(changes: SimpleChanges): void {
+    console.log('WINDOW CHANGES:',changes)
+    this.name = this.processAppName;
+    this.icon = this.processAppIcon;
+  }
 
    setCurrentStyles() {
       // CSS styles: set per current state of component properties
@@ -196,7 +197,61 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
     this._runningProcessService.closeProcessNotify.next(processToClose)
    }
 
-   setWindowToFocus(windowName:string, pid:number):void{
-    console.log('This is focusEvt data:', windowName +'------'+pid);
+   setWindowToTop(pid:number):void{
+      console.log('This is setWindowToFocus data:',pid);
+
+      let z_index = this._stateManagmentService.getState(this.z_index) as number;
+      const windowState = this._stateManagmentService.getState(this.processId) as WindowState;
+
+      if(!z_index)
+      {
+        z_index = 1;
+      }else{
+        z_index = z_index + 1;
+      }
+      this._stateManagmentService.addState(this.z_index,z_index);
+
+     
+      if(windowState.getPid == this.processId){
+        if( windowState.getZIndex != 1){
+          windowState.setZIndex = z_index
+          this._stateManagmentService.addState(this.processId,windowState);
+        }
+        this.currentStyles = {
+          'z-index':z_index
+        };
+
+        console.log('this divwindow:', this.divWindow);
+      }
    }
+
+  //  unFocusWindows(pid:number):void { 
+  //     const windowPids: number[] = this._stateManagmentService.getKeys().filter(x => x != pid);
+      
+  //     console.log('This are the windowPids to unfocus:', windowPids);
+
+  //     for(const pid of windowPids){
+        
+  //       // eslint-disable-next-line prefer-const
+  //       let windowState = this._stateManagmentService.getState(pid) as WindowState;
+  //       let currZIndex = windowState.getZIndex;
+  //       windowState.setZIndex = currZIndex++
+
+  //       console.log('This is unfocusEvt data:', pid +'------'+ windowState);
+  //       this._stateManagmentService.addState(this.processId,windowState);
+
+  //       this.divWindow.nativeElement.focus();
+  //     }
+  //  }
+
+   onFocus(focusEvt:any):void{
+    console.log('This is focusEvt data:', focusEvt);
+    console.log('onFocus divWindow:',this.divWindow)
+   }
+
+
+   onBlur(blurEvt:any):void{
+    console.log('This is blurEvt data:', blurEvt);
+   }
+
  }

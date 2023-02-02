@@ -30,4 +30,13 @@ export class StateManagmentService{
         this._sessionStateManagmentService.delete(id)
     }
 
+    getKeys():number[]{
+        const keys:number[] = [];
+
+        for(const key of this._sessionStateManagmentService.keys()){
+            keys.push(key)
+        }
+        return keys;
+    }
+
 }

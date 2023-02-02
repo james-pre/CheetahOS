@@ -4,6 +4,7 @@ export class WindowState{
     private _width:number;
     private _x_axis:number;
     private _y_axis:number;
+    private _z_index:number;
 
 
     constructor(pid:number,height:number,width:number,x_axis:number,y_axis:number){
@@ -12,6 +13,7 @@ export class WindowState{
         this._width = width;
         this._x_axis = x_axis;
         this._y_axis = y_axis;
+        this._z_index = 1;
     }
 
     get getPid(){
@@ -48,6 +50,13 @@ export class WindowState{
     set setXAxis(x_axis:number){
 
         this._x_axis = x_axis;
+    }
+
+    get getZIndex(){
+        return this._z_index;
+    }
+    set setZIndex(z_index:number){
+        this._z_index = z_index;
     }
 
 }
