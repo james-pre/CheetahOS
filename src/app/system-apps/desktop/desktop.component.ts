@@ -34,7 +34,7 @@ export class DesktopComponent implements OnInit, AfterViewInit{
   }
 
 
-  ngOnInit(): void {
+  ngOnInit():void{
     VANTA.WAVES(this.defaultColor)
 
       //I'm unable to acccess vanta js effect.
@@ -46,12 +46,12 @@ export class DesktopComponent implements OnInit, AfterViewInit{
   }
 
 
-  ngAfterViewInit(): void {
+  ngAfterViewInit():void{
     1
     //this.rotateColors();
   }
 
-  private rotateColors() {
+  private rotateColors():void{
 
     let counter = 0;
     const colorSet = [0x284a,0x294c,0x304d,0x314b,0x324c,0x334c,0x344c,0x354c,0x364c,0x374c,0x384c,0x394c,0x404c,0x414c]

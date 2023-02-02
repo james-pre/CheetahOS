@@ -47,7 +47,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     this._dirFilesUpdatedSub = this._fileService.dirFilesUpdateNotify.subscribe(() =>{this.loadFilesInfoAsync();})
   }
 
-  ngOnInit(): void {
+  ngOnInit():void{
     if(this.folderPath === '')
         this.directory = '/osdrive/desktop';
     else
@@ -55,8 +55,8 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   }
 
 
-  ngAfterViewInit(){
-   this.loadFilesInfoAsync();
+  async ngAfterViewInit():Promise<void>{
+   await this.loadFilesInfoAsync();
   }
 
   ngOnDestroy(): void {
@@ -69,7 +69,6 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   }
 
   async onDrop(event:DragEvent):Promise<void>{
-
     event.preventDefault();
     const dataTransfer = event.dataTransfer;
     const droppedfile:File = dataTransfer?.files[0] || new File([],'');
@@ -78,10 +77,9 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
       //console.log('droppedfile:', droppedfile) TBD;
       await this._fileService.writeFileAsync(this.directory, droppedfile)
     }
-
   }
 
-  private async loadFilesInfoAsync(){
+  private async loadFilesInfoAsync():Promise<void>{
     this.files = [];
     this._fileService.resetDirectoryFiles();
     //console.log('I was called-loadFilesInfo')TBD

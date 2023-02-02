@@ -48,9 +48,10 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
     this._processListChangeSub?.unsubscribe();
   }
 
-  updateRunningProcess(){
-    this.runningProcess = this._runningProcessService.getProcesses().filter(p => p.getHasWindow == true);
-    //console.log('updated count of proc:', this._runningProcessService.processCount()) TBD
+  updateRunningProcess():void{
+    const processWithNoWindows = this._runningProcessService.getProcesses().filter(p => p.getHasWindow == true);
+    const ids = processWithNoWindows.map(p => p.getProcessName);
+    this.runningProcess = processWithNoWindows.filter(({getProcessName}, index) => !ids.includes(getProcessName, index + 1))
   }
 
   private getComponentDetail():Process{
@@ -61,7 +62,6 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
     //const theProcess = this._runningProcessService.getProcess(processId); TBD
     //console.log('close evt triggered for pid:'+ theProcess.getProcessId +'----'+'pname:'+theProcess.getProcessName); //TBD
     this._runningProcessService.restoreOrMinimizeWindowNotify.next(processId)
-
   }
 
 }

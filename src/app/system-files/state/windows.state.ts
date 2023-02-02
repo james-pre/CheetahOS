@@ -7,12 +7,12 @@ export class WindowState{
     private _z_index:number;
 
 
-    constructor(pid:number,height:number,width:number,x_axis:number,y_axis:number){
+    constructor(pid:number,height:number,width:number){
         this._pid = pid;
         this._height = height;
         this._width = width;
-        this._x_axis = x_axis;
-        this._y_axis = y_axis;
+        this._x_axis = 0;
+        this._y_axis = 0;
         this._z_index = 0;
     }
 

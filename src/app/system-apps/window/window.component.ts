@@ -28,6 +28,7 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
   processId = 0;
   type = ComponentType.systemComponent;
   displayName = '';
+   
   hover = false;
   windowMinimize = false;
   windowUnMinimize = false;
@@ -43,28 +44,27 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
       this._runningProcessService = runningProcessService;
       this._stateManagmentService = stateManagmentService;
       this._restoreOrMinSub = this._runningProcessService.restoreOrMinimizeWindowNotify.subscribe((p) => {this.restoreMinimzeWindow(p)})
-
    }
 
    get getDivWindowElement(): HTMLElement {
     return this.divWindow.nativeElement;
   }
 
-   ngOnInit(): void {
+   ngOnInit():void{
      this.processId = this.runningProcessID;
      this.icon = this.processAppIcon;
      this.name = this.processAppName;
    }
 
-   ngOnDestroy(): void {
+   ngOnDestroy():void{
     this._restoreOrMinSub.unsubscribe();
    }
 
-   ngAfterViewInit(): void {
+   ngAfterViewInit():void{
     this.defaultHeightOnOpen = this.getDivWindowElement.offsetHeight;
     this.defaultWidthOnOpen  = this.getDivWindowElement.offsetWidth;
 
-    this.originalWindowsState = new WindowState(this.processId,this.defaultHeightOnOpen, this.defaultWidthOnOpen,0,0);
+    this.originalWindowsState = new WindowState(this.processId,this.defaultHeightOnOpen, this.defaultWidthOnOpen);
     this._stateManagmentService.addState(this.processId,this.originalWindowsState)
 
     this.setWindowToFocus(this.processId);
@@ -73,13 +73,13 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
     this.changeDetectorRef.detectChanges();
    }
 
-   ngOnChanges(changes: SimpleChanges): void {
+   ngOnChanges(changes: SimpleChanges):void{
     console.log('WINDOW CHANGES:',changes)
     this.name = this.processAppName;
     this.icon = this.processAppIcon;
   }
 
-   setCurrentStyles() {
+   setCurrentStyles():void{
       // CSS styles: set per current state of component properties
       if(this.windowMinimize){
         this.currentStyles = {
@@ -156,11 +156,11 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
         if(this.windowMinimize && !this.windowUnMinimize){
               this.windowUnMinimize = true;
               this.windowMinimize = false;
-          }else{
-            this.windowUnMinimize = false;
-            this.windowMinimize = true;
-          }
-          this.setCurrentStyles()
+        }else{
+          this.windowUnMinimize = false;
+          this.windowMinimize = true;
+        }
+        this.setCurrentStyles()
       }
    }
 

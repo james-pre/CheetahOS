@@ -81,7 +81,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
     this._appDirectory = new AppDirectory();
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy():void{
     this._closeProcessSub?.unsubscribe();
     this._startProcessSub?.unsubscribe();
     this._appNotFoundSub?.unsubscribe();
@@ -120,7 +120,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
    this._runningProcessService.processListChangeNotify.next()
   }
 
-  onCloseBtnClicked(eventData:Process){
+  onCloseBtnClicked(eventData:Process):void{
     
     const componentToDelete = this._componentReferenceService.getComponentReference(eventData.getProcessId);
     this._componentRefView = componentToDelete.hostView;
@@ -142,7 +142,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type)
   }
 
-  private deleteEntryFromUserOpenedApps(proccessName:string){
+  private deleteEntryFromUserOpenedApps(proccessName:string):void{
       const deleteCount = 1
       const pidIndex = this.userOpenedAppsList.indexOf(proccessName)
 
@@ -152,7 +152,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
       this._sessionMangamentServices.addSession("openedApps", this.userOpenedAppsList)
   }
 
-  private addEntryFromUserOpenedApps(proccessName:string){
+  private addEntryFromUserOpenedApps(proccessName:string):void{
     this.userOpenedAppsList.push(proccessName);
     this._sessionMangamentServices.addSession("openedApps", this.userOpenedAppsList)
 }

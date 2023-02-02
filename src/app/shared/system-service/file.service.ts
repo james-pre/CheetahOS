@@ -235,7 +235,7 @@ export class FileService{
     //     })
     // }
 
-    public async writeFileAsync(directory:string, file:File,): Promise<void>{
+    public async writeFileAsync(directory:string, file:File,):Promise<void>{
         new Promise<void>((resolve, reject) =>{
             const fileReader = new FileReader()
             fileReader.readAsDataURL(file);
