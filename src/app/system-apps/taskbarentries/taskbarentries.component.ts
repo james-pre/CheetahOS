@@ -37,7 +37,7 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     //change detection is the better solution
     setTimeout(() => {
-      this.runningProcess = this._runningProcessService.getProcesses().filter(p => p.getHasWindow == true);
+      this.runningProcess = this.filterProcesses();
       //console.log('processs:',this.runningProcess) TBD
     }, 1500);
     //.filter(p => p.getType == ComponentType.userComponent); TBD
@@ -49,9 +49,18 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
   }
 
   updateRunningProcess():void{
+    this.runningProcess = this.filterProcesses();
+  }
+
+  private filterProcesses():Process[]{
+
+    /**
+     * filter first on processes that have windows
+     * then select unique instance of process with same proccess name
+     */
     const processWithNoWindows = this._runningProcessService.getProcesses().filter(p => p.getHasWindow == true);
     const ids = processWithNoWindows.map(p => p.getProcessName);
-    this.runningProcess = processWithNoWindows.filter(({getProcessName}, index) => !ids.includes(getProcessName, index + 1))
+    return processWithNoWindows.filter(({getProcessName}, index) => !ids.includes(getProcessName, index + 1))
   }
 
   private getComponentDetail():Process{
