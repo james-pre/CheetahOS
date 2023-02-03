@@ -56,11 +56,11 @@ export class JsdosComponent implements BaseComponent, OnInit, AfterViewInit {
 
       //console.log('doswindow:',this.dosWindow) TBD
       //emulators.pathPrefix = 'https://cdn.jsdelivr.net/npm/js-dos@7.4.7/dist/'
-      emulators.pathPrefix= '/'
+      emulators.pathPrefix= '/';
       //console.log('emulator:',emulators) TBD
   
       // eslint-disable-next-line prefer-const
-      let data = await this._fileService.getFileAsync('/osdrive/games/data/Digger.jsdos');
+      let data = await this._fileService.getFileAsync('/osdrive/games/data/3d_duke.jsdos');
       //console.log('data:',data) //TBD 
   
       Dos(this.dosWindow.nativeElement, this.dosOptions).run(data);

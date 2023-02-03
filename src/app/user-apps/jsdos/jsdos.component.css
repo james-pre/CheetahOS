@@ -1,3 +1,10 @@
+.canvas{
+  height: 100%;
+  image-rendering: pixelated;
+  top: 0 !important;
+  width: 100%;
+}
+
 .emulator-root {
     background: black;
     overflow: hidden;

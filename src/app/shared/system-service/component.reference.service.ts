@@ -12,12 +12,11 @@ export class ComponentReferenceService{
         this._componentsReferences = new Map<number, ComponentRef<unknown>>();
     }
 
-    addComponentReference(processId:number, componentToAdd:ComponentRef<unknown>): void{
+    addComponentReference(processId:number, componentToAdd:ComponentRef<unknown>):void{
         this._componentsReferences.set(processId,componentToAdd)
     }
 
     getComponentReference(processId:number):ComponentRef<unknown>{
-
         const componentRef = this._componentsReferences.get(processId);
    
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

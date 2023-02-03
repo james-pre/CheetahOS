@@ -31,151 +31,146 @@ import { Process } from 'src/app/system-files/process';
   type = ComponentType.systemComponent;
   displayName = '';
    
-  hover = false;
-  windowMinimize = false;
-  windowUnMinimize = false;
+
+  windowHide = false;
   windowMaximize = false;
-  windowRestore = false;
   currentStyles: Record<string, unknown> = {};
   defaultWidthOnOpen = 0;
   defaultHeightOnOpen = 0;
   private readonly z_index = 25914523; // this number = zindex
   
 
-   constructor(runningProcessService:RunningProcessService, private changeDetectorRef: ChangeDetectorRef, stateManagmentService: StateManagmentService){
+    constructor(runningProcessService:RunningProcessService, private changeDetectorRef: ChangeDetectorRef, stateManagmentService: StateManagmentService){
       this._runningProcessService = runningProcessService;
       this._stateManagmentService = stateManagmentService;
-      this._restoreOrMinSub = this._runningProcessService.restoreOrMinimizeWindowNotify.subscribe((p) => {this.restoreMinimzeWindow(p)});
+      this._restoreOrMinSub = this._runningProcessService.restoreOrMinimizeWindowNotify.subscribe((p) => {this.restoreHiddenWindow(p)});
       this._focusOnNextProcessSub = this._runningProcessService.focusOnNextProcessNotify.subscribe(() => {this.setNextWindowToFocus()});
-   }
+    }
 
-   get getDivWindowElement(): HTMLElement {
-    return this.divWindow.nativeElement;
-  }
+    get getDivWindowElement(): HTMLElement {
+      return this.divWindow.nativeElement;
+    }
 
-   ngOnInit():void{
-     this.processId = this.runningProcessID;
-     this.icon = this.processAppIcon;
-     this.name = this.processAppName;
-   }
+    ngOnInit():void{
+      this.processId = this.runningProcessID;
+      this.icon = this.processAppIcon;
+      this.name = this.processAppName;
+    }
 
-   ngOnDestroy():void{
-    this._restoreOrMinSub.unsubscribe();
-    this._focusOnNextProcessSub.unsubscribe();
-   }
+    ngOnDestroy():void{
+      this._restoreOrMinSub.unsubscribe();
+      this._focusOnNextProcessSub.unsubscribe();
+    }
 
-   ngAfterViewInit():void{
-    this.defaultHeightOnOpen = this.getDivWindowElement.offsetHeight;
-    this.defaultWidthOnOpen  = this.getDivWindowElement.offsetWidth;
+    ngAfterViewInit():void{
+      this.defaultHeightOnOpen = this.getDivWindowElement.offsetHeight;
+      this.defaultWidthOnOpen  = this.getDivWindowElement.offsetWidth;
 
-    this.originalWindowsState = new WindowState(this.processId,this.defaultHeightOnOpen, this.defaultWidthOnOpen);
-    this._stateManagmentService.addState(this.processId,this.originalWindowsState)
+      this.originalWindowsState = new WindowState(this.processId,this.defaultHeightOnOpen, this.defaultWidthOnOpen);
+      this._stateManagmentService.addState(this.processId,this.originalWindowsState)
+      this.setWindowToFocus(this.processId);
 
-    this.setWindowToFocus(this.processId);
+      //tell angular to run additional detection cycle after 
+      this.changeDetectorRef.detectChanges();
+    }
 
-    //tell angular to run additional detection cycle after 
-    this.changeDetectorRef.detectChanges();
-   }
+    ngOnChanges(changes: SimpleChanges):void{
+      console.log('WINDOW CHANGES:',changes)
+      this.name = this.processAppName;
+      this.icon = this.processAppIcon;
+    }
 
-   ngOnChanges(changes: SimpleChanges):void{
-    console.log('WINDOW CHANGES:',changes)
-    this.name = this.processAppName;
-    this.icon = this.processAppIcon;
-  }
-
-   setCurrentStyles():void{
+    setHideAndShow():void{
       // CSS styles: set per current state of component properties
       const windowState = this._stateManagmentService.getState(this.processId) as WindowState;
-
-      if(this.windowMinimize){
+      if(this.windowHide){
         if(windowState.getPid == this.processId){
           this.currentStyles = {
             'display': 'none' 
           };
         }
       }
-      if(this.windowUnMinimize){
+      else if(!this.windowHide){
         if(windowState.getPid == this.processId){
           this.currentStyles = {
             'display': 'block',
-            'z-index': windowState.getZIndex
-          };
-        }
-      }
-      else if(this.windowMaximize){
-        if(windowState.getPid == this.processId){
-          this.currentStyles = {
-            'transform': 'translate(0px,0px)',
-            'max-width': '100%',
-            'max-height': 'calc(100% - 40px)', //This accounts for the taskbar height
-            'top': '4.9%',
-            'left': '7.5%',
-            'right': '0',
-            'bottom': '4%', //This accounts for the taskbar height
-          };
-       }
-      }
-      else if(this.windowRestore){
-        if(windowState.getPid == this.processId){
-          this.currentStyles = {
-            'display': 'block',
-            'width': `${String(windowState.getWidth)}px`, 
-            'height': `${String(windowState.getHeight)}px`, 
+            'width': `${String(windowState.getWidth)}`, 
+            'height': `${String(windowState.getHeight)}`, 
             'transform': `translate(${String(windowState.getXAxis)}px, ${String(windowState.getYAxis)}px)`,
             'z-index': windowState.getZIndex
           };
         }
       }
-   }
+    }
+
+    setMaximizeAndUnMaximize():void{
+      // CSS styles: set per current state of component properties
+      const windowState = this._stateManagmentService.getState(this.processId) as WindowState;
+      if(this.windowMaximize){
+        if(windowState.getPid == this.processId){
+          this.currentStyles = {
+            'transform': 'translate(0px,0px)',
+            'max-width': '100%',
+            'max-height': 'calc(100% - 40px)', //This accounts for the taskbar height
+            'top': '5.4%',
+            'left': '7.5%',
+            'right': '0',
+            'bottom': '4%', //This accounts for the taskbar height
+            'z-index': windowState.getZIndex
+          };
+        }
+      }
+      else if(!this.windowMaximize){
+        if(windowState.getPid == this.processId){
+          this.currentStyles = {
+            'display': 'block',
+            'width': `${String(windowState.getWidth)}`, 
+            'height': `${String(windowState.getHeight)}`, 
+            'transform': `translate(${String(windowState.getXAxis)}px, ${String(windowState.getYAxis)}px)`,
+            'z-index': windowState.getZIndex
+          };
+        }
+      }
+    }
    
-   onMinimizeBtnClick(){
-    //TODO: on minimize, store the currect window size and postion before minimize
-      this.windowMinimize = true;
-      this.windowMaximize = false;
-      this.windowRestore = false;
-      this.windowUnMinimize = false;
-      this.setCurrentStyles();
-   }
+    onHideBtnClick(){
+      // a hide button, should just hide the window. not change the size of the window
+      this.windowHide = true;
+      this.setHideAndShow();
+    }
 
-   onMaximizeBtnClick(){
+    restoreHiddenWindow(pid:number){
+      if(this.processId == pid){
+        this.windowHide = false;
+
+        //if window was in max-view when it was hidden, then restore the window to max view
+        if(this.windowMaximize) 
+          this.setMaximizeAndUnMaximize();
+        else if(!this.windowMaximize)
+          this.setHideAndShow()
+      }
+    }
+
+    onMaximizeBtnClick(){
       this.windowMaximize = true;
-      this.windowMinimize = false;
-      this.windowRestore = false;
-      this.windowUnMinimize = false;
-      this.setCurrentStyles();
-   }
+      this.windowHide = false;
+      this.setMaximizeAndUnMaximize();
+    }
 
-   onTitleBarDoubleClick(){
-      if(!this.windowRestore && !this.windowMaximize)
-          this.windowMaximize = true;
-      else if(this.windowMaximize && !this.windowRestore){
-          this.windowRestore = true;
-          this.windowMaximize = false;
+    onUnMaximizeBtnClick(){
+      //set window back to its previovs size and position on the screen
+      this.windowMaximize = false;
+      this.setMaximizeAndUnMaximize();
+    }
+
+    onTitleBarDoubleClick(){
+      if(this.windowMaximize){
+        this.windowMaximize = false;
       }else{
-        this.windowRestore = false;
         this.windowMaximize = true;
       }
-      this.setCurrentStyles()
-   }
-
-   onRestoreBtnClick(){
-    this.windowRestore = true;
-    this.windowMaximize = false;
-    this.setCurrentStyles();
-   }
-
-   restoreMinimzeWindow(pid:number){
-      if(this.processId == pid){
-        if(this.windowMinimize && !this.windowUnMinimize){
-              this.windowUnMinimize = true;
-              this.windowMinimize = false;
-        }else{
-          this.windowUnMinimize = false;
-          this.windowMinimize = true;
-        }
-        this.setCurrentStyles()
-      }
-   }
+      this.setMaximizeAndUnMaximize()
+    }
 
     onDragEnd(input:HTMLElement){
       const style = window.getComputedStyle(input);
