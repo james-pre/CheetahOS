@@ -88,6 +88,9 @@ import { Process } from 'src/app/system-files/process';
           this.currentStyles = {
             'display': 'none' 
           };
+
+          windowState.setIsVisible = false;
+          this._stateManagmentService.addState(this.processId,windowState);
         }
       }
       else if(!this.windowHide){
@@ -99,6 +102,9 @@ import { Process } from 'src/app/system-files/process';
             'transform': `translate(${String(windowState.getXAxis)}px, ${String(windowState.getYAxis)}px)`,
             'z-index': windowState.getZIndex
           };
+
+          windowState.setIsVisible = true;
+          this._stateManagmentService.addState(this.processId,windowState);
         }
       }
     }
@@ -197,12 +203,12 @@ import { Process } from 'src/app/system-files/process';
       this._stateManagmentService.addState(this.processId,windowState);
     }
 
-   onCloseBtnClick(){
-    const processToClose = this._runningProcessService.getProcess(this.processId);
-    this._stateManagmentService.removeState(this.processId);
-    this._runningProcessService.closeProcessNotify.next(processToClose);
-    this._runningProcessService.focusOnNextProcessNotify.next();
-   }
+    onCloseBtnClick(){
+      const processToClose = this._runningProcessService.getProcess(this.processId);
+      this._stateManagmentService.removeState(this.processId);
+      this._runningProcessService.closeProcessNotify.next(processToClose);
+      this._runningProcessService.focusOnNextProcessNotify.next();
+    }
 
    setWindowToFocus(pid:number):void{
     /**
@@ -226,17 +232,20 @@ import { Process } from 'src/app/system-files/process';
         };
         this.divWindow.nativeElement.focus();
       }
-   }
+    }
 
    setNextWindowToFocus():void{
     const processWithWindows = this._runningProcessService.getProcesses().filter(p => p.getHasWindow == true);
 
-    //console.log('processWithWindows:',processWithWindows); TBD
-    if(processWithWindows.length > 0){
-      const process = processWithWindows.pop() || new Process(0,'','',true,'');
+    for (let i=0; i < processWithWindows.length; i++){
+        const process = processWithWindows[i];
+        const window = this._stateManagmentService.getState(process.getProcessId) as WindowState;
 
-      //console.log('process:',process.getProcessId +'----'+process.getProcessName); TBD
-      this.setWindowToFocus(process.getProcessId);
+        if(window.getIsVisible){
+          //console.log('process:',process.getProcessId +'----'+process.getProcessName); //TBD
+          this.setWindowToFocus(process.getProcessId);
+          break;
+      }
     }
    }
 

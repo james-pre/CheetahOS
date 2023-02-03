@@ -5,6 +5,7 @@ export class WindowState{
     private _x_axis:number;
     private _y_axis:number;
     private _z_index:number;
+    private _is_visible:boolean;
 
 
     constructor(pid:number,height:number,width:number){
@@ -14,6 +15,7 @@ export class WindowState{
         this._x_axis = 0;
         this._y_axis = 0;
         this._z_index = 0;
+        this._is_visible = true;
     }
 
     get getPid(){
@@ -57,6 +59,13 @@ export class WindowState{
     }
     set setZIndex(z_index:number){
         this._z_index = z_index;
+    }
+
+    get getIsVisible(){
+        return this._is_visible;
+    }
+    set setIsVisible(is_visible:boolean){
+        this._is_visible = is_visible;
     }
 
 }
