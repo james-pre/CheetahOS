@@ -12,17 +12,18 @@ export class RunningProcessService{
     private _runningProcesses:Process[]
     processListChangeNotify: Subject<void> = new Subject<void>();
     closeProcessNotify: Subject<Process> = new Subject<Process>();
+    focusOnNextProcessNotify: Subject<void> = new Subject<void>();
     restoreOrMinimizeWindowNotify: Subject<number> = new Subject<number>();
 
     constructor(){
         this._runningProcesses = []
     }
 
-    addProcess(proccessToAdd:Process): void{
+    addProcess(proccessToAdd:Process):void{
         this._runningProcesses.push(proccessToAdd)
     }
 
-    removeProcess(proccessToRemove:Process): void{
+    removeProcess(proccessToRemove:Process):void{
         const deleteCount = 1;
         const procIndex = this._runningProcesses.findIndex((process) => {
             return process.getProcessId === proccessToRemove.getProcessId;
@@ -33,7 +34,7 @@ export class RunningProcessService{
         }
     }
 
-    getProcess(processId:number): Process{
+    getProcess(processId:number):Process{
         const process = this._runningProcesses.find((process) => {
             return process.getProcessId === processId;
         });
@@ -53,8 +54,7 @@ export class RunningProcessService{
         return false;
     }
 
-
-    getProcesses(): Process[]{
+    getProcesses():Process[]{
         return this._runningProcesses;
     }
 

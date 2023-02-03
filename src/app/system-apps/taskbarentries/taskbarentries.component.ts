@@ -58,9 +58,9 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
      * filter first on processes that have windows
      * then select unique instance of process with same proccess name
      */
-    const processWithNoWindows = this._runningProcessService.getProcesses().filter(p => p.getHasWindow == true);
-    const ids = processWithNoWindows.map(p => p.getProcessName);
-    return processWithNoWindows.filter(({getProcessName}, index) => !ids.includes(getProcessName, index + 1))
+    const processWithWindows = this._runningProcessService.getProcesses().filter(p => p.getHasWindow == true);
+    const ids = processWithWindows.map(p => p.getProcessName);
+    return processWithWindows.filter(({getProcessName}, index) => !ids.includes(getProcessName, index + 1))
   }
 
   private getComponentDetail():Process{

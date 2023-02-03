@@ -4,6 +4,7 @@ import { RunningProcessService } from 'src/app/shared/system-service/running.pro
 import { Subscription } from 'rxjs';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 import { WindowState } from 'src/app/system-files/state/windows.state';
+import { Process } from 'src/app/system-files/process';
 
  @Component({
    selector: 'cos-window',
@@ -20,6 +21,7 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
    private _runningProcessService:RunningProcessService;
    private _stateManagmentService: StateManagmentService
    private _restoreOrMinSub!:Subscription
+   private _focusOnNextProcessSub!:Subscription;
    private originalWindowsState!:WindowState;
 
   hasWindow = false;
@@ -43,7 +45,8 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
    constructor(runningProcessService:RunningProcessService, private changeDetectorRef: ChangeDetectorRef, stateManagmentService: StateManagmentService){
       this._runningProcessService = runningProcessService;
       this._stateManagmentService = stateManagmentService;
-      this._restoreOrMinSub = this._runningProcessService.restoreOrMinimizeWindowNotify.subscribe((p) => {this.restoreMinimzeWindow(p)})
+      this._restoreOrMinSub = this._runningProcessService.restoreOrMinimizeWindowNotify.subscribe((p) => {this.restoreMinimzeWindow(p)});
+      this._focusOnNextProcessSub = this._runningProcessService.focusOnNextProcessNotify.subscribe(() => {this.setNextWindowToFocus()});
    }
 
    get getDivWindowElement(): HTMLElement {
@@ -58,6 +61,7 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
 
    ngOnDestroy():void{
     this._restoreOrMinSub.unsubscribe();
+    this._focusOnNextProcessSub.unsubscribe();
    }
 
    ngAfterViewInit():void{
@@ -81,35 +85,44 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
 
    setCurrentStyles():void{
       // CSS styles: set per current state of component properties
+      const windowState = this._stateManagmentService.getState(this.processId) as WindowState;
+
       if(this.windowMinimize){
-        this.currentStyles = {
-          'display': 'none' 
-        };
+        if(windowState.getPid == this.processId){
+          this.currentStyles = {
+            'display': 'none' 
+          };
+        }
       }
       if(this.windowUnMinimize){
-        this.currentStyles = {
-          'display': 'block' 
-        };
+        if(windowState.getPid == this.processId){
+          this.currentStyles = {
+            'display': 'block',
+            'z-index': windowState.getZIndex
+          };
+        }
       }
       else if(this.windowMaximize){
-        this.currentStyles = {
-          'transform': 'translate(0px,0px)',
-          'max-width': '100%',
-          'max-height': 'calc(100% - 40px)', //This accounts for the taskbar height
-          'top': '4.9%',
-          'left': '7.5%',
-          'right': '0',
-          'bottom': '4%', //This accounts for the taskbar height
-        };
+        if(windowState.getPid == this.processId){
+          this.currentStyles = {
+            'transform': 'translate(0px,0px)',
+            'max-width': '100%',
+            'max-height': 'calc(100% - 40px)', //This accounts for the taskbar height
+            'top': '4.9%',
+            'left': '7.5%',
+            'right': '0',
+            'bottom': '4%', //This accounts for the taskbar height
+          };
+       }
       }
       else if(this.windowRestore){
-        const windowState = this._stateManagmentService.getState(this.processId) as WindowState;
         if(windowState.getPid == this.processId){
           this.currentStyles = {
             'display': 'block',
             'width': `${String(windowState.getWidth)}px`, 
             'height': `${String(windowState.getHeight)}px`, 
-            'transform': `translate(${String(windowState.getXAxis)}px, ${String(windowState.getYAxis)}px)`
+            'transform': `translate(${String(windowState.getXAxis)}px, ${String(windowState.getYAxis)}px)`,
+            'z-index': windowState.getZIndex
           };
         }
       }
@@ -165,7 +178,6 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
    }
 
     onDragEnd(input:HTMLElement){
-      
       const style = window.getComputedStyle(input);
       const matrix1 = new WebKitCSSMatrix(style.transform);
       const x_axis = matrix1.m41;
@@ -176,7 +188,6 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
         const windowState = this._stateManagmentService.getState(this.processId) as WindowState 
         windowState.setXAxis= x_axis;
         windowState.setYAxis= y_axis;
-
         this._stateManagmentService.addState(this.processId,windowState);
       }
     }
@@ -194,9 +205,9 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
    onCloseBtnClick(){
     const processToClose = this._runningProcessService.getProcess(this.processId);
     this._stateManagmentService.removeState(this.processId);
-    this._runningProcessService.closeProcessNotify.next(processToClose)
+    this._runningProcessService.closeProcessNotify.next(processToClose);
+    this._runningProcessService.focusOnNextProcessNotify.next();
    }
-
 
    setWindowToFocus(pid:number):void{
     /**
@@ -218,16 +229,25 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
         this.currentStyles = {
           'z-index':z_index
         };
-
         this.divWindow.nativeElement.focus();
       }
    }
 
-   onFocus(focusEvt:any):void{
-    console.log('This is focusEvt data:', focusEvt);
-    console.log('onFocus divWindow:',this.divWindow)
+   setNextWindowToFocus():void{
+    const processWithWindows = this._runningProcessService.getProcesses().filter(p => p.getHasWindow == true);
+
+    //console.log('processWithWindows:',processWithWindows); TBD
+    if(processWithWindows.length > 0){
+      const process = processWithWindows.pop() || new Process(0,'','',true,'');
+
+      //console.log('process:',process.getProcessId +'----'+process.getProcessName); TBD
+      this.setWindowToFocus(process.getProcessId);
+    }
    }
 
+   onFocus(focusEvt:any):void{
+    console.log('This is focusEvt data:', focusEvt);
+   }
 
    onBlur(blurEvt:any):void{
     console.log('This is blurEvt data:', blurEvt);

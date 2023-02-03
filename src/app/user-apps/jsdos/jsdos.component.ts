@@ -60,7 +60,7 @@ export class JsdosComponent implements BaseComponent, OnInit, AfterViewInit {
       //console.log('emulator:',emulators) TBD
   
       // eslint-disable-next-line prefer-const
-      let data = await this._fileService.getFileAsync('/osdrive/desktop/test.jsdos');
+      let data = await this._fileService.getFileAsync('/osdrive/games/data/Digger.jsdos');
       //console.log('data:',data) //TBD 
   
       Dos(this.dosWindow.nativeElement, this.dosOptions).run(data);
