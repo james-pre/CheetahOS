@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { FileInfo } from "src/app/system-files/fileinfo";
 import { ShortCut } from "src/app/system-files/shortcut";
-import {extname, basename, resolve} from 'path';
+import {extname, basename, resolve, dirname} from 'path';
 import { Constants } from "src/app/system-files/constants";
 import { FSModule } from "browserfs/dist/node/core/FS";
 import { FileEntry } from 'src/app/system-files/fileentry';
@@ -20,11 +20,12 @@ export class FileService{
     private _consts:Constants = new Constants();
     private _fileSystem!:FSModule;
     private _directoryFileEntires:FileEntry[]=[];
+    private _fileExistsMap!:Map<string,number>; 
     dirFilesReadyNotify: Subject<void> = new Subject<void>();
     dirFilesUpdateNotify: Subject<void> = new Subject<void>();
 
     constructor(){ 
-        1
+        this._fileExistsMap =  new Map<string, number>();
     }
 
     private async initBrowserFsAsync():Promise<void>{
@@ -41,12 +42,12 @@ export class FileService{
                             },
                         },  
                     }},
-                (e) =>{
-                    if(e){  
-                        console.log('initBrowserFs Error:', e)
-                        reject(e); 
-                    } });
-
+                (err) =>{
+                    if(err){  
+                        console.log('initBrowserFs Error:', err)
+                        reject(err); 
+                    }
+                });
                 this._fileSystem = BrowserFS.BFSRequire('fs')
                 resolve();
             });
@@ -139,7 +140,6 @@ export class FileService{
         await this.initBrowserFsAsync();
 
         return new Promise((resolve, reject) =>{
-
             this._fileSystem.readFile(path, function(err, contents = Buffer.from('')){
                 if(err){
                     console.log('getShortCutAsync error:',err)
@@ -197,61 +197,53 @@ export class FileService{
         });
     }
 
-    //NIU-not in use
-    // public async getImageFileB64ToBlobAsync(path: string):Promise<unknown> {
-    //     await this.initBrowserFsAsync();
+    public async writeFileAsync(directory:string, file:File):Promise<void>{
 
-    //     return new Promise((resolve, reject) =>{
-    //         this._fileSystem.readFile(path,'utf-8',(err, b64Ed) =>{
-    //             if(err){
-    //                 console.log('getImageFileAsync error:',err)
-    //                 reject(err)
-    //             }
-    //             const b64EncodedData = b64Ed as string
-    //             const decodedString = atob(b64EncodedData.split(',')[1]);
-    //             const arrBuffer = new ArrayBuffer(decodedString.length);
-    //             const buffer = new Uint8Array(arrBuffer);
-                
-    //             for (let i = 0; i < decodedString.length; i++) {
-    //                 buffer[i] = decodedString.charCodeAt(i);
-    //             }
+        const ifExists =await this.checkIfIleExistsAsync(`${directory}/${file.name}`) as string
 
-    //             const blob = new Blob([buffer], { type: 'image/jpeg' });
-    //             const imageUrl = URL.createObjectURL(blob);
-
-    //             resolve(new ShortCut(imageUrl, basename(path, extname(path))));
-    //         });
-    //     });
-    // }
-
-    //NIU-not in use
-    // public async getDraggedAndDropFileData(file:File): Promise<unknown>{
-    //     return new Promise((resolve) =>{
-    //         const fileReader = new FileReader()
-    //         fileReader.readAsDataURL(file);
-    //         fileReader.onload = (evt) =>{
-    //             resolve(evt.target?.result)
-    //         }
-    //     })
-    // }
-
-    public async writeFileAsync(directory:string, file:File,):Promise<void>{
         new Promise<void>((resolve, reject) =>{
             const fileReader = new FileReader()
             fileReader.readAsDataURL(file);
 
             fileReader.onload = (evt) =>{
-                this._fileSystem.writeFile(`${directory}/${file.name}`,evt.target?.result,(err) =>{  
-                    if(err){
-                        console.log('writeFileAsync Error:',err);
-                        reject(err);
-                    }
-                    resolve();
-                });
+                if(ifExists === 'false'){
+                    this._fileSystem.writeFile(`${directory}/${file.name}`,evt.target?.result,(err) =>{  
+                        if(err){
+                            console.log('writeFileAsync Error:',err);
+                            reject(err);
+                        }
+                        this._fileExistsMap.set(`${directory}/${file.name}`,0);
+                        resolve();
+                    });
+                }else{
+                    const itrName = this.iterateFileName(`${directory}/${file.name}`);
+                    this._fileSystem.writeFile(itrName,evt.target?.result,(err) =>{  
+                        if(err){
+                            console.log('writeFileAsync Iterate Error:',err);
+                            reject(err);
+                        }
+                        resolve();
+                    });
+                }
             }
          }).then(()=>{
             //Send update notification
             this.dirFilesUpdateNotify.next();
+        });
+    }
+
+    public async checkIfIleExistsAsync(filePath:string){
+        return new Promise((resolve) =>{
+            this._fileSystem.stat(filePath,(err) =>{  
+                if(err?.code === 'ENOENT' ){
+                    console.log('checkIfIleExistsAsync Error:',err);
+                    console.log("DOES NOT exist:", filePath);
+                    resolve('false');
+                }else{
+                    console.log("can read/write:", filePath);
+                    resolve(filePath);
+                }
+            });
         });
     }
 
@@ -265,6 +257,17 @@ export class FileService{
             this._directoryFileEntires.push(fileEntry)
         }
         return this._directoryFileEntires;
+    }
+
+    public iterateFileName(path:string):string{
+        const extension = extname(path);
+        const filename = basename(path, extension);
+
+        let count = this._fileExistsMap.get(path) || 0;
+        count = count + 1;
+        this._fileExistsMap.set(path, count);
+
+        return `${dirname(path)}/${filename} (${count})${extension}`;
     }
 
     public resetDirectoryFiles(){

@@ -4,7 +4,6 @@ import { RunningProcessService } from 'src/app/shared/system-service/running.pro
 import { Subscription } from 'rxjs';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 import { WindowState } from 'src/app/system-files/state/windows.state';
-import { Process } from 'src/app/system-files/process';
 
  @Component({
    selector: 'cos-window',
