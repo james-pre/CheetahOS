@@ -215,7 +215,6 @@ import { Process } from 'src/app/system-files/process';
      * If you want to make a non-focusable element focusable, 
      * you must add a tabindex attribute to it. And divs falls into the category non-focusable elements .
      */
-
       let z_index = this._stateManagmentService.getState(this.z_index) as number;
       const windowState = this._stateManagmentService.getState(pid) as WindowState;
      
