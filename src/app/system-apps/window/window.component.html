@@ -5,7 +5,7 @@
      [rzMinWidth]="defaultWidthOnOpen" [rzMinHeight]="defaultHeightOnOpen">
      
     <header tabindex="1" id="headerSec" appHighlight 
-    [ngStyle]="headerActiveStyles"  (focus)="onFocus($event)" (blur)="onBlur($event, this.processId)"
+    [ngStyle]="headerActiveStyles"  (focus)="onFocus($event, this.processId)" (blur)="onBlur($event, this.processId)"
      (dblclick)="onTitleBarDoubleClick()">
         <h1>
             <figure>
