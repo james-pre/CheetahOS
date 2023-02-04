@@ -21,6 +21,7 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
    private _stateManagmentService: StateManagmentService
    private _restoreOrMinSub!:Subscription
    private _focusOnNextProcessSub!:Subscription;
+   private _focusOnCurrentProcessSub!:Subscription;
    private originalWindowsState!:WindowState;
 
   hasWindow = false;
@@ -34,6 +35,7 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
   windowHide = false;
   windowMaximize = false;
   currentStyles: Record<string, unknown> = {};
+  headerActiveStyles: Record<string, unknown> = {};
   defaultWidthOnOpen = 0;
   defaultHeightOnOpen = 0;
   private readonly z_index = 25914523; // this number = zindex
@@ -44,6 +46,7 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
       this._stateManagmentService = stateManagmentService;
       this._restoreOrMinSub = this._runningProcessService.restoreOrMinimizeWindowNotify.subscribe((p) => {this.restoreHiddenWindow(p)});
       this._focusOnNextProcessSub = this._runningProcessService.focusOnNextProcessNotify.subscribe(() => {this.setNextWindowToFocus()});
+      this._focusOnCurrentProcessSub = this._runningProcessService.focusOnCurrentProcessNotify.subscribe((p) => {this.setWindowToFocus(p.getProcessId)});
     }
 
     get getDivWindowElement(): HTMLElement {
@@ -57,8 +60,9 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
     }
 
     ngOnDestroy():void{
-      this._restoreOrMinSub.unsubscribe();
-      this._focusOnNextProcessSub.unsubscribe();
+      this._restoreOrMinSub?.unsubscribe();
+      this._focusOnNextProcessSub?.unsubscribe();
+      this._focusOnCurrentProcessSub?.unsubscribe();
     }
 
     ngAfterViewInit():void{
@@ -214,6 +218,9 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
      * If you want to make a non-focusable element focusable, 
      * you must add a tabindex attribute to it. And divs falls into the category non-focusable elements .
      */
+
+
+      console.log('hey i did what you asked')
       let z_index = this._stateManagmentService.getState(this.z_index) as number;
       const windowState = this._stateManagmentService.getState(pid) as WindowState;
      
@@ -229,10 +236,23 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
           'z-index':z_index
         };
         this.divWindow.nativeElement.focus();
+      }else{
+        
+        if((windowState.getPid == pid)){
+
+          this.headerActiveStyles ={
+            'background-color': 'blue'
+          };
+  
+          //this.divWindow.nativeElement.focus();
+
+        }
+
       }
     }
 
    setNextWindowToFocus():void{
+    console.log('just checking')
     const processWithWindows = this._runningProcessService.getProcesses().filter(p => p.getHasWindow == true);
 
     for (let i=0; i < processWithWindows.length; i++){
@@ -247,12 +267,50 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
     }
    }
 
-   onFocus(focusEvt:any):void{
-    console.log('This is focusEvt data:', focusEvt);
+   sayHi():void{
+    console.log('hiiii')
    }
 
-   onBlur(blurEvt:any):void{
+  //  onFocus(focusEvt:any):void{
+  //     console.log('This is focusEvt data:', focusEvt);
+  //     if(focusEvt.target.id === 'closeBtn'){
+  //         console.log('This is closeBtn focus');
+  //       this.closeBtnStyles = {
+  //         'background-color':'rgb(139,10,20)'
+  //       };
+  //     }
+
+  //  }
+
+  //  onBlur(blurEvt:any):void{
+  //     console.log('This is blurEvt data:', blurEvt);
+  //     if(blurEvt.target.id === 'closeBtn'){
+  //       console.log('This is closeBtn blur');
+  //       this.closeBtnStyles = {
+  //         'background-color':''
+  //       };
+  //     }
+
+
+  //     this.headerActiveStyles = {
+  //       'background-color': 'red'
+  //     };
+  //  }
+
+  onBlur(blurEvt:any):void{
     console.log('This is blurEvt data:', blurEvt);
-   }
+    this.headerActiveStyles = {
+      'background-color':'rgb(121, 163, 232)'
+    };
 
- }
+  }
+
+  onFocus(focusEvt:any):void{
+    console.log('This is focusEvt data:', focusEvt);
+    this.headerActiveStyles = {
+      'background-color':'blue'
+    };
+
+  }
+
+}

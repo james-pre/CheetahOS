@@ -54,9 +54,18 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
       this.directory = `/${this.folderPath}`;
   }
 
-
   async ngAfterViewInit():Promise<void>{
-   await this.loadFilesInfoAsync();
+    await this.loadFilesInfoAsync();
+
+    setTimeout(()=> {
+        const filePaths = this.files;
+        if(filePaths != null || filePaths != undefined){
+            for(const filePath of filePaths){
+              //console.log('revoking url:',filePath.getIcon); //TBD
+              URL.revokeObjectURL(filePath.getIcon);
+            }
+        }
+    }, 5000);
   }
 
   ngOnDestroy(): void {
@@ -110,6 +119,12 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
 
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type);
+  }
+
+  private revokeUrl():void{
+
+    for(const file of this.files)
+      URL.revokeObjectURL(file.getIcon);
   }
 }
 

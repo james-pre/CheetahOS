@@ -65,6 +65,12 @@ export class JsdosComponent implements BaseComponent, OnInit, AfterViewInit {
   
       Dos(this.dosWindow.nativeElement, this.dosOptions).run(data);
     }, 3000);
+
+
+    // Revoke url 
+    // setTimeout(()=> {
+    //   URL.revokeObjectURL('/osdrive/games/data/3d_duke.jsdos');
+    // }, 5000);
   }
 
 

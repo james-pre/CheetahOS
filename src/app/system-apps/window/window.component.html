@@ -1,10 +1,12 @@
 
-<div [ngStyle]="currentStyles" #divWindow  tabindex="1" class="section window-dd-box"  
+<div [ngStyle]="currentStyles" #divWindow   tabindex="1" class="section window-dd-box"  
      ngDraggable (stopped)="onDragEnd($event)" ngDraggable (started)="setWindowToFocus(this.processId)"
      (rzStop)="onRZStop($event)"  ngResizable [rzHandles]="'e,s,w,se,sw'" 
      [rzMinWidth]="defaultWidthOnOpen" [rzMinHeight]="defaultHeightOnOpen">
      
-    <header (dblclick)="onTitleBarDoubleClick()">
+    <header tabindex="1" id="headerSec" appHighlight 
+    [ngStyle]="headerActiveStyles"  (blur)="onBlur($event)"
+    (focus)="onFocus($event)" (dblclick)="onTitleBarDoubleClick()">
         <h1>
             <figure>
                 <img [src]="this.icon" [alt]="this.name"/>
@@ -12,12 +14,12 @@
             </figure>
         </h1>
         <nav>
-            <button appHighlight (click)="onHideBtnClick()">
+            <button appHighlight id="hideBtn" (click)="onHideBtnClick()">
                 <svg width="10" viewBox="0 0 10 1">
                  <path d="M0 0h10v1H0z"/>
                 </svg>
             </button>
-            <button *ngIf="!windowMaximize, else elseBlock"  appHighlight (click)="onMaximizeBtnClick()" >
+            <button *ngIf="!windowMaximize, else elseBlock" id="minMaxBtn" appHighlight (click)="onMaximizeBtnClick()" >
                 <svg width="10" viewBox="0 0 10 10">
                     <path d="M0 0v10h10V0H0zm1 1h8v8H1V1z"/>
                 </svg>            
@@ -31,15 +33,13 @@
                 </button>
             </ng-template>
 
-            <button id="closeBtn" appHighlight (click)="onCloseBtnClick()">
+            <button id="closeBtn" appHighlight (click)="onCloseBtnClick()" >
                 <svg width="10" viewBox="0 0 10 10">
                     <path d="M10.2.7L9.5 0 5.1 4.4.7 0 0 .7l4.4 4.4L0 9.5l.7.7 4.4-4.4 4.4 4.4.7-.7-4.4-4.4z"/>
                 </svg>
             </button>
         </nav>
     </header>
-    <ng-content > </ng-content> 
+    <ng-content  (click)="sayHi()"> </ng-content> 
 </div>
 
-
-<!-- (focus)="onFocus($event)" (blur)="onBlur($event)"  -->

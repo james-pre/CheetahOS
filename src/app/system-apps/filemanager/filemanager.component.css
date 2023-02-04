@@ -2,6 +2,7 @@ li{
     display: flex;
     justify-content: center;
     padding: 2px;
+    z-index: 1;
 }
 
 ol{

@@ -16,6 +16,7 @@ export class FileexplorerComponent implements BaseComponent {
   private _processIdService;
   private _runningProcessService;
 
+
   hasWindow = true;
   icon = 'osdrive/icons/file_explorer.ico';
   name = 'fileexplorer';
@@ -29,6 +30,7 @@ export class FileexplorerComponent implements BaseComponent {
     this._runningProcessService = runningProcessService;
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail());
+
   }
 
   updateIconAndName(updatedData:FileInfo):void{
@@ -40,6 +42,12 @@ export class FileexplorerComponent implements BaseComponent {
 
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type)
+  }
+
+  sayHi(input:any, id:number):void{
+    console.log('erererererere:',input);
+    console.log('id-num:',id)
+    this._runningProcessService.focusOnCurrentProcessNotify.next(this.getComponentDetail());
   }
 
 }
