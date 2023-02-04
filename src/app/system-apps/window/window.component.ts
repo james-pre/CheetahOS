@@ -22,6 +22,7 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
    private _restoreOrMinSub!:Subscription
    private _focusOnNextProcessSub!:Subscription;
    private _focusOnCurrentProcessSub!:Subscription;
+   private _blurOnCurrentProcessSub!:Subscription;
    private originalWindowsState!:WindowState;
 
   hasWindow = false;
@@ -46,7 +47,8 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
       this._stateManagmentService = stateManagmentService;
       this._restoreOrMinSub = this._runningProcessService.restoreOrMinimizeWindowNotify.subscribe((p) => {this.restoreHiddenWindow(p)});
       this._focusOnNextProcessSub = this._runningProcessService.focusOnNextProcessNotify.subscribe(() => {this.setNextWindowToFocus()});
-      this._focusOnCurrentProcessSub = this._runningProcessService.focusOnCurrentProcessNotify.subscribe((p) => {this.setWindowToFocus(p.getProcessId)});
+      this._focusOnCurrentProcessSub = this._runningProcessService.focusOnCurrentProcessNotify.subscribe((evt) => {this.setWindowToFocusUsingEvt(evt)});
+      this._blurOnCurrentProcessSub = this._runningProcessService.blurOnCurrentProcessNotify.subscribe((evt) => {this.setWindowToBlurUsingEvt(evt)});
     }
 
     get getDivWindowElement(): HTMLElement {
@@ -63,6 +65,7 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
       this._restoreOrMinSub?.unsubscribe();
       this._focusOnNextProcessSub?.unsubscribe();
       this._focusOnCurrentProcessSub?.unsubscribe();
+      this._blurOnCurrentProcessSub?.unsubscribe();
     }
 
     ngAfterViewInit():void{
@@ -71,7 +74,7 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
 
       this.originalWindowsState = new WindowState(this.processId,this.defaultHeightOnOpen, this.defaultWidthOnOpen);
       this._stateManagmentService.addState(this.processId,this.originalWindowsState)
-      this.setWindowToFocus(this.processId);
+      this.setWindowToFocusById(this.processId);
 
       //tell angular to run additional detection cycle after 
       this.changeDetectorRef.detectChanges();
@@ -139,6 +142,22 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
             'z-index': windowState.getZIndex
           };
         }
+      }
+    }
+
+    setHeaderActive(pid:number): void{
+        if(this.processId == pid){
+          this.headerActiveStyles = {
+            'background-color':'blue'
+          };
+        }
+    }
+
+    setHeaderInActive(pid:number): void{
+      if(this.processId == pid){
+        this.headerActiveStyles = {
+          'background-color':'rgb(121, 163, 232)'
+        };
       }
     }
    
@@ -213,14 +232,12 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
       this._runningProcessService.focusOnNextProcessNotify.next();
     }
 
-   setWindowToFocus(pid:number):void{
+    setWindowToFocusById(pid:number):void{
     /**
      * If you want to make a non-focusable element focusable, 
      * you must add a tabindex attribute to it. And divs falls into the category non-focusable elements .
      */
-
-
-      console.log('hey i did what you asked')
+      console.log('set window to focus:',pid)
       let z_index = this._stateManagmentService.getState(this.z_index) as number;
       const windowState = this._stateManagmentService.getState(pid) as WindowState;
      
@@ -236,20 +253,71 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
           'z-index':z_index
         };
         this.divWindow.nativeElement.focus();
-      }else{
-        
-        if((windowState.getPid == pid)){
-
-          this.headerActiveStyles ={
-            'background-color': 'blue'
-          };
-  
-          //this.divWindow.nativeElement.focus();
-
-        }
-
       }
     }
+
+
+  setWindowToFocus(evtData:FocusEvent):void{
+    /**
+     * If you want to make a non-focusable element focusable, 
+     * you must add a tabindex attribute to it. And divs falls into the category non-focusable elements .
+     */
+      console.log('set window to focus:',evtData)
+      // let z_index = this._stateManagmentService.getState(this.z_index) as number;
+      // const windowState = this._stateManagmentService.getState(pid) as WindowState;
+     
+      // if((windowState.getPid == pid) && (windowState.getZIndex != z_index)){
+
+      //   if (!z_index ? z_index = 1 :  z_index = z_index + 1)
+      //   this._stateManagmentService.addState(this.z_index,z_index);
+
+      //   windowState.setZIndex = z_index
+      //   this._stateManagmentService.addState(this.processId,windowState);
+
+      //   this.currentStyles = {
+      //     'z-index':z_index
+      //   };
+      //   this.divWindow.nativeElement.focus();
+      // }
+
+
+    }
+
+
+
+    setWindowToFocusUsingEvt(eventData:unknown[]):void{
+      /**
+       * If you want to make a non-focusable element focusable, 
+       * you must add a tabindex attribute to it. And divs falls into the category non-focusable elements .
+       */
+        console.log('set window to focus evt from filmgr:',eventData)
+        const focusEvt:FocusEvent = eventData[0] as FocusEvent;
+        const pid:number = eventData[1] as number;
+
+        if(this.processId == pid){
+          this.setHeaderActive(pid)
+        }
+
+    }
+
+
+    setWindowToBlurUsingEvt(eventData:unknown[]):void{
+      /**
+       * If you want to make a non-focusable element focusable, 
+       * you must add a tabindex attribute to it. And divs falls into the category non-focusable elements .
+       */
+        console.log('set window to blur evt from filmgr:',eventData)
+        const focusEvt:FocusEvent = eventData[0] as FocusEvent;
+        const pid:number = eventData[1] as number;
+
+        if(this.processId == pid){
+          this.setHeaderInActive(pid)
+        }
+
+    }
+
+
+
 
    setNextWindowToFocus():void{
     console.log('just checking')
@@ -261,15 +329,12 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
 
         if(window.getIsVisible){
           //console.log('process:',process.getProcessId +'----'+process.getProcessName); //TBD
-          this.setWindowToFocus(process.getProcessId);
+          this.setWindowToFocusById(process.getProcessId);
           break;
       }
     }
    }
 
-   sayHi():void{
-    console.log('hiiii')
-   }
 
   //  onFocus(focusEvt:any):void{
   //     console.log('This is focusEvt data:', focusEvt);
@@ -297,16 +362,22 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
   //     };
   //  }
 
-  onBlur(blurEvt:any):void{
-    console.log('This is blurEvt data:', blurEvt);
-    this.headerActiveStyles = {
-      'background-color':'rgb(121, 163, 232)'
-    };
+  onBlur(blurEvt:FocusEvent, pid:number):void{
+    console.log('This is blurEvt from window:', blurEvt);
 
+    if(this.processId == pid){
+      const rTarget = blurEvt.relatedTarget as HTMLElement;
+      if( rTarget == null ||  rTarget.id !== 'fileMgrSec' ){
+          this.setHeaderInActive(pid);
+      }else{
+        blurEvt.stopPropagation();
+        blurEvt.preventDefault();
+      }
+    }
   }
 
-  onFocus(focusEvt:any):void{
-    console.log('This is focusEvt data:', focusEvt);
+  onFocus(focusEvt:FocusEvent):void{
+    console.log('This is focusEvt from window:', focusEvt);
     this.headerActiveStyles = {
       'background-color':'blue'
     };

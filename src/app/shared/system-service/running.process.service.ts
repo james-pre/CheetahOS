@@ -13,7 +13,8 @@ export class RunningProcessService{
     processListChangeNotify: Subject<void> = new Subject<void>();
     closeProcessNotify: Subject<Process> = new Subject<Process>();
     focusOnNextProcessNotify: Subject<void> = new Subject<void>();
-    focusOnCurrentProcessNotify: Subject<Process> = new Subject<Process>();
+    focusOnCurrentProcessNotify: Subject<unknown[]> = new Subject<unknown[]>();
+    blurOnCurrentProcessNotify: Subject<unknown[]> = new Subject<unknown[]>();
     restoreOrMinimizeWindowNotify: Subject<number> = new Subject<number>();
 
     constructor(){
