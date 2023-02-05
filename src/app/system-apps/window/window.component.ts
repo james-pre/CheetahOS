@@ -237,8 +237,8 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
        * If you want to make a non-focusable element focusable, 
        * you must add a tabindex attribute to it. And divs falls into the category non-focusable elements .
        */
-        console.log('set window to focus evt from filmgr:',eventData)
-        const focusEvt:FocusEvent = eventData[0] as FocusEvent;
+        //console.log('set window to focus evt from filmgr:',eventData)//TBD
+        //const focusEvt:FocusEvent = eventData[0] as FocusEvent;
         const pid:number = eventData[1] as number;
 
         if(this.processId == pid){
@@ -263,8 +263,8 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
        * If you want to make a non-focusable element focusable, 
        * you must add a tabindex attribute to it. And divs falls into the category non-focusable elements .
        */
-        console.log('set window to blur evt from filmgr:',eventData)
-        const focusEvt:FocusEvent = eventData[0] as FocusEvent;
+        //console.log('set window to blur evt from filmgr:',eventData) //TBD
+        //const focusEvt:FocusEvent = eventData[0] as FocusEvent;
         const pid:number = eventData[1] as number;
 
         if(this.processId == pid){
@@ -273,11 +273,12 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
     }
 
     onBlur(blurEvt:FocusEvent, pid:number):void{
-      console.log('This is blurEvt from window:', blurEvt);
+      //console.log('This is blurEvt from window:', blurEvt); //TBD
+      const targetList:string[] = ['fileMgrSec','closeBtn', 'hideBtn', 'minMaxBtn'];
 
       if(this.processId == pid){
         const rTarget = blurEvt.relatedTarget as HTMLElement;
-        if( rTarget == null ||  rTarget.id !== 'fileMgrSec' ){
+        if( rTarget == null ||  targetList.indexOf(rTarget.id) !== -1  ){
             this.setHeaderInActive(pid);
         }else{
           blurEvt.stopPropagation();
@@ -291,7 +292,7 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
        * If you want to make a non-focusable element focusable, 
        * you must add a tabindex attribute to it. And divs falls into the category non-focusable elements .
        */
-      console.log('set window to focus:',pid)
+      //console.log('set window to focus:',pid) //TBD
       let z_index = this._stateManagmentService.getState(this.z_index) as number;
       const windowState = this._stateManagmentService.getState(pid) as WindowState;
     
@@ -306,7 +307,6 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
         this.currentStyles = {
           'z-index':z_index
         };
-        //this.divWindow.nativeElement.focus();
       }
     }
 
