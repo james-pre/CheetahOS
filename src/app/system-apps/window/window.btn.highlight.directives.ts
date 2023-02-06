@@ -24,14 +24,14 @@ export class HighlightDirective {
     this.highlight('','');
   }
 
-  @HostListener("focus")
-  onFocus(): void {
-    if(this.el.nativeElement.id == "closeBtn"){
-      this.el.nativeElement.style.backgroundColor = this.focusedCloseBtnColor;
-    }
-    //this.elementHost.nativeElement.classList.add("has-focus");
-    //this.elementHost.nativeElement.classList.remove("has-focus");
-  }
+  // @HostListener("focus")
+  // onFocus(): void {
+  //   if(this.el.nativeElement.id == "closeBtn"){
+  //     this.el.nativeElement.style.backgroundColor = this.focusedCloseBtnColor;
+  //   }
+  //   //this.elementHost.nativeElement.classList.add("has-focus");
+  //   //this.elementHost.nativeElement.classList.remove("has-focus");
+  // }
 
   // @HostListener("blur")
   // onBlur(): void {

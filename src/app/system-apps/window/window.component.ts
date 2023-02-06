@@ -36,7 +36,8 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
   windowHide = false;
   windowMaximize = false;
   currentStyles: Record<string, unknown> = {};
-  headerActiveStyles: Record<string, unknown> = {};
+  headerActiveStyles: Record<string, unknown> = {}; 
+  closeBtnStyles: Record<string, unknown> = {};
   defaultWidthOnOpen = 0;
   defaultHeightOnOpen = 0;
   private readonly z_index = 25914523; // this number = zindex
@@ -145,10 +146,10 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
       }
     }
 
-    setHeaderActive(pid:number): void{
+    setBtnFocus(pid:number): void{
         if(this.processId == pid){
-          this.headerActiveStyles = {
-            'background-color':'blue'
+          this.closeBtnStyles = {
+            'background-color':'rgb(139,10,20)'
           };
         }
     }
@@ -160,6 +161,14 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
         };
       }
     }
+
+    setHeaderActive(pid:number): void{
+      if(this.processId == pid){
+        this.headerActiveStyles = {
+          'background-color':'blue'
+        };
+      }
+  }
    
     onHideBtnClick(){
       // a hide button, should just hide the window. not change the size of the window
@@ -248,7 +257,7 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
     }
 
     onFocus(focusEvt:FocusEvent,  pid:number):void{
-      console.log('This is focusEvt from window:', focusEvt);
+      //console.log('This is focusEvt from window:', focusEvt); //TBD
 
       if(this.processId == pid){
           this.headerActiveStyles = {
@@ -274,12 +283,29 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
 
     onBlur(blurEvt:FocusEvent, pid:number):void{
       //console.log('This is blurEvt from window:', blurEvt); //TBD
-      const targetList:string[] = ['fileMgrSec','closeBtn', 'hideBtn', 'minMaxBtn'];
+      const targetList:string[] = ['closeBtn', 'hideBtn', 'minMaxBtn', 'fileMgrSec'];
 
       if(this.processId == pid){
+  
+        const target = blurEvt.target as HTMLElement;
+        const cTarget = blurEvt.currentTarget as HTMLElement;
         const rTarget = blurEvt.relatedTarget as HTMLElement;
-        if( rTarget == null ||  targetList.indexOf(rTarget.id) !== -1  ){
+
+        if(target !== null){
+          if (target.id === 'headerSec' && rTarget == null) {
             this.setHeaderInActive(pid);
+          }else if (target.id === 'headerSec' &&  targetList.indexOf(rTarget.id) !== -1){
+            this.setHeaderActive(pid);
+
+              if(rTarget.id === 'closeBtn'){
+                //console.log('chnage closeBtn color') TBD
+                this.setBtnFocus(pid)
+              }
+          }else
+            this.setHeaderInActive(pid);
+        }
+        else if(rTarget == null || rTarget.id !== 'fileMgrSec' ){
+          this.setHeaderInActive(pid);
         }else{
           blurEvt.stopPropagation();
           blurEvt.preventDefault();
@@ -311,7 +337,7 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
     }
 
    setNextWindowToFocus():void{
-      console.log('just checking')
+      //console.log('just checking')
       const processWithWindows = this._runningProcessService.getProcesses().filter(p => p.getHasWindow == true);
 
       for (let i=0; i < processWithWindows.length; i++){
