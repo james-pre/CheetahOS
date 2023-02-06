@@ -199,51 +199,33 @@ export class FileService{
 
     public async writeFileAsync(directory:string, file:File):Promise<void>{
 
-        const ifExists =await this.checkIfIleExistsAsync(`${directory}/${file.name}`) as string
-
         new Promise<void>((resolve, reject) =>{
             const fileReader = new FileReader()
             fileReader.readAsDataURL(file);
 
             fileReader.onload = (evt) =>{
-                if(ifExists === 'false'){
-                    this._fileSystem.writeFile(`${directory}/${file.name}`,evt.target?.result,(err) =>{  
-                        if(err){
-                            console.log('writeFileAsync Error:',err);
-                            reject(err);
-                        }
+
+                this._fileSystem.writeFile(`${directory}/${file.name}`,evt.target?.result, {flag: 'wx'}, (err) =>{  
+                    if(err?.code === 'EEXIST' ){
+                        console.log('writeFileAsync Error: file already exists',err);
+
+                        const itrName = this.iterateFileName(`${directory}/${file.name}`);
+                        this._fileSystem.writeFile(itrName,evt.target?.result,(err) =>{  
+                            if(err){
+                                console.log('writeFileAsync Iterate Error:',err);
+                                reject(err);
+                            }
+                            resolve();
+                        });
+                    }else{
                         this._fileExistsMap.set(`${directory}/${file.name}`,0);
                         resolve();
-                    });
-                }else{
-                    const itrName = this.iterateFileName(`${directory}/${file.name}`);
-                    this._fileSystem.writeFile(itrName,evt.target?.result,(err) =>{  
-                        if(err){
-                            console.log('writeFileAsync Iterate Error:',err);
-                            reject(err);
-                        }
-                        resolve();
-                    });
-                }
+                    }
+                });
             }
          }).then(()=>{
             //Send update notification
             this.dirFilesUpdateNotify.next();
-        });
-    }
-
-    public async checkIfIleExistsAsync(filePath:string){
-        return new Promise((resolve) =>{
-            this._fileSystem.stat(filePath,(err) =>{  
-                if(err?.code === 'ENOENT' ){
-                    console.log('checkIfIleExistsAsync Error:',err);
-                    console.log("DOES NOT exist:", filePath);
-                    resolve('false');
-                }else{
-                    console.log("can read/write:", filePath);
-                    resolve(filePath);
-                }
-            });
         });
     }
 
