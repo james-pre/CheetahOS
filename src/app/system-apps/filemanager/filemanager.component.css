@@ -2,6 +2,7 @@ li{
     display: flex;
     justify-content: center;
     padding: 2px;
+    height: min-content;
     z-index: 1;
 }
 
@@ -17,9 +18,14 @@ ol{
 }
 
 figcaption{
+    -webkit-box-orient: vertical;
     color: #fff;
+    display: -webkit-box;
     font-size: 12px;
     letter-spacing: 0.25px;
+    -webkit-line-clamp:1;
+    position: relative;
+    padding: 2px 0;
     text-shadow:0 0 1px rgba(0, 0, 0, 75%),
                 0 0 2px rgba(0, 0, 0, 50%),
                 0 0 3px rgba(0, 0, 0, 25%),
@@ -31,9 +37,10 @@ figcaption{
                 0 2px 1px rgba(0, 0, 0, 75%),
                 0 2px 2px rgba(0, 0, 0, 50%),
                 0 2px 3px rgba(0, 0, 0, 25%);
-    padding: 2px 0;
+
     top: -1px;
-    position: relative;
+    overflow: hidden;
+    word-break: break-all;
 }
 
 img{

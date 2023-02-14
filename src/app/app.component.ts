@@ -155,6 +155,6 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   private addEntryFromUserOpenedApps(proccessName:string):void{
     this.userOpenedAppsList.push(proccessName);
     this._sessionMangamentServices.addSession("openedApps", this.userOpenedAppsList)
-}
+  }
 
 }
