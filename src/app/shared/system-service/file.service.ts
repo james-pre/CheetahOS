@@ -229,6 +229,40 @@ export class FileService{
         });
     }
 
+    public async writeFilesAsync(directory:string, files:File[]):Promise<void>{
+
+        new Promise<void>((resolve, reject) =>{
+            files.forEach((file)=>{
+                const fileReader = new FileReader()
+                fileReader.readAsDataURL(file);
+
+                fileReader.onload = (evt) =>{
+    
+                    this._fileSystem.writeFile(`${directory}/${file.name}`,evt.target?.result, {flag: 'wx'}, (err) =>{  
+                        if(err?.code === 'EEXIST' ){
+                            console.log('writeFileAsync Error: file already exists',err);
+    
+                            const itrName = this.iterateFileName(`${directory}/${file.name}`);
+                            this._fileSystem.writeFile(itrName,evt.target?.result,(err) =>{  
+                                if(err){
+                                    console.log('writeFileAsync Iterate Error:',err);
+                                    reject(err);
+                                }
+                                resolve();
+                            });
+                        }else{
+                            this._fileExistsMap.set(`${directory}/${file.name}`,0);
+                            resolve();
+                        }
+                    });
+                }
+            })
+         }).then(()=>{
+            //Send update notification
+            this.dirFilesUpdateNotify.next();
+        });
+    }
+
     public  getFileEntriesFromDirectory(fileList:string[], directory:string):FileEntry[]{
 
         for(let i = 0; i < fileList.length; i++){
