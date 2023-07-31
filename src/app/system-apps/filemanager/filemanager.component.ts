@@ -77,7 +77,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     event.preventDefault();
   }
 
-  async onDrop(event:DragEvent):Promise<void>{
+  async onDrop1(event:DragEvent):Promise<void>{
     event.preventDefault();
     const dataTransfer = event.dataTransfer;
     const droppedfile:File = dataTransfer?.files[0] || new File([],'');
@@ -86,6 +86,26 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
       //console.log('droppedfile:', droppedfile) TBD;
       await this._fileService.writeFileAsync(this.directory, droppedfile)
     }
+  }
+
+  async onDrop(event:DragEvent):Promise<void>{
+    event.preventDefault();
+    let droppedFiles:File[] = [];
+
+    if(event?.dataTransfer?.files){
+        // eslint-disable-next-line no-unsafe-optional-chaining
+        droppedFiles  = [...event?.dataTransfer?.files];
+    }
+    
+    for( let i = 0; i < droppedFiles.length; i++){
+      const droppedfile:File =  droppedFiles[i];
+      if(droppedfile){
+        //console.log('droppedfile:', droppedfile) TBD;
+        await this._fileService.writeFileAsync(this.directory, droppedfile)
+      }
+    }
+
+
   }
 
   private async loadFilesInfoAsync():Promise<void>{

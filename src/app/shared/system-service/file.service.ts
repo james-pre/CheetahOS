@@ -127,7 +127,7 @@ export class FileService{
                     console.log('getFolderAsync error:',err)
                     reject(err)
                 }
-                const isDirectory = stats ? stats.isDirectory() : false
+                const isDirectory = stats? stats.isDirectory() : false
                 const iconFile = `/osdrive/icons/${isDirectory ? 'folder.ico' : 'unknown.ico'}`
                 const fileType = 'folder';
                 const opensWith ='fileexplorer'
