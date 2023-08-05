@@ -85,11 +85,9 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
         droppedFiles  = [...event?.dataTransfer?.files];
     }
     
-    if(droppedFiles.length > 1){
-      await this._fileService.writeFilesAsync(this.directory, droppedFiles)
-    }else{
-      await this._fileService.writeFileAsync(this.directory, droppedFiles[0])
-    }
+    if(droppedFiles.length >= 1)
+        await this._fileService.writeFilesAsync(this.directory, droppedFiles)
+
   }
 
   private async loadFilesInfoAsync():Promise<void>{
