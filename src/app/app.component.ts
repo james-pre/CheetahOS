@@ -5,7 +5,7 @@ import { RunningProcessService } from './shared/system-service/running.process.s
 import { Process } from './system-files/process';
 import { ComponentReferenceService } from './shared/system-service/component.reference.service';
 import { Subscription } from 'rxjs';
-import { StartProcessService } from './shared/system-service/start.process.service';
+import { TriggerProcessService } from './shared/system-service/trigger.process.service';
 import { BaseComponent } from './system-base/base/base.component';
 import { TitleComponent } from './user-apps/title/title.component';
 import { GreetingComponent } from './user-apps/greeting/greeting.component';
@@ -32,7 +32,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _componentReferenceService:ComponentReferenceService;
-  private _startProcessService:StartProcessService;
+  private _triggerProcessService:TriggerProcessService;
   private _sessionMangamentServices:SessionManagmentService;
   private _componentRefView!:ViewRef;
   private _appDirectory:AppDirectory;
@@ -63,18 +63,18 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   ];
 
 
-  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService,componentReferenceService:ComponentReferenceService, startProcessService:StartProcessService,
+  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService,componentReferenceService:ComponentReferenceService, triggerProcessService:TriggerProcessService,
     sessionMangamentServices:SessionManagmentService){
     this._processIdService = processIdService
     this.processId = this._processIdService.getNewProcessId()
 
     this._componentReferenceService = componentReferenceService;
     this._runningProcessService = runningProcessService;
-    this._startProcessService = startProcessService;
+    this._triggerProcessService = triggerProcessService;
     this._sessionMangamentServices = sessionMangamentServices;
 
-    this._startProcessSub = this._startProcessService.startProcessNotify.subscribe((appName) =>{this.loadApps(appName)})
-    this._startProcessSub = this._startProcessService.appNotFoundNotify.subscribe((appName) =>{this.loadApps(appName)})
+    this._startProcessSub = this._triggerProcessService.startProcessNotify.subscribe((appName) =>{this.loadApps(appName)})
+    this._startProcessSub = this._triggerProcessService.appNotFoundNotify.subscribe((appName) =>{this.loadApps(appName)})
     this._runningProcessService.closeProcessNotify.subscribe((p) =>{this.onCloseBtnClicked(p)})
     this._runningProcessService.addProcess(this.getComponentDetail());
 

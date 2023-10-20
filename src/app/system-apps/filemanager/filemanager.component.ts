@@ -7,7 +7,7 @@ import { Process } from 'src/app/system-files/process';
 import { FileEntry } from 'src/app/system-files/fileentry';
 import { FileInfo } from 'src/app/system-files/fileinfo';
 import { Subscription } from 'rxjs';
-import { StartProcessService } from 'src/app/shared/system-service/start.process.service';
+import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 
 @Component({
   selector: 'cos-filemanager',
@@ -24,7 +24,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   private _fileService:FileService
   private _directoryFilesEntires!:FileEntry[];
   private _dirFilesUpdatedSub!: Subscription;
-  private _startProcessService:StartProcessService;
+  private _triggerProcessService:TriggerProcessService;
 
   hasWindow = false;
   icon = '';
@@ -36,11 +36,11 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   files:FileInfo[] = [];
 
 
-  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, startProcessService:StartProcessService) { 
+  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, triggerProcessService:TriggerProcessService) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this._fileService = fileInfoService;
-    this._startProcessService = startProcessService;
+    this._triggerProcessService = triggerProcessService;
 
     this.processId = this._processIdService.getNewProcessId();
     this._runningProcessService.addProcess(this.getComponentDetail());
@@ -115,7 +115,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
 
         await this.loadFilesInfoAsync();
     }else{
-        this._startProcessService.startApplication(file.getOpensWith);
+        this._triggerProcessService.startApplication(file);
     }
   }
 

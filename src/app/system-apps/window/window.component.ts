@@ -343,8 +343,10 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
       for (let i=0; i < processWithWindows.length; i++){
           const process = processWithWindows[i];
           const window = this._stateManagmentService.getState(process.getProcessId) as WindowState;
+          
+          console.log("setNextWindowToFocus:", window);
 
-        if(window.getIsVisible){
+        if(window != undefined && window.getIsVisible){
           //console.log('process:',process.getProcessId +'----'+process.getProcessName); //TBD
           this.setWindowToFocusById(process.getProcessId);
           break;

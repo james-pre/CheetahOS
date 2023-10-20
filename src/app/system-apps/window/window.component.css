@@ -1,5 +1,5 @@
 
-.section{
+  .section{
     font-size: 100px;
     text-align: center;
     background-color: #808080;
@@ -13,9 +13,9 @@
     margin-left: -100px;
     outline: 1px hsl(0deg 0% 20%/70%);
     overflow:hidden
-}
+  }
 
-.window-dd-box {
+  .window-dd-box {
     cursor:none;
     justify-content: center;
     align-items: center;
@@ -87,23 +87,23 @@
     /* width: 10px; */
   }
   
-nav{
-    display: flex;
-    position: absolute;
-    right: 0;
-    height: 30px;
-}
+  nav{
+      display: flex;
+      position: absolute;
+      right: 0;
+      height: 30px;
+  }
 
-/* change cursor style to normal*/
-.ng-draggable {
-  cursor: auto;
-}
+  /* change cursor style to normal*/
+  .ng-draggable {
+    cursor: auto;
+  }
 
-.ng-dragging {
-  cursor: auto;
-}
+  .ng-dragging {
+    cursor: auto;
+  }
 
-/* Hide draggable corner*/
-.ng-resizable-diagonal{ 
-  border-bottom: 12px solid transparent; 
-}
+  /* Hide draggable corner*/
+  .ng-resizable-diagonal{ 
+    border-bottom: 12px solid transparent; 
+  }
