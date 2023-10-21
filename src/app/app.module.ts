@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AngularDraggableModule } from 'ngx-draggable-resize';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
 import { TitleComponent } from './user-apps/title/title.component';
@@ -46,7 +47,8 @@ import { TaskBarEntryHighlightDirective } from './shared/system-directive/taskba
   ],
   imports: [
     BrowserModule,
-    AngularDraggableModule
+    AngularDraggableModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

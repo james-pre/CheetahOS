@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, OnDestroy, ElementRef, AfterViewInit,OnChanges, ViewChild, ChangeDetectorRef, SimpleChanges } from '@angular/core';
+
 import { ComponentType } from 'src/app/system-files/component.types';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { Subscription } from 'rxjs';
@@ -31,7 +32,6 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
   processId = 0;
   type = ComponentType.systemComponent;
   displayName = '';
-   
 
   windowHide = false;
   windowMaximize = false;
