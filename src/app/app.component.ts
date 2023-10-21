@@ -124,9 +124,8 @@ export class AppComponent implements OnDestroy, AfterViewInit {
     
     const componentToDelete = this._componentReferenceService.getComponentReference(eventData.getProcessId);
     this._componentRefView = componentToDelete.hostView;
-
-    // eslint-disable-next-line prefer-const
-    let iVCntr  = this.itemViewContainer.indexOf(this._componentRefView);
+    
+    const iVCntr  = this.itemViewContainer.indexOf(this._componentRefView);
     this.itemViewContainer.remove(iVCntr);
 
     this._runningProcessService.removeProcess(eventData)
