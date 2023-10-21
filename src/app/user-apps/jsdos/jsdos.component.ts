@@ -9,6 +9,7 @@ import { ProcessIDService } from 'src/app/shared/system-service/process.id.servi
 import { Process } from 'src/app/system-files/process';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
+import { FileInfo } from 'src/app/system-files/fileinfo';
 declare const Dos: DosPlayerFactoryType;
 declare const emulators:Emulators
 
@@ -25,6 +26,7 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
   private _runningProcessService:RunningProcessService;
   private _triggerProcessService:TriggerProcessService;
   private _ci!: CommandInterface;
+  private _fileInfo!:FileInfo;
 
   name= 'jsdos';
   hasWindow = true;
@@ -51,7 +53,7 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
   }
 
   ngOnInit(): void {
-    1
+    this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
   }
 
   async ngAfterViewInit() {
@@ -59,12 +61,11 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
     setTimeout( async () => {
 
       emulators.pathPrefix= '/';
-      const fileInfo = this._triggerProcessService.getLastProcessTrigger();
-
-       console.log('fileInfo in Js-DOS:',fileInfo) //TBD 
+       console.log('fileInfo in Js-DOS:',this._fileInfo) //TBD 
       
       // eslint-disable-next-line prefer-const
-      let data = await this._fileService.getFileAsync(fileInfo.getPath);
+       let data = await this._fileService.getFileAsync(this._fileInfo.getDataPath);
+       //let data = await this._fileService.getFileAsync('/osdrive/games/data/3d_duke.jsdos');
       //console.log('data:',data) //TBD 
   
 
@@ -82,11 +83,12 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
 
 
   async ngOnDestroy(): Promise<void> {
-    if (this.dosOptions) {
 
       console.log('clean up:')
-      await this._ci.exit();
-    }
+
+      if(this._ci != undefined)
+        await this._ci.exit();
+    
   }
 
 

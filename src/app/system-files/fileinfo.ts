@@ -1,6 +1,7 @@
 export class FileInfo{
     private _icon:string;
-    private _path:string;
+    private _currentpath:string;
+    private _dataPath:string;
     private _fileType:string;
     private _fileName:string;
     private _opensWith:string;
@@ -8,7 +9,8 @@ export class FileInfo{
 
     constructor(){
         this._icon = '';
-        this._path = '';
+        this._currentpath = '';
+        this._dataPath = '';
         this._fileType = '';
         this._fileName = '';
         this._opensWith = '';
@@ -21,11 +23,18 @@ export class FileInfo{
         this._icon = icon;
     }
 
-    get getPath(){
-        return this._path;
+    get getCurrentPath(){
+        return this._currentpath;
     }
-    set setPath(path:string){
-         this._path = path;
+    set setCurrentPath(currentPath:string){
+         this._currentpath = currentPath;
+    }
+
+    get getDataPath(){
+        return this._dataPath;
+    }
+    set setDataPath(dataPath:string){
+         this._dataPath = dataPath;
     }
 
     get getFileType(){

@@ -62,7 +62,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
         if(filePaths != null || filePaths != undefined){
             for(const filePath of filePaths){
               //console.log('revoking url:',filePath.getIcon); //TBD
-              URL.revokeObjectURL(filePath.getIcon);
+              //URL.revokeObjectURL(filePath.getIcon);
             }
         }
     }, 5000);
@@ -108,10 +108,10 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   }
 
   async runProcess(file:FileInfo):Promise<void>{
-    // console.log('what was clicked:',file.getFileName +'-----' + file.getOpensWith +'---'+ file.getPath +'----'+ file.getIcon) TBD
+    // console.log('what was clicked:',file.getFileName +'-----' + file.getOpensWith +'---'+ file.getCurrentPath +'----'+ file.getIcon) TBD
     if((file.getOpensWith == 'fileexplorer' && file.getFileName != 'File Explorer') && file.getFileType =='folder'){
         this.updateExplorerIconAndName.emit(file);
-        this.directory = file.getPath;
+        this.directory = file.getCurrentPath;
 
         await this.loadFilesInfoAsync();
     }else{
