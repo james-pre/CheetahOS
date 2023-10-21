@@ -43,7 +43,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   private _appIsRunningSub!:Subscription;  
 
   private userOpenedAppsList: string[] = [];
-  private userOpenedAppsKey = "openedApps";
+  private readonly userOpenedAppsKey = "openedApps";
 
   hasWindow = false;
   icon = '';
@@ -148,12 +148,12 @@ export class AppComponent implements OnDestroy, AfterViewInit {
       if (pidIndex !== -1) 
         this.userOpenedAppsList.splice(pidIndex, deleteCount);
 
-      this._sessionMangamentServices.addSession("openedApps", this.userOpenedAppsList)
+      this._sessionMangamentServices.addSession(this.userOpenedAppsKey, this.userOpenedAppsList)
   }
 
   private addEntryFromUserOpenedApps(proccessName:string):void{
     this.userOpenedAppsList.push(proccessName);
-    this._sessionMangamentServices.addSession("openedApps", this.userOpenedAppsList)
+    this._sessionMangamentServices.addSession(this.userOpenedAppsKey, this.userOpenedAppsList)
   }
 
 }

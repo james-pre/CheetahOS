@@ -15,7 +15,7 @@ import { trigger, transition, state, animate, style, AnimationEvent } from '@ang
       state('open', style({
         // height: '200px',
         opacity: 1,
-        backgroundColor: 'yellow'
+        //backgroundColor: 'yellow'
       })),
       state('closed', style({
         // height: '100px',
@@ -23,27 +23,27 @@ import { trigger, transition, state, animate, style, AnimationEvent } from '@ang
         // backgroundColor: 'blue'
       })),
       transition('open => closed', [
-        animate('10s')
+        animate('1s')
       ]),
       transition('closed => open', [
-        animate('9.5s')
+        animate('1.5s')
       ]),
       transition('* => closed', [
-        animate('10s')
+        animate('2s')
       ]),
       transition('* => open', [
-        animate('9.5s')
+        animate('1.5s')
       ]),
       transition('open <=> closed', [
-        animate('9.5s')
+        animate('1.5s')
       ]),
       transition ('* => open', [
-        animate ('10s',
+        animate ('2s',
           style ({ opacity: '*' }),
         ),
       ]),
       transition('* => *', [
-        animate('10s')
+        animate('2s')
       ]),
     ]),
   ],
