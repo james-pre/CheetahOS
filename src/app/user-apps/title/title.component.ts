@@ -11,40 +11,36 @@ import { trigger, transition, state, animate, style, AnimationEvent } from '@ang
   templateUrl: './title.component.html',
   animations: [
     trigger('openClose', [
-      //...
-      state('open', style({
-        // height: '200px',
-        opacity: 1,
-        //backgroundColor: 'yellow'
-      })),
-      state('closed', style({
-        // height: '100px',
-        // opacity: 0.8,
-        // backgroundColor: 'blue'
-      })),
-      transition('open => closed', [
-        animate('1s')
-      ]),
-      transition('closed => open', [
-        animate('1.5s')
-      ]),
-      transition('* => closed', [
-        animate('2s')
-      ]),
       transition('* => open', [
-        animate('1.5s')
+        animate("250ms ease-in", style({
+          opacity: 0.5,
+          height: '95%',
+          width: '95%'
+        }))
       ]),
-      transition('open <=> closed', [
-        animate('1.5s')
+      transition('open => *', [
+        animate("250ms ease-out", style({
+          opacity: 0.5,
+          height: '95%',
+          width: '95%'
+        }))
+      ])
+    ]),
+    trigger('hideRestore', [
+      transition('* => open', [
+        animate("250ms ease-in", style({
+          opacity: 0.5,
+          height: '95%',
+          width: '95%'
+        }))
       ]),
-      transition ('* => open', [
-        animate ('2s',
-          style ({ opacity: '*' }),
-        ),
-      ]),
-      transition('* => *', [
-        animate('2s')
-      ]),
+      transition('open => *', [
+        animate("250ms ease-out", style({
+          opacity: 0.5,
+          height: '95%',
+          width: '95%'
+        }))
+      ])
     ]),
   ],
   styleUrls: ["./title.component.css"]
