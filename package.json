@@ -33,7 +33,7 @@
     "@angular/platform-browser": "^15.1.2",
     "@angular/platform-browser-dynamic": "^15.1.2",
     "@angular/router": "^15.1.2",
-    "browserfs": "github:jvilk/BrowserFS",
+    "browserfs": "^1.4.3",
     "emulators": "^0.73.7",
     "emulators-ui": "^0.73.7",
     "ini": "^2.0.0",
