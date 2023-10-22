@@ -48,8 +48,8 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
       this._stateManagmentService = stateManagmentService;
       this._restoreOrMinSub = this._runningProcessService.restoreOrMinimizeWindowNotify.subscribe((p) => {this.restoreHiddenWindow(p)});
       this._focusOnNextProcessSub = this._runningProcessService.focusOnNextProcessNotify.subscribe(() => {this.setNextWindowToFocus()});
-      this._focusOnCurrentProcessSub = this._runningProcessService.focusOnCurrentProcessNotify.subscribe((evt) => {this.setWindowToFocusUsingEvt(evt)});
-      this._blurOnCurrentProcessSub = this._runningProcessService.blurOnCurrentProcessNotify.subscribe((evt) => {this.setWindowToBlurUsingEvt(evt)});
+      this._focusOnCurrentProcessSub = this._runningProcessService.focusOnCurrentProcessNotify.subscribe((p) => {this.setFocusOnWindow(p)});
+      this._blurOnCurrentProcessSub = this._runningProcessService.focusOutOtherProcessNotify.subscribe((p) => {this.removeFocusOnWindow(p)});
     }
 
     get getDivWindowElement(): HTMLElement {
@@ -224,6 +224,10 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
       }
     }
 
+    onDragStart(pid:number){
+      this.setFocusOnWindow(pid);
+    }
+
     onRZStop(input:any){
       const height = Number(input.size.height);
       const width = Number(input.size.width);
@@ -241,84 +245,40 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
       this._runningProcessService.focusOnNextProcessNotify.next();
     }
 
-    setWindowToFocusUsingEvt(eventData:unknown[]):void{
+    setFocusOnWindow(pid:number):void{
       /**
        * If you want to make a non-focusable element focusable, 
        * you must add a tabindex attribute to it. And divs falls into the category non-focusable elements .
        */
-        //console.log('set window to focus evt from filmgr:',eventData)//TBD
-        //const focusEvt:FocusEvent = eventData[0] as FocusEvent;
-        const pid:number = eventData[1] as number;
 
-        if(this.processId == pid){
-          this.setHeaderActive(pid);
-          this.setWindowToFocusById(pid);
-        }
-    }
-
-    onFocus(focusEvt:FocusEvent,  pid:number):void{
-      //console.log('This is focusEvt from window:', focusEvt); //TBD
-
+      this._runningProcessService.focusOutOtherProcessNotify.next(pid);
+      
       if(this.processId == pid){
-          this.headerActiveStyles = {
-            'background-color':'blue'
-          };
-          this.setWindowToFocusById(pid);
+        this.setHeaderActive(pid);
+        this.setWindowToFocusById(pid);
       }
     }
 
-    setWindowToBlurUsingEvt(eventData:unknown[]):void{
-      /**
-       * If you want to make a non-focusable element focusable, 
-       * you must add a tabindex attribute to it. And divs falls into the category non-focusable elements .
-       */
-        //console.log('set window to blur evt from filmgr:',eventData) //TBD
-        //const focusEvt:FocusEvent = eventData[0] as FocusEvent;
-        const pid:number = eventData[1] as number;
+    /**
+     * the pid of the current window currently in focus is passed. if the pid of other windows do not match,
+     * then they are set out of focus 
+     */
+    removeFocusOnWindow(pid:number):void{
+      const processWithWindows = this._runningProcessService.getProcesses().filter(p => p.getHasWindow == true && p.getProcessId != pid);
 
-        if(this.processId == pid){
-          this.setHeaderInActive(pid);
-        }
-    }
+      for (let i=0; i < processWithWindows.length; i++){
+          const process = processWithWindows[i];
+          const window = this._stateManagmentService.getState(process.getProcessId) as WindowState;
 
-    onBlur(blurEvt:FocusEvent, pid:number):void{
-      //console.log('This is blurEvt from window:', blurEvt); //TBD
-      const targetList:string[] = ['closeBtn', 'hideBtn', 'minMaxBtn', 'fileMgrSec'];
-
-      if(this.processId == pid){
-  
-        const target = blurEvt.target as HTMLElement;
-        const cTarget = blurEvt.currentTarget as HTMLElement;
-        const rTarget = blurEvt.relatedTarget as HTMLElement;
-
-        if(target !== null){
-          if (target.id === 'headerSec' && rTarget == null) {
-            this.setHeaderInActive(pid);
-          }else if (target.id === 'headerSec' &&  targetList.indexOf(rTarget.id) !== -1){
-            this.setHeaderActive(pid);
-
-              if(rTarget.id === 'closeBtn'){
-                //console.log('chnage closeBtn color') TBD
-                this.setBtnFocus(pid)
-              }
-          }else
-            this.setHeaderInActive(pid);
-        }
-        else if(rTarget == null || rTarget.id !== 'fileMgrSec' ){
-          this.setHeaderInActive(pid);
-        }else{
-          blurEvt.stopPropagation();
-          blurEvt.preventDefault();
+          if(window != undefined && window.getIsVisible){
+            this.setHeaderInActive(window.getPid);
         }
       }
-   }
+    }
+
 
    setWindowToFocusById(pid:number):void{
-      /**
-       * If you want to make a non-focusable element focusable, 
-       * you must add a tabindex attribute to it. And divs falls into the category non-focusable elements .
-       */
-      //console.log('set window to focus:',pid) //TBD
+
       let z_index = this._stateManagmentService.getState(this.z_index) as number;
       const windowState = this._stateManagmentService.getState(pid) as WindowState;
     
@@ -333,18 +293,19 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
         this.currentStyles = {
           'z-index':z_index
         };
+        this.setHeaderActive(pid);
       }
     }
 
    setNextWindowToFocus():void{
-      //console.log('just checking')
+
       const processWithWindows = this._runningProcessService.getProcesses().filter(p => p.getHasWindow == true);
 
       for (let i=0; i < processWithWindows.length; i++){
           const process = processWithWindows[i];
           const window = this._stateManagmentService.getState(process.getProcessId) as WindowState;
           
-          console.log("setNextWindowToFocus:", window);
+          //console.log("setNextWindowToFocus:", window);
 
         if(window != undefined && window.getIsVisible){
           //console.log('process:',process.getProcessId +'----'+process.getProcessName); //TBD

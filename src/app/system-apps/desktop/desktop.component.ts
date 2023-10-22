@@ -72,8 +72,13 @@ export class DesktopComponent implements OnInit, AfterViewInit{
         });
   }
 
+  onDesktopClick():void{
+    //console.log("Desktop in focus")
+  }
+
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type)
   }
+
 
 }

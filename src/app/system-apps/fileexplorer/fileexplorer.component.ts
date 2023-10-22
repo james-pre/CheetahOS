@@ -44,27 +44,8 @@ export class FileexplorerComponent implements BaseComponent {
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type)
   }
 
-  onFocus1(focusEvt:FocusEvent, id:number):void{
-    // console.log('filexplor focus-event:',focusEvt);
-    // console.log('id-num:',id)
-
-    const evtData:unknown[] = [];
-    evtData.push(focusEvt);
-    evtData.push(id)
-
-    this._runningProcessService.focusOnCurrentProcessNotify.next(evtData);
+  setFocusOnFEWindow(pid:number):void{
+    // console.log('setFileExploreToFocus:',pid);
+    this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
   }
-
-
-  onBlur1(blurEvt:FocusEvent, id:number):void{
-    // console.log('filexplor blur-event:',blurEvt);
-    // console.log('id-num:',id)
-
-    const evtData:unknown[] = [];
-    evtData.push(blurEvt);
-    evtData.push(id)
-
-    this._runningProcessService.blurOnCurrentProcessNotify.next(evtData);
-  }
-
 }
