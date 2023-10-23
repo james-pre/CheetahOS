@@ -5,45 +5,13 @@ import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { FileInfo } from 'src/app/system-files/fileinfo';
 import { Process } from 'src/app/system-files/process';
-import { trigger, transition, state, animate, style, AnimationEvent } from '@angular/animations';
+import { AnimationEvent } from '@angular/animations';
+import { openCloseAnimation } from 'src/app/system-apps/window/animation/animations';
 
 @Component({
   selector: 'cos-fileexplorer',
   templateUrl: './fileexplorer.component.html',
-  animations: [
-    trigger('openClose', [
-      transition('* => open', [
-        animate("250ms ease-in", style({
-          opacity: 0.5,
-          height: '95%',
-          width: '95%'
-        }))
-      ]),
-      transition('open => *', [
-        animate("250ms ease-out", style({
-          opacity: 0.5,
-          height: '95%',
-          width: '95%'
-        }))
-      ])
-    ]),
-    trigger('hideRestore', [
-      transition('* => open', [
-        animate("250ms ease-in", style({
-          opacity: 0.5,
-          height: '95%',
-          width: '95%'
-        }))
-      ]),
-      transition('open => *', [
-        animate("250ms ease-out", style({
-          opacity: 0.5,
-          height: '95%',
-          width: '95%'
-        }))
-      ])
-    ]),
-  ],
+  animations: [ openCloseAnimation],
   styleUrls: ['./fileexplorer.component.css']
 })
 export class FileexplorerComponent implements BaseComponent {

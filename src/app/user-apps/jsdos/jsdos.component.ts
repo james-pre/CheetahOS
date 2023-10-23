@@ -10,7 +10,8 @@ import { Process } from 'src/app/system-files/process';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 import { FileInfo } from 'src/app/system-files/fileinfo';
-import { trigger, transition, state, animate, style, AnimationEvent } from '@angular/animations';
+import { AnimationEvent } from '@angular/animations';
+import { openCloseAnimation } from 'src/app/system-apps/window/animation/animations';
 
 declare const Dos: DosPlayerFactoryType;
 declare const emulators:Emulators
@@ -18,40 +19,7 @@ declare const emulators:Emulators
 @Component({
   selector: 'cos-jsdos',
   templateUrl: './jsdos.component.html',
-  animations: [
-    trigger('openClose', [
-      transition('* => open', [
-        animate("250ms ease-in", style({
-          opacity: 0.5,
-          height: '95%',
-          width: '95%'
-        }))
-      ]),
-      transition('open => *', [
-        animate("250ms ease-out", style({
-          opacity: 0.5,
-          height: '95%',
-          width: '95%'
-        }))
-      ])
-    ]),
-    trigger('hideRestore', [
-      transition('* => open', [
-        animate("250ms ease-in", style({
-          opacity: 0.5,
-          height: '95%',
-          width: '95%'
-        }))
-      ]),
-      transition('open => *', [
-        animate("250ms ease-out", style({
-          opacity: 0.5,
-          height: '95%',
-          width: '95%'
-        }))
-      ])
-    ]),
-  ],
+  animations: [ openCloseAnimation],
   styleUrls: ['./jsdos.component.css']
 })
 export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterViewInit {
