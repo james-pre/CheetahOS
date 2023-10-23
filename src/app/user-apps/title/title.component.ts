@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { BaseComponent } from 'src/app/system-base/base/base.component';
@@ -46,12 +46,10 @@ import { trigger, transition, state, animate, style, AnimationEvent } from '@ang
   styleUrls: ["./title.component.css"]
 })
 
-export class TitleComponent implements BaseComponent{
+export class TitleComponent implements BaseComponent, OnDestroy{
 
-  @Output() closeBtnClicked: EventEmitter<Process> =new EventEmitter<Process>();
   private _processIdService;
   private _runningProcessService;
-
 
   hasWindow = true;
   icon = 'osdrive/picture/favicon.ico';
@@ -68,10 +66,16 @@ export class TitleComponent implements BaseComponent{
     this._runningProcessService.addProcess(this.getComponentDetail());
   }
 
+  ngOnDestroy():void{
+    1
+  }
 
-  setFileExploreToFocus(pid:number):void{
+
+  setTitleWindowToFocus(pid:number):void{
     this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
   }
+
+
 
   onAnimationEvent(event: AnimationEvent) {
 

@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
-import { DosPlayer as Instance, DosPlayerFactoryType } from "js-dos";
+import {DosPlayerFactoryType } from "js-dos";
 import {DosPlayerOptions} from './js.dos'
 import {CommandInterface, Emulators} from "emulators"
 import { FileService } from 'src/app/shared/system-service/file.service';
@@ -10,12 +10,48 @@ import { Process } from 'src/app/system-files/process';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 import { FileInfo } from 'src/app/system-files/fileinfo';
+import { trigger, transition, state, animate, style, AnimationEvent } from '@angular/animations';
+
 declare const Dos: DosPlayerFactoryType;
 declare const emulators:Emulators
 
 @Component({
   selector: 'cos-jsdos',
   templateUrl: './jsdos.component.html',
+  animations: [
+    trigger('openClose', [
+      transition('* => open', [
+        animate("250ms ease-in", style({
+          opacity: 0.5,
+          height: '95%',
+          width: '95%'
+        }))
+      ]),
+      transition('open => *', [
+        animate("250ms ease-out", style({
+          opacity: 0.5,
+          height: '95%',
+          width: '95%'
+        }))
+      ])
+    ]),
+    trigger('hideRestore', [
+      transition('* => open', [
+        animate("250ms ease-in", style({
+          opacity: 0.5,
+          height: '95%',
+          width: '95%'
+        }))
+      ]),
+      transition('open => *', [
+        animate("250ms ease-out", style({
+          opacity: 0.5,
+          height: '95%',
+          width: '95%'
+        }))
+      ])
+    ]),
+  ],
   styleUrls: ['./jsdos.component.css']
 })
 export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterViewInit {
@@ -34,6 +70,7 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
   processId = 0;
   type = ComponentType.userComponent;
   displayName = 'JS-Dos';
+  onOpen = true;
 
   dosOptions:DosPlayerOptions = {
     style: "none",
@@ -54,29 +91,10 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
 
   ngOnInit(): void {
     this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
-    //this.icon = this._fileInfo.getIcon;
     this.name = this._fileInfo.getFileName;
   }
 
-  async ngAfterViewInit() {
-
-    setTimeout( async () => {
-
-      emulators.pathPrefix= '/';
-      //console.log('fileInfo in Js-DOS:',this._fileInfo) //TBD 
-      //let data = await this._fileService.getFileAsync('/osdrive/games/data/3d_duke.jsdos');
-   
-      const data = await this._fileService.getFileAsync(this._fileInfo.getDataPath);
-      this._ci = await  Dos(this.dosWindow.nativeElement, this.dosOptions).run(data);
-
-      URL.revokeObjectURL(this._fileInfo.getDataPath);
-
-    }, 1500);
-  }
-
-
   ngOnDestroy(): void {
-
     if(this.dosOptions){
 
       if(this._ci != undefined)
@@ -84,6 +102,49 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
     }
   }
 
+  async ngAfterViewInit() {
+    setTimeout( async () => {
+
+      emulators.pathPrefix= '/';
+      //console.log('fileInfo in Js-DOS:',this._fileInfo) //TBD 
+      //let data = await this._fileService.getFileAsync('/osdrive/games/data/3d_duke.jsdos');
+   
+      if(this._fileInfo.getDataPath != ''){
+
+        const data = await this._fileService.getFileAsync(this._fileInfo.getDataPath);
+        this._ci = await  Dos(this.dosWindow.nativeElement, this.dosOptions).run(data);
+        URL.revokeObjectURL(this._fileInfo.getDataPath);
+      }else{
+        alert(`JS-Dos could not started. Sorry :()`)
+      }
+    }, 1500);
+  }
+
+  setJSDosWindowToFocus(pid:number):void{
+    this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
+  }
+
+
+  onAnimationEvent(event: AnimationEvent) {
+
+    // // openClose is trigger name in this example
+    // console.warn(`Animation Trigger: ${event.triggerName}`);
+
+    // // phaseName is "start" or "done"
+    // console.warn(`Phase: ${event.phaseName}`);
+
+    // // in our example, totalTime is 1000 (number of milliseconds in a second)
+    // console.warn(`Total time: ${event.totalTime}`);
+
+    // // in our example, fromState is either "open" or "closed"
+    // console.warn(`From: ${event.fromState}`);
+
+    // // in our example, toState either "open" or "closed"
+    // console.warn(`To: ${event.toState}`);
+
+    // // the HTML element itself, the button in this case
+    // console.warn(`Element: ${event.element}`);
+  }
 
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type, this._triggerProcessService.getLastProcessTrigger)

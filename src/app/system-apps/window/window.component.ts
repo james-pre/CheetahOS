@@ -23,7 +23,7 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
    private _restoreOrMinSub!:Subscription
    private _focusOnNextProcessSub!:Subscription;
    private _focusOnCurrentProcessSub!:Subscription;
-   private _blurOnCurrentProcessSub!:Subscription;
+   private _focusOutOtherProcessSub!:Subscription;
    private originalWindowsState!:WindowState;
 
   hasWindow = false;
@@ -49,7 +49,7 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
       this._restoreOrMinSub = this._runningProcessService.restoreOrMinimizeWindowNotify.subscribe((p) => {this.restoreHiddenWindow(p)});
       this._focusOnNextProcessSub = this._runningProcessService.focusOnNextProcessNotify.subscribe(() => {this.setNextWindowToFocus()});
       this._focusOnCurrentProcessSub = this._runningProcessService.focusOnCurrentProcessNotify.subscribe((p) => {this.setFocusOnWindow(p)});
-      this._blurOnCurrentProcessSub = this._runningProcessService.focusOutOtherProcessNotify.subscribe((p) => {this.removeFocusOnWindow(p)});
+      this._focusOutOtherProcessSub = this._runningProcessService.focusOutOtherProcessNotify.subscribe((p) => {this.removeFocusOnWindow(p)});
     }
 
     get getDivWindowElement(): HTMLElement {
@@ -66,7 +66,7 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
       this._restoreOrMinSub?.unsubscribe();
       this._focusOnNextProcessSub?.unsubscribe();
       this._focusOnCurrentProcessSub?.unsubscribe();
-      this._blurOnCurrentProcessSub?.unsubscribe();
+      this._focusOutOtherProcessSub?.unsubscribe();
     }
 
     ngAfterViewInit():void{
@@ -146,7 +146,7 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
       }
     }
 
-    setBtnFocus(pid:number): void{
+    setBtnFocus(pid:number):void{
         if(this.processId == pid){
           this.closeBtnStyles = {
             'background-color':'rgb(139,10,20)'
@@ -154,7 +154,7 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
         }
     }
 
-    setHeaderInActive(pid:number): void{
+    setHeaderInActive(pid:number):void{
       if(this.processId == pid){
         this.headerActiveStyles = {
           'background-color':'rgb(121, 163, 232)'
@@ -162,7 +162,7 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
       }
     }
 
-    setHeaderActive(pid:number): void{
+    setHeaderActive(pid:number):void{
       if(this.processId == pid){
         this.headerActiveStyles = {
           'background-color':'blue'
@@ -170,13 +170,13 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
       }
   }
    
-    onHideBtnClick(){
+    onHideBtnClick():void{
       // a hide button, should just hide the window. not change the size of the window
       this.windowHide = true;
       this.setHideAndShow();
     }
 
-    restoreHiddenWindow(pid:number){
+    restoreHiddenWindow(pid:number):void{
       if(this.processId == pid){
         this.windowHide = false;
 
@@ -188,19 +188,19 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
       }
     }
 
-    onMaximizeBtnClick(){
+    onMaximizeBtnClick():void{
       this.windowMaximize = true;
       this.windowHide = false;
       this.setMaximizeAndUnMaximize();
     }
 
-    onUnMaximizeBtnClick(){
+    onUnMaximizeBtnClick():void{
       //set window back to its previovs size and position on the screen
       this.windowMaximize = false;
       this.setMaximizeAndUnMaximize();
     }
 
-    onTitleBarDoubleClick(){
+    onTitleBarDoubleClick():void{
       if(this.windowMaximize){
         this.windowMaximize = false;
       }else{
@@ -209,7 +209,7 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
       this.setMaximizeAndUnMaximize()
     }
 
-    onDragEnd(input:HTMLElement){
+    onDragEnd(input:HTMLElement):void{
       const style = window.getComputedStyle(input);
       const matrix1 = new WebKitCSSMatrix(style.transform);
       const x_axis = matrix1.m41;
@@ -224,11 +224,11 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
       }
     }
 
-    onDragStart(pid:number){
+    onDragStart(pid:number):void{
       this.setFocusOnWindow(pid);
     }
 
-    onRZStop(input:any){
+    onRZStop(input:any):void{
       const height = Number(input.size.height);
       const width = Number(input.size.width);
 
@@ -238,7 +238,7 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
       this._stateManagmentService.addState(this.processId,windowState);
     }
 
-    onCloseBtnClick(){
+    onCloseBtnClick():void{
       const processToClose = this._runningProcessService.getProcess(this.processId);
       this._stateManagmentService.removeState(this.processId);
       this._runningProcessService.closeProcessNotify.next(processToClose);

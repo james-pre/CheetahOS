@@ -1,5 +1,9 @@
-<cos-window [runningProcessID]="this.processId" [processAppIcon]="this.icon" [processAppName]="this.name">
+<div 
+[@openClose]="onOpen ? 'open' : 'closed'"
+(@openClose.start)="onAnimationEvent($event)"
+(@openClose.done)="onAnimationEvent($event)">
 
-    <div #doswindow class="canvas" style="height:800px; width:600px; position: relative;" ></div> 
-
-</cos-window>
+    <cos-window [runningProcessID]="this.processId" [processAppIcon]="this.icon" [processAppName]="this.name" (click)="setJSDosWindowToFocus(this.processId)">
+        <div #doswindow class="canvas" style="height:800px; width:600px; position: relative;" ></div> 
+    </cos-window>
+</div>
