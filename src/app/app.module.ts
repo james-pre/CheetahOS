@@ -21,6 +21,7 @@ import { TaskmanagerComponent } from './system-apps/taskmanager/taskmanager.comp
 import { JsdosComponent } from './user-apps/jsdos/jsdos.component';
 import { SafeUrlPipe } from './shared/system-pipes/safe.resource.url.pipe';
 import { TaskBarEntryHighlightDirective } from './shared/system-directive/taskbar.entry.highlight.directives';
+import { WinampComponent } from './user-apps/winamp/winamp.component';
 
 
 
@@ -43,7 +44,8 @@ import { TaskBarEntryHighlightDirective } from './shared/system-directive/taskba
     GreetingComponent,
     TaskmanagerComponent,
     JsdosComponent,
-    SafeUrlPipe
+    SafeUrlPipe,
+    WinampComponent
   ],
   imports: [
     BrowserModule,
