@@ -21,7 +21,9 @@
               "browserfs",
               "ini",
               "path",
-              "js-dos"
+              "js-dos",
+              "vanta/dist/vanta.waves.min",
+              "vanta/dist/vanta.birds.min"
             ],
             "outputPath": "dist/cheetah-os",
             "index": "src/index.html",
@@ -43,8 +45,6 @@
               "node_modules/ngx-draggable-resize/css/resizable.min.css"
             ],
             "scripts": [
-              "./src/scripts/three.min.js",
-              "./src/scripts/vanta.waves.min.js",
               "node_modules/js-dos/dist/js-dos.js"
             ]
           },
