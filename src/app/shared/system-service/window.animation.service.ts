@@ -6,8 +6,6 @@ import { Subject } from "rxjs";
 })
 
 export class WindowAnimationService{
-    hideWindowNotify: Subject<void> = new Subject<void>();
-    restoreWindowNotify: Subject<void> = new Subject<void>();
-    mimizeWindowNotify: Subject<void> = new Subject<void>();
-    maximizeNotify: Subject<void> = new Subject<void>();
+    hideOrShowWindowNotify: Subject<void> = new Subject<void>();
+    mimizeOrmaximizeWindowNotify: Subject<void> = new Subject<void>();
 }

@@ -47,7 +47,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   private _runningProcessService:RunningProcessService;
   private _vantaEffect: any;
 
-  private _numSequence = 100;
+  private _numSequence = 0;
   private _charSquence = 'a';
   private _charSquenceCount = 0;
 
@@ -73,7 +73,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     const vanta = VANTAS[0];
     this._vantaEffect = vanta({
       el: '#vanta',
-      color:0x100a,
+      color:this._numSequence,
       waveHeight:20,
       shininess: 50,
       waveSpeed:0.5,
@@ -90,7 +90,6 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
           this._vantaEffect.setOptions({
             color: this.getNextColor(),
           });
-
      });
   }
 

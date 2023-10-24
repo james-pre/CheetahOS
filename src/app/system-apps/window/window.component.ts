@@ -5,6 +5,7 @@ import { RunningProcessService } from 'src/app/shared/system-service/running.pro
 import { Subscription } from 'rxjs';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 import { WindowState } from 'src/app/system-files/state/windows.state';
+import { WindowAnimationService } from 'src/app/shared/system-service/window.animation.service';
 
  @Component({
    selector: 'cos-window',
@@ -24,6 +25,9 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
    private _focusOnNextProcessSub!:Subscription;
    private _focusOnCurrentProcessSub!:Subscription;
    private _focusOutOtherProcessSub!:Subscription;
+   private _winAnimationSerice: WindowAnimationService;
+
+
    private originalWindowsState!:WindowState;
 
   hasWindow = false;
@@ -43,9 +47,10 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
   private readonly z_index = 25914523; // this number = zindex
   
 
-    constructor(runningProcessService:RunningProcessService, private changeDetectorRef: ChangeDetectorRef, stateManagmentService: StateManagmentService){
+    constructor(runningProcessService:RunningProcessService, private changeDetectorRef: ChangeDetectorRef, stateManagmentService: StateManagmentService,winAnimationSerice: WindowAnimationService){
       this._runningProcessService = runningProcessService;
       this._stateManagmentService = stateManagmentService;
+      this._winAnimationSerice = winAnimationSerice;
       this._restoreOrMinSub = this._runningProcessService.restoreOrMinimizeWindowNotify.subscribe((p) => {this.restoreHiddenWindow(p)});
       this._focusOnNextProcessSub = this._runningProcessService.focusOnNextProcessNotify.subscribe(() => {this.setNextWindowToFocus()});
       this._focusOnCurrentProcessSub = this._runningProcessService.focusOnCurrentProcessNotify.subscribe((p) => {this.setFocusOnWindow(p)});
@@ -93,25 +98,29 @@ import { WindowState } from 'src/app/system-files/state/windows.state';
       if(this.windowHide){
         if(windowState.getPid == this.processId){
           this.currentStyles = {
-            'display': 'none' 
+            // 'display': 'none' 
+            //opacity: 0
           };
 
           windowState.setIsVisible = false;
           this._stateManagmentService.addState(this.processId,windowState);
+          this._winAnimationSerice.hideOrShowWindowNotify.next();
         }
       }
       else if(!this.windowHide){
         if(windowState.getPid == this.processId){
           this.currentStyles = {
-            'display': 'block',
-            'width': `${String(windowState.getWidth)}`, 
-            'height': `${String(windowState.getHeight)}`, 
-            'transform': `translate(${String(windowState.getXAxis)}px, ${String(windowState.getYAxis)}px)`,
-            'z-index': windowState.getZIndex
+            //  'display': 'block',
+            opacity: 1,
+            // 'width': `${String(windowState.getWidth)}`, 
+            // 'height': `${String(windowState.getHeight)}`, 
+            // 'transform': `translate(${String(windowState.getXAxis)}px, ${String(windowState.getYAxis)}px)`,
+             'z-index': windowState.getZIndex
           };
 
           windowState.setIsVisible = true;
           this._stateManagmentService.addState(this.processId,windowState);
+          this._winAnimationSerice.hideOrShowWindowNotify.next();
         }
       }
     }
