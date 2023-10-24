@@ -1,5 +1,5 @@
 import { AfterViewInit, OnInit,OnDestroy, Component } from '@angular/core';
-import { Subscription, takeWhile, tap, timer } from 'rxjs';
+import { Subscription, timer } from 'rxjs';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { ComponentType } from 'src/app/system-files/component.types';
@@ -45,6 +45,12 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
+  private _vantaEffect: any;
+
+  private _numSequence = 100;
+  private _charSquence = 'a';
+  private _charSquenceCount = 0;
+
   private _timerSubscription!: Subscription;
 
   hasWindow = false;
@@ -53,21 +59,21 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   processId = 0;
   type = ComponentType.systemComponent;
   displayName = '';
-  private vantaEffect: any;
+
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail());
+    this._numSequence = this.getRandomInt(100, 999)
   }
 
   ngOnInit():void{
-   
     const vanta = VANTAS[0];
-    this.vantaEffect = vanta({
+    this._vantaEffect = vanta({
       el: '#vanta',
-      color:0x274c,
+      color:0x100a,
       waveHeight:20,
       shininess: 50,
       waveSpeed:0.5,
@@ -76,29 +82,51 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     });
   }
 
-
-
   ngAfterViewInit():void{
-    let counter = 0;
-    const colorSet = [0x284a,0x294c,0x304d,0x314b,0x324c,0x334c,0x344c,0x354c,0x364c,0x374c,0x384c,0x394c,0x404c,0x414c]
-     this._timerSubscription = timer(1000, 10000) //Initial delay 1 seconds and interval countdown also 10 second
-        .pipe( takeWhile(() => counter < 14 ), tap(() => counter++))
-        .subscribe(() => {
-          if (counter == 14){
-               counter = 0
-          }
+    //Initial delay 10 seconds and interval countdown also 10 second
+     this._timerSubscription = timer(10000, 10000) .subscribe(() => {
 
-          this.vantaEffect.setOptions({
-            color: colorSet[counter],
+          //console.log("hexColor:",this.getNextColor());
+          this._vantaEffect.setOptions({
+            color: this.getNextColor(),
           });
-        });
-  }
 
+     });
+  }
 
   ngOnDestroy(): void {
     this._timerSubscription?.unsubscribe();
-    this.vantaEffect?.destroy();
+    this._vantaEffect?.destroy();
   }
+
+  getNextColor():number{
+    const minMun = 100;
+    const maxNum = 999;
+    const charSet:string[] = ['a','b','c','d','e','f'];
+    let mid = this._numSequence;
+    let tail = this._charSquence;
+    let charCount = this._charSquenceCount;
+
+    if(mid < maxNum){
+      mid = mid + 1;
+      this._numSequence = mid;
+    }else if(mid >= maxNum ){
+      mid = minMun
+      this._numSequence = minMun;
+
+      if(tail == charSet[5]){
+          this._charSquenceCount = 0;
+          tail = charSet[0];
+      }else{
+        charCount = charCount + 1;
+        this._charSquenceCount = charCount;
+        tail = charSet[charCount]
+      }
+    }
+
+    return Number(`0x${mid}${tail}`);
+  }
+
 
   getRandomInt(min:number, max:number):number{
     min = Math.ceil(min);
@@ -106,9 +134,9 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     return Math.floor(Math.random() * (max - min) + min);
   }
 
+
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type)
   }
-
 
 }
