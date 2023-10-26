@@ -1,4 +1,4 @@
-import {trigger, transition, state, animate, style} from '@angular/animations';
+import {trigger, transition, state, animate, style, keyframes} from '@angular/animations';
     
   // Routable animations
     export const openCloseAnimation =
@@ -15,9 +15,13 @@ import {trigger, transition, state, animate, style} from '@angular/animations';
                 }))
             ]),
             transition('open => *', [
-                animate("250ms ease-out", style({
-                    opacity: 0.5,
-                }))
+                animate("250s ease-out", keyframes([
+                    style({ transform: 'translate(0, 0)', opacity: 1 }),
+                    style({ transform: 'translate(-25, 25)', opacity: 0.75}),
+                    style({ transform: 'translate(-50, 50)', opacity: 0.50}),
+                    style({ transform: 'translate(-75, 75)', opacity: 0.25 }),
+                    style({ transform: 'translate(-100, 100)', opacity: 0 })
+                ]))
             ])
         ]);
 
@@ -37,9 +41,13 @@ import {trigger, transition, state, animate, style} from '@angular/animations';
                 }))
             ]),
             transition('visible => hidden', [
-                animate("250ms ease-out", style({
-                    opacity: 0.5,
-                }))
+                animate("250s ease-out", keyframes([
+                    style({ transform: 'translate(0, 0)', opacity: 1 }),
+                    style({ transform: 'translate(-25, 25)', opacity: 0.75}),
+                    style({ transform: 'translate(-50, 50)', opacity: 0.50}),
+                    style({ transform: 'translate(-75, 75)', opacity: 0.25 }),
+                    style({ transform: 'translate(-100, 100)', opacity: 0 })
+                ]))
             ])
         ]);
     
@@ -49,8 +57,7 @@ import {trigger, transition, state, animate, style} from '@angular/animations';
             state('minimize, minimized', style({
                 opacity: 1
             })),
-            transition('minimized => maximized', animate('250ms ease-out')),
+            transition('minimized => maximized', animate('250ms ease-in')),
             transition('maximized => minimized', animate('250ms ease-in')),
-
         ]);
     

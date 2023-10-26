@@ -7,10 +7,11 @@
     position: absolute;
     min-width: 20%;
     min-height: 5%;
-    top: 20%;
-    left: 50%;
-    margin-top: -50px;
-    margin-left: -100px;
+    max-width: 100%;  /*Set the width of the parent container */
+    max-height: 100vh;  /*Set the height of the parent container */
+    top: 40%;
+    left: 40%;
+    transform: translate(-50%, -50%); /* Move the element back by 50% of its own width and height */
     outline: 1px hsl(0deg 0% 20%/70%);
     overflow:hidden
   }

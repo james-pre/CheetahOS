@@ -100,16 +100,9 @@ import {openCloseAnimation, hideShowAnimation, minimizeMaximizeAnimation} from '
       const windowState = this._stateManagmentService.getState(this.processId) as WindowState;
       if(this.windowHide){
         if(windowState.getPid == this.processId){
-          this.currentStyles = {
-            // 'display': 'none' 
-            //opacity: 0
-          };
-
+         // this.currentStyles = { // 'display': 'none'  //opacity: 0 };
           windowState.setIsVisible = false;
           this._stateManagmentService.addState(this.processId,windowState);
-
-          console.log('Stuff is supposed to vanish')
-          //this._winAnimationSerice.hideOrShowWindowNotify.next();
         }
       }
       else if(!this.windowHide){
@@ -120,11 +113,8 @@ import {openCloseAnimation, hideShowAnimation, minimizeMaximizeAnimation} from '
             'transform': `translate(${String(windowState.getXAxis)}px, ${String(windowState.getYAxis)}px)`,
              'z-index': windowState.getZIndex
           };
-
-          console.log('Stuff is supposed to appear')
           windowState.setIsVisible = true;
           this._stateManagmentService.addState(this.processId,windowState);
-          //this._winAnimationSerice.hideOrShowWindowNotify.next();
         }
       }
     }
@@ -135,23 +125,24 @@ import {openCloseAnimation, hideShowAnimation, minimizeMaximizeAnimation} from '
       if(this.windowMaximize){
         if(windowState.getPid == this.processId){
           this.currentStyles = {
-            'transform': 'translate(0px,0px)',
-            'max-width': '100%',
-            'max-height': 'calc(100% - 40px)', //This accounts for the taskbar height
-            'top': '5.4%',
-            'left': '7.5%',
+            'transform': 'translate(0,0)',
+            'width': '100%',
+            'height': 'calc(100% - 40px)', //This accounts for the taskbar height
+            'top': '0',
+            'left': '0',
             'right': '0',
-            'bottom': '4%', //This accounts for the taskbar height
+            'bottom': '0', //This accounts for the taskbar height
             'z-index': windowState.getZIndex
           };
         }
       }
       else if(!this.windowMaximize){
         if(windowState.getPid == this.processId){
+          console.log('back to normal size:',windowState);
           this.currentStyles = {
             'display': 'block',
-            'width': `${String(windowState.getWidth)}`, 
-            'height': `${String(windowState.getHeight)}`, 
+            'width': `${String(windowState.getWidth)}px`, 
+            'height': `${String(windowState.getHeight)}px`, 
             'transform': `translate(${String(windowState.getXAxis)}px, ${String(windowState.getYAxis)}px)`,
             'z-index': windowState.getZIndex
           };
@@ -181,7 +172,7 @@ import {openCloseAnimation, hideShowAnimation, minimizeMaximizeAnimation} from '
           'background-color':'blue'
         };
       }
-  }
+    }
    
     onHideBtnClick():void{
       // a hide button, should just hide the window. not change the size of the window
@@ -289,7 +280,6 @@ import {openCloseAnimation, hideShowAnimation, minimizeMaximizeAnimation} from '
       }
     }
 
-
    setWindowToFocusById(pid:number):void{
 
       let z_index = this._stateManagmentService.getState(this.z_index) as number;
@@ -326,27 +316,5 @@ import {openCloseAnimation, hideShowAnimation, minimizeMaximizeAnimation} from '
         }
       }
    }
-
-
-   onAnimationEvent(event: AnimationEvent):void {
-
-    // openClose is trigger name in this example
-    console.warn(`Animation Trigger: ${event.triggerName}`);
-
-    // phaseName is "start" or "done"
-    console.warn(`Phase: ${event.phaseName}`);
-
-    // in our example, totalTime is 1000 (number of milliseconds in a second)
-    console.warn(`Total time: ${event.totalTime}`);
-
-    // in our example, fromState is either "open" or "closed"
-    console.warn(`From: ${event.fromState}`);
-
-    // in our example, toState either "open" or "closed"
-    console.warn(`To: ${event.toState}`);
-
-    // the HTML element itself, the button in this case
-    console.warn(`Element: ${event.element}`);
-  }
 
 }
