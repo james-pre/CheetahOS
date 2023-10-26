@@ -1,12 +1,6 @@
-    <div 
-    [@hideShow]="HideShow ? 'show' : 'hide'"
-    (@hideShow.start)="onAnimationEvent($event)"
-    (@hideShow.done)="onAnimationEvent($event)">
-
-        <cos-window [runningProcessID]="this.processId" [processAppIcon]="this.icon" [processAppName]="this.name" (click)="setTitleWindowToFocus(this.processId)">
-            <p  class="title"> Hello, World! </p>
-        </cos-window>
-    </div>
+<cos-window [runningProcessID]="this.processId" [processAppIcon]="this.icon" [processAppName]="this.name" (click)="setTitleWindowToFocus(this.processId)">
+    <p  class="title"> Hello, World! </p>
+</cos-window>
 
 
 

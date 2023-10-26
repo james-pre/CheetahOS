@@ -5,11 +5,14 @@ import { RunningProcessService } from 'src/app/shared/system-service/running.pro
 import { Subscription } from 'rxjs';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 import { WindowState } from 'src/app/system-files/state/windows.state';
+import { AnimationEvent } from '@angular/animations';
+import { showHideAnimation } from 'src/app/system-apps/window/animation/animations';
 import { WindowAnimationService } from 'src/app/shared/system-service/window.animation.service';
 
  @Component({
    selector: 'cos-window',
    templateUrl: './window.component.html',
+   animations: [showHideAnimation],
    styleUrls: ['./window.component.css']
  })
  export class WindowComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
@@ -36,6 +39,7 @@ import { WindowAnimationService } from 'src/app/shared/system-service/window.ani
   processId = 0;
   type = ComponentType.systemComponent;
   displayName = '';
+  showHide = true;
 
   windowHide = false;
   windowMaximize = false;
@@ -99,12 +103,15 @@ import { WindowAnimationService } from 'src/app/shared/system-service/window.ani
         if(windowState.getPid == this.processId){
           this.currentStyles = {
             // 'display': 'none' 
-            //opacity: 0
+            opacity: 0
           };
 
           windowState.setIsVisible = false;
+          this.showHide = false;
           this._stateManagmentService.addState(this.processId,windowState);
-          this._winAnimationSerice.hideOrShowWindowNotify.next();
+
+          console.log('Stuff is supposed to vanish')
+          //this._winAnimationSerice.hideOrShowWindowNotify.next();
         }
       }
       else if(!this.windowHide){
@@ -118,9 +125,11 @@ import { WindowAnimationService } from 'src/app/shared/system-service/window.ani
              'z-index': windowState.getZIndex
           };
 
+          console.log('Stuff is supposed to appear')
           windowState.setIsVisible = true;
+          this.showHide = true;
           this._stateManagmentService.addState(this.processId,windowState);
-          this._winAnimationSerice.hideOrShowWindowNotify.next();
+          //this._winAnimationSerice.hideOrShowWindowNotify.next();
         }
       }
     }
@@ -307,7 +316,6 @@ import { WindowAnimationService } from 'src/app/shared/system-service/window.ani
     }
 
    setNextWindowToFocus():void{
-
       const processWithWindows = this._runningProcessService.getProcesses().filter(p => p.getHasWindow == true);
 
       for (let i=0; i < processWithWindows.length; i++){
@@ -323,5 +331,27 @@ import { WindowAnimationService } from 'src/app/shared/system-service/window.ani
         }
       }
    }
+
+
+   onAnimationEvent(event: AnimationEvent):void {
+
+    // openClose is trigger name in this example
+    console.warn(`Animation Trigger: ${event.triggerName}`);
+
+    // phaseName is "start" or "done"
+    console.warn(`Phase: ${event.phaseName}`);
+
+    // in our example, totalTime is 1000 (number of milliseconds in a second)
+    console.warn(`Total time: ${event.totalTime}`);
+
+    // in our example, fromState is either "open" or "closed"
+    console.warn(`From: ${event.fromState}`);
+
+    // in our example, toState either "open" or "closed"
+    console.warn(`To: ${event.toState}`);
+
+    // the HTML element itself, the button in this case
+    console.warn(`Element: ${event.element}`);
+  }
 
 }

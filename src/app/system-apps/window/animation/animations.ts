@@ -20,8 +20,8 @@ export const openCloseAnimation =
         ])
     ]);
 
-export const hideRestoreAnimation =
-    trigger('hideShow', [
+export const showHideAnimation =
+    trigger('showHide', [
         state('hide', style({
             opacity: 0
         })),
@@ -29,7 +29,7 @@ export const hideRestoreAnimation =
             opacity: 1,
             width: '250px', 
             height: '250px', 
-            transform: 'translate(0px,0px)'
+            // transform: 'translate(0px,0px)'
            
         })),
         transition('* => *', [

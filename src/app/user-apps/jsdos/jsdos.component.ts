@@ -10,8 +10,6 @@ import { Process } from 'src/app/system-files/process';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 import { FileInfo } from 'src/app/system-files/fileinfo';
-import { AnimationEvent } from '@angular/animations';
-import { openCloseAnimation } from 'src/app/system-apps/window/animation/animations';
 
 declare const Dos: DosPlayerFactoryType;
 declare const emulators:Emulators
@@ -19,7 +17,6 @@ declare const emulators:Emulators
 @Component({
   selector: 'cos-jsdos',
   templateUrl: './jsdos.component.html',
-  animations: [ openCloseAnimation],
   styleUrls: ['./jsdos.component.css']
 })
 export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterViewInit {
@@ -38,7 +35,6 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
   processId = 0;
   type = ComponentType.userComponent;
   displayName = 'JS-Dos';
-  onOpen = true;
 
   dosOptions:DosPlayerOptions = {
     style: "none",
@@ -90,28 +86,6 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
 
   setJSDosWindowToFocus(pid:number):void{
     this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
-  }
-
-
-  onAnimationEvent(event: AnimationEvent) {
-
-    // // openClose is trigger name in this example
-    // console.warn(`Animation Trigger: ${event.triggerName}`);
-
-    // // phaseName is "start" or "done"
-    // console.warn(`Phase: ${event.phaseName}`);
-
-    // // in our example, totalTime is 1000 (number of milliseconds in a second)
-    // console.warn(`Total time: ${event.totalTime}`);
-
-    // // in our example, fromState is either "open" or "closed"
-    // console.warn(`From: ${event.fromState}`);
-
-    // // in our example, toState either "open" or "closed"
-    // console.warn(`To: ${event.toState}`);
-
-    // // the HTML element itself, the button in this case
-    // console.warn(`Element: ${event.element}`);
   }
 
   private getComponentDetail():Process{
