@@ -1,24 +1,20 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { Process } from 'src/app/system-files/process';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector:'cos-title',
   templateUrl: './title.component.html',
-  // animations: [ hideRestoreAnimation],
   styleUrls: ["./title.component.css"]
 })
 
-export class TitleComponent implements BaseComponent, OnDestroy{
+export class TitleComponent implements BaseComponent{
 
   private _processIdService;
   private _runningProcessService;
-  private _windowHideNotify!: Subscription;
-
 
   hasWindow = true;
   icon = 'osdrive/picture/favicon.ico';
@@ -33,10 +29,6 @@ export class TitleComponent implements BaseComponent, OnDestroy{
 
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail()); 
-  }
-
-  ngOnDestroy():void{
-    this._windowHideNotify?.unsubscribe();
   }
 
 

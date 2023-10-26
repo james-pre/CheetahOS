@@ -1,8 +1,8 @@
 
 <div 
-[@showHide]="showHide ? 'show' : 'hide'"
-(@showHide.start)="onAnimationEvent($event)"
-(@showHide.done)="onAnimationEvent($event)">
+[@openClose]="windowOpen ? 'open' : 'closed'"
+[@hideShow]="windowHide ? 'hidden' : 'visible'"
+[@minimizeMaximize]="windowMaximize ? 'maximized' : 'minimized'">
 
     <div [ngStyle]="currentStyles" #divWindow   tabindex="0" class="section window-dd-box"  
         ngDraggable (stopped)="onDragEnd($event)" (started)="onDragStart(this.processId)"
@@ -44,7 +44,7 @@
                 </button>
             </nav>
         </header>
-        <ng-content> </ng-content> 
+        <ng-content> </ng-content>
     </div>
 
 </div>

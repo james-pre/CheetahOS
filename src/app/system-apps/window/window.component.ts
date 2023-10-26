@@ -6,13 +6,12 @@ import { Subscription } from 'rxjs';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 import { WindowState } from 'src/app/system-files/state/windows.state';
 import { AnimationEvent } from '@angular/animations';
-import { showHideAnimation } from 'src/app/system-apps/window/animation/animations';
-import { WindowAnimationService } from 'src/app/shared/system-service/window.animation.service';
+import {openCloseAnimation, hideShowAnimation, minimizeMaximizeAnimation} from 'src/app/system-apps/window/animation/animations';
 
  @Component({
    selector: 'cos-window',
    templateUrl: './window.component.html',
-   animations: [showHideAnimation],
+   animations: [openCloseAnimation,hideShowAnimation,minimizeMaximizeAnimation],
    styleUrls: ['./window.component.css']
  })
  export class WindowComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
@@ -28,7 +27,7 @@ import { WindowAnimationService } from 'src/app/shared/system-service/window.ani
    private _focusOnNextProcessSub!:Subscription;
    private _focusOnCurrentProcessSub!:Subscription;
    private _focusOutOtherProcessSub!:Subscription;
-   private _winAnimationSerice: WindowAnimationService;
+
 
 
    private originalWindowsState!:WindowState;
@@ -39,8 +38,8 @@ import { WindowAnimationService } from 'src/app/shared/system-service/window.ani
   processId = 0;
   type = ComponentType.systemComponent;
   displayName = '';
-  showHide = true;
-
+  
+  windowOpen = true;
   windowHide = false;
   windowMaximize = false;
   currentStyles: Record<string, unknown> = {};
@@ -51,10 +50,10 @@ import { WindowAnimationService } from 'src/app/shared/system-service/window.ani
   private readonly z_index = 25914523; // this number = zindex
   
 
-    constructor(runningProcessService:RunningProcessService, private changeDetectorRef: ChangeDetectorRef, stateManagmentService: StateManagmentService,winAnimationSerice: WindowAnimationService){
+    constructor(runningProcessService:RunningProcessService, private changeDetectorRef: ChangeDetectorRef, stateManagmentService: StateManagmentService){
       this._runningProcessService = runningProcessService;
       this._stateManagmentService = stateManagmentService;
-      this._winAnimationSerice = winAnimationSerice;
+ 
       this._restoreOrMinSub = this._runningProcessService.restoreOrMinimizeWindowNotify.subscribe((p) => {this.restoreHiddenWindow(p)});
       this._focusOnNextProcessSub = this._runningProcessService.focusOnNextProcessNotify.subscribe(() => {this.setNextWindowToFocus()});
       this._focusOnCurrentProcessSub = this._runningProcessService.focusOnCurrentProcessNotify.subscribe((p) => {this.setFocusOnWindow(p)});
@@ -103,11 +102,10 @@ import { WindowAnimationService } from 'src/app/shared/system-service/window.ani
         if(windowState.getPid == this.processId){
           this.currentStyles = {
             // 'display': 'none' 
-            opacity: 0
+            //opacity: 0
           };
 
           windowState.setIsVisible = false;
-          this.showHide = false;
           this._stateManagmentService.addState(this.processId,windowState);
 
           console.log('Stuff is supposed to vanish')
@@ -117,17 +115,14 @@ import { WindowAnimationService } from 'src/app/shared/system-service/window.ani
       else if(!this.windowHide){
         if(windowState.getPid == this.processId){
           this.currentStyles = {
-            //  'display': 'block',
-            opacity: 1,
-            // 'width': `${String(windowState.getWidth)}`, 
-            // 'height': `${String(windowState.getHeight)}`, 
-            // 'transform': `translate(${String(windowState.getXAxis)}px, ${String(windowState.getYAxis)}px)`,
+            'width': `${String(windowState.getWidth)}`, 
+            'height': `${String(windowState.getHeight)}`, 
+            'transform': `translate(${String(windowState.getXAxis)}px, ${String(windowState.getYAxis)}px)`,
              'z-index': windowState.getZIndex
           };
 
           console.log('Stuff is supposed to appear')
           windowState.setIsVisible = true;
-          this.showHide = true;
           this._stateManagmentService.addState(this.processId,windowState);
           //this._winAnimationSerice.hideOrShowWindowNotify.next();
         }

@@ -107,3 +107,8 @@
   .ng-resizable-diagonal{ 
     border-bottom: 12px solid transparent; 
   }
+  
+
+  /* ::ng-deep .yogaba { 
+    background-color: lightblue;
+  } */
