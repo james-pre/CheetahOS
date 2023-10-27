@@ -24,33 +24,7 @@ export class HighlightDirective {
     this.highlight('','');
   }
 
-  // @HostListener("focus")
-  // onFocus(): void {
-  //   if(this.el.nativeElement.id == "closeBtn"){
-  //     this.el.nativeElement.style.backgroundColor = this.focusedCloseBtnColor;
-  //   }
-  //   //this.elementHost.nativeElement.classList.add("has-focus");
-  //   //this.elementHost.nativeElement.classList.remove("has-focus");
-  // }
-
-  // @HostListener("blur")
-  // onBlur(): void {
-
-  //     if(this.el.nativeElement.id == "headerSec"){
-  //       console.log('was-up!!!!!')
-  //       this.el.nativeElement.style.backgroundColor = this.unfocusedWindowColor;
-  //    }
-  // }
-
-  // @HostListener("click")
-  // onClick(): void {
-  //   console.log('hello this is el-Click:',this.el.nativeElement)
-  //     if(this.el.nativeElement.id == "headerSec"){
-  //       this.el.nativeElement.style.backgroundColor = this.unfocusedWindowColor;
-  //    }
-  // }
-
-
+  @HostListener("focus")
   private highlight(color: string, xBtnColor:string) {
     
     if(this.el.nativeElement.id == "closeBtn"){
@@ -59,7 +33,10 @@ export class HighlightDirective {
     }
     else if (this.el.nativeElement.id == "hideBtn" || this.el.nativeElement.id == "minBtn" || this.el.nativeElement.id == "maxBtn"){
       this.el.nativeElement.style.backgroundColor = color;
+   
     }
 
+    // this.el.nativeElement.classList.add("has-focus");
+    // this.el.nativeElement.classList.remove("has-focus");
   }
 }

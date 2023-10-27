@@ -1,9 +1,14 @@
 export interface UserInterface {
-    name: string;
-    type: string;
-    process_id: number;
+    Name: string;
+    Status: string;
+    CPU:number;
+    Memory:number;
+    Disk:number;
+    Network:number;
+    Power_usage:string;
+    PID: number;
     has_window:boolean;
-    cpu:number;
-    memory:number;
+    Type: string;
+    Process_name:string;
 
   }

@@ -1,35 +1,57 @@
 <cos-window [runningProcessID]="this.processId" [processAppIcon]="this.icon" [processAppName]="this.name" (click)="setTaskMangrWindowToFocus(this.processId)"> 
-    <div class='card'>
-        <div class='card-body'>
-          <div class='table-responsive'>
-            <table class='table' *ngIf = 'processes.length > 0' >
-              <thead>
-                <tr>             
-                  <th *ngFor="let column of columns"
-                            (click)="sortTable(column)">
-                    {{ column }}
-                    <span *ngIf="isDescSorting(column)">▼</span>
-                    <span *ngIf="isAscSorting(column)">▲</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor='let process of processes'>
-                    <td>
-                        <figure> 
-                            <img [src]="process.getIcon">
-                            <figcaption>{{ process.getProcessName}}</figcaption>
-                        </figure>
-                    </td>
-                    <td>{{ process.getType}}</td>
-                    <td>{{ process.getProcessId}}</td>
-                    <td>{{ process.getHasWindow}}</td>
-                    <td>{{ process.getCpuUsage}}%</td>
-                    <td>{{ process.getMemoryUsage}}MB</td>
-                  </tr>
-              </tbody>
-            </table>
+    
+    <div class="tabbed-window">
+        <div class="tabs">
+          <div class="tab active">Processes</div>
+          <div class="tab">Performance</div>
+          <div class="tab">App history</div>
+        </div>
+        <div class="tab-content">
+          <div class="tab-pane active">
+            <div class='card'>
+                <div class='card-body'>
+                  <div class='table-responsive'>
+                    <table class='table' *ngIf = 'processes.length > 0' >
+                      <thead>
+                        <tr>             
+                          <th *ngFor="let column of columns"
+                                    (click)="sortTable(column)">
+                            {{ column }}
+                            <span *ngIf="isDescSorting(column)">▼</span>
+                            <span *ngIf="isAscSorting(column)">▲</span>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor='let process of processes'>
+                            <td>
+                                <figure> 
+                                    <img [src]="process.getIcon">
+                                    <figcaption>{{ process.getProcessName}}</figcaption>
+                                </figure>
+                            </td>
+                            <td>{{ process.getStatus}}</td>
+                            <td>{{ process.getCpuUsage}}%</td>
+                            <td>{{ process.getMemoryUsage}} MB</td>
+                            <td>{{ process.getDiskUsage}} MB/s</td>
+                            <td>{{ process.getNetworkUsage}} Mbps</td>
+                            <td>{{ process.getProcessId}}</td>
+                          </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+            </div>
+          </div>
+          <div class="tab-pane">
+            <!-- Content for Tab 2 -->
+            <p> Somethings is coming</p>
+          </div>
+          <div class="tab-pane">
+            <!-- Content for Tab 3 -->
+            <p> Somethings is coming</p>
           </div>
         </div>
-    </div>
+      </div>
+      
 </cos-window>

@@ -20,7 +20,6 @@ export class Process{
         this._hasWindow = hasWindow;
         this._type = type;
         this._processTrigger = processTrigger || null;
-        this._cpuUsage = 0;
         this._memoryUsage = 0;
         this._cpuUsage = 0;
         this._diskUsage = 0;

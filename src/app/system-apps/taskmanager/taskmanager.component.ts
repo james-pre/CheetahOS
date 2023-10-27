@@ -1,5 +1,5 @@
-import { Component, OnInit,OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component, OnInit,OnDestroy, AfterViewInit } from '@angular/core';
+import { Subscription, timer } from 'rxjs';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { BaseComponent } from 'src/app/system-base/base/base.component';
@@ -13,14 +13,15 @@ import { UserInterface } from './user.interface';
   templateUrl: './taskmanager.component.html',
   styleUrls: ['./taskmanager.component.css']
 })
-export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy {
+export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,AfterViewInit {
 
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _processListChangeSub!: Subscription;
+  private _taskmgrTimerSubscription!: Subscription;
 
   processes:Process[] =[];
-  columns: Array<keyof UserInterface> = ['name','type','process_id','has_window','cpu','memory'];
+  columns: Array<keyof UserInterface> = ['Name','Status','CPU','Memory','Disk','Network','PID'];
   
   hasWindow = true;
   icon = 'osdrive/icons/taskmanger.png';
@@ -38,8 +39,6 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy {
     this._runningProcessService = runningProcessService;
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail());
-  
-
     this._processListChangeSub = this._runningProcessService.processListChangeNotify.subscribe(() =>{this.updateRunningProcess();})
   }
 
@@ -48,9 +47,17 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy {
    this.processes = this._runningProcessService.getProcesses();
   }
 
- ngOnDestroy(): void {
-  this._processListChangeSub?.unsubscribe();
- }
+  ngOnDestroy(): void {
+    this._processListChangeSub?.unsubscribe();
+    this._taskmgrTimerSubscription?.unsubscribe()
+  }
+
+  ngAfterViewInit(): void {
+    //Initial delay 1 seconds and interval countdown also 2 second
+    this._taskmgrTimerSubscription = timer(1000, 2000) .subscribe(() => {
+      this.generateNumber()
+    });
+  }
 
   isDescSorting(column: string): boolean {
     return this.sorting.column === column && this.sorting.order === 'desc';
@@ -70,18 +77,43 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy {
 
   sortTable(column: string): void {
     const futureSortingOrder = this.isDescSorting(column) ? 'asc' : 'desc';
+    const sortedprocesses:Process[] = this._runningProcessService.getProcesses();
     this.sorting = {
       column,
       order: futureSortingOrder,
     };
-    if(column == 'cpu'){
-      this.processes = this._runningProcessService.getProcesses().sort((objA, objB) => objB.getCpuUsage - objA.getCpuUsage)
-    } else if (column == 'memory'){
+    if(column == 'CPU'){
+      if(futureSortingOrder == 'asc'){
+          this.processes = this.processes.sort((objA, objB) => objB.getCpuUsage - objA.getCpuUsage)
+      }else{
+        this.processes = this.processes.sort((objA, objB) => objB.getCpuUsage - objA.getCpuUsage).reverse();
+      }
+    } else if (column == 'Memory'){
       this.processes = this._runningProcessService.getProcesses().sort((objA, objB) => objB.getMemoryUsage - objA.getMemoryUsage)
-    }else if(column == 'process_id'){
-      this.processes = this._runningProcessService.getProcesses().sort((objA, objB) => objB.getProcessId - objA.getProcessId)
+    }else if(column == 'Disk'){
+      this.processes = this._runningProcessService.getProcesses().sort((objA, objB) => objB.getDiskUsage - objA.getDiskUsage)
+    }else if(column == 'Network'){
+      this.processes = this._runningProcessService.getProcesses().sort((objA, objB) => objB.getNetworkUsage - objA.getNetworkUsage)
     }
+  }
 
+
+  generateNumber(){
+    const processes:Process[] = this._runningProcessService.getProcesses();
+    for(let i =0; i < processes.length; i++){
+        const tmpProcess = processes[i];
+          tmpProcess.setCpuUsage = this.getRandommNums(0.1, 100);
+          tmpProcess.setDiskUsage = this.getRandommNums(0.1, 100);
+          tmpProcess.setMemoryUsage = this.getRandommNums(0.1, 100);
+          tmpProcess.setNetworkUsage = this.getRandommNums(0.1, 100);
+    }
+    this.processes = processes;
+  }
+
+  getRandommNums(min:number, max:number):number{
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min) + 10) / 10;
   }
 
   private getComponentDetail():Process{
