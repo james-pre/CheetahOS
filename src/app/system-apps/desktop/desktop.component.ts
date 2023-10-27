@@ -54,7 +54,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   private _timerSubscription!: Subscription;
 
   hasWindow = false;
-  icon = '';
+  icon = 'osdrive/icons/generic-program.ico';
   name = 'desktop';
   processId = 0;
   type = ComponentType.systemComponent;

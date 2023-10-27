@@ -11,11 +11,11 @@ import { Process } from 'src/app/system-files/process';
 })
 export class TaskbarComponent implements OnInit {
 
-  private _processIdService;
-  private _runningProcessService;
+  private _processIdService:ProcessIDService;
+  private _runningProcessService:RunningProcessService;
 
   hasWindow = false;
-  icon = '';
+  icon = 'osdrive/icons/generic-program.ico';
   name = 'taskbar';
   processId = 0;
   type = ComponentType.systemComponent

@@ -27,7 +27,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   private _triggerProcessService:TriggerProcessService;
 
   hasWindow = false;
-  icon = '';
+  icon = 'osdrive/icons/generic-program.ico';
   name = 'filemanager';
   processId = 0;
   type = ComponentType.systemComponent;

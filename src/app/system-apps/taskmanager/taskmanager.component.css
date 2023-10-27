@@ -2,10 +2,9 @@
  .card {
     min-width: 50px; /* Set the width of the card */
     min-height: 50px; /* Set the height of the card */
-    margin: 10px; /* Add margin around the card */
+
     border: 1px solid #ccc; /* Add a border to the card */
-    border-radius: 5px; /* Add rounded corners to the card */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow for elevation */
+    border-radius: 1px; /* Add rounded corners to the card */
   }
   
   /* Custom styles for the card-body */
@@ -38,8 +37,7 @@
     padding: 10px; /* Add padding inside columns */
     background-color: #f0f0f0; /* Set a background color for columns */
     border: 1px solid #cccccc; /* Add a border to columns */
-    border-radius: 5px; /* Add rounded corners to columns */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow for elevation */
+    border-radius: 1px; /* Add rounded corners to columns */
     color: #333; /* Set text color for columns */
   }
   
@@ -60,8 +58,7 @@
     background-color: #f0f0f0; /* Set a background color for col-md-2 */
     padding: 10px; /* Add padding inside col-md-2 */
     border: 1px solid #ccc; /* Add a border to col-md-2 */
-    border-radius: 5px; /* Add rounded corners to col-md-2 */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow for elevation */
+    border-radius: 1px; /* Add rounded corners to col-md-2 */
     color: #333; /* Set text color for col-md-2 */
     min-width: 25px;
     /* max-width: 100px; */
@@ -72,8 +69,7 @@
     background-color: #f0f0f0; /* Set a background color for col-md-4 */
     padding: 10px; /* Add padding inside col-md-4 */
     border: 1px solid #ccc; /* Add a border to col-md-4 */
-    border-radius: 5px; /* Add rounded corners to col-md-4 */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow for elevation */
+    border-radius: 1px; /* Add rounded corners to col-md-4 */
     color: #333; /* Set text color for col-md-4 */
     min-width: 25px;
     /* max-width: 200px; */
@@ -84,8 +80,7 @@
     background-color: #f0f0f0; /* Set a background color for col-md-6 */
     padding: 10px; /* Add padding inside col-md-6 */
     border: 1px solid #ccc; /* Add a border to col-md-6 */
-    border-radius: 5px; /* Add rounded corners to col-md-6 */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow for elevation */
+    border-radius: 1px; /* Add rounded corners to col-md-6 */
     color: #333; /* Set text color for col-md-6 */
     min-width: 25px;
     /* max-width: 300px; */
@@ -137,4 +132,23 @@
     background-color: #ddd;
   }
   
+  /* Custom styles for .table-responsive (Optional) */
+.table-responsive {
+    max-width: 100%; /* Set a maximum width for the responsive container */
+    overflow: auto; /* Enable horizontal scrolling when needed */
+  }
   
+
+
+figure{
+    align-items: center;
+    display:inline;
+    min-width: 1px;
+}
+
+img{
+    height: 19px;
+    width: 19px;
+    image-rendering: pixelated;
+    position: relative;
+}

@@ -20,7 +20,7 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
 
   hover = false;
   hasWindow = false;
-  icon = '';
+  icon = 'osdrive/icons/generic-program.ico';
   name = 'taskbarentry';
   processId = 0;
   type = ComponentType.systemComponent;

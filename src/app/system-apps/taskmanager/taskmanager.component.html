@@ -5,13 +5,7 @@
             <table class='table' *ngIf = 'processes.length > 0' >
               <thead>
                 <tr>
-                  <!-- <th>
-                    <button class='btn btn-primary' (click) ='toggleImage()'>
-                      {{showImage ? 'Hide' : 'Show'}} Image
-                    </button>
-                  </th> -->
                   <th>
-                    <!-- <i class="fa fa-sort-alpha-asc" aria-hidden="true"  ></i> -->
                       Name
                   </th>
                   <th>
@@ -24,7 +18,12 @@
               </thead>
               <tbody>
                 <tr *ngFor='let process of processes'>
-                    <td>{{ process.getProcessName}}</td>
+                    <td>
+                        <figure> 
+                            <img [src]="process.getIcon">
+                        </figure>
+                        {{ process.getProcessName}}
+                    </td>
                     <td>{{ process.getType}}</td>
                     <td>{{ process.getProcessId}}</td>
                     <td>{{ process.getHasWindow}}</td>

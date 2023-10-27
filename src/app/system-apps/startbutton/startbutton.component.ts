@@ -15,7 +15,7 @@ export class StartbuttonComponent implements OnInit {
 
   hasWindow = false;
   hover = false;
-  icon = '';
+  icon = 'osdrive/icons/generic-program.ico';
   name = 'startbutton';
   processId = 0;
   type = ComponentType.systemComponent

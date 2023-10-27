@@ -24,7 +24,7 @@ export class ClockComponent implements AfterViewInit,OnDestroy {
 
   hasWindow = false;
   hover = false;
-  icon = '';
+  icon = 'osdrive/icons/generic-program.ico';
   name = 'clock';
   processId = 0;
   type = ComponentType.systemComponent

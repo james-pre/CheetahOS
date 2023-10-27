@@ -46,7 +46,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   private readonly userOpenedAppsKey = "openedApps";
 
   hasWindow = false;
-  icon = '';
+  icon = 'osdrive/icons/generic-program.ico';
   name = 'system';
   processId = 0;
   type = ComponentType.systemComponent;
