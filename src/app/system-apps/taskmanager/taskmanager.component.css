@@ -122,7 +122,7 @@
   
   /* Custom styles for table cells */
   .table td {
-    padding: 10px; /* Cell padding */
+    padding: 5px; /* Cell padding */
     font-weight:lighter; 
     font-size: 15px;
     text-align: left; /* Header text alignment */
@@ -142,16 +142,23 @@
   }
   
 
-
 figure{
     align-items: center;
-    display:inline;
+    display:inline-flex;
     min-width: 1px;
 }
 
+figcaption{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
 img{
-    height: 19px;
-    width: 19px;
-    image-rendering: pixelated;
+    height: 18px;
+    width: 18px;
+    image-rendering:optimizeQuality;
     position: relative;
+    margin: 0 4px 0 0;
 }

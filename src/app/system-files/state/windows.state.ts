@@ -18,53 +18,53 @@ export class WindowState{
         this._is_visible = true;
     }
 
-    get getPid(){
+    public get getPid(){
         return this._pid;
     }
-    set setPid(pid:number){
+    public set setPid(pid:number){
         this._pid = pid;
     }
 
-    get getHeight(){
+    public get getHeight(){
         return this._height;
     }
-    set setHeight(height:number){
+    public set setHeight(height:number){
         this._height = height;
     }
 
-    get getWidth(){
+    public get getWidth(){
         return this._width;
     }
-    set setWidth(width:number){
+    public set setWidth(width:number){
         this._width = width;
     }
 
-    get getYAxis(){
+    public get getYAxis(){
         return this._y_axis;
     }
-    set setYAxis(y_axis:number){
+    public set setYAxis(y_axis:number){
         this._y_axis = y_axis;
     }
 
-    get getXAxis(){
+    public get getXAxis(){
         return this._x_axis;
     }
-    set setXAxis(x_axis:number){
+    public set setXAxis(x_axis:number){
 
         this._x_axis = x_axis;
     }
 
-    get getZIndex(){
+    public get getZIndex(){
         return this._z_index;
     }
-    set setZIndex(z_index:number){
+    public set setZIndex(z_index:number){
         this._z_index = z_index;
     }
 
-    get getIsVisible(){
+    public get getIsVisible(){
         return this._is_visible;
     }
-    set setIsVisible(is_visible:boolean){
+    public set setIsVisible(is_visible:boolean){
         this._is_visible = is_visible;
     }
 

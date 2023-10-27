@@ -5,8 +5,12 @@ export class Process{
     private _icon:string;
     private _hasWindow:boolean;
     private _type:string;
+    private _status:string;
+    private _powerUsage:string;
     private _cpuUsage:number;
     private _memoryUsage:number;
+    private _diskUsage:number;
+    private _networkUsage:number;
     private _processTrigger:unknown;
 
     constructor(processId:number, processName:string, icon:string, hasWindow:boolean, type:string, processTrigger?:unknown){
@@ -17,7 +21,12 @@ export class Process{
         this._type = type;
         this._processTrigger = processTrigger || null;
         this._cpuUsage = 0;
-        this._memoryUsage = 2;
+        this._memoryUsage = 0;
+        this._cpuUsage = 0;
+        this._diskUsage = 0;
+        this._networkUsage = 0;
+        this._status = '';
+        this._powerUsage = '';
     }
 
     public get getProcessId(){
@@ -52,11 +61,43 @@ export class Process{
         return this._processTrigger;
     }
 
+    public get getDiskUsage(){
+        return this._diskUsage;
+    }
+
+    public get getNetworkUsage(){
+        return this._networkUsage;
+    }
+
+    public get getStatus(){
+        return this._status;
+    }
+
+    public get getPowerUsage(){
+        return this._powerUsage;
+    }
+
     public set setCpuUsage(cpuUage:number){
         this._cpuUsage = cpuUage;
     }
     
     public set setMemoryUsage(memoryUsage:number){
         this._memoryUsage = memoryUsage;
+    }
+
+    public set setDiskUsage(diskUsage:number){
+        this._diskUsage = diskUsage;
+    }
+    
+    public set setNetworkUsage(networkUsage:number){
+        this._networkUsage = networkUsage;
+    }
+
+    public set setProcessStatus(procStatus:string){
+        this._status = procStatus;
+    }
+    
+    public set setPowerUsage(powerUsage:string){
+        this._powerUsage = powerUsage;
     }
 }

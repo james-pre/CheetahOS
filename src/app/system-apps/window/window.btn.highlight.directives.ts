@@ -57,7 +57,7 @@ export class HighlightDirective {
       this.el.nativeElement.style.backgroundColor = xBtnColor;
       this.el.nativeElement.style.transition = 'background-color 0.3s ease';
     }
-    else if (this.el.nativeElement.id == "hideBtn" || this.el.nativeElement.id == "minMaxBtn"){
+    else if (this.el.nativeElement.id == "hideBtn" || this.el.nativeElement.id == "minBtn" || this.el.nativeElement.id == "maxBtn"){
       this.el.nativeElement.style.backgroundColor = color;
     }
 

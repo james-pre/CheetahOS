@@ -40,6 +40,7 @@ import {openCloseAnimation, hideShowAnimation, minimizeMaximizeAnimation} from '
   windowOpen = true;
   windowHide = false;
   windowMaximize = false;
+  currentWindowSizeState = false;
   currentStyles: Record<string, unknown> = {};
   headerActiveStyles: Record<string, unknown> = {}; 
   closeBtnStyles: Record<string, unknown> = {};
@@ -88,29 +89,37 @@ import {openCloseAnimation, hideShowAnimation, minimizeMaximizeAnimation} from '
     }
 
     ngOnChanges(changes: SimpleChanges):void{
-      console.log('WINDOW CHANGES:',changes)
+      //console.log('WINDOW CHANGES:',changes)
       this.name = this.processAppName;
       this.icon = this.processAppIcon;
     }
 
     setHideAndShow():void{
+      this.windowHide = !this.windowHide;
       // CSS styles: set per current state of component properties
       const windowState = this._stateManagmentService.getState(this.processId) as WindowState;
+
       if(this.windowHide){
         if(windowState.getPid == this.processId){
-         // this.currentStyles = { // 'display': 'none'  //opacity: 0 };
           windowState.setIsVisible = false;
           this._stateManagmentService.addState(this.processId,windowState);
         }
       }
       else if(!this.windowHide){
         if(windowState.getPid == this.processId){
-          this.currentStyles = {
-            'width': `${String(windowState.getWidth)}`, 
-            'height': `${String(windowState.getHeight)}`, 
-            'transform': `translate(${String(windowState.getXAxis)}px, ${String(windowState.getYAxis)}px)`,
-             'z-index': windowState.getZIndex
-          };
+          if(this.currentWindowSizeState){ 
+            // if window was in full screen when hidden, fit it properly when un-hidden
+            this.setWindowToFullScreen(this.processId, windowState.getZIndex);
+          }else{
+            this.currentStyles = {
+              // opacity: 1,
+              'width': `${String(windowState.getWidth)}`, 
+              'height': `${String(windowState.getHeight)}`, 
+              'transform': `translate(${String(windowState.getXAxis)}px, ${String(windowState.getYAxis)}px)`,
+               'z-index': windowState.getZIndex
+            };
+          }
+
           windowState.setIsVisible = true;
           this._stateManagmentService.addState(this.processId,windowState);
         }
@@ -120,25 +129,15 @@ import {openCloseAnimation, hideShowAnimation, minimizeMaximizeAnimation} from '
     setMaximizeAndUnMaximize():void{
       // CSS styles: set per current state of component properties
       const windowState = this._stateManagmentService.getState(this.processId) as WindowState;
+      this.currentWindowSizeState = this.windowMaximize;
       if(this.windowMaximize){
         if(windowState.getPid == this.processId){
-          this.currentStyles = {
-            'transform': 'translate(0,0)',
-            'width': '100%',
-            'height': 'calc(100% - 40px)', //This accounts for the taskbar height
-            'top': '0',
-            'left': '0',
-            'right': '0',
-            'bottom': '0', //This accounts for the taskbar height
-            'z-index': windowState.getZIndex
-          };
+          this.setWindowToFullScreen(this.processId, windowState.getZIndex);
         }
       }
       else if(!this.windowMaximize){
         if(windowState.getPid == this.processId){
-          console.log('back to normal size:',windowState);
           this.currentStyles = {
-            'display': 'block',
             'width': `${String(windowState.getWidth)}px`, 
             'height': `${String(windowState.getHeight)}px`, 
             'transform': `translate(${String(windowState.getXAxis)}px, ${String(windowState.getYAxis)}px)`,
@@ -146,6 +145,8 @@ import {openCloseAnimation, hideShowAnimation, minimizeMaximizeAnimation} from '
           };
         }
       }
+
+      this.windowMaximize = !this.windowMaximize;
     }
 
     setBtnFocus(pid:number):void{
@@ -171,39 +172,47 @@ import {openCloseAnimation, hideShowAnimation, minimizeMaximizeAnimation} from '
         };
       }
     }
+
+    setWindowToFullScreen(pid:number, z_index:number):void{
+      if(this.processId == pid){
+        this.currentStyles = {
+          'transform': 'translate(0,0)',
+          'width': '100%',
+          'height': 'calc(100% - 40px)', //This accounts for the taskbar height
+          'top': '0',
+          'left': '0',
+          'right': '0',
+          'bottom': '0', 
+          'z-index': z_index
+        };
+      }
+    }
    
-    onHideBtnClick():void{
-      // a hide button, should just hide the window. not change the size of the window
-      this.windowHide = true;
-      this.setHideAndShow();
+    onHideBtnClick(pid:number):void{
+      if(this.processId == pid){
+        this.setHideAndShow()
+      }
     }
 
     restoreHiddenWindow(pid:number):void{
       if(this.processId == pid){
-        this.windowHide = false;
-
-        //if window was in max-view when it was hidden, then restore the window to max view
-        if(this.windowMaximize) 
-          this.setMaximizeAndUnMaximize();
-        else if(!this.windowMaximize)
-          this.setHideAndShow()
+        this.setHideAndShow()
       }
     }
 
     onMaximizeBtnClick():void{
       this.windowMaximize = true;
-      this.windowHide = false;
       this.setMaximizeAndUnMaximize();
     }
 
     onUnMaximizeBtnClick():void{
-      //set window back to its previovs size and position on the screen
       this.windowMaximize = false;
       this.setMaximizeAndUnMaximize();
     }
 
     onTitleBarDoubleClick():void{
-      if(this.windowMaximize){
+      // if window is currently in full screen and next state(windowMaximize == false)
+      if(this.currentWindowSizeState && !this.windowMaximize){
         this.windowMaximize = false;
       }else{
         this.windowMaximize = true;
