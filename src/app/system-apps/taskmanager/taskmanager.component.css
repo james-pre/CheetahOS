@@ -109,6 +109,7 @@
     font-weight:lighter;  /* Header text bold */
     font-size: 13px;
     height: 40px;
+    min-width: 75px;
     border: 2px solid #ccc; /* Cell border */
     border-top: none;
     
@@ -129,6 +130,7 @@
   .table td {
     padding: 5px; /* Cell padding */
     font-weight:lighter; 
+    min-width: 75px;
     margin-left: 5px;
     margin-right: 5px;
     font-size: 13px;
