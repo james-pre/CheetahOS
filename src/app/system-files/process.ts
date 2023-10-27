@@ -5,6 +5,8 @@ export class Process{
     private _icon:string;
     private _hasWindow:boolean;
     private _type:string;
+    private _cpuUsage:number;
+    private _memoryUsage:number;
     private _processTrigger:unknown;
 
     constructor(processId:number, processName:string, icon:string, hasWindow:boolean, type:string, processTrigger?:unknown){
@@ -14,6 +16,8 @@ export class Process{
         this._hasWindow = hasWindow;
         this._type = type;
         this._processTrigger = processTrigger || null;
+        this._cpuUsage = 0;
+        this._memoryUsage = 2;
     }
 
     public get getProcessId(){
@@ -24,8 +28,16 @@ export class Process{
         return this._processName;
     }
 
-    get getIcon(){
+    public get getIcon(){
         return this._icon;
+    }
+
+    public get getCpuUsage(){
+        return this._cpuUsage;
+    }
+
+    public get getMemoryUsage(){
+        return this._memoryUsage;
     }
 
     public get getHasWindow(){
@@ -39,5 +51,12 @@ export class Process{
     public get getProcessTrigger(){
         return this._processTrigger;
     }
+
+    public set setCpuUsage(cpuUage:number){
+        this._cpuUsage = cpuUage;
+    }
     
+    public set setMemoryUsage(memoryUsage:number){
+        this._memoryUsage = memoryUsage;
+    }
 }

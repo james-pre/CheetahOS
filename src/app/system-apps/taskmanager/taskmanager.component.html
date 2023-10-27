@@ -4,16 +4,13 @@
           <div class='table-responsive'>
             <table class='table' *ngIf = 'processes.length > 0' >
               <thead>
-                <tr>
-                  <th>
-                      Name
+                <tr>             
+                  <th *ngFor="let column of columns"
+                            (click)="sortTable(column)">
+                    {{ column }}
+                    <span *ngIf="isDescSorting(column)">▼</span>
+                    <span *ngIf="isAscSorting(column)">▲</span>
                   </th>
-                  <th>
-                    <!-- <i class="fa fa-sort-alpha-asc" aria-hidden="true"></i> -->
-                     Type
-                  </th>
-                  <th> Process Id  </th>
-                  <th>Has Windows</th>
                 </tr>
               </thead>
               <tbody>
@@ -27,6 +24,8 @@
                     <td>{{ process.getType}}</td>
                     <td>{{ process.getProcessId}}</td>
                     <td>{{ process.getHasWindow}}</td>
+                    <td>{{ process.getCpuUsage}}%</td>
+                    <td>{{ process.getMemoryUsage}}MB</td>
                   </tr>
               </tbody>
             </table>

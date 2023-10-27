@@ -5,6 +5,7 @@
 
     border: 1px solid #ccc; /* Add a border to the card */
     border-radius: 1px; /* Add rounded corners to the card */
+    overflow-x:auto;
   }
   
   /* Custom styles for the card-body */
@@ -92,6 +93,8 @@
     min-width: 25%; /* Set the table width to 100% of its container */
     margin: 10px 0; /* Add margin above and below the table */
     font-family: Arial, sans-serif; /* Set the font family for the table */
+    table-layout: auto;
+    width: 100%;
   }
   
   /* Custom styles for table headers */
