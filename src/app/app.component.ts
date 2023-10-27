@@ -47,7 +47,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
 
   hasWindow = false;
   icon = '';
-  name = 'CheetahOS';
+  name = 'system';
   processId = 0;
   type = ComponentType.systemComponent;
   displayName = '';

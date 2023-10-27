@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { BaseComponent } from 'src/app/system-base/base/base.component';
@@ -10,13 +10,15 @@ import { Process } from 'src/app/system-files/process';
   templateUrl: './taskmanager.component.html',
   styleUrls: ['./taskmanager.component.css']
 })
-export class TaskmanagerComponent implements BaseComponent {
+export class TaskmanagerComponent implements BaseComponent,OnInit {
 
-  private _processIdService;
-  private _runningProcessService;
+  private _processIdService:ProcessIDService;
+  private _runningProcessService:RunningProcessService;
+
+  processes:Process[] =[];
   
   hasWindow = true;
-  icon = 'taskmanager.ico';
+  icon = 'osdrive/icons/taskmanger.png';
   name = 'taskmanager';
   processId = 0;
   type = ComponentType.systemComponent
@@ -27,6 +29,15 @@ export class TaskmanagerComponent implements BaseComponent {
     this._runningProcessService = runningProcessService;
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail());
+  }
+
+
+  ngOnInit(): void {
+   this.processes = this._runningProcessService.getProcesses();
+ }
+
+  setTaskMangrWindowToFocus(pid: number):void {
+    this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
   }
 
   private getComponentDetail():Process{

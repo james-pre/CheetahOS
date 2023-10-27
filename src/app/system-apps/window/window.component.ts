@@ -5,7 +5,6 @@ import { RunningProcessService } from 'src/app/shared/system-service/running.pro
 import { Subscription } from 'rxjs';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 import { WindowState } from 'src/app/system-files/state/windows.state';
-import { AnimationEvent } from '@angular/animations';
 import {openCloseAnimation, hideShowAnimation, minimizeMaximizeAnimation} from 'src/app/system-apps/window/animation/animations';
 
  @Component({
@@ -23,14 +22,13 @@ import {openCloseAnimation, hideShowAnimation, minimizeMaximizeAnimation} from '
    
    private _runningProcessService:RunningProcessService;
    private _stateManagmentService: StateManagmentService
+   private _originalWindowsState!:WindowState;
+
    private _restoreOrMinSub!:Subscription
    private _focusOnNextProcessSub!:Subscription;
    private _focusOnCurrentProcessSub!:Subscription;
    private _focusOutOtherProcessSub!:Subscription;
 
-
-
-   private originalWindowsState!:WindowState;
 
   hasWindow = false;
   icon = '';
@@ -81,8 +79,8 @@ import {openCloseAnimation, hideShowAnimation, minimizeMaximizeAnimation} from '
       this.defaultHeightOnOpen = this.getDivWindowElement.offsetHeight;
       this.defaultWidthOnOpen  = this.getDivWindowElement.offsetWidth;
 
-      this.originalWindowsState = new WindowState(this.processId,this.defaultHeightOnOpen, this.defaultWidthOnOpen);
-      this._stateManagmentService.addState(this.processId,this.originalWindowsState)
+      this._originalWindowsState = new WindowState(this.processId,this.defaultHeightOnOpen, this.defaultWidthOnOpen);
+      this._stateManagmentService.addState(this.processId,this._originalWindowsState)
       this.setWindowToFocusById(this.processId);
 
       //tell angular to run additional detection cycle after 
@@ -281,7 +279,6 @@ import {openCloseAnimation, hideShowAnimation, minimizeMaximizeAnimation} from '
     }
 
    setWindowToFocusById(pid:number):void{
-
       let z_index = this._stateManagmentService.getState(this.z_index) as number;
       const windowState = this._stateManagmentService.getState(pid) as WindowState;
     
