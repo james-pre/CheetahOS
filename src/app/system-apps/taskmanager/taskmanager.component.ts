@@ -19,6 +19,13 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   private _runningProcessService:RunningProcessService;
   private _processListChangeSub!: Subscription;
   private _taskmgrTimerSubscription!: Subscription;
+  private _currentSortingOrder!:any;
+
+  private _sorting:SortingInterface ={
+    column: 'CPU',
+    order: 'asc',
+  }
+
 
   processes:Process[] =[];
   columns: Array<keyof UserInterface> = ['Name','Status','CPU','Memory','Disk','Network','PID'];
@@ -28,11 +35,13 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   name = 'taskmanager';
   processId = 0;
   type = ComponentType.systemComponent
-  displayName = 'Task Manager'
-  sorting:SortingInterface ={
-    column: 'id',
-    order: 'asc',
-  }
+  displayName = 'Task Manager';
+
+  cpuUtil = 0;
+  memUtil = 0;
+  diskUtil = 0;
+  networkUtil = 0;
+
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService) { 
     this._processIdService = processIdService;
@@ -40,6 +49,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail());
     this._processListChangeSub = this._runningProcessService.processListChangeNotify.subscribe(() =>{this.updateRunningProcess();})
+    this._currentSortingOrder = this._sorting.order;
   }
 
 
@@ -54,17 +64,18 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
   ngAfterViewInit(): void {
     //Initial delay 1 seconds and interval countdown also 2 second
-    this._taskmgrTimerSubscription = timer(1000, 2000) .subscribe(() => {
-      this.generateNumber()
+    this._taskmgrTimerSubscription = timer(1000, 2000).subscribe(() => {
+      this.generateNumber();
+      this.sortTable(this._sorting.column, false);
     });
   }
 
   isDescSorting(column: string): boolean {
-    return this.sorting.column === column && this.sorting.order === 'desc';
+    return this._sorting.column === column && this._sorting.order === 'desc';
   }
 
   isAscSorting(column: string): boolean {
-    return this.sorting.column === column && this.sorting.order === 'asc';
+    return this._sorting.column === column && this._sorting.order === 'asc';
   }
 
   setTaskMangrWindowToFocus(pid: number):void {
@@ -75,15 +86,19 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     this.processes = this._runningProcessService.getProcesses();
   }
 
-  sortTable(column: string): void {
-    const futureSortingOrder = this.isDescSorting(column) ? 'asc' : 'desc';
-    const sortedprocesses:Process[] = this._runningProcessService.getProcesses();
-    this.sorting = {
-      column,
-      order: futureSortingOrder,
-    };
+  sortTable(column: string,  isSortTriggered:boolean): void {
+
+    if(isSortTriggered){
+      this._currentSortingOrder = this.isDescSorting(column) ? 'asc' : 'desc';
+      this._sorting = {column, order: this._currentSortingOrder };
+    }
+    // const sortedprocesses:Process[] = this._runningProcessService.getProcesses();
+    console.log('sorting col:', column);
+   
+    console.log(' this.sorting :',  this._sorting );
+
     if(column == 'CPU'){
-      if(futureSortingOrder == 'asc'){
+      if(this._currentSortingOrder == 'asc'){
           this.processes = this.processes.sort((objA, objB) => objB.getCpuUsage - objA.getCpuUsage)
       }else{
         this.processes = this.processes.sort((objA, objB) => objB.getCpuUsage - objA.getCpuUsage).reverse();
@@ -102,18 +117,42 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     const processes:Process[] = this._runningProcessService.getProcesses();
     for(let i =0; i < processes.length; i++){
         const tmpProcess = processes[i];
-          tmpProcess.setCpuUsage = this.getRandommNums(0.1, 100);
-          tmpProcess.setDiskUsage = this.getRandommNums(0.1, 100);
-          tmpProcess.setMemoryUsage = this.getRandommNums(0.1, 100);
-          tmpProcess.setNetworkUsage = this.getRandommNums(0.1, 100);
+        if(this.getRandomNums(1,10) > 5){
+          tmpProcess.setCpuUsage = this.addTrailingZeros(this.getRandomFloatingNums(0, 100));
+        }
+        if(this.getRandomNums(1,10) <= 1){
+          tmpProcess.setDiskUsage = this.addTrailingZeros(this.getRandomFloatingNums(0, 100));
+        }
+        if(this.getRandomNums(1,10) > 7){
+          tmpProcess.setMemoryUsage = this.addTrailingZeros(this.getRandomFloatingNums(0, 100));
+        }
+        if(this.getRandomNums(1,10) <= 2){
+          tmpProcess.setNetworkUsage = this.addTrailingZeros(this.getRandomFloatingNums(0, 100));
+        } 
     }
     this.processes = processes;
   }
 
-  getRandommNums(min:number, max:number):number{
+  getRandomFloatingNums(min:number, max:number):number{
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min) + 10) / 10;
+  }
+
+  getRandomNums(min:number, max:number) {
+    return Math.floor(Math.random() * (max - min + 1) + min)
+  }
+
+  addTrailingZeros(num:number):number {
+    const totalLength = 3;
+    const strNum = String(num);
+
+    if(num != 0){
+      if(strNum.length == 1)
+      return parseFloat(strNum.padEnd(totalLength, '.1'));
+    }
+
+    return num;
   }
 
   private getComponentDetail():Process{

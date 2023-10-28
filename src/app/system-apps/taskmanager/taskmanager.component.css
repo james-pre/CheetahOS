@@ -103,16 +103,21 @@
   /* Custom styles for table headers */
   .table th {
     background-color: #f0f0f0; /* Header background color */
-    color: #007BFF; /* Header text color */
+    color: #333; /* Header text color */
     padding: 0; /* Header cell padding */
     text-align: left; /* Header text alignment */
     font-weight:lighter;  /* Header text bold */
     font-size: 13px;
-    height: 40px;
+    height: 70px;
     min-width: 75px;
     border: 2px solid #ccc; /* Cell border */
     border-top: none;
+    vertical-align: middle;
     
+  }
+
+  span {
+    display: block; /* Ensures each span is on a new line */
   }
   
   /* Custom styles for table rows */
@@ -149,7 +154,7 @@
     max-width: 100%; /* Set a maximum width for the responsive container */
     min-width: 400px;
     overflow: auto; /* Enable horizontal scrolling when needed */
-  }
+}
   
 
 figure{
