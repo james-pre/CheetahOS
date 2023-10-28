@@ -31,35 +31,48 @@
                             <span style="padding-left:5px; height:33%; padding-top:5px; font-size:14px;">Status</span>
                           </th>
                           <th (click)="sortTable('CPU', true)">
-                            <span style="margin-left:50%; height:33%">
-                              <span *ngIf="isDescSorting('CPU')">▼</span>
-                              <span *ngIf="isAscSorting('CPU')">▲</span>
+                            <span style="margin-left:50%; height:33%"></span>
+                            <span [style]="setUtilHeaderSpan2section1Colors(cpuUtil)">
+                              <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
+                                <span *ngIf="isDescSorting('CPU')">ᴧ</span>
+                                <span *ngIf="isAscSorting('CPU')">v</span>
+                              </span>
+                              <span [style]="setUtilHeaderSpan2section2Colors(cpuUtil)">{{cpuUtil}}%</span>
                             </span>
-                            <span [style]="setUtilHeaderSpan2Colors(cpuUtil)" >{{cpuUtil}}%</span>
                             <span [style]="setUtilHeaderSpan3Colors(cpuUtil,'CPU')">CPU</span>
                           </th>
-                          <th (click)="sortTable('Memory', true)" #memorySpan>
-                            <span style="margin-left:50%; height:33%">
-                              <span *ngIf="isDescSorting('Memory')">▼</span>
-                              <span *ngIf="isAscSorting('Memory')">▲</span>
+                          <th (click)="sortTable('Memory', true)">
+                            <span style="margin-left:50%; height:33%"></span>
+                            <span [style]="setUtilHeaderSpan2section1Colors(memUtil)">
+                              <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
+                                <span *ngIf="isDescSorting('Memory')">ᴧ</span>
+                                <span *ngIf="isAscSorting('Memory')">v</span>
+                              </span>
+                              <span [style]="setUtilHeaderSpan2section2Colors(memUtil)">{{memUtil}}%</span>
                             </span>
-                            <span [style]="setUtilHeaderSpan2Colors(memUtil)">{{memUtil}}%</span>
                             <span [style]="setUtilHeaderSpan3Colors(memUtil,'Memory')">Memory</span>
                           </th>
-                          <th (click)="sortTable('Disk', true)" #diskSpan>               
-                            <span style="margin-left:50%; height:33%">
-                              <span *ngIf="isDescSorting('Disk')">▼</span>
-                              <span *ngIf="isAscSorting('Disk')">▲</span>
+                          <th (click)="sortTable('Disk', true)">               
+                            <span style="margin-left:50%; height:33%"></span>
+                            <span [style]="setUtilHeaderSpan2section1Colors(diskUtil)">
+                              <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
+                                <span *ngIf="isDescSorting('Disk')">ᴧ</span>
+                                <span *ngIf="isAscSorting('Disk')">v</span>
+                              </span>
+
+                              <span [style]="setUtilHeaderSpan2section2Colors(diskUtil)">{{diskUtil}}%</span>
                             </span>
-                            <span [style]="setUtilHeaderSpan2Colors(diskUtil)">{{diskUtil}}%</span>
                             <span [style]="setUtilHeaderSpan3Colors(diskUtil,'Disk')">Disk</span>
                           </th>
-                          <th (click)="sortTable('Network', true)" #newtorkSpan>                                        
-                            <span style="margin-left:50%; height:33%">
-                              <span *ngIf="isDescSorting('Network')">▼</span>
-                              <span *ngIf="isAscSorting('Network')">▲</span>
+                          <th (click)="sortTable('Network', true)">                                        
+                            <span style="margin-left:50%; height:33%"></span>
+                            <span [style]="setUtilHeaderSpan2section1Colors(networkUtil)">
+                              <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
+                                <span *ngIf="isDescSorting('Network')">ᴧ</span>
+                                <span *ngIf="isAscSorting('Network')">v</span>
+                              </span>
+                              <span [style]="setUtilHeaderSpan2section2Colors(networkUtil)">{{networkUtil}}%</span>
                             </span>
-                            <span [style]="setUtilHeaderSpan2Colors(networkUtil)">{{networkUtil}}%</span>
                             <span [style]="setUtilHeaderSpan3Colors(networkUtil,'Network')">Network</span>
                           </th>
                           <th (click)="sortTable('PID', true)">               

@@ -207,27 +207,81 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     return {};
   }
 
-  setUtilHeaderSpan2Colors(cellValue:number){
-    let baseStyle:Record<string, unknown> = {}
-
-    if(cellValue < 10){
-     return baseStyle= {
-        'padding-left':'60%',
-        'height':'33%',
-        'font-size':'large',
+  setUtilColoumnColors1(cellValue:number){
+    let  baseStyle: Record<string, unknown> = {};
+    if(cellValue <= 2.5){
+     return baseStyle = {
+        'text-align':'right',
+        'background-color': 'rgb(224, 224, 139)',
+        'border-left':this.cpuUtil > 50 ? ' #e18888f8': '',
+        'border-right':this.cpuUtil > 50 ?' #e18888f8': ''
       };
-    }else if(cellValue >= 10){
+    }else if(cellValue > 2.5 && cellValue <= 5){
       return baseStyle = {
-        'padding-left':'47%',
-        'height':'33%',
-        'font-size':'large',
-        'background-color': cellValue >= 50 ? '#e18888f8' : '#f0f0f0',
+        'text-align':'right',
+        'background-color': 'orange',
+        'border-left':this.cpuUtil > 50 ? ' #e18888f8': '',
+        'border-right':this.cpuUtil > 50 ?' #e18888f8': ''
+      };
+    }else if(cellValue > 5.0 && cellValue <= 7.5){
+      return baseStyle = {
+        'text-align':'right',
+        'background-color': 'orangered',
+        'border-left':this.cpuUtil > 50 ? ' #e18888f8': '',
+        'border-right':this.cpuUtil > 50 ?' #e18888f8': ''
+      };
+    }else if (cellValue > 7.5){
+      return baseStyle = {
+        'text-align':'right',
+        'background-color': 'red', 
         'border-left':this.cpuUtil > 50 ? ' #e18888f8': '',
         'border-right':this.cpuUtil > 50 ?' #e18888f8': ''
       };
     }
     return {};
   }
+
+  setUtilHeaderSpan2section1Colors(cellValue:number){
+    let baseStyle:Record<string, unknown> = {}
+
+    if(cellValue < 10){
+     return baseStyle= {
+        'height':'33%',
+      };
+    }else if(cellValue >= 10){
+      return baseStyle = {
+        'height':'33%',
+        'background-color': (cellValue >= 50)?  '#e18888f8' : '#f0f0f0',
+        'border-left':(cellValue >= 50)? ' #e18888f8': '',
+        'border-right':(cellValue >= 50)?' #e18888f8': ''
+      };
+    }
+    return {};
+  }
+  setUtilHeaderSpan2section2Colors(cellValue:number){
+    let baseStyle:Record<string, unknown> = {}
+
+    if(cellValue < 10){
+     return baseStyle= {
+        'padding-left':'22%',
+        'display':'inline-block',
+        'height':'33%',
+        'font-size':'large',
+        'width':'65%'
+      };
+    }else if(cellValue >= 10){
+      return baseStyle = {
+        'padding-left':'9%',
+        'display':'inline-block',
+        'height':'33%',
+        'font-size':'large',
+        'width':'65%'
+      };
+    }
+    return {};
+  }
+
+
 
   setUtilHeaderSpan3Colors(cellValue:number, cellName:string){
     
