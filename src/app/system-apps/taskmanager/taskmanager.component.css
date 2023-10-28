@@ -108,7 +108,7 @@
     text-align: left; /* Header text alignment */
     font-weight:lighter;  /* Header text bold */
     font-size: 13px;
-    height: 60px;
+    height: 55px;
     min-width: 90px;
     border: 1px solid #ccc; /* Cell border */
     border-top: none;
@@ -224,3 +224,37 @@ img{
     display: block;
   }
   
+  .basediv{
+    display:block;
+    height: '150px';
+    width: '100%';
+    font-size: small;
+    font-weight: lighter;
+    border-top: 2px solid #ccc; /* Cell border */
+    background-color: #f0f0f0;
+    color: #333;
+  }
+
+  /* Custom styles for .btn.btn-primary */
+.btn.btn-primary {
+  background-color: #96989b; /* Primary button background color */
+  color: #75787c; /* Text color for the primary button */
+  border: 1px solid #96989b; /* Border color for the primary button */
+  border-radius: 1px; /* Rounded corners for the primary button */
+  padding: 5px 25px; /* Padding for the primary button (adjust as needed) */
+  font-size: 10px; /* Font size for the text */
+}
+
+/* Hover state for the primary button */
+.btn.btn-primary:hover {
+  background-color: #0056b3; /* Background color when hovered */
+  border: 1px solid #0056b3; /* Border color when hovered */
+  color: #fff; /* Text color when hovered */
+}
+
+/* Active (clicked) state for the primary button */
+.btn.btn-primary:active, .btn.btn-primary:focus {
+  background-color: #0056b3; /* Background color when active or focused */
+  border: 1px solid #0056b3; /* Border color when active or focused */
+  color: #fff; /* Text color when active or focused */
+}
