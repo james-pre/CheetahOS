@@ -28,8 +28,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
 
   processes:Process[] =[];
-  columns: Array<keyof UserInterface> = ['Name','Status','CPU','Memory','Disk','Network','PID'];
-  
+ 
   hasWindow = true;
   icon = 'osdrive/icons/taskmanger.png';
   name = 'taskmanager';
@@ -92,26 +91,49 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       this._currentSortingOrder = this.isDescSorting(column) ? 'asc' : 'desc';
       this._sorting = {column, order: this._currentSortingOrder };
     }
-    // const sortedprocesses:Process[] = this._runningProcessService.getProcesses();
-    console.log('sorting col:', column);
-   
-    console.log(' this.sorting :',  this._sorting );
-
+  
     if(column == 'CPU'){
       if(this._currentSortingOrder == 'asc'){
-          this.processes = this.processes.sort((objA, objB) => objB.getCpuUsage - objA.getCpuUsage)
+          this.processes = this.processes.sort((objA, objB) => objB.getCpuUsage - objA.getCpuUsage);
       }else{
         this.processes = this.processes.sort((objA, objB) => objB.getCpuUsage - objA.getCpuUsage).reverse();
       }
     } else if (column == 'Memory'){
-      this.processes = this._runningProcessService.getProcesses().sort((objA, objB) => objB.getMemoryUsage - objA.getMemoryUsage)
+      if(this._currentSortingOrder == 'asc'){
+        this.processes = this.processes.sort((objA, objB) => objB.getMemoryUsage - objA.getMemoryUsage);
+      }else{
+        this.processes = this.processes.sort((objA, objB) => objB.getMemoryUsage - objA.getMemoryUsage).reverse();
+      }
     }else if(column == 'Disk'){
-      this.processes = this._runningProcessService.getProcesses().sort((objA, objB) => objB.getDiskUsage - objA.getDiskUsage)
+      if(this._currentSortingOrder == 'asc'){
+        this.processes = this.processes.sort((objA, objB) => objB.getDiskUsage - objA.getDiskUsage);
+      }else{
+        this.processes = this.processes.sort((objA, objB) => objB.getDiskUsage - objA.getDiskUsage).reverse();
+      }
     }else if(column == 'Network'){
-      this.processes = this._runningProcessService.getProcesses().sort((objA, objB) => objB.getNetworkUsage - objA.getNetworkUsage)
+      if(this._currentSortingOrder == 'asc'){
+        this.processes = this.processes.sort((objA, objB) => objB.getNetworkUsage - objA.getNetworkUsage);
+      }else{
+        this.processes = this.processes.sort((objA, objB) => objB.getNetworkUsage - objA.getNetworkUsage).reverse();
+      }
+    }else if(column == 'PID'){
+      if(this._currentSortingOrder == 'asc'){
+        this.processes = this.processes.sort((objA, objB) => objB.getProcessId - objA.getProcessId);
+      }else{
+        this.processes = this.processes.sort((objA, objB) => objB.getProcessId - objA.getProcessId).reverse();
+      }
+    }else if(column == 'Name'){
+      if(this._currentSortingOrder == 'asc'){
+        this.processes = this.processes.sort((objA, objB) => {
+          return objA.getProcessName < objB.getProcessName ? -1 : 1
+        });
+      }else{
+        this.processes = this.processes.sort((objA, objB) => {
+          return objA.getProcessName < objB.getProcessName ? -1 : 1
+        }).reverse();
+      }
     }
   }
-
 
   generateNumber(){
     const processes:Process[] = this._runningProcessService.getProcesses();
@@ -131,6 +153,14 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
         } 
     }
     this.processes = processes;
+    this.sumRowValues(processes);
+  }
+
+  sumRowValues(processes:Process[]):void{
+    this.cpuUtil = Math.round(processes.reduce((n, {getCpuUsage}) => n + getCpuUsage, 0));
+    this.memUtil = Math.round(processes.reduce((n, {getMemoryUsage}) => n + getMemoryUsage, 0));
+    this.diskUtil = Math.round(processes.reduce((n, {getDiskUsage}) => n + getDiskUsage, 0));
+    this.networkUtil = Math.round(processes.reduce((n, {getNetworkUsage}) => n + getNetworkUsage, 0));
   }
 
   getRandomFloatingNums(min:number, max:number):number{

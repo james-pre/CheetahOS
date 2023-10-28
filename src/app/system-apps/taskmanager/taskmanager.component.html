@@ -35,7 +35,8 @@
                               <span *ngIf="isDescSorting('CPU')">▼</span>
                               <span *ngIf="isAscSorting('CPU')">▲</span>
                             </span>
-                            <span style="margin-left:60%; height:33%; font-size:large;">{{cpuUtil}}%</span>
+                            <span [style]="cpuUtil < 10 ? 'margin-left:60%; height:33%; font-size:large;':
+                                                          'margin-left:47%; height:33%; font-size:large;' " >{{cpuUtil}}%</span>
                             <span style="margin-left:55%; height:33%; margin-top:5px; font-size:14px; padding-right:5px;">CPU</span>
                           </th>
                           <th (click)="sortTable('Memory', true)">
@@ -43,7 +44,8 @@
                               <span *ngIf="isDescSorting('Memory')">▼</span>
                               <span *ngIf="isAscSorting('Memory')">▲</span>
                             </span>
-                            <span style="margin-left:60%; height:33%; font-size:large;">{{memUtil}}%</span>
+                            <span [style]="memUtil < 10 ? 'margin-left:60%; height:33%; font-size:large;':
+                                                          'margin-left:47%; height:33%; font-size:large;' ">{{memUtil}}%</span>
                             <span style="margin-left:25%; height:33%; margin-top:5px; font-size:14px; padding-right:5px;">Memory</span>
                           </th>
                           <th (click)="sortTable('Disk', true)">               
@@ -51,7 +53,8 @@
                               <span *ngIf="isDescSorting('Disk')">▼</span>
                               <span *ngIf="isAscSorting('Disk')">▲</span>
                             </span>
-                            <span style="margin-left:60%; height:33%; font-size:large;">{{diskUtil}}%</span>
+                            <span [style]="diskUtil < 10 ? 'margin-left:60%; height:33%; font-size:large;':
+                                                           'margin-left:47%; height:33%; font-size:large;' ">{{diskUtil}}%</span>
                             <span style="margin-left:55%;height:33%; margin-top:5px; font-size:14px; padding-right:5px;">Disk</span>
                           </th>
                           <th (click)="sortTable('Network', true)">                                        
@@ -59,7 +62,8 @@
                               <span *ngIf="isDescSorting('Network')">▼</span>
                               <span *ngIf="isAscSorting('Network')">▲</span>
                             </span>
-                            <span style="margin-left:60%; height:33%; font-size:large;">{{networkUtil}}%</span>
+                            <span [style]="networkUtil < 10 ? 'margin-left:60%; height:33%; font-size:large;':
+                                                          'margin-left:47%; height:33%; font-size:large;' ">{{networkUtil}}%</span>
                             <span style="margin-left:24%; height:33%; margin-top:5px; font-size:14px; padding-right:5px;">Network</span>
                           </th>
                           <th (click)="sortTable('PID', true)">               
