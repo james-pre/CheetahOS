@@ -10,8 +10,8 @@ import { Process } from 'src/app/system-files/process';
   styleUrls: ['./startbutton.component.css']
 })
 export class StartbuttonComponent implements OnInit {
-  private _processIdService;
-  private _runningProcessService;
+  private _processIdService:ProcessIDService;
+  private _runningProcessService:RunningProcessService;
 
   hasWindow = false;
   hover = false;

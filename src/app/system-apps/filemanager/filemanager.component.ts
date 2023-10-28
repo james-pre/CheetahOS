@@ -61,7 +61,6 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
         const filePaths = this.files;
         if(filePaths != null || filePaths != undefined){
             for(const filePath of filePaths){
-              //console.log('revoking url:',filePath.getIcon); //TBD
               URL.revokeObjectURL(filePath.getIcon);
             }
         }
@@ -123,11 +122,6 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type);
   }
 
-  private revokeUrl():void{
-
-    for(const file of this.files)
-      URL.revokeObjectURL(file.getIcon);
-  }
 }
 
 

@@ -13,9 +13,8 @@ import { Process } from 'src/app/system-files/process';
 })
 export class FileexplorerComponent implements BaseComponent {
 
-  private _processIdService;
-  private _runningProcessService;
-
+  private _processIdService:ProcessIDService;
+  private _runningProcessService:RunningProcessService;
 
   hasWindow = true;
   icon = 'osdrive/icons/file_explorer.ico';
@@ -30,11 +29,9 @@ export class FileexplorerComponent implements BaseComponent {
     this._runningProcessService = runningProcessService;
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail());
-
   }
 
   updateIconAndName(updatedData:FileInfo):void{
-    //console.log('updatedData:',updatedData); TBD
     this.directory = updatedData.getCurrentPath;
     this.name = updatedData.getFileName;
     this.icon = updatedData.getIcon;

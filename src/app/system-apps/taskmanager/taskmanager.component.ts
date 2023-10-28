@@ -1,4 +1,4 @@
-import { Component, OnInit,OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit,OnDestroy, AfterViewInit} from '@angular/core';
 import { Subscription, timer } from 'rxjs';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
@@ -6,7 +6,6 @@ import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { Process } from 'src/app/system-files/process';
 import { SortingInterface } from './sorting.interface';
-import { UserInterface } from './user.interface';
 
 @Component({
   selector: 'cos-taskmanager',
@@ -15,20 +14,19 @@ import { UserInterface } from './user.interface';
 })
 export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,AfterViewInit {
 
+
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _processListChangeSub!: Subscription;
   private _taskmgrTimerSubscription!: Subscription;
   private _currentSortingOrder!:any;
-
   private _sorting:SortingInterface ={
-    column: 'CPU',
+    column: '',
     order: 'asc',
   }
 
-
   processes:Process[] =[];
- 
+
   hasWindow = true;
   icon = 'osdrive/icons/taskmanger.png';
   name = 'taskmanager';
@@ -40,7 +38,6 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   memUtil = 0;
   diskUtil = 0;
   networkUtil = 0;
-
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService) { 
     this._processIdService = processIdService;
@@ -66,6 +63,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     this._taskmgrTimerSubscription = timer(1000, 2000).subscribe(() => {
       this.generateNumber();
       this.sortTable(this._sorting.column, false);
+
     });
   }
 
@@ -176,13 +174,117 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   addTrailingZeros(num:number):number {
     const totalLength = 3;
     const strNum = String(num);
-
     if(num != 0){
       if(strNum.length == 1)
       return parseFloat(strNum.padEnd(totalLength, '.1'));
     }
-
     return num;
+  }
+
+  setUtilColoumnColors(cellValue:number){
+    let  baseStyle: Record<string, unknown> = {};
+    if(cellValue <= 2.5){
+     return baseStyle = {
+        'text-align':'right',
+        'background-color': 'rgb(224, 224, 139)'
+      };
+    }else if(cellValue > 2.5 && cellValue <= 5){
+      return baseStyle = {
+        'text-align':'right',
+        'background-color': 'orange'
+      };
+    }else if(cellValue > 5.0 && cellValue <= 7.5){
+      return baseStyle = {
+        'text-align':'right',
+        'background-color': 'orangered'
+      };
+    }else if (cellValue > 7.5){
+      return baseStyle = {
+        'text-align':'right',
+        'background-color': 'red', 
+      };
+    }
+    return {};
+  }
+
+  setUtilHeaderSpan2Colors(cellValue:number){
+    let baseStyle:Record<string, unknown> = {}
+
+    if(cellValue < 10){
+     return baseStyle= {
+        'padding-left':'60%',
+        'height':'33%',
+        'font-size':'large',
+      };
+    }else if(cellValue >= 10){
+      return baseStyle = {
+        'padding-left':'47%',
+        'height':'33%',
+        'font-size':'large',
+        'background-color': cellValue >= 50 ? '#e18888f8' : '#f0f0f0',
+        'border-left':this.cpuUtil > 50 ? ' #e18888f8': '',
+        'border-right':this.cpuUtil > 50 ?' #e18888f8': ''
+      };
+    }
+    return {};
+  }
+
+  setUtilHeaderSpan3Colors(cellValue:number, cellName:string){
+    
+    const baseStyle:Record<string, unknown> =  {
+        'padding-left':'55%',
+        'height':'33%',
+        'padding-top':'5px',
+        'font-size':'14px',
+        'padding-right':'5px'
+     };
+    if (cellName == 'CPU'){
+      if(cellValue < 10){
+        return baseStyle;
+       }else if(cellValue >= 10){
+        baseStyle['background-color'] =  (cellValue >= 50) ? '#e18888f8' : '#f0f0f0';
+        baseStyle['border'] =  (cellValue >= 50) ? '#e18888f8' : '';
+        return baseStyle;
+       }
+    }
+
+    if (cellName == 'Memory'){
+      if(cellValue < 10){
+        baseStyle['padding-left'] = '25%';
+        return baseStyle;
+       }else if(cellValue >= 10){
+
+        baseStyle['padding-left'] = '25%';
+        baseStyle['background-color'] =  (cellValue >= 50) ? '#e18888f8' : '#f0f0f0';
+        baseStyle['border'] =  (cellValue >= 50) ? '#e18888f8' : '';
+        return baseStyle;
+       }
+    }
+
+    if (cellName == 'Disk'){
+      if(cellValue < 10){
+        return baseStyle;
+       }else if(cellValue >= 10){
+        baseStyle['background-color'] =  (cellValue >= 50) ? '#e18888f8' : '#f0f0f0';
+        baseStyle['border'] =  (cellValue >= 50) ? '#e18888f8' : '';
+        return baseStyle;
+       }
+    }
+
+    if (cellName == 'Network'){
+      if(cellValue < 10){
+        baseStyle['padding-left'] = '24%';
+        return baseStyle;
+       }else if(cellValue >= 10){
+
+        baseStyle['padding-left'] = '24%';
+        baseStyle['background-color'] =  (cellValue >= 50) ? '#e18888f8' : '#f0f0f0';
+        baseStyle['border'] =  (cellValue >= 50) ? '#e18888f8' : '';
+        return baseStyle;
+       }
+    }
+
+    return {};
   }
 
   private getComponentDetail():Process{

@@ -17,10 +17,9 @@ export class ClockComponent implements AfterViewInit,OnDestroy {
   private _runningProcessService;
   private _taskBarClock:Clock;
   private _currrentDate!:string;
-  subscribeClock!:string;
-
   private _timerSubscription!:Subscription;
-
+  
+  subscribeClock!:string;
 
   hasWindow = false;
   hover = false;
