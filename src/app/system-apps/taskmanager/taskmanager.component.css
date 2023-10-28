@@ -108,9 +108,9 @@
     text-align: left; /* Header text alignment */
     font-weight:lighter;  /* Header text bold */
     font-size: 13px;
-    height: 70px;
-    min-width: 75px;
-    border: 2px solid #ccc; /* Cell border */
+    height: 60px;
+    min-width: 90px;
+    border: 1px solid #ccc; /* Cell border */
     border-top: none;
     vertical-align: middle;
     
@@ -140,7 +140,7 @@
     margin-right: 5px;
     font-size: 13px;
     text-align: left; /* Header text alignment */
-    border: 1px solid #1a127b; /* Cell border */
+    border: 1px solid #ccc; /* Cell border  #1a127b*/
     border-top:none; border-bottom:none;
   }
   
@@ -151,9 +151,9 @@
   
   /* Custom styles for .table-responsive (Optional) */
 .table-responsive {
-    max-width: 100%; /* Set a maximum width for the responsive container */
-    min-width: 400px;
-    overflow: auto; /* Enable horizontal scrolling when needed */
+  max-width: 100%; /* Set a maximum width for the responsive container */
+  min-width: 400px;
+  overflow: auto; /* Enable horizontal scrolling when needed */
 }
   
 

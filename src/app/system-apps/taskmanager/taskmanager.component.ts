@@ -14,6 +14,11 @@ import { SortingInterface } from './sorting.interface';
 })
 export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,AfterViewInit {
 
+   //acceess before it exists. So Angular is angry
+  // @ViewChild('cpuId',{ static: true }) cpuId!: ElementRef;
+  // @ViewChild('memroyId',{ static: true }) memroyId!: ElementRef;
+  // @ViewChild('diskId',{ static: true }) diskId!: ElementRef;
+  // @ViewChild('networkId',{ static: true }) networkId!: ElementRef;
 
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
@@ -207,53 +212,25 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     return {};
   }
 
-  setUtilColoumnColors1(cellValue:number){
-    let  baseStyle: Record<string, unknown> = {};
-    if(cellValue <= 2.5){
-     return baseStyle = {
-        'text-align':'right',
-        'background-color': 'rgb(224, 224, 139)',
-        'border-left':this.cpuUtil > 50 ? ' #e18888f8': '',
-        'border-right':this.cpuUtil > 50 ?' #e18888f8': ''
-      };
-    }else if(cellValue > 2.5 && cellValue <= 5){
-      return baseStyle = {
-        'text-align':'right',
-        'background-color': 'orange',
-        'border-left':this.cpuUtil > 50 ? ' #e18888f8': '',
-        'border-right':this.cpuUtil > 50 ?' #e18888f8': ''
-      };
-    }else if(cellValue > 5.0 && cellValue <= 7.5){
-      return baseStyle = {
-        'text-align':'right',
-        'background-color': 'orangered',
-        'border-left':this.cpuUtil > 50 ? ' #e18888f8': '',
-        'border-right':this.cpuUtil > 50 ?' #e18888f8': ''
-      };
-    }else if (cellValue > 7.5){
-      return baseStyle = {
-        'text-align':'right',
-        'background-color': 'red', 
-        'border-left':this.cpuUtil > 50 ? ' #e18888f8': '',
-        'border-right':this.cpuUtil > 50 ?' #e18888f8': ''
-      };
-    }
-    return {};
-  }
-
   setUtilHeaderSpan2section1Colors(cellValue:number){
     let baseStyle:Record<string, unknown> = {}
 
+      //acceess before it exists. So Angular is angry      
+      // this.cpuId.nativeElement.style.border = (cellValue >= 50)? '1px solid  #e18888f8': '';
+      // this.memroyId.nativeElement.style.border = (cellValue >= 50)? '1px solid  #e18888f8': '';
+      // this.diskId.nativeElement.style.border = (cellValue >= 50)? '1px solid  #e18888f8': '';
+      // this.networkId.nativeElement.style.border = (cellValue >= 50)? '1px solid  #e18888f8': '';
+
     if(cellValue < 10){
      return baseStyle= {
-        'height':'33%',
+        'height':'50%',
       };
     }else if(cellValue >= 10){
       return baseStyle = {
-        'height':'33%',
-        'background-color': (cellValue >= 50)?  '#e18888f8' : '#f0f0f0',
-        'border-left':(cellValue >= 50)? ' #e18888f8': '',
-        'border-right':(cellValue >= 50)?' #e18888f8': ''
+        'height':'50%',
+        'background-color': (cellValue >= 90)?  '#e18888f8' : '#f0f0f0',
+        'border-left':(cellValue >= 90)? ' #e18888f8': '',
+        'border-right':(cellValue >= 90)?' #e18888f8': ''
       };
     }
     return {};
@@ -265,7 +242,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
      return baseStyle= {
         'padding-left':'22%',
         'display':'inline-block',
-        'height':'33%',
+        'height':'50%',
         'font-size':'large',
         'width':'65%'
       };
@@ -273,7 +250,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       return baseStyle = {
         'padding-left':'9%',
         'display':'inline-block',
-        'height':'33%',
+        'height':'50%',
         'font-size':'large',
         'width':'65%'
       };
@@ -281,13 +258,11 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     return {};
   }
 
-
-
   setUtilHeaderSpan3Colors(cellValue:number, cellName:string){
     
     const baseStyle:Record<string, unknown> =  {
         'padding-left':'55%',
-        'height':'33%',
+        'height':'50%',
         'padding-top':'5px',
         'font-size':'14px',
         'padding-right':'5px'
@@ -296,8 +271,8 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       if(cellValue < 10){
         return baseStyle;
        }else if(cellValue >= 10){
-        baseStyle['background-color'] =  (cellValue >= 50) ? '#e18888f8' : '#f0f0f0';
-        baseStyle['border'] =  (cellValue >= 50) ? '#e18888f8' : '';
+        baseStyle['background-color'] =  (cellValue >= 90) ? '#e18888f8' : '#f0f0f0';
+        baseStyle['border'] =  (cellValue >= 90) ? '#e18888f8' : '';
         return baseStyle;
        }
     }
@@ -309,8 +284,8 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
        }else if(cellValue >= 10){
 
         baseStyle['padding-left'] = '25%';
-        baseStyle['background-color'] =  (cellValue >= 50) ? '#e18888f8' : '#f0f0f0';
-        baseStyle['border'] =  (cellValue >= 50) ? '#e18888f8' : '';
+        baseStyle['background-color'] =  (cellValue >= 90) ? '#e18888f8' : '#f0f0f0';
+        baseStyle['border'] =  (cellValue >= 90) ? '#e18888f8' : '';
         return baseStyle;
        }
     }
@@ -319,8 +294,8 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       if(cellValue < 10){
         return baseStyle;
        }else if(cellValue >= 10){
-        baseStyle['background-color'] =  (cellValue >= 50) ? '#e18888f8' : '#f0f0f0';
-        baseStyle['border'] =  (cellValue >= 50) ? '#e18888f8' : '';
+        baseStyle['background-color'] =  (cellValue >= 90) ? '#e18888f8' : '#f0f0f0';
+        baseStyle['border'] =  (cellValue >= 90) ? '#e18888f8' : '';
         return baseStyle;
        }
     }
@@ -332,8 +307,8 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
        }else if(cellValue >= 10){
 
         baseStyle['padding-left'] = '24%';
-        baseStyle['background-color'] =  (cellValue >= 50) ? '#e18888f8' : '#f0f0f0';
-        baseStyle['border'] =  (cellValue >= 50) ? '#e18888f8' : '';
+        baseStyle['background-color'] =  (cellValue >= 90) ? '#e18888f8' : '#f0f0f0';
+        baseStyle['border'] =  (cellValue >= 90) ? '#e18888f8' : '';
         return baseStyle;
        }
     }
