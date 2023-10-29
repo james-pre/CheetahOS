@@ -39,6 +39,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   type = ComponentType.systemComponent
   displayName = 'Task Manager';
   thStyle:Record<string,unknown> = {};
+  groupedData: any = {};
 
   cpuUtil = 0;
   memUtil = 0;
@@ -57,6 +58,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
   ngOnInit(): void {
    this.processes = this._runningProcessService.getProcesses();
+   this.groupTableBy();
   }
 
   ngOnDestroy(): void {
@@ -179,7 +181,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   getRandomFloatingNums(min:number, max:number):number{
     min = Math.ceil(min);
     max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min) + 10) / 10;
+    return Math.floor(Math.random() * (max - min) + 100) / 10;
   }
 
   getRandomNums(min:number, max:number) {
@@ -194,6 +196,26 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       return parseFloat(strNum.padEnd(totalLength, '.1'));
     }
     return num;
+  }
+
+  groupTableBy() {
+    const groupedData:Record<string, Process[]> = {};
+    for (const process of this.processes) {
+    
+        if(process.getType == ComponentType.systemComponent){
+
+          if(!groupedData[ComponentType.systemComponent]){
+            groupedData[ComponentType.systemComponent] = []
+          }
+          groupedData[ComponentType.systemComponent].push(process)
+        }else if(process.getType == ComponentType.userComponent){
+          if(!groupedData[ComponentType.userComponent]){
+            groupedData[ComponentType.userComponent] = []
+          }
+          groupedData[ComponentType.userComponent].push(process)
+        }
+    }
+    return groupedData;
   }
 
   setUtilColoumnColors(cellValue:number){
@@ -328,6 +350,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
        }else if(cellValue >= 10){
 
         baseStyle['padding-left'] = '25%';
+        baseStyle['background-color'] =  (cellValue >= 90) ? '#e18888f8' : '#f0f0f0';
         if(sortColoumn == cellName){
           if (cellValue >= 90)
             baseStyle['background-color'] = '#e18888f8';
@@ -346,6 +369,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
         }
         return baseStyle;
        }else if(cellValue >= 10){
+        baseStyle['background-color'] =  (cellValue >= 90) ? '#e18888f8' : '#f0f0f0';
         if(sortColoumn == cellName){
           if (cellValue >= 90)
             baseStyle['background-color'] = '#e18888f8';
@@ -367,6 +391,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
        }else if(cellValue >= 10){
 
         baseStyle['padding-left'] = '24%';
+        baseStyle['background-color'] =  (cellValue >= 90) ? '#e18888f8' : '#f0f0f0';
         if(sortColoumn == cellName){
           if (cellValue >= 90)
             baseStyle['background-color'] = '#e18888f8';
