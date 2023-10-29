@@ -226,8 +226,6 @@ img{
   
   .basediv{
     display:block;
-    height: '150px';
-    width: '100%';
     font-size: small;
     font-weight: lighter;
     border-top: 2px solid #ccc; /* Cell border */
