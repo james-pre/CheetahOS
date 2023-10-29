@@ -39,6 +39,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   type = ComponentType.systemComponent
   displayName = 'Task Manager';
   thStyle:Record<string,unknown> = {};
+  thStyle1:Record<string,unknown> = {};
   groupedData: any = {};
 
   cpuUtil = 0;
@@ -99,6 +100,9 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       this.thStyle = {
         'background-color': '#f0f0f0'
       }
+      this.thStyle1 = {
+        'background-color': '#f0f0f0'
+      }
     }
   
     if(column == 'CPU'){
@@ -126,7 +130,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
         this.processes = this.processes.sort((objA, objB) => objB.getNetworkUsage - objA.getNetworkUsage).reverse();
       }
     }else if(column == 'PID'){
-      this.thStyle = {
+      this.thStyle1 = {
         'background-color': 'rgb(224, 224, 139)'
       }
       if(this._currentSortingOrder == 'asc'){
@@ -181,7 +185,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   getRandomFloatingNums(min:number, max:number):number{
     min = Math.ceil(min);
     max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min) + 100) / 10;
+    return Math.floor(Math.random() * (max - min) + 10) / 10;
   }
 
   getRandomNums(min:number, max:number) {

@@ -30,10 +30,11 @@ export class HighlightDirective {
     if(this.el.nativeElement.id == "closeBtn"){
       this.el.nativeElement.style.backgroundColor = xBtnColor;
       this.el.nativeElement.style.transition = 'background-color 0.3s ease';
+      this.el.nativeElement.focus();
     }
     else if (this.el.nativeElement.id == "hideBtn" || this.el.nativeElement.id == "minBtn" || this.el.nativeElement.id == "maxBtn"){
       this.el.nativeElement.style.backgroundColor = color;
-   
+      this.el.nativeElement.focus();
     }
 
     // this.el.nativeElement.classList.add("has-focus");
