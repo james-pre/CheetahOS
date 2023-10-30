@@ -4,16 +4,26 @@
       <li  class="btn btn-primary head" title="File" (click)="showDropDownList()" (focusout)="showDropDownList()">
         File
         <ul *ngIf="showDDList">
-          <li>Sub 1</li>
-          <li>Sub 2</li>
-          <li>Sub 3</li>
+          <li>Run new task</li>
+          <li (click)="onExitBtnClick()">Exit</li>
         </ul>
       </li>
       <li class="btn btn-primary head">
         Options
       </li>
-      <li class="btn btn-primary head">
+      <li class="btn btn-primary head" (click)="showDropDownList()" (focusout)="showDropDownList()">
         View
+        <ul *ngIf="showDDList">
+          <li>Refresh now</li>
+          <li>Update Speed   >
+            <ul>
+              <li>High</li>
+              <li>Normal</li>
+              <li>Low</li>
+              <li>Paused</li>
+            </ul>
+          </li>
+        </ul>
       </li>
     </ul>
   </span>
