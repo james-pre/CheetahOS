@@ -57,6 +57,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   //appname
   private apps: {type: Type<BaseComponent>}[] =[
     {type: FileexplorerComponent},
+    {type: TaskmanagerComponent},
     {type: TaskmanagerMiniComponent},
     {type: TitleComponent},
     {type: GreetingComponent},

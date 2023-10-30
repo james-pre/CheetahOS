@@ -6,6 +6,9 @@ import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { Process } from 'src/app/system-files/process';
 import { SortingInterface } from './sorting.interface';
+import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
+import { FileInfo } from 'src/app/system-files/fileinfo';
+import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 
 @Component({
   selector: 'cos-taskmanager',
@@ -22,6 +25,9 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
+  private _stateManagmentService: StateManagmentService;
+  private _triggerProcessService:TriggerProcessService;
+
   private _processListChangeSub!: Subscription;
   private _taskmgrTimerSubscription!: Subscription;
   private _currentSortingOrder!:any;
@@ -51,9 +57,12 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   diskUtil = 0;
   networkUtil = 0;
 
-  constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService) { 
+  constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService,stateManagmentService: StateManagmentService,triggerProcessService:TriggerProcessService) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
+    this._stateManagmentService = stateManagmentService;
+    this._triggerProcessService = triggerProcessService;
+
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail());
     this._processListChangeSub = this._runningProcessService.processListChangeNotify.subscribe(() =>{this.updateRunningProcess();})
@@ -258,6 +267,21 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     return groupedData;
   }
 
+
+  onFewerDetailsBtnClick():void{
+    const file:FileInfo = new FileInfo();
+    file.setIcon = '/osdrive/icons/taskmanger.png';
+    file.setOpensWith = 'taskmanagermini';
+    file.setFileType ='.png';
+
+    const processToClose = this._runningProcessService.getProcess(this.processId);
+    this._stateManagmentService.removeState(this.processId);
+    this._triggerProcessService.startApplication(file);
+
+    this._runningProcessService.closeProcessNotify.next(processToClose);
+  }
+
+  
   setUtilColoumnColors(cellValue:number){
     let  baseStyle: Record<string, unknown> = {};
     if(cellValue <= 2.5){
