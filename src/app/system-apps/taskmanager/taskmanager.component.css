@@ -5,8 +5,8 @@
 
     border: 1px solid #ccc; /* Add a border to the card */
     border-radius: 1px; /* Add rounded corners to the card */
-    overflow-x:auto;
-    overflow: scroll;
+    overflow-x:scroll;
+    overflow-y: scroll;
   }
   
   /* Custom styles for the card-body */
@@ -233,6 +233,16 @@ img{
     color: #333;
   }
 
+  .btn.btn-primary.head {
+    background-color: #f2f2f2; /* Primary button background color */
+    color: #333; /* Text color for the primary button */
+    border: 1px solid #f2f2f2; /* Border color for the primary button */
+    border-radius: 1px; /* Rounded corners for the primary button */
+    padding: 1px 10px; /* Padding for the primary button (adjust as needed) */
+    font-size: 13px; /* Font size for the text */
+  }
+
+  
   /* Custom styles for .btn.btn-primary */
 .btn.btn-primary {
   background-color: #96989b; /* Primary button background color */
@@ -255,4 +265,14 @@ img{
   background-color: #0056b3; /* Background color when active or focused */
   border: 1px solid #0056b3; /* Border color when active or focused */
   color: #fff; /* Text color when active or focused */
+}
+
+
+nav{
+  display: flex;
+  position: relative;
+  left: 0;
+  height: 20px;
+  padding-left: 0px;
+  background-color: #f2f2f2;
 }
