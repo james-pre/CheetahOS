@@ -1,17 +1,23 @@
 <cos-window [runningProcessID]="this.processId" [processAppIcon]="this.icon" [processAppName]="this.name" (click)="setTaskMangrWindowToFocus(this.processId)"> 
-  <span style="display:flex; position:relative;  background-color: #f2f2f2; max-height:20px;">
-    <nav>
-      <button class="btn btn-primary head"  title="File">
+  <span class="navigation">
+    <ul class="u-pull-right"> 
+      <li  class="btn btn-primary head" title="File" (click)="showDropDownList()" (focusout)="showDropDownList()">
         File
-      </button>
-      <button  class="btn btn-primary head"  title="Options">
+        <ul *ngIf="showDDList">
+          <li>Sub 1</li>
+          <li>Sub 2</li>
+          <li>Sub 3</li>
+        </ul>
+      </li>
+      <li class="btn btn-primary head">
         Options
-      </button>
-      <button class="btn btn-primary head"  title="View" >
-          View
-      </button>
-    </nav>
+      </li>
+      <li class="btn btn-primary head">
+        View
+      </li>
+    </ul>
   </span>
+  <span style="height:2px; background-color: #ffffff; "></span>
   <div class="tabbed-window">
     <div class="tabs">
       <div class="tab active">Processes</div>
@@ -25,7 +31,7 @@
               <div class='table-responsive'>
                 <table class='table' *ngIf = 'processes.length > 0' >
                   <thead>
-                    <span style="height:10px; "></span>
+                    <span style="height:10px; border-top: none;  "></span>
                     <tr>             
                       <th [style]="thStyle" (click)="sortTable('Name', true)">
                         <span style="margin-left:50%; height:50%">

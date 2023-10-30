@@ -1,159 +1,160 @@
 /* Custom styles for the card */
- .card {
-    min-width: 150px; /* Set the width of the card */
-    min-height: 150px; /* Set the height of the card */
+.card {
+  min-width: 150px; /* Set the width of the card */
+  min-height: 150px; /* Set the height of the card */
 
-    border: 1px solid #ccc; /* Add a border to the card */
-    border-radius: 1px; /* Add rounded corners to the card */
-    overflow-x:scroll;
-    overflow-y: scroll;
-  }
+  border: 1px solid #ccc; /* Add a border to the card */
+  border-radius: 1px; /* Add rounded corners to the card */
+  overflow-x:scroll;
+  overflow-y: scroll;
+}
   
-  /* Custom styles for the card-body */
-  .card-body {
-    padding: 0; /* Add padding inside the card body */
-    background-color: #f0f0f0; /* Set the background color */
-    color: #000; /* Set the text color */
-    border-top: 1px solid #ddd; /* Add a top border to separate from the card header */
-  }
-  
-  /* Additional styles for links inside the card-body (optional) */
-  .card-body a {
-    text-decoration: none; /* Remove underlines from links */
-    color: #007BFF; /* Set link color */
-  }
-  
-  /* Hover effect for links (optional) */
-  .card-body a:hover {
-    text-decoration: underline; /* Add underline on hover */
-  }
-  
+/* Custom styles for the card-body */
+.card-body {
+  padding: 0; /* Add padding inside the card body */
+  background-color: #ffffff; /* Set the background color */
+  color: #000; /* Set the text color */
+  border-top: none; /*Add a top border to separate from the card header */
+}
 
-  /* Custom styles for rows */
- .row {
-    margin: 10px 0px; /* Add margin above and below the row */
-    min-height: 10px;
-    min-width: 10px;
-  }
-  
-  /* Custom styles for columns */
-  .col {
-    padding: 10px; /* Add padding inside columns */
-    background-color: #f0f0f0; /* Set a background color for columns */
-    border: 1px solid #cccccc; /* Add a border to columns */
-    border-radius: 1px; /* Add rounded corners to columns */
-    color: #000; /* Set text color for columns */
-  }
-  
-  /* Additional styles for links inside columns (optional) */
-  .col a {
-    text-decoration: none; /* Remove underlines from links */
-    color: #007BFF; /* Set link color */
-  }
-  
-  /* Hover effect for links (optional) */
-  .col a:hover {
-    text-decoration: underline; /* Add underline on hover */
-  }
-  
+/* Additional styles for links inside the card-body (optional) */
+.card-body a {
+  text-decoration: none; /* Remove underlines from links */
+  color: #007BFF; /* Set link color */
+}
 
-  /* Custom styles for col-md-2 */
- .col-md-2 {
-    background-color: #f0f0f0; /* Set a background color for col-md-2 */
-    padding: 10px; /* Add padding inside col-md-2 */
-    border: 1px solid #ccc; /* Add a border to col-md-2 */
-    border-radius: 0; /* Add rounded corners to col-md-2 */
-    color: #000; /* Set text color for col-md-2 */
-    min-width: 25px;
-    /* max-width: 100px; */
-  }
-  
-  /* Custom styles for col-md-4 */
-  .col-md-4 {
-    background-color: #f0f0f0; /* Set a background color for col-md-4 */
-    padding: 10px; /* Add padding inside col-md-4 */
-    border: 1px solid #ccc; /* Add a border to col-md-4 */
-    border-radius: 0; /* Add rounded corners to col-md-4 */
-    color: #000; /* Set text color for col-md-4 */
-    min-width: 25px;
-    /* max-width: 200px; */
-  }
-  
-  /* Custom styles for col-md-6 */
-  .col-md-6 {
-    background-color: #f0f0f0; /* Set a background color for col-md-6 */
-    padding: 10px; /* Add padding inside col-md-6 */
-    border: 1px solid #ccc; /* Add a border to col-md-6 */
-    border-radius: 0; /* Add rounded corners to col-md-6 */
-    color: #000; /* Set text color for col-md-6 */
-    min-width: 25px;
-    /* max-width: 300px; */
-  }
+/* Hover effect for links (optional) */
+.card-body a:hover {
+  text-decoration: underline; /* Add underline on hover */
+}
+
+
+/* Custom styles for rows */
+.row {
+  margin: 10px 0px; /* Add margin above and below the row */
+  min-height: 10px;
+  min-width: 10px;
+}
+
+/* Custom styles for columns */
+.col {
+  padding: 10px; /* Add padding inside columns */
+  background-color: #ffffff; /* Set a background color for columns */
+  border: 1px solid #cccccc; /* Add a border to columns */
+  border-radius: 1px; /* Add rounded corners to columns */
+  color: #000; /* Set text color for columns */
+}
+
+/* Additional styles for links inside columns (optional) */
+.col a {
+  text-decoration: none; /* Remove underlines from links */
+  color: #007BFF; /* Set link color */
+}
+
+/* Hover effect for links (optional) */
+.col a:hover {
+  text-decoration: underline; /* Add underline on hover */
+}
+
+
+/* Custom styles for col-md-2 */
+.col-md-2 {
+  background-color: #ffffff; /* Set a background color for col-md-2 */
+  padding: 10px; /* Add padding inside col-md-2 */
+  border: 1px solid #ccc; /* Add a border to col-md-2 */
+  border-radius: 0; /* Add rounded corners to col-md-2 */
+  color: #000; /* Set text color for col-md-2 */
+  min-width: 25px;
+  /* max-width: 100px; */
+}
+
+/* Custom styles for col-md-4 */
+.col-md-4 {
+  background-color: #ffffff; /* Set a background color for col-md-4 */
+  padding: 10px; /* Add padding inside col-md-4 */
+  border: 1px solid #ccc; /* Add a border to col-md-4 */
+  border-radius: 0; /* Add rounded corners to col-md-4 */
+  color: #000; /* Set text color for col-md-4 */
+  min-width: 25px;
+  /* max-width: 200px; */
+}
+
+/* Custom styles for col-md-6 */
+.col-md-6 {
+  background-color: #ffffff; /* Set a background color for col-md-6 */
+  padding: 10px; /* Add padding inside col-md-6 */
+  border: 1px solid #ccc; /* Add a border to col-md-6 */
+  border-radius: 0; /* Add rounded corners to col-md-6 */
+  color: #000; /* Set text color for col-md-6 */
+  min-width: 25px;
+  /* max-width: 300px; */
+}
 
   /* Custom styles for the table */
 .table {
-    border-collapse: collapse; /* Remove spacing between table cells */
-    min-width: 25%; /* Set the table width to 100% of its container */
-    margin: 1px 0; /* Add margin above and below the table */
-    font-family: Arial, sans-serif; /* Set the font family for the table */
-    table-layout: auto;
-    width: 100%;
-  }
+  border-collapse: collapse; /* Remove spacing between table cells */
+  min-width: 25%; /* Set the table width to 100% of its container */
+  margin: 1px 0; /* Add margin above and below the table */
+  font-family: Arial, sans-serif; /* Set the font family for the table */
+  table-layout: auto;
+  width: 100%;
+}
   
   /* Custom styles for table headers */
-  .table th {
-    background-color: #f0f0f0; /* Header background color */
-    color: #333; /* Header text color */
-    padding: 0; /* Header cell padding */
-    text-align: left; /* Header text alignment */
-    font-weight:lighter;  /* Header text bold */
-    font-size: 13px;
-    height: 55px;
-    min-width: 90px;
-    border: 1px solid #ccc; /* Cell border */
-    border-top: none;
-    vertical-align: middle;
-    
-  }
+.table th {
+  background-color: #ffffff; /* Header background color */
+  color: #333; /* Header text color */
+  padding: 0; /* Header cell padding */
+  text-align: left; /* Header text alignment */
+  font-weight:lighter;  /* Header text bold */
+  font-size: 13px;
+  height: 55px;
+  min-width: 90px;
+  border: 1px solid #ccc; /* Cell border */
+  border-top: none;
+  vertical-align: middle;
+  
+}
 
-  span {
-    display: block; /* Ensures each span is on a new line */
-  }
+span {
+  display: block; /* Ensures each span is on a new line */
+}
   
-  /* Custom styles for table rows */
-  .table tr {
-    background-color: #f0f0f0; /* Row background color */
-  }
+/* Custom styles for table rows */
+.table tr {
+  background-color: #ffffff; /* Row background color */
+}
   
-  /* Alternate row background color (zebra-striping) */
-  .table tr:nth-child(even) {
-    /* background-color: #e0e0e0; */
-    background-color: #f0f0f0; 
-  }
+/* Alternate row background color (zebra-striping) */
+.table tr:nth-child(even) {
+  /* background-color: #e0e0e0; */
+  background-color: #ffffff; 
+}
   
-  /* Custom styles for table cells */
-  .table td {
-    padding: 5px; /* Cell padding */
-    font-weight:lighter; 
-    min-width: 75px;
-    margin-left: 5px;
-    margin-right: 5px;
-    font-size: 13px;
-    text-align: left; /* Header text alignment */
-    border: 1px solid #ccc; /* Cell border  #1a127b*/
-    border-top:none; border-bottom:none;
-  }
-  
-  /* Add hover effect to table rows (optional) */
-  .table tr:hover {
-    background-color: #ddd;
-  }
+/* Custom styles for table cells */
+.table td {
+  padding: 5px; /* Cell padding */
+  font-weight:lighter; 
+  min-width: 75px;
+  margin-left: 5px;
+  margin-right: 5px;
+  font-size: 13px;
+  text-align: left; /* Header text alignment */
+  border: 1px solid #ccc; /* Cell border  #1a127b*/
+  border-top:none; border-bottom:none;
+}
+
+/* Add hover effect to table rows (optional) */
+.table tr:hover {
+  background-color: #ddd;
+}
   
   /* Custom styles for .table-responsive (Optional) */
 .table-responsive {
   max-width: 100%; /* Set a maximum width for the responsive container */
   min-width: 400px;
   overflow: auto; /* Enable horizontal scrolling when needed */
+  border-top:  none;
 }
   
 
@@ -185,69 +186,75 @@ img{
     border: 1px solid #ccc;
     /* border-radius: 5px;
     overflow: hidden; */
-  }
+}
   
-  /* Styles for the tab navigation */
-  .tabs {
-    display: flex;
-    background-color: #f2f2f2;
-    border-bottom: 1px solid #ccc;
-  }
-  
-  .tab {
-    flex: 1;
-    padding: 5px 10px;
-    text-align: center;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    font-weight: lighter;
-    font-size: 13px;
-    max-width: fit-content;
-    max-height: fit-content;
-  }
-  
-  .tab.active {
-    background-color: #ccc;
-    color: #000;
-  }
-  
-  /* Styles for tab content */
-  .tab-content {
-    padding: 0;
-  }
-  
-  .tab-pane {
-    display: none;
-  }
-  
-  .tab-pane.active {
-    display: block;
-  }
-  
-  .basediv{
-    display:block;
-    font-size: small;
-    font-weight: lighter;
-    border-top: 2px solid #ccc; /* Cell border */
-    background-color: #f0f0f0;
-    color: #333;
-  }
+/* Styles for the tab navigation */
+.tabs {
+  display: flex;
+  background-color: #ffffff;
+  color: #000;
+  border-bottom: none;
+}
 
-  .btn.btn-primary.head {
-    background-color: #f2f2f2; /* Primary button background color */
-    color: #333; /* Text color for the primary button */
-    border: 1px solid #f2f2f2; /* Border color for the primary button */
-    border-radius: 1px; /* Rounded corners for the primary button */
-    padding: 1px 10px; /* Padding for the primary button (adjust as needed) */
-    font-size: 13px; /* Font size for the text */
-  }
+.tab {
+  flex: 1;
+  padding: 2px 5px;
+  background-color: #f2f2f2; /*e3e0e0*/
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-weight: normal;
+  font-size: 13px;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  max-width: fit-content;
+  max-height: fit-content;
+}
+
+.tab.active {
+  background-color: #ffffff; /*f2f2f2*/
+  border-left: 0px;
+  color: #000;
+}
+
+/* Styles for tab content */
+.tab-content {
+  padding: 0;
+  border-top: none; 
+}
+
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+.basediv{
+  display:block;
+  font-size: small;
+  font-weight: lighter;
+  border-top: 1px solid #ccc; /* Cell border */
+  background-color: #ffffff;
+  color: #333;
+}
+
+.btn.btn-primary.head {
+  background-color: #ffffff; /* Primary button background color */
+  color: #333; /* Text color for the primary button */
+  border: 1px solid #ffffff; /* Border color for the primary button */
+  border-radius: 1px; /* Rounded corners for the primary button */
+  padding: 1px 10px; /* Padding for the primary button (adjust as needed) */
+  font-size: 13px; /* Font size for the text */
+}
 
   
   /* Custom styles for .btn.btn-primary */
 .btn.btn-primary {
-  background-color: #96989b; /* Primary button background color */
+  background-color: #ccc; /* Primary button background color */
   color: #75787c; /* Text color for the primary button */
-  border: 1px solid #96989b; /* Border color for the primary button */
+  border: 1px solid #ccc; /* Border color for the primary button */
   border-radius: 1px; /* Rounded corners for the primary button */
   padding: 5px 25px; /* Padding for the primary button (adjust as needed) */
   font-size: 10px; /* Font size for the text */
@@ -268,11 +275,59 @@ img{
 }
 
 
-nav{
-  display: flex;
+
+.navigation {
+  /* border: 1px solid black;   */
+  background-color: #ffffff;
+  display:flex; 
+  position:relative;
+}
+.navigation a {
+  text-decoration: none;
+}
+.navigation a:hover {
+  text-decoration: none;
+}
+.navigation ul {
+  list-style: none;
+  display: inline-flex;
+  margin: 0px 0px 0px 0px;
+}
+
+.u-pull-right li:last-child {
+  padding: 1px 5px 
+}
+
+#admin-list li{
+  padding: 2px 5px;
+}
+.navigation ul li {
+  display: inline-flex;
+  padding: 1px 5px;
+  height: 21px;
+}
+.navigation ul li:first-child {
+  padding-left: 9px;
+}
+
+.navigation ul li.active {
+  font-weight: bold;
+}
+.navigation ul ul {
+  display: none;
+}
+.navigation ul li:hover > ul {
+  display: inline-block;
+  position: absolute;
+  background-color: #ccc;
+  color: #000;
+  margin-left: -8px;
+  margin-top: 19px;
+}
+.navigation ul ul li {
+  float: none;
+  display: list-item;
   position: relative;
-  left: 0;
-  height: 20px;
-  padding-left: 0px;
-  background-color: #f2f2f2;
+  text-align: center;
+  min-width: 100px;
 }

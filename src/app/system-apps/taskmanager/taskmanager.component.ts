@@ -51,6 +51,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   thStyle1:Record<string,unknown> = {};
   groupedData: any = {};
 
+  showDDList = false;
 
   cpuUtil = 0;
   memUtil = 0;
@@ -114,10 +115,10 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       this._currentSortingOrder = this.isDescSorting(column) ? 'asc' : 'desc';
       this._sorting = {column, order: this._currentSortingOrder };
       this.thStyle = {
-        'background-color': '#f0f0f0'
+        'background-color': '#ffffff'
       }
       this.thStyle1 = {
-        'background-color': '#f0f0f0'
+        'background-color': '#ffffff'
       }
     }
   
@@ -170,7 +171,13 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     }
   }
 
-  generateLies(){
+  showDropDownList():void{
+    this.showDDList = ! this.showDDList;
+
+    console.log("show list:", this.showDDList);
+  }
+
+  generateLies():void{
     const processes:Process[] = this._runningProcessService.getProcesses();
     const maxUtilNum = 100;
     const minUtilNum = 0;
@@ -345,7 +352,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
          }else if(cellValue >= 10){
            return baseStyle = {
              'height':'50%',
-             'background-color': (cellValue >= 90)?  '#e18888f8' : '#f0f0f0',
+             'background-color': (cellValue >= 90)?  '#e18888f8' : '#ffffff',
              'border-left':(cellValue >= 90)? ' #e18888f8': '',
              'border-right':(cellValue >= 90)?' #e18888f8': ''
            };
@@ -396,7 +403,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
         }
         return baseStyle;
        }else if(cellValue >= 10){
-        baseStyle['background-color'] =  (cellValue >= 90) ? '#e18888f8' : '#f0f0f0';
+        baseStyle['background-color'] =  (cellValue >= 90) ? '#e18888f8' : '#ffffff';
         if(sortColoumn == cellName){
           if (cellValue >= 90)
             baseStyle['background-color'] = '#e18888f8';
@@ -418,7 +425,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
        }else if(cellValue >= 10){
 
         baseStyle['padding-left'] = '25%';
-        baseStyle['background-color'] =  (cellValue >= 90) ? '#e18888f8' : '#f0f0f0';
+        baseStyle['background-color'] =  (cellValue >= 90) ? '#e18888f8' : '#ffffff';
         if(sortColoumn == cellName){
           if (cellValue >= 90)
             baseStyle['background-color'] = '#e18888f8';
@@ -437,7 +444,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
         }
         return baseStyle;
        }else if(cellValue >= 10){
-        baseStyle['background-color'] =  (cellValue >= 90) ? '#e18888f8' : '#f0f0f0';
+        baseStyle['background-color'] =  (cellValue >= 90) ? '#e18888f8' : '#ffffff';
         if(sortColoumn == cellName){
           if (cellValue >= 90)
             baseStyle['background-color'] = '#e18888f8';
@@ -459,7 +466,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
        }else if(cellValue >= 10){
 
         baseStyle['padding-left'] = '24%';
-        baseStyle['background-color'] =  (cellValue >= 90) ? '#e18888f8' : '#f0f0f0';
+        baseStyle['background-color'] =  (cellValue >= 90) ? '#e18888f8' : '#ffffff';
         if(sortColoumn == cellName){
           if (cellValue >= 90)
             baseStyle['background-color'] = '#e18888f8';
