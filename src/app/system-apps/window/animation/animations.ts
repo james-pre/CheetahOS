@@ -17,10 +17,19 @@ import {trigger, transition, state, animate, style, keyframes} from '@angular/an
             transition('open => *', [
                 animate("250s ease-out", keyframes([
                     style({ transform: 'translate(0, 0)', opacity: 1 }),
-                    style({ transform: 'translate(-25, 25)', opacity: 0.75}),
-                    style({ transform: 'translate(-50, 50)', opacity: 0.50}),
-                    style({ transform: 'translate(-75, 75)', opacity: 0.25 }),
-                    style({ transform: 'translate(-100, 100)', opacity: 0 })
+                    style({ transform: 'translate(-25px, 25px)', opacity: 0.75}),
+                    style({ transform: 'translate(-50px, 50px)', opacity: 0.50}),
+                    style({ transform: 'translate(-75px, 75px)', opacity: 0.25 }),
+                    style({ transform: 'translate(-100px, 100px)', opacity: 0 })
+                ]))
+            ]),
+            transition('* => open', [
+                animate("250s ease-in", keyframes([            
+                    style({ transform: 'translate(-100px, 100px)', opacity: 0 }),
+                    style({ transform: 'translate(-75px, 75px)', opacity: 0.25 }),
+                    style({ transform: 'translate(-50px, 50px)', opacity: 0.50}),
+                    style({ transform: 'translate(-25px, 25px)', opacity: 0.75}),
+                    style({ transform: 'translate(0, 0)', opacity: 1 })
                 ]))
             ])
         ]);
@@ -43,10 +52,19 @@ import {trigger, transition, state, animate, style, keyframes} from '@angular/an
             transition('visible => hidden', [
                 animate("250s ease-out", keyframes([
                     style({ transform: 'translate(0, 0)', opacity: 1 }),
-                    style({ transform: 'translate(-25, 25)', opacity: 0.75}),
-                    style({ transform: 'translate(-50, 50)', opacity: 0.50}),
-                    style({ transform: 'translate(-75, 75)', opacity: 0.25 }),
-                    style({ transform: 'translate(-100, 100)', opacity: 0 })
+                    style({ transform: 'translate(-25px, 25px)', opacity: 0.75}),
+                    style({ transform: 'translate(-50px, 50px)', opacity: 0.50}),
+                    style({ transform: 'translate(-75px, 75px)', opacity: 0.25 }),
+                    style({ transform: 'translate(-100px, 100px)', opacity: 0 })
+                ]))
+            ]),
+            transition('hidden => visible', [
+                animate("250s ease-in", keyframes([            
+                    style({ transform: 'translate(-100px, 100px)', opacity: 0 }),
+                    style({ transform: 'translate(-75px, 75px)', opacity: 0.25 }),
+                    style({ transform: 'translate(-50px, 50px)', opacity: 0.50}),
+                    style({ transform: 'translate(-25px, 25px)', opacity: 0.75}),
+                    style({ transform: 'translate(0, 0)', opacity: 1 })
                 ]))
             ])
         ]);

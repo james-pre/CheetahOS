@@ -78,6 +78,9 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   ngOnDestroy(): void {
     this._processListChangeSub?.unsubscribe();
     this._taskmgrTimerSubscription?.unsubscribe()
+    this.SLEEP_COUNTER = 0;
+    this.SLEEP_PROCESS_NUM = 0;
+    this.SLEEP_NUMBER = 0;
   }
 
   ngAfterViewInit(): void {
@@ -198,6 +201,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
         }else{
           this.SLEEP_COUNTER = 0;
           this.SLEEP_PROCESS_NUM = 0;
+          this.SLEEP_NUMBER = 0;
           tmpProcess.setProcessStatus = '';
         }
       }else{
@@ -281,7 +285,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     this._runningProcessService.closeProcessNotify.next(processToClose);
   }
 
-  
+
   setUtilColoumnColors(cellValue:number){
     let  baseStyle: Record<string, unknown> = {};
     if(cellValue <= 2.5){
