@@ -1,0 +1,34 @@
+<cos-window [runningProcessID]="this.processId" [processAppIcon]="this.icon" [processAppName]="this.name" (click)="setTaskMangrMiniWindowToFocus(this.processId)">
+    <div class='card'>
+        <div class='card-body'>
+          <div class='table-responsive'>
+            <table class='table' *ngIf = 'processes.length > 0' >
+              <tbody>
+                <tr *ngFor='let process of processes'>
+                    <td style="width: 55%;">
+                        <figure> 
+                            <img [src]="process.getIcon">
+                            <figcaption>{{ process.getProcessName}}</figcaption>
+                        </figure>
+                    </td>
+                  </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <span class="basediv">
+            <span style="display: inline-block; width: 50%; 
+                    padding-top:15px;  height:50px; margin-left: 0;">
+              <figure style="padding-right: 45%;"> 
+                <img [src]="'osdrive/icons/arrow_down.png'">
+                <figcaption>More details</figcaption>
+              </figure>
+          </span>
+          <span style="display: inline-block; height:50px; margin-top:10px; width:50%; margin-right: 0;">
+              <button class="btn btn-primary" style="margin-left: 45%;" >
+                End task
+              </button>
+          </span>
+      </span>
+    </div>
+</cos-window>

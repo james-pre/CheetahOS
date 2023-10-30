@@ -11,6 +11,7 @@ import { TitleComponent } from './user-apps/title/title.component';
 import { GreetingComponent } from './user-apps/greeting/greeting.component';
 import { FileexplorerComponent } from './system-apps/fileexplorer/fileexplorer.component';
 import { TaskmanagerComponent } from './system-apps/taskmanager/taskmanager.component';
+import { TaskmanagerMiniComponent } from './system-apps/taskmanager/taskmanager.mini.component';
 import { SessionManagmentService } from './shared/system-service/session.management.service';
 import { AppDirectory } from './system-files/app.directory';
 import { JsdosComponent } from './user-apps/jsdos/jsdos.component';
@@ -56,7 +57,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   //appname
   private apps: {type: Type<BaseComponent>}[] =[
     {type: FileexplorerComponent},
-    {type: TaskmanagerComponent},
+    {type: TaskmanagerMiniComponent},
     {type: TitleComponent},
     {type: GreetingComponent},
     {type: JsdosComponent}

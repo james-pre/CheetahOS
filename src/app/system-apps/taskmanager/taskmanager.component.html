@@ -81,13 +81,18 @@
                       </thead>
                       <tbody>
                         <tr *ngFor='let process of processes'>
-                            <td>
+                            <td style="width: 65%;">
                                 <figure> 
                                     <img [src]="process.getIcon">
                                     <figcaption>{{ process.getProcessName}}</figcaption>
                                 </figure>
                             </td>
-                            <td>{{ process.getStatus}}</td>
+                            <td>
+                                <figure  *ngIf = 'process.getProcessStatus === "Suspended"' > 
+                                    <figcaption>{{ process.getProcessStatus}}</figcaption>
+                                    <img [src]="'osdrive/icons/econo.png'">
+                                </figure>
+                            </td>
                             <td [style]="setUtilColoumnColors(process.getCpuUsage)" #cpuId>{{ process.getCpuUsage}}%</td>
                             <td [style]="setUtilColoumnColors(process.getMemoryUsage)" #memoryId>{{ process.getMemoryUsage}} MB</td>
                             <td [style]="setUtilColoumnColors(process.getDiskUsage)" #diskId>{{ process.getDiskUsage}} MB/s</td>

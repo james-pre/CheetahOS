@@ -68,7 +68,7 @@ export class Process{
         return this._networkUsage;
     }
 
-    public get getStatus(){
+    public get getProcessStatus(){
         return this._status;
     }
 

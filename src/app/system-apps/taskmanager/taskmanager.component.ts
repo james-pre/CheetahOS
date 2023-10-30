@@ -29,6 +29,9 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     column: '',
     order: 'asc',
   }
+  private SLEEP_NUMBER = 0;
+  private SLEEP_COUNTER = 0;
+  private SLEEP_PROCESS_NUM = 0;
 
   processes:Process[] =[];
 
@@ -41,6 +44,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   thStyle:Record<string,unknown> = {};
   thStyle1:Record<string,unknown> = {};
   groupedData: any = {};
+
 
   cpuUtil = 0;
   memUtil = 0;
@@ -70,7 +74,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   ngAfterViewInit(): void {
     //Initial delay 1 seconds and interval countdown also 2 second
     this._taskmgrTimerSubscription = timer(1000, 2000).subscribe(() => {
-      this.generateNumber();
+      this.generateLies();
       this.sortTable(this._sorting.column, false);
 
     });
@@ -144,7 +148,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       }
       if(this._currentSortingOrder == 'asc'){
         this.processes = this.processes.sort((objA, objB) => {
-          return objA.getProcessName < objB.getProcessName ? -1 : 1
+          return objA.getProcessName < objB.getProcessName ? -1 : 1;
         });
       }else{
         this.processes = this.processes.sort((objA, objB) => {
@@ -154,22 +158,54 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     }
   }
 
-  generateNumber(){
+  generateLies(){
     const processes:Process[] = this._runningProcessService.getProcesses();
+    const maxUtilNum = 100;
+    const minUtilNum = 0;
+    const maxNum = 10;
+    const minNum = 1;
+    const suspended = 'Suspended';
+
+    this.SLEEP_NUMBER == 0 ? 
+      this.SLEEP_NUMBER = this.getRandomNums(minNum, (maxNum*maxNum)*2) :  this.SLEEP_NUMBER;
+
+    this.SLEEP_PROCESS_NUM == 0 ? this.SLEEP_PROCESS_NUM =
+      processes[this.getRandomNums(minNum-1,processes.length-1)].getProcessId : this.SLEEP_PROCESS_NUM;
+
     for(let i =0; i < processes.length; i++){
-        const tmpProcess = processes[i];
-        if(this.getRandomNums(1,10) > 5){
-          tmpProcess.setCpuUsage = this.addTrailingZeros(this.getRandomFloatingNums(0, 100));
+      const tmpProcess = processes[i];
+
+      if(tmpProcess.getProcessId == this.SLEEP_PROCESS_NUM){
+
+        if(this.SLEEP_COUNTER <= this.SLEEP_NUMBER){
+
+          tmpProcess.setProcessStatus = suspended;
+          tmpProcess.setCpuUsage = 0;
+          tmpProcess.setDiskUsage = 0;
+          tmpProcess.setMemoryUsage = 0;
+          tmpProcess.setNetworkUsage = 0
+
+          this.SLEEP_COUNTER++;
+        }else{
+          this.SLEEP_COUNTER = 0;
+          this.SLEEP_PROCESS_NUM = 0;
+          tmpProcess.setProcessStatus = '';
         }
-        if(this.getRandomNums(1,10) <= 1){
-          tmpProcess.setDiskUsage = this.addTrailingZeros(this.getRandomFloatingNums(0, 100));
+      }else{
+        if(this.getRandomNums(minNum,maxNum) > 5){
+          tmpProcess.setCpuUsage = this.addTrailingZeros(this.getRandomFloatingNums(minUtilNum, maxUtilNum));
         }
-        if(this.getRandomNums(1,10) > 7){
-          tmpProcess.setMemoryUsage = this.addTrailingZeros(this.getRandomFloatingNums(0, 100));
+        if(this.getRandomNums(minNum,maxNum) <= 1){
+          tmpProcess.setDiskUsage = this.addTrailingZeros(this.getRandomFloatingNums(minUtilNum, maxUtilNum));
         }
-        if(this.getRandomNums(1,10) <= 2){
-          tmpProcess.setNetworkUsage = this.addTrailingZeros(this.getRandomFloatingNums(0, 100));
+        if(this.getRandomNums(minNum,maxNum) > 7){
+          tmpProcess.setMemoryUsage = this.addTrailingZeros(this.getRandomFloatingNums(minUtilNum, maxUtilNum));
+        }
+        if(this.getRandomNums(minNum,maxNum) <= 2){
+          tmpProcess.setNetworkUsage = this.addTrailingZeros(this.getRandomFloatingNums(minUtilNum, maxUtilNum));
         } 
+      }
+
     }
     this.processes = processes;
     this.sumRowValues(processes);

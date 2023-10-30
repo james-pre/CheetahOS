@@ -18,6 +18,7 @@ import { HighlightDirective } from './system-apps/window/window.btn.highlight.di
 import { FlieManagerHighlightDirective } from './shared/system-directive/file.mngr.highlight.directives';
 import { GreetingComponent } from './user-apps/greeting/greeting.component';
 import { TaskmanagerComponent } from './system-apps/taskmanager/taskmanager.component';
+import { TaskmanagerMiniComponent } from './system-apps/taskmanager/taskmanager.mini.component';
 import { JsdosComponent } from './user-apps/jsdos/jsdos.component';
 import { SafeUrlPipe } from './shared/system-pipes/safe.resource.url.pipe';
 import { TaskBarEntryHighlightDirective } from './shared/system-directive/taskbar.entry.highlight.directives';
@@ -43,6 +44,7 @@ import { WinampComponent } from './user-apps/winamp/winamp.component';
     TaskBarEntryHighlightDirective,
     GreetingComponent,
     TaskmanagerComponent,
+    TaskmanagerMiniComponent,
     JsdosComponent,
     SafeUrlPipe,
     WinampComponent
