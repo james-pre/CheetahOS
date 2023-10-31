@@ -108,8 +108,8 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor='let process of processes'>
-                        <td style="width: 65%;">
+                    <tr *ngFor='let process of processes; let i = index'(click)="onProcessSelected(i, process.getProcessId)" [class.active]="i === selectedRow">
+                        <td style="width:65%;"  >
                             <figure> 
                                 <img [src]="process.getIcon">
                                 <figcaption>{{ process.getProcessName}}</figcaption>
@@ -140,7 +140,7 @@
                   </figure>
               </span>
               <span style="display: inline-block; height:50px; margin-top:10px; width:50%; margin-right: 0;">
-                  <button class="btn btn-primary" style="margin-left: 65%;" >
+                  <button (click)="onEndTaskBtnClick()" class="btn btn-primary" style="margin-left: 65%;" [ngClass]="activeFocus()">
                     End task
                   </button>
               </span>

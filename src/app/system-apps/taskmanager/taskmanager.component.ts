@@ -40,6 +40,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   private SLEEP_PROCESS_NUM = 0;
 
   processes:Process[] =[];
+  groupedData: any = {};
 
   hasWindow = true;
   icon = 'osdrive/icons/taskmanger.png';
@@ -49,10 +50,13 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   displayName = 'Task Manager';
   thStyle:Record<string,unknown> = {};
   thStyle1:Record<string,unknown> = {};
-  groupedData: any = {};
+  isActive = false;
+  isFocus = false;
+
+  selectedRow = -1;
+  private processIdToClose = 0;
 
   showDDList = false;
-
   cpuUtil = 0;
   memUtil = 0;
   diskUtil = 0;
@@ -174,7 +178,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   showDropDownList():void{
     this.showDDList = ! this.showDDList;
 
-    console.log("show list:", this.showDDList);
+    //console.log("show list:", this.showDDList);
   }
 
   generateLies():void{
@@ -193,6 +197,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
     for(let i =0; i < processes.length; i++){
       const tmpProcess = processes[i];
+      tmpProcess.setProcessStatus = '';
 
       if(tmpProcess.getProcessId == this.SLEEP_PROCESS_NUM){
 
@@ -212,6 +217,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
           tmpProcess.setProcessStatus = '';
         }
       }else{
+        
         if(this.getRandomNums(minNum,maxNum) > 5){
           tmpProcess.setCpuUsage = this.addTrailingZeros(this.getRandomFloatingNums(minUtilNum, maxUtilNum));
         }
@@ -298,6 +304,30 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     this._runningProcessService.closeProcessNotify.next(processToClose);
   }
 
+  onEndTaskBtnClick():void{
+    const processToClose = this._runningProcessService.getProcess(this.processIdToClose);
+    this._stateManagmentService.removeState(this.processId);
+    this._runningProcessService.closeProcessNotify.next(processToClose);
+  }
+
+  onProcessSelected(rowIndex:number, processId:number):void{
+   this.selectedRow = rowIndex;
+   this.processIdToClose = processId;
+   
+   if(this.selectedRow != -1){
+    this.isActive = true;
+    this.isFocus = true;
+   }
+   console.log('selectedRow',this.selectedRow);
+   console.log('processIdToClose',this.processIdToClose);
+  }
+
+  activeFocus(){
+    return{ 
+      'active': this.isActive ? 'active' : '',
+      'focus': this.isFocus ? 'focus' : ''
+    }
+  }
 
   setUtilColoumnColors(cellValue:number){
     let  baseStyle: Record<string, unknown> = {};
