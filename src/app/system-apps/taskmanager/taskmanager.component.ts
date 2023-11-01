@@ -1,5 +1,5 @@
 import { Component, OnInit,OnDestroy, AfterViewInit} from '@angular/core';
-import { Subscription, timer } from 'rxjs';
+import { Subject, Subscription, interval, switchMap, timer } from 'rxjs';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { BaseComponent } from 'src/app/system-base/base/base.component';
@@ -8,6 +8,7 @@ import { Process } from 'src/app/system-files/process';
 import { SortingInterface } from './sorting.interface';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 import { FileInfo } from 'src/app/system-files/fileinfo';
+import { RefreshRates, RefreshRatesIntervals } from './refresh.rates';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 
 @Component({
@@ -29,33 +30,38 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   private _triggerProcessService:TriggerProcessService;
 
   private _processListChangeSub!: Subscription;
-  private _taskmgrTimerSubscription!: Subscription;
+  private _taskmgrRefreshIntervalSub!: Subscription;
+  private _chnageTaskmgrRefreshIntervalSub!:Subject<number>;
   private _currentSortingOrder!:any;
+
   private _sorting:SortingInterface ={
     column: '',
     order: 'asc',
   }
-  private SLEEP_NUMBER = 0;
-  private SLEEP_COUNTER = 0;
-  private SLEEP_PROCESS_NUM = 0;
 
-  processes:Process[] =[];
-  groupedData: any = {};
-
+  private sleepNumber = 0;
+  private sleepCounter = 0;
+  private processNumberToSuspend = 0;
+  private refreshRateInterval = 0;
+  private processIdToClose = 0;
+ 
   hasWindow = true;
   icon = 'osdrive/icons/taskmanger.png';
   name = 'taskmanager';
   processId = 0;
   type = ComponentType.systemComponent
   displayName = 'Task Manager';
+
+  processes:Process[] =[];
+  groupedData: any = {};
+  selectedRefreshRate = 0;
+
   thStyle:Record<string,unknown> = {};
   thStyle1:Record<string,unknown> = {};
   isActive = false;
   isFocus = false;
 
   selectedRow = -1;
-  private processIdToClose = 0;
-
   showDDList = false;
   cpuUtil = 0;
   memUtil = 0;
@@ -72,6 +78,12 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     this._runningProcessService.addProcess(this.getComponentDetail());
     this._processListChangeSub = this._runningProcessService.processListChangeNotify.subscribe(() =>{this.updateRunningProcess();})
     this._currentSortingOrder = this._sorting.order;
+
+    this._chnageTaskmgrRefreshIntervalSub = new Subject<number>();
+
+    this.refreshRateInterval = RefreshRatesIntervals.NOMRAL;
+    this.selectedRefreshRate = RefreshRates.NORMAL;
+     
   }
 
 
@@ -82,18 +94,32 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
   ngOnDestroy(): void {
     this._processListChangeSub?.unsubscribe();
-    this._taskmgrTimerSubscription?.unsubscribe()
-    this.SLEEP_COUNTER = 0;
-    this.SLEEP_PROCESS_NUM = 0;
-    this.SLEEP_NUMBER = 0;
+    this._taskmgrRefreshIntervalSub?.unsubscribe();
+    this._chnageTaskmgrRefreshIntervalSub?.unsubscribe();
+    
+    this.sleepCounter = 0;
+    this.processNumberToSuspend = 0;
+    this.sleepNumber = 0;
   }
 
   ngAfterViewInit(): void {
     //Initial delay 1 seconds and interval countdown also 2 second
-    this._taskmgrTimerSubscription = timer(1000, 2000).subscribe(() => {
+    this._taskmgrRefreshIntervalSub = interval(this.refreshRateInterval).subscribe(() => {
       this.generateLies();
       this.sortTable(this._sorting.column, false);
+    });
 
+    this._chnageTaskmgrRefreshIntervalSub 
+    .pipe(
+      switchMap( newRefreshRate => {
+        //un-sub from current interval
+        this._taskmgrRefreshIntervalSub?.unsubscribe();   
+
+        //start new interval with newrefreshrate 
+        return interval(newRefreshRate);        
+    })).subscribe(() => {
+      this.generateLies();
+      this.sortTable(this._sorting.column, false);
     });
   }
 
@@ -111,6 +137,16 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
   updateRunningProcess():void{
     this.processes = this._runningProcessService.getProcesses();
+  }
+
+  refreshRate(refreshRate:number):void{
+    const refreshRatesIntervals:number[] = [RefreshRatesIntervals.PAUSED,RefreshRatesIntervals.LOW,RefreshRatesIntervals.NOMRAL,RefreshRatesIntervals.HIGH];
+
+    if(refreshRate >= RefreshRates.PAUSED && refreshRate <= RefreshRates.HIGH){
+      this.refreshRateInterval = refreshRatesIntervals[refreshRate];
+      this.selectedRefreshRate =  refreshRate;
+      this._chnageTaskmgrRefreshIntervalSub.next(this.refreshRateInterval);
+    }
   }
 
   sortTable(column: string,  isSortTriggered:boolean): void {
@@ -189,19 +225,19 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     const minNum = 1;
     const suspended = 'Suspended';
 
-    this.SLEEP_NUMBER == 0 ? 
-      this.SLEEP_NUMBER = this.getRandomNums(minNum, (maxNum*maxNum)*2) :  this.SLEEP_NUMBER;
+    this.sleepNumber == 0 ? 
+      this.sleepNumber = this.getRandomNums(minNum, (maxNum*maxNum)*2) :  this.sleepNumber;
 
-    this.SLEEP_PROCESS_NUM == 0 ? this.SLEEP_PROCESS_NUM =
-      processes[this.getRandomNums(minNum-1,processes.length-1)].getProcessId : this.SLEEP_PROCESS_NUM;
+    this.processNumberToSuspend == 0 ? this.processNumberToSuspend =
+      processes[this.getRandomNums(minNum-1,processes.length-1)].getProcessId : this.processNumberToSuspend;
 
     for(let i =0; i < processes.length; i++){
       const tmpProcess = processes[i];
       tmpProcess.setProcessStatus = '';
 
-      if(tmpProcess.getProcessId == this.SLEEP_PROCESS_NUM){
+      if(tmpProcess.getProcessId == this.processNumberToSuspend){
 
-        if(this.SLEEP_COUNTER <= this.SLEEP_NUMBER){
+        if(this.sleepCounter <= this.sleepNumber){
 
           tmpProcess.setProcessStatus = suspended;
           tmpProcess.setCpuUsage = 0;
@@ -209,11 +245,11 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
           tmpProcess.setMemoryUsage = 0;
           tmpProcess.setNetworkUsage = 0
 
-          this.SLEEP_COUNTER++;
+          this.sleepCounter++;
         }else{
-          this.SLEEP_COUNTER = 0;
-          this.SLEEP_PROCESS_NUM = 0;
-          this.SLEEP_NUMBER = 0;
+          this.sleepCounter = 0;
+          this.processNumberToSuspend = 0;
+          this.sleepNumber = 0;
           tmpProcess.setProcessStatus = '';
         }
       }else{

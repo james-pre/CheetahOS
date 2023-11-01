@@ -14,13 +14,25 @@
       <li class="btn btn-primary head" (click)="showDropDownList()" (focusout)="showDropDownList()">
         View
         <ul *ngIf="showDDList">
-          <li>Refresh now</li>
+          <li (click)="generateLies()">Refresh now</li>
           <li>Update Speed   >
             <ul>
-              <li>High</li>
-              <li>Normal</li>
-              <li>Low</li>
-              <li>Paused</li>
+              <li [style]="{
+                listStyle: selectedRefreshRate === 3 ? 'inside' : 'none',
+                paddingLeft: selectedRefreshRate === 3 ? '4px' : '24px',
+              }" (click)="refreshRate(3)">High</li>
+              <li [style]="{
+                listStyle: selectedRefreshRate === 2 ? 'inside' : 'none',
+                paddingLeft: selectedRefreshRate === 2 ? '4px' : '24px',
+              }" (click)="refreshRate(2)">Normal</li>
+              <li [style]="{
+                listStyle: selectedRefreshRate === 1 ? 'inside' : 'none',
+                paddingLeft: selectedRefreshRate === 1 ? '4px' : '24px',
+              }" (click)="refreshRate(1)">Low</li>
+              <li [style]="{
+                listStyle: selectedRefreshRate === 0 ? 'inside' : 'none',
+                paddingLeft: selectedRefreshRate === 0 ? '4px' : '24px',
+              }" (click)="refreshRate(0)">Paused</li>
             </ul>
           </li>
         </ul>
