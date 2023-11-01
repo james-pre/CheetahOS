@@ -127,7 +127,6 @@ span {
   
 /* Alternate row background color (zebra-striping) */
 .table tr:nth-child(even) {
-  /* background-color: #e0e0e0; */
   background-color: #ffffff; 
 }
   
@@ -146,7 +145,7 @@ span {
 
 /* Add hover effect to table rows (optional) */
 .table tr:hover {
-  background-color: #ddd;
+  background-color: #e8f4fc;
 }
   
   /* Custom styles for .table-responsive (Optional) */
@@ -183,7 +182,7 @@ img{
 /* Styles for the tabbed window container */
 .tabbed-window {
     min-width: 100px; /* Adjust the width as needed */
-    border: 1px solid #ccc;
+    border: 1px solid red; /**/
     /* border-radius: 5px;
     overflow: hidden; */
 }
@@ -251,12 +250,17 @@ img{
   
   /* Custom styles for .btn.btn-primary */
 .btn.btn-primary {
-  background-color: #ccc; /* Primary button background color */
+  background-color: #d0cccc; /* Primary button background color */
   color: #75787c; /* Text color for the primary button */
-  border: 1px solid #ccc; /* Border color for the primary button */
+  border: 1px solid #bcbcbc; /* Border color for the primary button */
   border-radius: 1px; /* Rounded corners for the primary button */
   padding: 5px 25px; /* Padding for the primary button (adjust as needed) */
-  font-size: 10px; /* Font size for the text */
+  font-size: 12px; /* Font size for the text */
+  font-weight: normal;
+}
+
+.btn.btn-primary::first-letter{
+  text-decoration: underline;
 }
 
 /* Hover state for the primary button */
@@ -268,7 +272,7 @@ img{
 
 /* Active (clicked) state for the primary button */
 .btn.btn-primary.active, .btn.btn-primary.focus {
-  background-color: #ccc; /* Background color when active or focused */
+  background-color: #e4e4e1; /* Background color when active or focused */
   border: 1px solid #ccc; /* Border color when active or focused */
   color: #000; /* Text color when active or focused */
 }
@@ -349,5 +353,5 @@ li:hover {
 .highlight_row{ background-color: #84b3e4; }
 
 .table tr.active td {
-  background-color:#84b3e4 !important;
+  background-color:#d0ecfc !important;
 }

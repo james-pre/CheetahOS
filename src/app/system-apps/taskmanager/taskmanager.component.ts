@@ -213,8 +213,6 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
   showDropDownList():void{
     this.showDDList = ! this.showDDList;
-
-    //console.log("show list:", this.showDDList);
   }
 
   generateLies():void{
@@ -370,22 +368,22 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     if(cellValue <= 2.5){
      return baseStyle = {
         'text-align':'right',
-        'background-color': 'rgb(224, 224, 139)'
+        'background-color': '#fff4c4'
       };
     }else if(cellValue > 2.5 && cellValue <= 5){
       return baseStyle = {
         'text-align':'right',
-        'background-color': 'orange'
+        'background-color': '#ffecac'
       };
     }else if(cellValue > 5.0 && cellValue <= 7.5){
       return baseStyle = {
         'text-align':'right',
-        'background-color': 'orangered'
+        'background-color': '#ffa41c'
       };
     }else if (cellValue > 7.5){
       return baseStyle = {
         'text-align':'right',
-        'background-color': 'red', 
+        'background-color': '#fc6c30', 
       };
     }
     return {};
@@ -396,10 +394,10 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     const sortColoumn = this._sorting.column;
 
       //acceess before it exists. So Angular is angry      
-      // this.cpuId.nativeElement.style.border = (cellValue >= 50)? '1px solid  #e18888f8': '';
-      // this.memroyId.nativeElement.style.border = (cellValue >= 50)? '1px solid  #e18888f8': '';
-      // this.diskId.nativeElement.style.border = (cellValue >= 50)? '1px solid  #e18888f8': '';
-      // this.networkId.nativeElement.style.border = (cellValue >= 50)? '1px solid  #e18888f8': '';
+      // this.cpuId.nativeElement.style.border = (cellValue >= 50)? '1px solid  ##fcc4ac': '';
+      // this.memroyId.nativeElement.style.border = (cellValue >= 50)? '1px solid  ##fcc4ac': '';
+      // this.diskId.nativeElement.style.border = (cellValue >= 50)? '1px solid  ##fcc4ac': '';
+      // this.networkId.nativeElement.style.border = (cellValue >= 50)? '1px solid  ##fcc4ac': '';
 
       if(cellName == sortColoumn){
         if(cellValue < 10){
@@ -410,9 +408,9 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
          }else if(cellValue >= 10){
            return baseStyle = {
              'height':'50%',
-             'background-color': (cellValue >= 90)?  '#e18888f8' : 'rgb(224, 224, 139)',
-             'border-left':(cellValue >= 90)? ' #e18888f8': '',
-             'border-right':(cellValue >= 90)?' #e18888f8': ''
+             'background-color': (cellValue >= 90)?  '##fcc4ac' : 'rgb(224, 224, 139)',
+             'border-left':(cellValue >= 90)? ' ##fcc4ac': '',
+             'border-right':(cellValue >= 90)?' ##fcc4ac': ''
            };
          }
 
@@ -424,9 +422,9 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
          }else if(cellValue >= 10){
            return baseStyle = {
              'height':'50%',
-             'background-color': (cellValue >= 90)?  '#e18888f8' : '#ffffff',
-             'border-left':(cellValue >= 90)? ' #e18888f8': '',
-             'border-right':(cellValue >= 90)?' #e18888f8': ''
+             'background-color': (cellValue >= 90)?  '##fcc4ac' : '#ffffff',
+             'border-left':(cellValue >= 90)? ' ##fcc4ac': '',
+             'border-right':(cellValue >= 90)?' ##fcc4ac': ''
            };
          }
       }
@@ -475,14 +473,14 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
         }
         return baseStyle;
        }else if(cellValue >= 10){
-        baseStyle['background-color'] =  (cellValue >= 90) ? '#e18888f8' : '#ffffff';
+        baseStyle['background-color'] =  (cellValue >= 90) ? '##fcc4ac' : '#ffffff';
         if(sortColoumn == cellName){
           if (cellValue >= 90)
-            baseStyle['background-color'] = '#e18888f8';
+            baseStyle['background-color'] = '##fcc4ac';
           else if (cellValue < 90 )
             baseStyle['background-color'] = 'rgb(224, 224, 139)';
         }
-        baseStyle['border'] =  (cellValue >= 90) ? '#e18888f8' : '';
+        baseStyle['border'] =  (cellValue >= 90) ? '##fcc4ac' : '';
         return baseStyle;
        }
     }
@@ -497,14 +495,14 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
        }else if(cellValue >= 10){
 
         baseStyle['padding-left'] = '25%';
-        baseStyle['background-color'] =  (cellValue >= 90) ? '#e18888f8' : '#ffffff';
+        baseStyle['background-color'] =  (cellValue >= 90) ? '##fcc4ac' : '#ffffff';
         if(sortColoumn == cellName){
           if (cellValue >= 90)
-            baseStyle['background-color'] = '#e18888f8';
+            baseStyle['background-color'] = '##fcc4ac';
           else if (cellValue < 90 )
             baseStyle['background-color'] = 'rgb(224, 224, 139)';
         }
-        baseStyle['border'] =  (cellValue >= 90) ? '#e18888f8' : '';
+        baseStyle['border'] =  (cellValue >= 90) ? '##fcc4ac' : '';
         return baseStyle;
        }
     }
@@ -516,14 +514,14 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
         }
         return baseStyle;
        }else if(cellValue >= 10){
-        baseStyle['background-color'] =  (cellValue >= 90) ? '#e18888f8' : '#ffffff';
+        baseStyle['background-color'] =  (cellValue >= 90) ? '##fcc4ac' : '#ffffff';
         if(sortColoumn == cellName){
           if (cellValue >= 90)
-            baseStyle['background-color'] = '#e18888f8';
+            baseStyle['background-color'] = '##fcc4ac';
           else if (cellValue < 90 )
             baseStyle['background-color'] = 'rgb(224, 224, 139)';
         }
-        baseStyle['border'] =  (cellValue >= 90) ? '#e18888f8' : '';
+        baseStyle['border'] =  (cellValue >= 90) ? '##fcc4ac' : '';
         return baseStyle;
        }
     }
@@ -538,14 +536,14 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
        }else if(cellValue >= 10){
 
         baseStyle['padding-left'] = '24%';
-        baseStyle['background-color'] =  (cellValue >= 90) ? '#e18888f8' : '#ffffff';
+        baseStyle['background-color'] =  (cellValue >= 90) ? '##fcc4ac' : '#ffffff';
         if(sortColoumn == cellName){
           if (cellValue >= 90)
-            baseStyle['background-color'] = '#e18888f8';
+            baseStyle['background-color'] = '##fcc4ac';
           else if (cellValue < 90 )
             baseStyle['background-color'] = 'rgb(224, 224, 139)';
         }
-        baseStyle['border'] =  (cellValue >= 90) ? '#e18888f8' : '';
+        baseStyle['border'] =  (cellValue >= 90) ? '##fcc4ac' : '';
         return baseStyle;
        }
     }
