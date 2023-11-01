@@ -11,3 +11,13 @@ export enum RefreshRatesIntervals {
     LOW = 4000,  //...
     PAUSED = 36000000, //24hrs
  }
+
+ export enum TableColumns { 
+    NAME = 'Name',
+    STATUS = 'Status',
+    CPU = 'CPU',
+    MEMORY = 'Memory',
+    DISK = 'Disk',
+    NETWORK = 'Network',
+    PID = 'PID'
+ }

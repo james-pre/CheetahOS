@@ -52,25 +52,25 @@
         <div class='card'>
             <div class='card-body'>
               <div class='table-responsive'>
-                <table class='table' *ngIf = 'processes.length > 0' >
+                <table class='table' *ngIf = 'processes.length > 0' #tableId>
                   <thead>
                     <span style="height:10px; border-top: none;  "></span>
                     <tr>             
-                      <th [style]="thStyle" (click)="sortTable('Name', true)">
+                      <th [style]="thStyle" (click)="sortTable('Name', true)" >
                         <span style="margin-left:50%; height:50%">
                           <span *ngIf="isDescSorting('Name')">v</span>
                           <span *ngIf="isAscSorting('Name')">ᴧ</span>
                         </span>
                         <span style="padding-left:5px; height:50%; padding-top:5px; font-size:14px;">Name</span>
                       </th>
-                      <th>
+                      <th  (click)="toggleColumnVisibility('Status')">
                         <span style="margin-left:50%; height:50%">
                           <span *ngIf="isDescSorting('Status')">v</span>
                           <span *ngIf="isAscSorting('Status')">ᴧ</span>
                         </span>
                         <span style="padding-left:5px; height:50%; padding-top:5px; font-size:14px;">Status</span>
                       </th>
-                      <th (click)="sortTable('CPU', true)" #cpuId>
+                      <th (click)="sortTable('CPU', true)" (contextmenu)="toggleColumnVisibility('CPU')" #cpuId>
                         <span [style]="setUtilHeaderSpan2section1Colors(cpuUtil,'CPU')">
                           <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
                             <span *ngIf="isDescSorting('CPU')">v</span>
@@ -80,7 +80,7 @@
                         </span>
                         <span [style]="setUtilHeaderSpan3Colors(cpuUtil,'CPU')">CPU</span>
                       </th>
-                      <th (click)="sortTable('Memory', true)" #memoryId>
+                      <th (click)="sortTable('Memory', true)" (contextmenu)="toggleColumnVisibility('Memory')" #memoryId>
                         <span [style]="setUtilHeaderSpan2section1Colors(memUtil,'Memory')">
                           <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
                             <span *ngIf="isDescSorting('Memory')">v</span>
@@ -90,7 +90,7 @@
                         </span>
                         <span [style]="setUtilHeaderSpan3Colors(memUtil,'Memory')">Memory</span>
                       </th>
-                      <th (click)="sortTable('Disk', true)" #diskId>                             
+                      <th (click)="sortTable('Disk', true)" (contextmenu)="toggleColumnVisibility('Disk')" #diskId>                             
                         <span [style]="setUtilHeaderSpan2section1Colors(diskUtil,'Disk')">
                           <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
                             <span *ngIf="isDescSorting('Disk')">v</span>
@@ -101,7 +101,7 @@
                         </span>
                         <span [style]="setUtilHeaderSpan3Colors(diskUtil,'Disk')">Disk</span>
                       </th>
-                      <th (click)="sortTable('Network', true)" #networkId>                                                
+                      <th (click)="sortTable('Network', true)" (contextmenu)="toggleColumnVisibility('Network')" #networkId>                                                
                         <span [style]="setUtilHeaderSpan2section1Colors(networkUtil,'Network')">
                           <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
                             <span *ngIf="isDescSorting('Network')">v</span>
@@ -111,7 +111,7 @@
                         </span>
                         <span [style]="setUtilHeaderSpan3Colors(networkUtil,'Network')">Network</span>
                       </th>
-                      <th [style]="thStyle1" (click)="sortTable('PID', true)">               
+                      <th [style]="thStyle1" (click)="sortTable('PID', true)" (contextmenu)="toggleColumnVisibility('PID')">               
                         <span style="margin-left:50%; height:50%">
                           <span *ngIf="isDescSorting('PID')">v</span>
                           <span *ngIf="isAscSorting('PID')">ᴧ</span>

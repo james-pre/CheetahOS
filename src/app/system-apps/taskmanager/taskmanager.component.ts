@@ -1,5 +1,5 @@
-import { Component, OnInit,OnDestroy, AfterViewInit} from '@angular/core';
-import { Subject, Subscription, interval, switchMap, timer } from 'rxjs';
+import { Component, OnInit,OnDestroy, AfterViewInit, ViewChild, ElementRef, Renderer2} from '@angular/core';
+import { Subject, Subscription, interval, switchMap } from 'rxjs';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { BaseComponent } from 'src/app/system-base/base/base.component';
@@ -8,7 +8,7 @@ import { Process } from 'src/app/system-files/process';
 import { SortingInterface } from './sorting.interface';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 import { FileInfo } from 'src/app/system-files/fileinfo';
-import { RefreshRates, RefreshRatesIntervals } from './refresh.rates';
+import { RefreshRates, RefreshRatesIntervals, TableColumns } from './taskmanager.enum';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 
 @Component({
@@ -24,10 +24,13 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   // @ViewChild('diskId',{ static: true }) diskId!: ElementRef;
   // @ViewChild('networkId',{ static: true }) networkId!: ElementRef;
 
+  @ViewChild('tableId') tableId!: ElementRef;
+
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _stateManagmentService: StateManagmentService;
   private _triggerProcessService:TriggerProcessService;
+  private _renderer: Renderer2;
 
   private _processListChangeSub!: Subscription;
   private _taskmgrRefreshIntervalSub!: Subscription;
@@ -44,6 +47,13 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   private processNumberToSuspend = 0;
   private refreshRateInterval = 0;
   private processIdToClose = 0;
+
+  private statusColumnVisible = true;
+  private cpuColumnVisible = true;
+  private memoryColumnVisible = true;
+  private diskColumnVisible = true;
+  private networkColumnVisible = true;
+  private pidColumnVisible = true;
  
   hasWindow = true;
   icon = 'osdrive/icons/taskmanger.png';
@@ -68,11 +78,14 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   diskUtil = 0;
   networkUtil = 0;
 
-  constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService,stateManagmentService: StateManagmentService,triggerProcessService:TriggerProcessService) { 
+
+  constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService,
+     stateManagmentService: StateManagmentService,triggerProcessService:TriggerProcessService, renderer: Renderer2) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this._stateManagmentService = stateManagmentService;
     this._triggerProcessService = triggerProcessService;
+    this._renderer = renderer;
 
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail());
@@ -82,8 +95,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     this._chnageTaskmgrRefreshIntervalSub = new Subject<number>();
 
     this.refreshRateInterval = RefreshRatesIntervals.NOMRAL;
-    this.selectedRefreshRate = RefreshRates.NORMAL;
-     
+    this.selectedRefreshRate = RefreshRates.NORMAL;     
   }
 
 
@@ -103,6 +115,8 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   }
 
   ngAfterViewInit(): void {
+    //this.name = this.name + "--beta---v0.9.14.2";
+
     //Initial delay 1 seconds and interval countdown also 2 second
     this._taskmgrRefreshIntervalSub = interval(this.refreshRateInterval).subscribe(() => {
       this.generateLies();
@@ -354,6 +368,50 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
    }
    console.log('selectedRow',this.selectedRow);
    console.log('processIdToClose',this.processIdToClose);
+  }
+
+
+  toggleColumnVisibility(column: string) {
+    if (column === TableColumns.STATUS) {
+      this.statusColumnVisible = !this.statusColumnVisible;
+    }else if (column === TableColumns.CPU) {
+      this.cpuColumnVisible = !this.cpuColumnVisible;
+    }else if (column === TableColumns.MEMORY) {
+      this.memoryColumnVisible = !this.memoryColumnVisible;
+    } else if (column === TableColumns.DISK) {
+      this.diskColumnVisible = !this.diskColumnVisible;
+    }else if (column === TableColumns.NETWORK) {
+      this.networkColumnVisible = !this.networkColumnVisible;
+    }else if (column === TableColumns.PID) {
+      this.pidColumnVisible = !this.pidColumnVisible;
+    }
+    // Apply styles to hide/show the column
+    this.applyColumnStyles(column);
+  }
+
+  applyColumnStyles(column: string) {
+    const table = this.tableId.nativeElement;
+    const tableColumns: string[] = ['Name','Status','CPU','Memory','Disk','Network','PID'];
+    const colNum = tableColumns.indexOf(column);
+
+    for( let i = 0; i <= this.processes.length; i++){
+      if(column === TableColumns.STATUS){
+        console.log('hide status')
+        this.statusColumnVisible
+        ? this._renderer.removeStyle(table.rows[i].cells[colNum], 'display')
+        : this._renderer.setStyle(table.rows[i].cells[colNum], 'display', 'none');
+      }
+
+    }
+
+      
+
+    // this.col2Visible
+    //   ? this.renderer.removeStyle(table.rows[0].cells[1], 'display')
+    //   : this.renderer.setStyle(table.rows[0].cells[1], 'display', 'none');
+    // this.col3Visible
+    //   ? this.renderer.removeStyle(table.rows[0].cells[2], 'display')
+    //   : this.renderer.setStyle(table.rows[0].cells[2], 'display', 'none');
   }
 
   activeFocus(){
