@@ -65,29 +65,61 @@
                           <span style="width:75%;">
                             Name
                           </span>
-                          <span class="vertical-menu" style="width:25%; left:60px; padding-left:10px;" *ngIf="showHeaderList">
+                          <span class="vertical-menu" style="width:25%; left:60px;" *ngIf="showHeaderList">
                             <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('Status')">
-                              <input type="checkbox" [checked]="statusColumnVisible"> 
+
+                              <span class="checkBox" >
+                                <figure  *ngIf = 'statusColumnVisible'  style="align-content: center;"> 
+                                  <img style="position:relative; width:13px; height:13px; padding-left: 3px; padding-top:4px;" [src]="'osdrive/icons/chkmark26.png'">
+                                </figure> 
+                                <input type="checkbox" [checked]="statusColumnVisible">
+                              </span>
+
                               <p style="text-align:left;  padding-left:12px; right:0;">Status</p>
                             </a>
                             <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('CPU')">
-                              <input type="checkbox" [checked]="cpuColumnVisible"> 
+                              <span class="checkBox" >
+                                <figure  *ngIf = 'statusColumnVisible'  style="align-content: center;"> 
+                                  <img style="position:relative; width:13px; height:13px; padding-left: 3px; padding-top:4px;" [src]="'osdrive/icons/chkmark26.png'">
+                                </figure> 
+                                <input type="checkbox" [checked]="cpuColumnVisible">
+                              </span>
                               <p style="text-align:left;  padding-left:12px; right:0;">CPU</p>
                             </a>
                             <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('Memory')">
-                              <input type="checkbox" [checked]="memoryColumnVisible"> 
+                              <span class="checkBox" >
+                                <figure  *ngIf = 'statusColumnVisible'  style="align-content: center;"> 
+                                  <img style="position:relative; width:13px; height:13px; padding-left: 3px; padding-top:4px;" [src]="'osdrive/icons/chkmark26.png'">
+                                </figure> 
+                                <input type="checkbox" [checked]="memoryColumnVisible">
+                              </span>
                               <p style="text-align:left;  padding-left:12px; right:0;">Memory</p>
                             </a>
                             <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('Disk')">
-                              <input type="checkbox" [checked]="diskColumnVisible"> 
+                              <span class="checkBox" >
+                                <figure  *ngIf = 'statusColumnVisible'  style="align-content: center;"> 
+                                  <img style="position:relative; width:13px; height:13px; padding-left: 3px; padding-top:4px;" [src]="'osdrive/icons/chkmark26.png'">
+                                </figure> 
+                                <input type="checkbox" [checked]="diskColumnVisible">
+                              </span>
                               <p style="text-align:left;  padding-left:12px; right:0;">Disk</p>
                             </a>
                             <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('Network')">
-                              <input type="checkbox" [checked]="networkColumnVisible"> 
+                              <span class="checkBox" >
+                                <figure  *ngIf = 'statusColumnVisible'  style="align-content: center;"> 
+                                  <img style="position:relative; width:13px; height:13px; padding-left: 3px; padding-top:4px;" [src]="'osdrive/icons/chkmark26.png'">
+                                </figure> 
+                                <input type="checkbox" [checked]="networkColumnVisible">
+                              </span>
                               <p style="text-align:left;  padding-left:12px; right:0;">Network</p>
                             </a>
                             <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('PID')">
-                              <input type="checkbox" [checked]="pidColumnVisible"> 
+                              <span class="checkBox" >
+                                <figure  *ngIf = 'statusColumnVisible'  style="align-content: center;"> 
+                                  <img style="position:relative; width:13px; height:13px; padding-left: 3px; padding-top:4px;" [src]="'osdrive/icons/chkmark26.png'">
+                                </figure> 
+                                <input type="checkbox" [checked]="pidColumnVisible">
+                              </span>
                               <p style="text-align:left;  padding-left:12px; right:0;">PID</p>
                             </a>
                           </span>
@@ -152,7 +184,7 @@
                   </thead>
                   <tbody>
                     <tr *ngFor='let process of processes; let i = index'(click)="onProcessSelected(i, process.getProcessId)" [class.active]="i === selectedRow">
-                        <td style="width:65%;"  >
+                        <td style="width:65%; padding-left:16px;"  >
                             <figure> 
                                 <img [src]="process.getIcon">
                                 <figcaption>{{ process.getProcessName}}</figcaption>
