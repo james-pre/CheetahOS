@@ -272,11 +272,11 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       }
       if(this._currentSortingOrder == 'asc'){
         this.processes = this.processes.sort((objA, objB) => {
-          return objA.getProcessName < objB.getProcessName ? -1 : 1;
+          return objA.getPowerUsage < objB.getPowerUsage ? -1 : 1;
         });
       }else{
         this.processes = this.processes.sort((objA, objB) => {
-          return objA.getProcessName < objB.getProcessName ? -1 : 1
+          return objA.getPowerUsage < objB.getPowerUsage ? -1 : 1
         }).reverse();
       }
     }else if(column == TableColumns.TYPE){
@@ -285,11 +285,11 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       }
       if(this._currentSortingOrder == 'asc'){
         this.processes = this.processes.sort((objA, objB) => {
-          return objA.getProcessName < objB.getProcessName ? -1 : 1;
+          return objA.getType < objB.getType ? -1 : 1;
         });
       }else{
         this.processes = this.processes.sort((objA, objB) => {
-          return objA.getProcessName < objB.getProcessName ? -1 : 1
+          return objA.getType < objB.getType ? -1 : 1
         }).reverse();
       }
     }
