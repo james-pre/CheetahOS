@@ -54,6 +54,11 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   diskColumnVisible = true;
   networkColumnVisible = true;
   pidColumnVisible = true;
+  gpuColumnVisible = true;
+  powerColumnVisible = true;
+  processNameColumnVisible = true;
+  typeColumnVisible = false;
+
  
   hasWindow = true;
   icon = 'osdrive/icons/taskmanger.png';
@@ -68,6 +73,9 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
   thStyle:Record<string,unknown> = {};
   thStyle1:Record<string,unknown> = {};
+  thStyle2:Record<string,unknown> = {};
+  thStyle3:Record<string,unknown> = {};
+  thStyle4:Record<string,unknown> = {};
   isActive = false;
   isFocus = false;
 
@@ -78,6 +86,8 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   memUtil = 0;
   diskUtil = 0;
   networkUtil = 0;
+  gpuUtil = 0;
+  powerUtil = 'very low';
 
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService,
@@ -182,32 +192,38 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       }
     }
   
-    if(column == 'CPU'){
+    if(column == TableColumns.CPU){
       if(this._currentSortingOrder == 'asc'){
           this.processes = this.processes.sort((objA, objB) => objB.getCpuUsage - objA.getCpuUsage);
       }else{
         this.processes = this.processes.sort((objA, objB) => objB.getCpuUsage - objA.getCpuUsage).reverse();
       }
-    } else if (column == 'Memory'){
+    }else if(column == TableColumns.GPU){
+      if(this._currentSortingOrder == 'asc'){
+          this.processes = this.processes.sort((objA, objB) => objB.getCpuUsage - objA.getCpuUsage);
+      }else{
+        this.processes = this.processes.sort((objA, objB) => objB.getCpuUsage - objA.getCpuUsage).reverse();
+      }
+    } else if (column == TableColumns.MEMORY){
       if(this._currentSortingOrder == 'asc'){
         this.processes = this.processes.sort((objA, objB) => objB.getMemoryUsage - objA.getMemoryUsage);
       }else{
         this.processes = this.processes.sort((objA, objB) => objB.getMemoryUsage - objA.getMemoryUsage).reverse();
       }
-    }else if(column == 'Disk'){
+    }else if(column == TableColumns.DISK){
       if(this._currentSortingOrder == 'asc'){
         this.processes = this.processes.sort((objA, objB) => objB.getDiskUsage - objA.getDiskUsage);
       }else{
         this.processes = this.processes.sort((objA, objB) => objB.getDiskUsage - objA.getDiskUsage).reverse();
       }
-    }else if(column == 'Network'){
+    }else if(column == TableColumns.NETWORK){
       if(this._currentSortingOrder == 'asc'){
         this.processes = this.processes.sort((objA, objB) => objB.getNetworkUsage - objA.getNetworkUsage);
       }else{
         this.processes = this.processes.sort((objA, objB) => objB.getNetworkUsage - objA.getNetworkUsage).reverse();
       }
-    }else if(column == 'PID'){
-      this.thStyle1 = {
+    }else if(column == TableColumns.PID){
+      this.thStyle2 = {
         'background-color': 'rgb(224, 224, 139)'
       }
       if(this._currentSortingOrder == 'asc'){
@@ -215,8 +231,47 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       }else{
         this.processes = this.processes.sort((objA, objB) => objB.getProcessId - objA.getProcessId).reverse();
       }
-    }else if(column == 'Name'){
+    }else if(column == TableColumns.NAME){
       this.thStyle = {
+        'background-color': 'rgb(224, 224, 139)'
+      }
+      if(this._currentSortingOrder == 'asc'){
+        this.processes = this.processes.sort((objA, objB) => {
+          return objA.getProcessName < objB.getProcessName ? -1 : 1;
+        });
+      }else{
+        this.processes = this.processes.sort((objA, objB) => {
+          return objA.getProcessName < objB.getProcessName ? -1 : 1
+        }).reverse();
+      }
+    }else if(column == TableColumns.PROCESS_NAME){
+      this.thStyle3 = {
+        'background-color': 'rgb(224, 224, 139)'
+      }
+      if(this._currentSortingOrder == 'asc'){
+        this.processes = this.processes.sort((objA, objB) => {
+          return objA.getProcessName < objB.getProcessName ? -1 : 1;
+        });
+      }else{
+        this.processes = this.processes.sort((objA, objB) => {
+          return objA.getProcessName < objB.getProcessName ? -1 : 1
+        }).reverse();
+      }
+    }else if(column == TableColumns.POWER_USAGE){
+      this.thStyle4 = {
+        'background-color': 'rgb(224, 224, 139)'
+      }
+      if(this._currentSortingOrder == 'asc'){
+        this.processes = this.processes.sort((objA, objB) => {
+          return objA.getProcessName < objB.getProcessName ? -1 : 1;
+        });
+      }else{
+        this.processes = this.processes.sort((objA, objB) => {
+          return objA.getProcessName < objB.getProcessName ? -1 : 1
+        }).reverse();
+      }
+    }else if(column == TableColumns.TYPE){
+      this.thStyle1 = {
         'background-color': 'rgb(224, 224, 139)'
       }
       if(this._currentSortingOrder == 'asc'){
@@ -242,6 +297,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
   generateLies():void{
     const processes:Process[] = this._runningProcessService.getProcesses();
+    const powerLevels:string[] = ['Very low','Low','High','Very High'];
     const maxUtilNum = 100;
     const minUtilNum = 0;
     const maxNum = 10;
@@ -266,7 +322,9 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
           tmpProcess.setCpuUsage = 0;
           tmpProcess.setDiskUsage = 0;
           tmpProcess.setMemoryUsage = 0;
-          tmpProcess.setNetworkUsage = 0
+          tmpProcess.setNetworkUsage = 0;
+          tmpProcess.setGpuUsage = 0;
+          tmpProcess.setPowerUsage  = powerLevels[this.getRandomNums(0,3)];
 
           this.sleepCounter++;
         }else{
@@ -288,6 +346,12 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
         }
         if(this.getRandomNums(minNum,maxNum) <= 2){
           tmpProcess.setNetworkUsage = this.addTrailingZeros(this.getRandomFloatingNums(minUtilNum, maxUtilNum));
+        } 
+        if(this.getRandomNums(minNum,maxNum) <= 1){
+          tmpProcess.setGpuUsage = this.addTrailingZeros(this.getRandomFloatingNums(minUtilNum, maxUtilNum));
+        } 
+        if(this.getRandomNums(minNum,maxNum) <= 1){
+          tmpProcess.setPowerUsage = powerLevels[this.getRandomNums(0,3)];
         } 
       }
 
@@ -403,8 +467,8 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
   applyColumnStyles(column: string) {
     const table = this.tableId.nativeElement;
-    const tableColumns: string[] = [TableColumns.NAME,TableColumns.STATUS,TableColumns.CPU,TableColumns.MEMORY,
-                                     TableColumns.DISK,TableColumns.NETWORK,TableColumns.PID];
+    const tableColumns: string[] = [TableColumns.NAME,TableColumns.TYPE,TableColumns.STATUS,TableColumns.PID,TableColumns.PROCESS_NAME,
+                                    TableColumns.CPU,TableColumns.MEMORY,TableColumns.DISK,TableColumns.NETWORK,TableColumns.GPU,TableColumns.POWER_USAGE];
     
     const colNum = tableColumns.indexOf(column);
 
@@ -454,29 +518,51 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     }
   }
 
-  setUtilColoumnColors(cellValue:number){
+  setUtilColoumnColors(cellValue:any){
     let  baseStyle: Record<string, unknown> = {};
-    if(cellValue <= 2.5){
-     return baseStyle = {
-        'text-align':'right',
-        'background-color': '#fff4c4'
-      };
-    }else if(cellValue > 2.5 && cellValue <= 5){
+
+    if(typeof cellValue == "number"){
+      if(cellValue <= 2.5){
       return baseStyle = {
-        'text-align':'right',
-        'background-color': '#ffecac'
-      };
-    }else if(cellValue > 5.0 && cellValue <= 7.5){
-      return baseStyle = {
-        'text-align':'right',
-        'background-color': '#ffa41c'
-      };
-    }else if (cellValue > 7.5){
-      return baseStyle = {
-        'text-align':'right',
-        'background-color': '#fc6c30', 
-      };
+          'text-align':'right',
+          'background-color': '#fff4c4'
+        };
+      }else if(cellValue > 2.5 && cellValue <= 5){
+        return baseStyle = {
+          'text-align':'right',
+          'background-color': '#ffecac'
+        };
+      }else if(cellValue > 5.0 && cellValue <= 7.5){
+        return baseStyle = {
+          'text-align':'right',
+          'background-color': '#ffa41c'
+        };
+      }else if (cellValue > 7.5){
+        return baseStyle = {
+          'text-align':'right',
+          'background-color': '#fc6c30', 
+        };
+      }
+    }else if(typeof cellValue =="string"){
+      if(cellValue == 'Very low'){
+        return baseStyle = {
+            'background-color': '#fff4c4'
+          };
+        }else if(cellValue == 'Low'){
+          return baseStyle = {
+            'background-color': '#ffecac'
+          };
+        }else if(cellValue == 'High'){
+          return baseStyle = {
+            'background-color': '#ffa41c'
+          };
+        }else if (cellValue == 'Very high'){
+          return baseStyle = {
+            'background-color': '#fc6c30', 
+          };
+        }       
     }
+
     return {};
   }
 

@@ -125,6 +125,13 @@
                           </span>
                         </span>
                       </th>
+                      <th [style]="thStyle1" (click)="sortTable('Type', true)">               
+                        <span style="margin-left:50%; height:50%">
+                          <span *ngIf="isDescSorting('Type')">v</span>
+                          <span *ngIf="isAscSorting('Type')">ᴧ</span>
+                        </span>
+                        <span style="padding-left:5%; height:50%; padding-top:5px; font-size:14px;">Type</span>
+                      </th>
                       <th  (click)="toggleColumnVisibility('Status')">
                         <span style="margin-left:50%; height:50%">
                           <span *ngIf="isDescSorting('Status')">v</span>
@@ -132,7 +139,21 @@
                         </span>
                         <span style="padding-left:5px; height:50%; padding-top:5px; font-size:14px;">Status</span>
                       </th>
-                      <th (click)="sortTable('CPU', true)" (contextmenu)="toggleColumnVisibility('CPU')" #cpuId>
+                      <th [style]="thStyle2" (click)="sortTable('PID', true)">               
+                        <span style="margin-left:50%; height:50%">
+                          <span *ngIf="isDescSorting('PID')">v</span>
+                          <span *ngIf="isAscSorting('PID')">ᴧ</span>
+                        </span>
+                        <span style="padding-left:55%; height:50%; padding-top:5px; font-size:14px; padding-right:5px;">PID</span>
+                      </th>
+                      <th [style]="thStyle3" (click)="sortTable('Process name', true)">               
+                        <span style="margin-left:50%; height:50%">
+                          <span *ngIf="isDescSorting('Process name')">v</span>
+                          <span *ngIf="isAscSorting('Process name')">ᴧ</span>
+                        </span>
+                        <span style="height:50%; padding-top:5px; font-size:14px; padding-right:5px;">P.. name</span>
+                      </th>
+                      <th (click)="sortTable('CPU', true)" #cpuId>
                         <span [style]="setUtilHeaderSpan2section1Colors(cpuUtil,'CPU')">
                           <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
                             <span *ngIf="isDescSorting('CPU')">v</span>
@@ -142,7 +163,7 @@
                         </span>
                         <span [style]="setUtilHeaderSpan3Colors(cpuUtil,'CPU')">CPU</span>
                       </th>
-                      <th (click)="sortTable('Memory', true)" (contextmenu)="toggleColumnVisibility('Memory')" #memoryId>
+                      <th (click)="sortTable('Memory', true)"  #memoryId>
                         <span [style]="setUtilHeaderSpan2section1Colors(memUtil,'Memory')">
                           <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
                             <span *ngIf="isDescSorting('Memory')">v</span>
@@ -152,7 +173,7 @@
                         </span>
                         <span [style]="setUtilHeaderSpan3Colors(memUtil,'Memory')">Memory</span>
                       </th>
-                      <th (click)="sortTable('Disk', true)" (contextmenu)="toggleColumnVisibility('Disk')" #diskId>                             
+                      <th (click)="sortTable('Disk', true)" #diskId>                             
                         <span [style]="setUtilHeaderSpan2section1Colors(diskUtil,'Disk')">
                           <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
                             <span *ngIf="isDescSorting('Disk')">v</span>
@@ -163,7 +184,7 @@
                         </span>
                         <span [style]="setUtilHeaderSpan3Colors(diskUtil,'Disk')">Disk</span>
                       </th>
-                      <th (click)="sortTable('Network', true)" (contextmenu)="toggleColumnVisibility('Network')" #networkId>                                                
+                      <th (click)="sortTable('Network', true)" #networkId>                                                
                         <span [style]="setUtilHeaderSpan2section1Colors(networkUtil,'Network')">
                           <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
                             <span *ngIf="isDescSorting('Network')">v</span>
@@ -173,12 +194,22 @@
                         </span>
                         <span [style]="setUtilHeaderSpan3Colors(networkUtil,'Network')">Network</span>
                       </th>
-                      <th [style]="thStyle1" (click)="sortTable('PID', true)" (contextmenu)="toggleColumnVisibility('PID')">               
-                        <span style="margin-left:50%; height:50%">
-                          <span *ngIf="isDescSorting('PID')">v</span>
-                          <span *ngIf="isAscSorting('PID')">ᴧ</span>
+                      <th (click)="sortTable('GPU', true)" #gpuId>                                                
+                        <span [style]="setUtilHeaderSpan2section1Colors(networkUtil,'Network')">
+                          <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
+                            <span *ngIf="isDescSorting('GPU')">v</span>
+                            <span *ngIf="isAscSorting('GPU')">ᴧ</span>
+                          </span>
+                          <span [style]="setUtilHeaderSpan2section2Colors(gpuUtil)">{{gpuUtil}}%</span>
                         </span>
-                        <span style="padding-left:55%; height:50%; padding-top:5px; font-size:14px; padding-right:5px;">PID</span>
+                        <span [style]="setUtilHeaderSpan3Colors(gpuUtil,'GPU')">GPU</span>
+                      </th>
+                      <th [style]="thStyle4" (click)="sortTable('Power usage', true)">               
+                        <span style="margin-left:50%; height:50%">
+                          <span *ngIf="isDescSorting('Power usage')">v</span>
+                          <span *ngIf="isAscSorting('Power usage')">ᴧ</span>
+                        </span>
+                        <span style="height:50%; padding-top:5px; font-size:14px; padding-right:5px;">P.. usage</span>
                       </th>
                     </tr>
                   </thead>
@@ -190,17 +221,21 @@
                                 <figcaption>{{ process.getProcessName}}</figcaption>
                             </figure>
                         </td>
+                        <td >{{ process.getType}}</td>
                         <td>
                             <figure  *ngIf = 'process.getProcessStatus === "Suspended"' > 
                                 <figcaption>{{ process.getProcessStatus}}</figcaption>
                                 <img [src]="'osdrive/icons/econo.png'">
                             </figure>
                         </td>
+                        <td style="text-align:right">{{ process.getProcessId}}</td>
+                        <td >{{ process.getProcessName}}</td>
                         <td [style]="setUtilColoumnColors(process.getCpuUsage)" #cpuId>{{ process.getCpuUsage}}%</td>
                         <td [style]="setUtilColoumnColors(process.getMemoryUsage)" #memoryId>{{ process.getMemoryUsage}} MB</td>
                         <td [style]="setUtilColoumnColors(process.getDiskUsage)" #diskId>{{ process.getDiskUsage}} MB/s</td>
                         <td [style]="setUtilColoumnColors(process.getNetworkUsage)" #networkId>{{ process.getNetworkUsage}} Mbps</td>
-                        <td style="text-align:right">{{ process.getProcessId}}</td>
+                        <td [style]="setUtilColoumnColors(process.getGpuUsage)" #gpuId>{{ process.getCpuUsage}}%</td>
+                        <td [style]="setUtilColoumnColors(process.getPowerUsage)" #pwruseId> {{ process.getPowerUsage}}</td>
                       </tr>
                   </tbody>
                 </table>

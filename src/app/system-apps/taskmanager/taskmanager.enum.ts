@@ -17,7 +17,11 @@ export enum RefreshRatesIntervals {
     STATUS = 'Status',
     CPU = 'CPU',
     MEMORY = 'Memory',
+    GPU = 'GPU',
     DISK = 'Disk',
     NETWORK = 'Network',
-    PID = 'PID'
+    PID = 'PID',
+    POWER_USAGE= 'Power usage',
+    PROCESS_NAME = 'Process name',
+    TYPE = 'Type'
  }

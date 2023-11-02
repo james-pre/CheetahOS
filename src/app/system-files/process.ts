@@ -10,6 +10,7 @@ export class Process{
     private _cpuUsage:number;
     private _memoryUsage:number;
     private _diskUsage:number;
+    private _gpuUsage:number;
     private _networkUsage:number;
     private _processTrigger:unknown;
 
@@ -22,6 +23,7 @@ export class Process{
         this._processTrigger = processTrigger || null;
         this._memoryUsage = 0;
         this._cpuUsage = 0;
+        this._gpuUsage = 0;
         this._diskUsage = 0;
         this._networkUsage = 0;
         this._status = '';
@@ -42,6 +44,10 @@ export class Process{
 
     public get getCpuUsage(){
         return this._cpuUsage;
+    }
+
+    public get getGpuUsage(){
+        return this._gpuUsage;
     }
 
     public get getMemoryUsage(){
@@ -78,6 +84,10 @@ export class Process{
 
     public set setCpuUsage(cpuUage:number){
         this._cpuUsage = cpuUage;
+    }
+
+    public set setGpuUsage(gpuUage:number){
+        this._gpuUsage = gpuUage;
     }
     
     public set setMemoryUsage(memoryUsage:number){
