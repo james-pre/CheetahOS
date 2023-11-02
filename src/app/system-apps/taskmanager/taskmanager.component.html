@@ -79,7 +79,7 @@
                             </a>
                             <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('CPU')">
                               <span class="checkBox" >
-                                <figure  *ngIf = 'statusColumnVisible'  style="align-content: center;"> 
+                                <figure  *ngIf = 'cpuColumnVisible'  style="align-content: center;"> 
                                   <img style="position:relative; width:13px; height:13px; padding-left: 3px; padding-top:4px;" [src]="'osdrive/icons/chkmark26.png'">
                                 </figure> 
                                 <input type="checkbox" [checked]="cpuColumnVisible">
@@ -88,7 +88,7 @@
                             </a>
                             <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('Memory')">
                               <span class="checkBox" >
-                                <figure  *ngIf = 'statusColumnVisible'  style="align-content: center;"> 
+                                <figure  *ngIf = 'memoryColumnVisible'  style="align-content: center;"> 
                                   <img style="position:relative; width:13px; height:13px; padding-left: 3px; padding-top:4px;" [src]="'osdrive/icons/chkmark26.png'">
                                 </figure> 
                                 <input type="checkbox" [checked]="memoryColumnVisible">
@@ -97,7 +97,7 @@
                             </a>
                             <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('Disk')">
                               <span class="checkBox" >
-                                <figure  *ngIf = 'statusColumnVisible'  style="align-content: center;"> 
+                                <figure  *ngIf = 'diskColumnVisible'  style="align-content: center;"> 
                                   <img style="position:relative; width:13px; height:13px; padding-left: 3px; padding-top:4px;" [src]="'osdrive/icons/chkmark26.png'">
                                 </figure> 
                                 <input type="checkbox" [checked]="diskColumnVisible">
@@ -106,7 +106,7 @@
                             </a>
                             <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('Network')">
                               <span class="checkBox" >
-                                <figure  *ngIf = 'statusColumnVisible'  style="align-content: center;"> 
+                                <figure  *ngIf = 'networkColumnVisible'  style="align-content: center;"> 
                                   <img style="position:relative; width:13px; height:13px; padding-left: 3px; padding-top:4px;" [src]="'osdrive/icons/chkmark26.png'">
                                 </figure> 
                                 <input type="checkbox" [checked]="networkColumnVisible">
@@ -115,7 +115,7 @@
                             </a>
                             <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('PID')">
                               <span class="checkBox" >
-                                <figure  *ngIf = 'statusColumnVisible'  style="align-content: center;"> 
+                                <figure  *ngIf = 'pidColumnVisible'  style="align-content: center;"> 
                                   <img style="position:relative; width:13px; height:13px; padding-left: 3px; padding-top:4px;" [src]="'osdrive/icons/chkmark26.png'">
                                 </figure> 
                                 <input type="checkbox" [checked]="pidColumnVisible">
