@@ -40,7 +40,7 @@
     </ul>
   </span>
   <div class="tabbed-window">
-    <span style="height:3px; background-color: #ffffff; "></span>
+    <span style="height:3px; background-color: #ffffff;  border-top: none; "></span>
     <div class="tabs">
       <div class="tab active">Processes</div>
       <div class="tab">Performance</div>
@@ -54,14 +54,44 @@
               <div class='table-responsive'>
                 <table class='table' *ngIf = 'processes.length > 0' #tableId>
                   <thead>
-                    <span style="height:10px; border-top: none;  "></span>
+                    <span style="height:10px; border-top: none;"></span>
                     <tr>             
-                      <th [style]="thStyle" (click)="sortTable('Name', true)" >
+                      <th [style]="thStyle" (click)="sortTable('Name', true)" (contextmenu)="showTableHeaderList($event)">
                         <span style="margin-left:50%; height:50%">
                           <span *ngIf="isDescSorting('Name')">v</span>
                           <span *ngIf="isAscSorting('Name')">ᴧ</span>
                         </span>
-                        <span style="padding-left:5px; height:50%; padding-top:5px; font-size:14px;">Name</span>
+                        <span style="padding-left:5px; height:50%; padding-top:5px; font-size:14px;">
+                          <span style="width:75%;">
+                            Name
+                          </span>
+                          <span class="vertical-menu" style="width:25%; left:60px; padding-left:10px;" *ngIf="showHeaderList">
+                            <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('Status')">
+                              <input type="checkbox" [checked]="statusColumnVisible"> 
+                              <p style="text-align:left;  padding-left:12px; right:0;">Status</p>
+                            </a>
+                            <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('CPU')">
+                              <input type="checkbox" [checked]="cpuColumnVisible"> 
+                              <p style="text-align:left;  padding-left:12px; right:0;">CPU</p>
+                            </a>
+                            <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('Memory')">
+                              <input type="checkbox" [checked]="memoryColumnVisible"> 
+                              <p style="text-align:left;  padding-left:12px; right:0;">Memory</p>
+                            </a>
+                            <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('Disk')">
+                              <input type="checkbox" [checked]="diskColumnVisible"> 
+                              <p style="text-align:left;  padding-left:12px; right:0;">Disk</p>
+                            </a>
+                            <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('Network')">
+                              <input type="checkbox" [checked]="networkColumnVisible"> 
+                              <p style="text-align:left;  padding-left:12px; right:0;">Network</p>
+                            </a>
+                            <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('PID')">
+                              <input type="checkbox" [checked]="pidColumnVisible"> 
+                              <p style="text-align:left;  padding-left:12px; right:0;">PID</p>
+                            </a>
+                          </span>
+                        </span>
                       </th>
                       <th  (click)="toggleColumnVisibility('Status')">
                         <span style="margin-left:50%; height:50%">

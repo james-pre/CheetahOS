@@ -20,7 +20,7 @@
 /* Additional styles for links inside the card-body (optional) */
 .card-body a {
   text-decoration: none; /* Remove underlines from links */
-  color: #007BFF; /* Set link color */
+ /*  color: #007BFF; Set link color */
 }
 
 /* Hover effect for links (optional) */
@@ -123,6 +123,7 @@
 span {
   display: block; /* Ensures each span is on a new line */
 }
+
 tbody{
   border-left: 0;
   border-right: 0;
@@ -194,7 +195,7 @@ img{
 
 /* Styles for the tabbed window container */
 .tabbed-window {
-    min-width: 100px; /* Adjust the width as needed */
+    min-width: 150px; /* Adjust the width as needed */
     border: 1px solid #ccc; /**/
     /* border-radius: 5px;
     overflow: scroll;  */
@@ -277,7 +278,6 @@ img{
   font-size: 13px; /* Font size for the text */
 }
 
-  
   /* Custom styles for .btn.btn-primary */
 .btn.btn-primary {
   background-color: #d0cccc; /* Primary button background color */
@@ -313,7 +313,6 @@ img{
   border: 1px solid #0056b3; /* Border color when active or focused */
   color: #fff; /* Text color when active or focused */
 }
-
 
 
 .navigation {
@@ -380,8 +379,33 @@ li:hover {
   background-color: #0056b3;
 }
 
-.highlight_row{ background-color: #84b3e4; }
 
 .table tr.active td {
   background-color:#d0ecfc !important;
+}
+
+
+.vertical-menu {
+  width: 100px; /* Set a width if you like */
+  position: absolute;
+  z-index:2;
+}
+
+.vertical-menu a {
+  background-color: #f2f2f2; /* Grey background color */
+  color: #000; /* Black text color */
+  display: block; /* Make the links appear below each other */
+  padding: 6px; /* Add some padding */
+  text-decoration: none; /* Remove underline from links */
+  z-index:2;
+}
+
+.vertical-menu a:hover {
+  background-color: #ccc; /* Dark grey background on mouse-over */
+  text-decoration: none; /* Remove underline from links */
+}
+
+.vertical-menu a.active {
+  background-color: #e8f4fc; /* Add a green color to the "active/current" link */
+  color: #000;
 }

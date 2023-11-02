@@ -48,12 +48,12 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   private refreshRateInterval = 0;
   private processIdToClose = 0;
 
-  private statusColumnVisible = true;
-  private cpuColumnVisible = true;
-  private memoryColumnVisible = true;
-  private diskColumnVisible = true;
-  private networkColumnVisible = true;
-  private pidColumnVisible = true;
+  statusColumnVisible = true;
+  cpuColumnVisible = true;
+  memoryColumnVisible = true;
+  diskColumnVisible = true;
+  networkColumnVisible = true;
+  pidColumnVisible = true;
  
   hasWindow = true;
   icon = 'osdrive/icons/taskmanger.png';
@@ -73,6 +73,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
   selectedRow = -1;
   showDDList = false;
+  showHeaderList = false;
   cpuUtil = 0;
   memUtil = 0;
   diskUtil = 0;
@@ -115,8 +116,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   }
 
   ngAfterViewInit(): void {
-    //this.name = this.name + "--beta---v0.9.14.2";
-
+  
     //Initial delay 1 seconds and interval countdown also 2 second
     this._taskmgrRefreshIntervalSub = interval(this.refreshRateInterval).subscribe(() => {
       this.generateLies();
@@ -147,6 +147,11 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
   setTaskMangrWindowToFocus(pid: number):void {
     this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
+    this.showHeaderList? this.showHeaderList = !this.showHeaderList : this.showHeaderList;
+  }
+
+  closeHeaderList():void{
+    this.showHeaderList? this.showHeaderList = !this.showHeaderList : this.showHeaderList;
   }
 
   updateRunningProcess():void{
@@ -154,7 +159,8 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   }
 
   refreshRate(refreshRate:number):void{
-    const refreshRatesIntervals:number[] = [RefreshRatesIntervals.PAUSED,RefreshRatesIntervals.LOW,RefreshRatesIntervals.NOMRAL,RefreshRatesIntervals.HIGH];
+    const refreshRatesIntervals:number[] = [RefreshRatesIntervals.PAUSED,RefreshRatesIntervals.LOW,
+                                          RefreshRatesIntervals.NOMRAL,RefreshRatesIntervals.HIGH];
 
     if(refreshRate >= RefreshRates.PAUSED && refreshRate <= RefreshRates.HIGH){
       this.refreshRateInterval = refreshRatesIntervals[refreshRate];
@@ -227,6 +233,11 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
   showDropDownList():void{
     this.showDDList = ! this.showDDList;
+  }
+
+  showTableHeaderList(evt:MouseEvent):void{
+    this.showHeaderList = !this.showHeaderList;
+    evt.preventDefault();
   }
 
   generateLies():void{
@@ -370,7 +381,6 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
    console.log('processIdToClose',this.processIdToClose);
   }
 
-
   toggleColumnVisibility(column: string) {
     if (column === TableColumns.STATUS) {
       this.statusColumnVisible = !this.statusColumnVisible;
@@ -385,33 +395,56 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     }else if (column === TableColumns.PID) {
       this.pidColumnVisible = !this.pidColumnVisible;
     }
-    // Apply styles to hide/show the column
+ 
+
+    this.showHeaderList = !this.showHeaderList;
     this.applyColumnStyles(column);
   }
 
   applyColumnStyles(column: string) {
     const table = this.tableId.nativeElement;
-    const tableColumns: string[] = ['Name','Status','CPU','Memory','Disk','Network','PID'];
+    const tableColumns: string[] = [TableColumns.NAME,TableColumns.STATUS,TableColumns.CPU,TableColumns.MEMORY,
+                                     TableColumns.DISK,TableColumns.NETWORK,TableColumns.PID];
+    
     const colNum = tableColumns.indexOf(column);
 
     for( let i = 0; i <= this.processes.length; i++){
       if(column === TableColumns.STATUS){
-        console.log('hide status')
         this.statusColumnVisible
         ? this._renderer.removeStyle(table.rows[i].cells[colNum], 'display')
         : this._renderer.setStyle(table.rows[i].cells[colNum], 'display', 'none');
       }
 
+      if(column === TableColumns.CPU){
+        this.cpuColumnVisible
+        ? this._renderer.removeStyle(table.rows[i].cells[colNum], 'display')
+        : this._renderer.setStyle(table.rows[i].cells[colNum], 'display', 'none');
+      }
+
+      if(column === TableColumns.MEMORY){
+        this.memoryColumnVisible
+        ? this._renderer.removeStyle(table.rows[i].cells[colNum], 'display')
+        : this._renderer.setStyle(table.rows[i].cells[colNum], 'display', 'none');
+      }
+
+      if(column === TableColumns.DISK){
+        this.diskColumnVisible
+        ? this._renderer.removeStyle(table.rows[i].cells[colNum], 'display')
+        : this._renderer.setStyle(table.rows[i].cells[colNum], 'display', 'none');
+      }
+
+      if(column === TableColumns.NETWORK){
+        this.networkColumnVisible
+        ? this._renderer.removeStyle(table.rows[i].cells[colNum], 'display')
+        : this._renderer.setStyle(table.rows[i].cells[colNum], 'display', 'none');
+      }
+
+      if(column === TableColumns.PID){
+        this.pidColumnVisible
+        ? this._renderer.removeStyle(table.rows[i].cells[colNum], 'display')
+        : this._renderer.setStyle(table.rows[i].cells[colNum], 'display', 'none');
+      }
     }
-
-      
-
-    // this.col2Visible
-    //   ? this.renderer.removeStyle(table.rows[0].cells[1], 'display')
-    //   : this.renderer.setStyle(table.rows[0].cells[1], 'display', 'none');
-    // this.col3Visible
-    //   ? this.renderer.removeStyle(table.rows[0].cells[2], 'display')
-    //   : this.renderer.setStyle(table.rows[0].cells[2], 'display', 'none');
   }
 
   activeFocus(){
