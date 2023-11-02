@@ -56,7 +56,7 @@
                   <thead>
                     <span style="height:10px; border-top: none;"></span>
                     <tr>             
-                      <th [style]="thStyle" (click)="sortTable('Name', true)" (contextmenu)="showTableHeaderList($event)">
+                      <th [style]="thStyle" (click)="sortTable('Name', true)" (contextmenu)="showTableHeaderList($event)" (focusout)="closeHeaderList()">
                         <span style="margin-left:50%; height:50%">
                           <span *ngIf="isDescSorting('Name')">v</span>
                           <span *ngIf="isAscSorting('Name')">ᴧ</span>
@@ -66,8 +66,16 @@
                             Name
                           </span>
                           <span class="vertical-menu" style="width:25%; left:60px;" *ngIf="showHeaderList">
+                            <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('Type')">
+                              <span class="checkBox" >
+                                <figure  *ngIf = 'typeColumnVisible'  style="align-content: center;"> 
+                                  <img style="position:relative; width:13px; height:13px; padding-left: 3px; padding-top:4px;" [src]="'osdrive/icons/chkmark26.png'">
+                                </figure> 
+                                <input type="checkbox" [checked]="typeColumnVisible">
+                              </span>
+                              <p style="text-align:left;  padding-left:12px; right:0;">Type</p>
+                            </a>
                             <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('Status')">
-
                               <span class="checkBox" >
                                 <figure  *ngIf = 'statusColumnVisible'  style="align-content: center;"> 
                                   <img style="position:relative; width:13px; height:13px; padding-left: 3px; padding-top:4px;" [src]="'osdrive/icons/chkmark26.png'">
@@ -76,6 +84,24 @@
                               </span>
 
                               <p style="text-align:left;  padding-left:12px; right:0;">Status</p>
+                            </a>
+                            <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('PID')">
+                              <span class="checkBox" >
+                                <figure  *ngIf = 'pidColumnVisible'  style="align-content: center;"> 
+                                  <img style="position:relative; width:13px; height:13px; padding-left: 3px; padding-top:4px;" [src]="'osdrive/icons/chkmark26.png'">
+                                </figure> 
+                                <input type="checkbox" [checked]="pidColumnVisible">
+                              </span>
+                              <p style="text-align:left;  padding-left:12px; right:0;">PID</p>
+                            </a>
+                            <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('Process name')">
+                              <span class="checkBox" >
+                                <figure  *ngIf = 'processNameColumnVisible'  style="align-content: center;"> 
+                                  <img style="position:relative; width:13px; height:13px; padding-left: 3px; padding-top:4px;" [src]="'osdrive/icons/chkmark26.png'">
+                                </figure> 
+                                <input type="checkbox" [checked]="processNameColumnVisible">
+                              </span>
+                              <p style="text-align:left;  padding-left:12px; right:0;">Process name</p>
                             </a>
                             <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('CPU')">
                               <span class="checkBox" >
@@ -113,14 +139,23 @@
                               </span>
                               <p style="text-align:left;  padding-left:12px; right:0;">Network</p>
                             </a>
-                            <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('PID')">
+                            <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('GPU')">
                               <span class="checkBox" >
-                                <figure  *ngIf = 'pidColumnVisible'  style="align-content: center;"> 
+                                <figure  *ngIf = 'gpuColumnVisible'  style="align-content: center;"> 
                                   <img style="position:relative; width:13px; height:13px; padding-left: 3px; padding-top:4px;" [src]="'osdrive/icons/chkmark26.png'">
                                 </figure> 
-                                <input type="checkbox" [checked]="pidColumnVisible">
+                                <input type="checkbox" [checked]="gpuColumnVisible">
                               </span>
-                              <p style="text-align:left;  padding-left:12px; right:0;">PID</p>
+                              <p style="text-align:left;  padding-left:12px; right:0;">GPU</p>
+                            </a>
+                            <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('Power usage')">
+                              <span class="checkBox" >
+                                <figure  *ngIf = 'powerColumnVisible'  style="align-content: center;"> 
+                                  <img style="position:relative; width:13px; height:13px; padding-left: 3px; padding-top:4px;" [src]="'osdrive/icons/chkmark26.png'">
+                                </figure> 
+                                <input type="checkbox" [checked]="powerColumnVisible">
+                              </span>
+                              <p style="text-align:left;  padding-left:12px; right:0; ">Power usage</p>
                             </a>
                           </span>
                         </span>
@@ -132,7 +167,7 @@
                         </span>
                         <span style="padding-left:5%; height:50%; padding-top:5px; font-size:14px;">Type</span>
                       </th>
-                      <th  (click)="toggleColumnVisibility('Status')">
+                      <th>
                         <span style="margin-left:50%; height:50%">
                           <span *ngIf="isDescSorting('Status')">v</span>
                           <span *ngIf="isAscSorting('Status')">ᴧ</span>
@@ -151,7 +186,7 @@
                           <span *ngIf="isDescSorting('Process name')">v</span>
                           <span *ngIf="isAscSorting('Process name')">ᴧ</span>
                         </span>
-                        <span style="height:50%; padding-top:5px; font-size:14px; padding-right:5px;">P.. name</span>
+                        <span style="height:50%; padding-top:5px; font-size:14px; padding-right:5px; text-overflow: ellipsis;">Process name</span>
                       </th>
                       <th (click)="sortTable('CPU', true)" #cpuId>
                         <span [style]="setUtilHeaderSpan2section1Colors(cpuUtil,'CPU')">
@@ -209,13 +244,13 @@
                           <span *ngIf="isDescSorting('Power usage')">v</span>
                           <span *ngIf="isAscSorting('Power usage')">ᴧ</span>
                         </span>
-                        <span style="height:50%; padding-top:5px; font-size:14px; padding-right:5px;">P.. usage</span>
+                        <span style="height:50%; padding-top:5px; font-size:14px; padding-right:5px; text-overflow: ellipsis;">Power usage</span>
                       </th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr *ngFor='let process of processes; let i = index'(click)="onProcessSelected(i, process.getProcessId)" [class.active]="i === selectedRow">
-                        <td style="width:65%; padding-left:16px;"  >
+                        <td style="width:35%; padding-left:16px;"  >
                             <figure> 
                                 <img [src]="process.getIcon">
                                 <figcaption>{{ process.getProcessName}}</figcaption>

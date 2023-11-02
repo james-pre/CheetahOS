@@ -1,7 +1,7 @@
 /* Custom styles for the card */
 .card {
-  min-width: 150px; /* Set the width of the card */
-  min-height: 150px; /* Set the height of the card */
+  /* min-width: 150px; Set the width of the card */
+  /* min-height: 150px; Set the height of the card */
 
   border: 1px solid #ccc; /* Add a border to the card */
   /* border-radius: 0;  Add rounded corners to the card */
@@ -90,16 +90,24 @@
   /* max-width: 300px; */
 }
 
-  /* Custom styles for the table */
+
+
+/* Custom styles for .table-responsive (Optional) */
+.table-responsive {
+  width: 100%; /* Set a maximum width for the responsive container */
+  overflow: auto; /* Enable horizontal scrolling when needed */
+  border-top:  none;
+}
+
+/* Custom styles for the table */
 .table {
   border-collapse: collapse; /* Remove spacing between table cells */
-  min-width: 25%; /* Set the table width to 100% of its container */
+  min-width: 40%; /* Set the table width to 100% of its container */
   margin: 1px 0; /* Add margin above and below the table */
   font-family: Arial, sans-serif; /* Set the font family for the table */
   table-layout: auto;
-  width: 100%;
 }
-  
+
   /* Custom styles for table headers */
 .table th {
   background-color: #ffffff; /* Header background color */
@@ -162,13 +170,6 @@ tbody{
   background-color: #e8f4fc;
 }
   
-  /* Custom styles for .table-responsive (Optional) */
-.table-responsive {
-  max-width: 100%; /* Set a maximum width for the responsive container */
-  overflow: auto; /* Enable horizontal scrolling when needed */
-  /*  min-width: 400px;*/
-  border-top:  none;
-}
   
 
 figure{
@@ -389,7 +390,7 @@ li:hover {
 .vertical-menu {
   width: 100px; /* Set a width if you like */
   position: absolute;
-  z-index:2;
+  z-index:5;
   box-shadow: 2px 2px rgba(0,0,0,0.3);
 }
 
@@ -399,7 +400,7 @@ li:hover {
   display: block; /* Make the links appear below each other */
   padding: 6px; /* Add some padding */
   text-decoration: none; /* Remove underline from links */
-  z-index:2;
+  z-index:5;
 }
 
 .vertical-menu a:hover {

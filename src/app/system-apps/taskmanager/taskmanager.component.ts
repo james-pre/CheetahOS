@@ -53,10 +53,10 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   memoryColumnVisible = true;
   diskColumnVisible = true;
   networkColumnVisible = true;
-  pidColumnVisible = true;
+  pidColumnVisible = false;
   gpuColumnVisible = true;
   powerColumnVisible = true;
-  processNameColumnVisible = true;
+  processNameColumnVisible = false;
   typeColumnVisible = false;
 
  
@@ -87,7 +87,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   diskUtil = 0;
   networkUtil = 0;
   gpuUtil = 0;
-  powerUtil = 'very low';
+  powerUtil = 'Very low';
 
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService,
@@ -112,7 +112,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
   ngOnInit(): void {
    this.processes = this._runningProcessService.getProcesses();
-   this.groupTableBy();
+   //this.groupTableBy(); -- work on table grouping...someday
   }
 
   ngOnDestroy(): void {
@@ -126,7 +126,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   }
 
   ngAfterViewInit(): void {
-  
+     this.applyDefaultColumnStyle();
     //Initial delay 1 seconds and interval countdown also 2 second
     this._taskmgrRefreshIntervalSub = interval(this.refreshRateInterval).subscribe(() => {
       this.generateLies();
@@ -188,6 +188,15 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
         'background-color': '#ffffff'
       }
       this.thStyle1 = {
+        'background-color': '#ffffff'
+      }
+      this.thStyle2 = {
+        'background-color': '#ffffff'
+      }
+      this.thStyle3 = {
+        'background-color': '#ffffff'
+      }
+      this.thStyle4 = {
         'background-color': '#ffffff'
       }
     }
@@ -297,7 +306,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
   generateLies():void{
     const processes:Process[] = this._runningProcessService.getProcesses();
-    const powerLevels:string[] = ['Very low','Low','High','Very High'];
+    const powerLevels:string[] = ['Very low','Low','Moderate','High','Very high'];
     const maxUtilNum = 100;
     const minUtilNum = 0;
     const maxNum = 10;
@@ -313,6 +322,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     for(let i =0; i < processes.length; i++){
       const tmpProcess = processes[i];
       tmpProcess.setProcessStatus = '';
+      tmpProcess.setPowerUsage = powerLevels[0];
 
       if(tmpProcess.getProcessId == this.processNumberToSuspend){
 
@@ -324,7 +334,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
           tmpProcess.setMemoryUsage = 0;
           tmpProcess.setNetworkUsage = 0;
           tmpProcess.setGpuUsage = 0;
-          tmpProcess.setPowerUsage  = powerLevels[this.getRandomNums(0,3)];
+          tmpProcess.setPowerUsage  = powerLevels[0];
 
           this.sleepCounter++;
         }else{
@@ -332,6 +342,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
           this.processNumberToSuspend = 0;
           this.sleepNumber = 0;
           tmpProcess.setProcessStatus = '';
+          tmpProcess.setPowerUsage = powerLevels[0];
         }
       }else{
         
@@ -351,7 +362,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
           tmpProcess.setGpuUsage = this.addTrailingZeros(this.getRandomFloatingNums(minUtilNum, maxUtilNum));
         } 
         if(this.getRandomNums(minNum,maxNum) <= 1){
-          tmpProcess.setPowerUsage = powerLevels[this.getRandomNums(0,3)];
+          tmpProcess.setPowerUsage = powerLevels[this.getRandomNums(0,4)];
         } 
       }
 
@@ -365,6 +376,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     this.memUtil = Math.round(processes.reduce((n, {getMemoryUsage}) => n + getMemoryUsage, 0));
     this.diskUtil = Math.round(processes.reduce((n, {getDiskUsage}) => n + getDiskUsage, 0));
     this.networkUtil = Math.round(processes.reduce((n, {getNetworkUsage}) => n + getNetworkUsage, 0));
+    this.gpuUtil = Math.round(processes.reduce((n, {getGpuUsage}) => n + getGpuUsage, 0));
   }
 
   getRandomFloatingNums(min:number, max:number):number{
@@ -407,7 +419,6 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     return groupedData;
   }
 
-
   onFewerDetailsBtnClick():void{
     const file:FileInfo = new FileInfo();
     file.setIcon = '/osdrive/icons/taskmanger.png';
@@ -441,13 +452,17 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     this.isActive = true;
     this.isFocus = true;
    }
-   console.log('selectedRow',this.selectedRow);
-   console.log('processIdToClose',this.processIdToClose);
   }
 
   toggleColumnVisibility(column: string) {
-    if (column === TableColumns.STATUS) {
+    if (column === TableColumns.TYPE) {
+      this.typeColumnVisible = !this.typeColumnVisible;
+    }else if (column === TableColumns.STATUS) {
       this.statusColumnVisible = !this.statusColumnVisible;
+    }else if (column === TableColumns.PID) {
+      this.pidColumnVisible = !this.pidColumnVisible;
+    }else if (column === TableColumns.PROCESS_NAME) {
+      this.processNameColumnVisible = !this.processNameColumnVisible;
     }else if (column === TableColumns.CPU) {
       this.cpuColumnVisible = !this.cpuColumnVisible;
     }else if (column === TableColumns.MEMORY) {
@@ -456,13 +471,23 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       this.diskColumnVisible = !this.diskColumnVisible;
     }else if (column === TableColumns.NETWORK) {
       this.networkColumnVisible = !this.networkColumnVisible;
-    }else if (column === TableColumns.PID) {
-      this.pidColumnVisible = !this.pidColumnVisible;
+    }else if (column === TableColumns.GPU) {
+      this.gpuColumnVisible = !this.gpuColumnVisible;
+    }else if (column === TableColumns.POWER_USAGE) {
+      this.powerColumnVisible = !this.powerColumnVisible;
     }
  
-
     this.showHeaderList = !this.showHeaderList;
     this.applyColumnStyles(column);
+  }
+
+  applyDefaultColumnStyle():void{
+    const tableColumns: string[] = [TableColumns.NAME,TableColumns.TYPE,TableColumns.STATUS,TableColumns.PID,TableColumns.PROCESS_NAME,
+      TableColumns.CPU,TableColumns.MEMORY,TableColumns.DISK,TableColumns.NETWORK,TableColumns.GPU,TableColumns.POWER_USAGE];
+
+      for(let i = 0; i < tableColumns.length; i++){
+        this.applyColumnStyles(tableColumns[i]);
+      }
   }
 
   applyColumnStyles(column: string) {
@@ -473,8 +498,27 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     const colNum = tableColumns.indexOf(column);
 
     for( let i = 0; i <= this.processes.length; i++){
+
+      if(column === TableColumns.TYPE){
+        this.typeColumnVisible
+        ? this._renderer.removeStyle(table.rows[i].cells[colNum], 'display')
+        : this._renderer.setStyle(table.rows[i].cells[colNum], 'display', 'none');
+      }
+
       if(column === TableColumns.STATUS){
         this.statusColumnVisible
+        ? this._renderer.removeStyle(table.rows[i].cells[colNum], 'display')
+        : this._renderer.setStyle(table.rows[i].cells[colNum], 'display', 'none');
+      }
+
+      if(column === TableColumns.PID){
+        this.pidColumnVisible
+        ? this._renderer.removeStyle(table.rows[i].cells[colNum], 'display')
+        : this._renderer.setStyle(table.rows[i].cells[colNum], 'display', 'none');
+      }
+
+      if(column === TableColumns.PROCESS_NAME){
+        this.processNameColumnVisible
         ? this._renderer.removeStyle(table.rows[i].cells[colNum], 'display')
         : this._renderer.setStyle(table.rows[i].cells[colNum], 'display', 'none');
       }
@@ -503,11 +547,18 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
         : this._renderer.setStyle(table.rows[i].cells[colNum], 'display', 'none');
       }
 
-      if(column === TableColumns.PID){
-        this.pidColumnVisible
+      if(column === TableColumns.GPU){
+        this.gpuColumnVisible
         ? this._renderer.removeStyle(table.rows[i].cells[colNum], 'display')
         : this._renderer.setStyle(table.rows[i].cells[colNum], 'display', 'none');
       }
+
+      if(column === TableColumns.POWER_USAGE){
+        this.powerColumnVisible
+        ? this._renderer.removeStyle(table.rows[i].cells[colNum], 'display')
+        : this._renderer.setStyle(table.rows[i].cells[colNum], 'display', 'none');
+      }
+
     }
   }
 
@@ -551,6 +602,10 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
         }else if(cellValue == 'Low'){
           return baseStyle = {
             'background-color': '#ffecac'
+          };
+        }else if(cellValue == 'Moderate'){
+          return baseStyle = {
+            'background-color': '#ffd464'
           };
         }else if(cellValue == 'High'){
           return baseStyle = {
@@ -713,6 +768,25 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
        }else if(cellValue >= 10){
 
         baseStyle['padding-left'] = '24%';
+        baseStyle['background-color'] =  (cellValue >= 90) ? '##fcc4ac' : '#ffffff';
+        if(sortColoumn == cellName){
+          if (cellValue >= 90)
+            baseStyle['background-color'] = '##fcc4ac';
+          else if (cellValue < 90 )
+            baseStyle['background-color'] = 'rgb(224, 224, 139)';
+        }
+        baseStyle['border'] =  (cellValue >= 90) ? '##fcc4ac' : '';
+        return baseStyle;
+       }
+    }
+
+    if (cellName == 'GPU'){
+      if(cellValue < 10){
+        if(sortColoumn == cellName){
+          baseStyle['background-color'] = 'rgb(224, 224, 139)';
+        }
+        return baseStyle;
+       }else if(cellValue >= 10){
         baseStyle['background-color'] =  (cellValue >= 90) ? '##fcc4ac' : '#ffffff';
         if(sortColoumn == cellName){
           if (cellValue >= 90)
