@@ -10,8 +10,8 @@ import { StateManagmentService } from 'src/app/shared/system-service/state.manag
 import { FileInfo } from 'src/app/system-files/fileinfo';
 import { RefreshRates, RefreshRatesIntervals, TableColumns } from './taskmanager.enum';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
-import { ResizableTableColumns } from '@validide/resizable-table-columns';
-import { IStore } from 'resizable-options';
+// import { ResizableTableColumns } from '@validide/resizable-table-columns';
+// import { IStore } from 'resizable-options';
 
 
 @Component({

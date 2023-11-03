@@ -52,11 +52,15 @@
         <div class='card'>
             <div class='card-body'>
               <div class='table-responsive'>
+
+                <!-- add  class="data" data-rtc-resizable-table="table.one" to  the first <table> to activate resize.[ngClass]="
+                     add data-rtc-resizable=columnName to the first <th> of each column were resize is desired
+                  " -->
                 <table class='table' *ngIf = 'processes.length > 0' #tableId>
                   <thead>
                     <span style="height:10px; border-top: none;"></span>
                     <tr>             
-                      <th [style]="thStyle" (click)="sortTable('Name', true)" (contextmenu)="showTableHeaderList($event)" (focusout)="closeHeaderList()">
+                      <th [style]="thStyle" (click)="sortTable('Name', true)" (contextmenu)="showTableHeaderList($event)">
                         <span style="margin-left:50%; height:50%">
                           <span *ngIf="isDescSorting('Name')">v</span>
                           <span *ngIf="isAscSorting('Name')">ᴧ</span>
@@ -67,7 +71,7 @@
                           </span>
                           <span class="vertical-menu" style="width:25%; left:60px;" *ngIf="showHeaderList">
                             <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('Type')">
-                              <span class="checkBox" >
+                              <span class="checkBox" [class.active]="typeColumnVisible" >
                                 <figure  *ngIf = 'typeColumnVisible'  style="align-content: center;"> 
                                   <img style="position:relative; width:13px; height:13px; padding-left: 3px; padding-top:4px;" [src]="'osdrive/icons/chkmark26.png'">
                                 </figure> 
@@ -76,7 +80,7 @@
                               <p style="text-align:left;  padding-left:12px; right:0;">Type</p>
                             </a>
                             <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('Status')">
-                              <span class="checkBox" >
+                              <span class="checkBox" [class.active]="statusColumnVisible"  >
                                 <figure  *ngIf = 'statusColumnVisible'  style="align-content: center;"> 
                                   <img style="position:relative; width:13px; height:13px; padding-left: 3px; padding-top:4px;" [src]="'osdrive/icons/chkmark26.png'">
                                 </figure> 
@@ -86,7 +90,7 @@
                               <p style="text-align:left;  padding-left:12px; right:0;">Status</p>
                             </a>
                             <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('PID')">
-                              <span class="checkBox" >
+                              <span class="checkBox" [class.active]="pidColumnVisible">
                                 <figure  *ngIf = 'pidColumnVisible'  style="align-content: center;"> 
                                   <img style="position:relative; width:13px; height:13px; padding-left: 3px; padding-top:4px;" [src]="'osdrive/icons/chkmark26.png'">
                                 </figure> 
@@ -95,7 +99,7 @@
                               <p style="text-align:left;  padding-left:12px; right:0;">PID</p>
                             </a>
                             <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('Process name')">
-                              <span class="checkBox" >
+                              <span class="checkBox" [class.active]="processNameColumnVisible">
                                 <figure  *ngIf = 'processNameColumnVisible'  style="align-content: center;"> 
                                   <img style="position:relative; width:13px; height:13px; padding-left: 3px; padding-top:4px;" [src]="'osdrive/icons/chkmark26.png'">
                                 </figure> 
@@ -104,7 +108,7 @@
                               <p style="text-align:left;  padding-left:12px; right:0;">Process name</p>
                             </a>
                             <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('CPU')">
-                              <span class="checkBox" >
+                              <span class="checkBox" [class.active]="cpuColumnVisible">
                                 <figure  *ngIf = 'cpuColumnVisible'  style="align-content: center;"> 
                                   <img style="position:relative; width:13px; height:13px; padding-left: 3px; padding-top:4px;" [src]="'osdrive/icons/chkmark26.png'">
                                 </figure> 
@@ -113,7 +117,7 @@
                               <p style="text-align:left;  padding-left:12px; right:0;">CPU</p>
                             </a>
                             <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('Memory')">
-                              <span class="checkBox" >
+                              <span class="checkBox" [class.active]="memoryColumnVisible"  >
                                 <figure  *ngIf = 'memoryColumnVisible'  style="align-content: center;"> 
                                   <img style="position:relative; width:13px; height:13px; padding-left: 3px; padding-top:4px;" [src]="'osdrive/icons/chkmark26.png'">
                                 </figure> 
@@ -122,7 +126,7 @@
                               <p style="text-align:left;  padding-left:12px; right:0;">Memory</p>
                             </a>
                             <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('Disk')">
-                              <span class="checkBox" >
+                              <span class="checkBox" [class.active]="diskColumnVisible">
                                 <figure  *ngIf = 'diskColumnVisible'  style="align-content: center;"> 
                                   <img style="position:relative; width:13px; height:13px; padding-left: 3px; padding-top:4px;" [src]="'osdrive/icons/chkmark26.png'">
                                 </figure> 
@@ -131,7 +135,7 @@
                               <p style="text-align:left;  padding-left:12px; right:0;">Disk</p>
                             </a>
                             <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('Network')">
-                              <span class="checkBox" >
+                              <span class="checkBox"  [class.active]="networkColumnVisible">
                                 <figure  *ngIf = 'networkColumnVisible'  style="align-content: center;"> 
                                   <img style="position:relative; width:13px; height:13px; padding-left: 3px; padding-top:4px;" [src]="'osdrive/icons/chkmark26.png'">
                                 </figure> 
@@ -140,7 +144,7 @@
                               <p style="text-align:left;  padding-left:12px; right:0;">Network</p>
                             </a>
                             <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('GPU')">
-                              <span class="checkBox" >
+                              <span class="checkBox" [class.active]="gpuColumnVisible">
                                 <figure  *ngIf = 'gpuColumnVisible'  style="align-content: center;"> 
                                   <img style="position:relative; width:13px; height:13px; padding-left: 3px; padding-top:4px;" [src]="'osdrive/icons/chkmark26.png'">
                                 </figure> 
@@ -149,7 +153,7 @@
                               <p style="text-align:left;  padding-left:12px; right:0;">GPU</p>
                             </a>
                             <a style="display: inline-flex; width: 100%;" (click)="toggleColumnVisibility('Power usage')">
-                              <span class="checkBox" >
+                              <span class="checkBox" [class.active]="powerColumnVisible">
                                 <figure  *ngIf = 'powerColumnVisible'  style="align-content: center;"> 
                                   <img style="position:relative; width:13px; height:13px; padding-left: 3px; padding-top:4px;" [src]="'osdrive/icons/chkmark26.png'">
                                 </figure> 
@@ -269,7 +273,7 @@
                         <td [style]="setUtilColoumnColors(process.getMemoryUsage)" #memoryId>{{ process.getMemoryUsage}} MB</td>
                         <td [style]="setUtilColoumnColors(process.getDiskUsage)" #diskId>{{ process.getDiskUsage}} MB/s</td>
                         <td [style]="setUtilColoumnColors(process.getNetworkUsage)" #networkId>{{ process.getNetworkUsage}} Mbps</td>
-                        <td [style]="setUtilColoumnColors(process.getGpuUsage)" #gpuId>{{ process.getCpuUsage}}%</td>
+                        <td [style]="setUtilColoumnColors(process.getGpuUsage)" #gpuId>{{ process.getGpuUsage}}%</td>
                         <td [style]="setUtilColoumnColors(process.getPowerUsage)" #pwruseId> {{ process.getPowerUsage}}</td>
                       </tr>
                   </tbody>

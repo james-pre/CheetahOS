@@ -420,5 +420,10 @@ input[type=checkbox] {
 .checkBox {
   width: 19px;
   height: 19px;
+}
+
+.checkBox.active {
+  width: 19px;
+  height: 19px;
   background-color: #98ccf4;
 }
