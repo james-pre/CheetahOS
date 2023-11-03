@@ -117,7 +117,7 @@
   font-weight:lighter;  /* Header text bold */
   font-size: 13px;
   height: 55px;
-  min-width: 90px;
+  min-width: 95px;
   border: 1px solid #ccc;   /* Cell border */
   border-top: none;
   vertical-align: middle;
@@ -361,7 +361,7 @@ img{
   color: #000;
   margin-left: -8px;
   margin-top: 19px;
-  box-shadow: 1px 2px rgba(0,0,0,0.5);
+  box-shadow: 2px 2px rgba(0,0,0,0.3);
 }
 
 .navigation ul ul li {
@@ -390,7 +390,7 @@ li:hover {
 .vertical-menu {
   width: 100px; /* Set a width if you like */
   position: absolute;
-  z-index:5;
+  z-index:2;
   box-shadow: 2px 2px rgba(0,0,0,0.3);
 }
 
@@ -400,7 +400,7 @@ li:hover {
   display: block; /* Make the links appear below each other */
   padding: 6px; /* Add some padding */
   text-decoration: none; /* Remove underline from links */
-  z-index:5;
+  z-index:2;
 }
 
 .vertical-menu a:hover {
