@@ -10,6 +10,9 @@ import { StateManagmentService } from 'src/app/shared/system-service/state.manag
 import { FileInfo } from 'src/app/system-files/fileinfo';
 import { RefreshRates, RefreshRatesIntervals, TableColumns } from './taskmanager.enum';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
+import { ResizableTableColumns } from '@validide/resizable-table-columns';
+import { IStore } from 'resizable-options';
+
 
 @Component({
   selector: 'cos-taskmanager',
@@ -40,7 +43,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   private _sorting:SortingInterface ={
     column: '',
     order: 'asc',
-  }
+  }  
 
   private sleepNumber = 0;
   private sleepCounter = 0;
@@ -92,6 +95,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService,
      stateManagmentService: StateManagmentService,triggerProcessService:TriggerProcessService, renderer: Renderer2) { 
+
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this._stateManagmentService = stateManagmentService;
@@ -126,7 +130,11 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   }
 
   ngAfterViewInit(): void {
-     this.applyDefaultColumnStyle();
+
+    // const table = this.tableId.nativeElement as HTMLCollection;
+    // new ResizableTableColumns(table, null); table column resize is acting.....not right.
+
+    this.applyDefaultColumnStyle();
     //Initial delay 1 seconds and interval countdown also 2 second
     this._taskmgrRefreshIntervalSub = interval(this.refreshRateInterval).subscribe(() => {
       this.generateLies();
@@ -146,6 +154,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       this.sortTable(this._sorting.column, false);
     });
   }
+
 
   isDescSorting(column: string): boolean {
     return this._sorting.column === column && this._sorting.order === 'desc';
