@@ -16,6 +16,7 @@ export class RunningProcessService{
     focusOnCurrentProcessNotify: Subject<number> = new Subject<number>();
     focusOutOtherProcessNotify: Subject<number> = new Subject<number>();
     restoreOrMinimizeWindowNotify: Subject<number> = new Subject<number>();
+    responseToEventCount = 0;
 
     constructor(){
         this._runningProcesses = []

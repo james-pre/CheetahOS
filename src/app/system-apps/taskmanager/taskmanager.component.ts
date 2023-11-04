@@ -309,6 +309,12 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   }
 
   showTableHeaderList(evt:MouseEvent):void{
+    this._runningProcessService.responseToEventCount++;
+
+    const evtRespCount = this._runningProcessService.responseToEventCount;
+
+    console.log('evtRespCount-tskMgr:',evtRespCount);
+
     this.showHeaderList = !this.showHeaderList;
     evt.preventDefault();
   }

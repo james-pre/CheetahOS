@@ -144,14 +144,26 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
   showContextMenu(evt:MouseEvent):void{
+    this._runningProcessService.responseToEventCount++;
+    const evtRespCount = this._runningProcessService.responseToEventCount;
 
-    const x = evt.clientX;
-    const y = evt.clientY;
-   
+    /**
+     * There is a doubling of responses to certain events that exist on the 
+     * desktop compoonent and any other component running at the time the event was triggered.
+     * The desktop will always repond to the event, but other components will only respond when they are in focus.
+     * If there is a count of 2 or more(highly unlikely) reponses for a given event, then, ignore the desktop's response
+     */
+    if(evtRespCount >= 2){
+      this._runningProcessService.responseToEventCount = 0
+      return;
+    }
+
+
+
     this.cntxtMenuStyle = {
       'width': '200px', 
       'height': 'fit-content', 
-      'transform':`translate(${String(x)}px, ${String(y)}px)`,
+      'transform':`translate(${String(evt.clientX)}px, ${String(evt.clientY)}px)`,
       'z-index': 2,
       'opacity':1
     }
@@ -161,6 +173,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     // this._renderer.setStyle(this.cntxtMenu.nativeElement,'transform',`translate(${String(x)}px, ${String(y)}px)`);
     // //this.showCntxtMenu = !this.showCntxtMenu;
 
+    this._runningProcessService.responseToEventCount = 0;
     evt.preventDefault();
   }
 
