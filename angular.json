@@ -23,7 +23,10 @@
               "path",
               "js-dos",
               "vanta/dist/vanta.waves.min",
-              "vanta/dist/vanta.birds.min"
+              "vanta/dist/vanta.birds.min",
+              "vanta/dist/vanta.rings.min",
+              "vanta/dist/vanta.globe.min",
+              "vanta/dist/vanta.net.min"
             ],
             "outputPath": "dist/cheetah-os",
             "index": "src/index.html",
