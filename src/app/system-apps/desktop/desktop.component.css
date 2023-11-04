@@ -13,24 +13,73 @@
 
 .vertical-menu {
     position: absolute;
-    width: 200px; /* Set a width if you like */
+    width: 250px; /* Set a width if you like */
+    box-shadow: 2px 2px rgba(0,0,0,0.3);
     z-index:2;
 }
   
-.vertical-menu a {
+span{
+    display: block;
+}
+
+span.container{
+    height: 1px;
     background-color: #eee; /* Grey background color */
-    color: black; /* Black text color */
-    display: block; /* Make the links appear below each other */
-    padding: 12px; /* Add some padding */
-    text-decoration: none; /* Remove underline from links */
+}
+
+span.section-line{
+    border: 1px solid #afadad; /* Add a border to col-md-6 */
+    margin: 0 8px;
+}
+
+span.container2{
+    height: fit-content;
+    padding: 4px 0; /* Add some padding */
+    background-color: #eee; /* Grey background color */
+    display: inline-flex;
+    width: 100%;
     z-index:2;
 }
 
-.vertical-menu a:hover {
+span.container2:hover {
     background-color: #ccc; /* Dark grey background on mouse-over */
 }
 
-.vertical-menu a.active {
+span.container2.active {
     background-color: #04AA6D; /* Add a green color to the "active/current" link */
     color: white;
 }
+
+span.head{
+    max-width: 25%;
+    padding-left: 4px;
+}
+
+span.mid{
+    min-width: 50%;
+    padding: 0 4px;
+    color: black; /* Black text color */
+    text-align: left;
+    font-size: small;
+}
+
+span.tail{
+    max-width: 25%;
+    padding-left: 78px;
+}
+
+figure{
+    align-items: center;
+    display:inline-flex;
+    min-width: 18px;
+    min-width: 18px;
+}
+  
+img{
+    height: 18px;
+    width: 18px;
+    image-rendering:optimizeQuality;
+    position: relative;
+    margin: 0 0 0 0;
+}
+  

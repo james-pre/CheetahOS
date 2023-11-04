@@ -1,13 +1,43 @@
 <main id="vanta" class="main-desktop"  (contextmenu)="showContextMenu($event)" (click)="hideContextMenu()">
     <div class="vertical-menu" [style]="cntxtMenuStyle" #cntxtMenu>
-        <a href="#" class="active">View       ></a>
-        <a href="#">Sort by    ></a>
-        <a href="#">Refresh</a>
-        <a href="#">-----------------</a>
-        <a href="#">Next Background</a>
-        <a href="#">Previous Background</a>
-        <a href="#">-----------------</a>
-        <a href="#">New</a>
-      </div>
+        <span class="span container2" (click)="showContextSubMenuFast()" [class.active]>
+            <span class="span head"><figure ></figure></span>
+            <span class="span mid">View</span>
+            <span class="span tail"><figure> <img [src]="'osdrive/icons/arrow_next.png'"></figure> </span>
+        </span>
+        <span class="span container2" (click)="showContextSubMenuFast()" [class.active]>
+            <span class="span head"><figure ></figure></span>
+            <span class="span mid">Sort by </span>
+            <span class="span tail"> <figure> <img [src]="'osdrive/icons/arrow_next.png'"></figure></span>
+        </span>
+
+        <span class="span container2">
+            <span class="span head"> <figure > </figure></span>
+            <span class="span mid">Refresh</span>
+            <span class="span tail"> <figure> </figure> </span>
+        </span>
+
+        <span class="span container"><span class="span section-line"></span></span>
+
+        <span class="span container2">
+            <span class="span head"> <figure > </figure></span>
+            <span class="span mid">Next Background</span>
+            <span class="span tail"> <figure> </figure> </span>
+        </span>
+
+        <span class="span container2">
+            <span class="span head"> <figure > </figure></span>
+            <span class="span mid">Previous Background</span>
+            <span class="span tail"> <figure> </figure> </span>
+        </span>
+
+        <span class="span container"><span class="span section-line"></span></span>
+
+        <span class="span container2">
+            <span class="span head"> <figure > </figure></span>
+            <span class="span mid">New</span>
+            <span class="span tail"> <figure> </figure> </span>
+        </span>
+    </div>
     <ng-content> </ng-content>
 </main>

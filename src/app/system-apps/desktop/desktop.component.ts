@@ -57,7 +57,9 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   private _charSquenceCount = 0;
 
 
-  showCntxtMenu = false
+  showCntxtMenu = false;
+  isCntxtMenuActive = false;
+  isCntxtSubMenuActive = false;
   cntxtMenuStyle:Record<string, unknown> = {};
 
   hasWindow = false;
@@ -158,10 +160,8 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
       return;
     }
 
-
-
     this.cntxtMenuStyle = {
-      'width': '200px', 
+      'width': '250px', 
       'height': 'fit-content', 
       'transform':`translate(${String(evt.clientX)}px, ${String(evt.clientY)}px)`,
       'z-index': 2,
@@ -169,7 +169,6 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     }
 
     // //this.cntxMenu.nativeElement.style.transform = `translate(${String(x)}px, ${String(y)}px)`, 
-    
     // this._renderer.setStyle(this.cntxtMenu.nativeElement,'transform',`translate(${String(x)}px, ${String(y)}px)`);
     // //this.showCntxtMenu = !this.showCntxtMenu;
 
@@ -186,6 +185,10 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
       'z-index': -1,
       'opacity':0
     }
+  }
+
+  showContextSubMenuFast():void{
+    1
   }
 
 
