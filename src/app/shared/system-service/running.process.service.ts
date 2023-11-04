@@ -9,6 +9,9 @@ import { Process } from "src/app/system-files/process";
 
 export class RunningProcessService{
 
+    responseToEventCount = 0;
+    readonly MAX_RESPONSE_TO_EVENT = 1;
+
     private _runningProcesses:Process[]
     processListChangeNotify: Subject<void> = new Subject<void>();
     closeProcessNotify: Subject<Process> = new Subject<Process>();
@@ -16,7 +19,6 @@ export class RunningProcessService{
     focusOnCurrentProcessNotify: Subject<number> = new Subject<number>();
     focusOutOtherProcessNotify: Subject<number> = new Subject<number>();
     restoreOrMinimizeWindowNotify: Subject<number> = new Subject<number>();
-    responseToEventCount = 0;
 
     constructor(){
         this._runningProcesses = []

@@ -153,7 +153,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
      * The desktop will always repond to the event, but other components will only respond when they are in focus.
      * If there is a count of 2 or more(highly unlikely) reponses for a given event, then, ignore the desktop's response
      */
-    if(evtRespCount >= 2){
+    if(evtRespCount > this._runningProcessService.MAX_RESPONSE_TO_EVENT){
       this._runningProcessService.responseToEventCount = 0
       return;
     }
@@ -183,7 +183,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
       'width': '0px', 
       'height': '0px', 
       'transform': 'translate(-100000px, 100000px)',
-      'z-index': -2,
+      'z-index': -1,
       'opacity':0
     }
   }

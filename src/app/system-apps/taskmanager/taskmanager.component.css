@@ -108,6 +108,16 @@
   table-layout: auto;
 }
 
+/* Custom styles for the table */
+.table.mini {
+  border-collapse: collapse; /* Remove spacing between table cells */
+  min-width: 100%; /* Set the table width to 100% of its container */
+  margin: 1px 0; /* Add margin above and below the table */
+  font-family: Arial, sans-serif; /* Set the font family for the table */
+  table-layout: auto;
+}
+
+
   /* Custom styles for table headers */
 .table th {
   background-color: #ffffff; /* Header background color */
