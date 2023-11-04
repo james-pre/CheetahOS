@@ -1,3 +1,13 @@
-<main id="vanta" class="main-desktop">
+<main id="vanta" class="main-desktop"  (contextmenu)="showContextMenu($event)" (click)="hideContextMenu()">
+    <div class="vertical-menu" [style]="cntxtMenuStyle" #cntxtMenu>
+        <a href="#" class="active">View       ></a>
+        <a href="#">Sort by    ></a>
+        <a href="#">Refresh</a>
+        <a href="#">-----------------</a>
+        <a href="#">Next Background</a>
+        <a href="#">Previous Background</a>
+        <a href="#">-----------------</a>
+        <a href="#">New</a>
+      </div>
     <ng-content> </ng-content>
 </main>

@@ -1,5 +1,5 @@
-import { AfterViewInit, OnInit,OnDestroy, Component } from '@angular/core';
-import { Subscription, timer } from 'rxjs';
+import { AfterViewInit, OnInit,OnDestroy, Component,ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import { Subscription, interval} from 'rxjs';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { ComponentType } from 'src/app/system-files/component.types';
@@ -43,15 +43,22 @@ const VANTAS = [
 })
 export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
+  @ViewChild('cntxtMenu') cntxtMenu!: ElementRef;
+
+  private _renderer: Renderer2;
+
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
-  private _vantaEffect: any;
+  private _timerSubscription!: Subscription;
 
+  private _vantaEffect: any;
   private _numSequence = 0;
   private _charSquence = 'a';
   private _charSquenceCount = 0;
 
-  private _timerSubscription!: Subscription;
+
+  showCntxtMenu = false
+  cntxtMenuStyle:Record<string, unknown> = {};
 
   hasWindow = false;
   icon = 'osdrive/icons/generic-program.ico';
@@ -61,12 +68,14 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   displayName = '';
 
 
-  constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService) { 
+  constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService, renderer: Renderer2) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail());
-    this._numSequence = this.getRandomInt(100, 999)
+    this._numSequence = this.getRandomInt(100, 999);
+
+    this._renderer = renderer;
   }
 
   ngOnInit():void{
@@ -83,14 +92,16 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
   ngAfterViewInit():void{
-    //Initial delay 10 seconds and interval countdown also 10 second
-     this._timerSubscription = timer(10000, 10000) .subscribe(() => {
+    //interval countdown also 15 second
+     this._timerSubscription = interval(15000) .subscribe(() => {
 
           //console.log("hexColor:",this.getNextColor());
           this._vantaEffect.setOptions({
             color: this.getNextColor(),
           });
      });
+
+     this.hideContextMenu();
   }
 
   ngOnDestroy(): void {
@@ -126,11 +137,42 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     return Number(`0x${mid}${tail}`);
   }
 
-
   getRandomInt(min:number, max:number):number{
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min) + min);
+  }
+
+  showContextMenu(evt:MouseEvent):void{
+
+    const x = evt.clientX;
+    const y = evt.clientY;
+   
+    this.cntxtMenuStyle = {
+      'width': '200px', 
+      'height': 'fit-content', 
+      'transform':`translate(${String(x)}px, ${String(y)}px)`,
+      'z-index': 2,
+      'opacity':1
+    }
+
+    // //this.cntxMenu.nativeElement.style.transform = `translate(${String(x)}px, ${String(y)}px)`, 
+    
+    // this._renderer.setStyle(this.cntxtMenu.nativeElement,'transform',`translate(${String(x)}px, ${String(y)}px)`);
+    // //this.showCntxtMenu = !this.showCntxtMenu;
+
+    evt.preventDefault();
+  }
+
+  hideContextMenu():void{
+    
+    this.cntxtMenuStyle = {
+      'width': '0px', 
+      'height': '0px', 
+      'transform': 'translate(-100000px, 100000px)',
+      'z-index': -2,
+      'opacity':0
+    }
   }
 
 
