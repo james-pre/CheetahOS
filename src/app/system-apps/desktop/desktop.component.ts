@@ -7,7 +7,11 @@ import { Process } from 'src/app/system-files/process';
 import { BIRDS, GLOBE, HALO, RINGS, WAVE } from './vanta-object/vanta.interfaces';
 
 declare let VANTA: {
-  HALO: any; BIRDS: any;  WAVES: any;  GLOBE: any; RINGS: any; 
+  HALO: any; 
+  BIRDS: any;  
+  WAVES: any;  
+  GLOBE: any; 
+  RINGS: any; 
 };
 
 @Component({
@@ -86,13 +90,13 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
   ngAfterViewInit():void{
     //interval countdown also 15 second
-    //  this._timerSubscription = interval(15000) .subscribe(() => {
+     this._timerSubscription = interval(15000) .subscribe(() => {
 
-    //       //console.log("hexColor:",this.getNextColor());
-    //       this._vantaEffect.setOptions({
-    //         color: this.getNextColor(),
-    //       });
-    //  });
+          //console.log("hexColor:",this.getNextColor());
+          this._vantaEffect.setOptions({
+            color: this.getNextColor(),
+          });
+     });
 
      this.hideContextMenu();
   }
