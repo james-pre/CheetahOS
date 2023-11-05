@@ -40,18 +40,20 @@
             ],
             "styles": [
               "src/styles.css",
+              "src/css/videoplayer/video-js.min.css",
               "node_modules/ngx-draggable-resize/css/resizable.min.css",
               "node_modules/@validide/resizable-table-columns/dist/css/resizable-table-columns.css"
             ],
             "scripts": [
               "./src/scripts/bundle/index.js",
               "node_modules/js-dos/dist/js-dos.js",
-              "./src/scripts/three.min.js",
-              "./src/scripts/vanta.waves.min.js",
-              "./src/scripts/vanta.halo.min.js",
-              "./src/scripts/vanta.globe.min.js",
-              "./src/scripts/vanta.birds.min.js",
-              "./src/scripts/vanta.rings.min.js"
+              "./src/scripts/backgrounds/three.min.js",
+              "./src/scripts/backgrounds/vanta.waves.min.js",
+              "./src/scripts/backgrounds/vanta.halo.min.js",
+              "./src/scripts/backgrounds/vanta.globe.min.js",
+              "./src/scripts/backgrounds/vanta.birds.min.js",
+              "./src/scripts/backgrounds/vanta.rings.min.js",
+              "./src/scripts/videoplayer/video.min.js"
             ]
           },
           "configurations": {

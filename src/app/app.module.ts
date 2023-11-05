@@ -22,7 +22,7 @@ import { TaskmanagerMiniComponent } from './system-apps/taskmanager/taskmanager.
 import { JsdosComponent } from './user-apps/jsdos/jsdos.component';
 import { SafeUrlPipe } from './shared/system-pipes/safe.resource.url.pipe';
 import { TaskBarEntryHighlightDirective } from './shared/system-directive/taskbar.entry.highlight.directives';
-import { WinampComponent } from './user-apps/winamp/winamp.component';
+import { VideoPlayerComponent } from './user-apps/videoplayer/videoplayer.component';
 
 
 
@@ -47,7 +47,7 @@ import { WinampComponent } from './user-apps/winamp/winamp.component';
     TaskmanagerMiniComponent,
     JsdosComponent,
     SafeUrlPipe,
-    WinampComponent
+    VideoPlayerComponent
   ],
   imports: [
     BrowserModule,

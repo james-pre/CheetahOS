@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WinampComponent } from './winamp.component';
+import { VideoPlayerComponent } from './videoplayer.component';
 
 describe('WinampComponent', () => {
-  let component: WinampComponent;
-  let fixture: ComponentFixture<WinampComponent>;
+  let component: VideoPlayerComponent;
+  let fixture: ComponentFixture<VideoPlayerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ WinampComponent ]
+      declarations: [ VideoPlayerComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(WinampComponent);
+    fixture = TestBed.createComponent(VideoPlayerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
