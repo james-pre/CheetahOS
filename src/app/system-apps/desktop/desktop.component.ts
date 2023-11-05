@@ -159,7 +159,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
     this.cntxtMenuStyle = {
       'width': '250px', 
-      'transform':`translate(${String(evt.clientX)}px, ${String(evt.clientY)}px)`,
+      'transform':`translate(${String(evt.clientX + 2)}px, ${String(evt.clientY)}px)`,
       'z-index': 2,
       'opacity':1
     }
