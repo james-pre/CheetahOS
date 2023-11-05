@@ -198,7 +198,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     
     setTimeout(() => {
       this.cntxtSubMenuStyle = {
-        'width': '250px', 
+        'width': '235px', 
         'display': 'block',
         'position': 'absolute',
         'background-color': '#f1f1f1',

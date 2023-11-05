@@ -22,7 +22,7 @@ span{
 }
 
 span.container{
-    height: 1px;
+    max-height: 1px;
     background-color: #eee; /* Grey background color */
 }
 
@@ -40,31 +40,6 @@ span.container2{
     z-index:2;
 }
 
-span.container2.sub-menu {
-
-    display: none;
-    position: absolute;
-    background-color: #f1f1f1;
-    width: 250px;
-    z-index: 2;
-    left: 100%;
-    top: 0;
-}
-
-
-span.container2.sub-menu:hover {
-    display: block;
-    z-index: 2;
-}
-
-span.container2.sub-menu  a{
-    color: black;
-    padding: 6px 6px;
-    text-decoration: none;
-    display: block;
-}
-
-
 span.container2:hover {
     background-color: #ccc; /* Dark grey background on mouse-over */
 }
@@ -74,6 +49,28 @@ span.container2.active {
     color: white;
 }
 
+span.container2.sub-menu-container {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    width: 235px;
+    z-index: 2;
+    left: 100%;
+    top: 0;
+}
+
+
+span.container2.sub-menu-container:hover {
+    display: block;
+    z-index: 2;
+}
+
+span.container2.sub-menu{
+    color: black;
+    padding: 4px 0;
+    text-decoration: none;
+    display: inline-flex;
+}
 
 
 span.head{
