@@ -22,6 +22,7 @@ declare let VANTA: {
 export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
   @ViewChild('cntxtMenu') cntxtMenu!: ElementRef;
+  @ViewChild('cntxtSubMenu') cntxtSubMenu!: ElementRef;
 
   private _renderer: Renderer2;
 
@@ -39,6 +40,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   isCntxtMenuActive = false;
   isCntxtSubMenuActive = false;
   cntxtMenuStyle:Record<string, unknown> = {};
+  cntxtSubMenuStyle:Record<string, unknown> = {};
 
   hasWindow = false;
   icon = 'osdrive/icons/generic-program.ico';
@@ -157,7 +159,6 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
     this.cntxtMenuStyle = {
       'width': '250px', 
-      'height': 'fit-content', 
       'transform':`translate(${String(evt.clientX)}px, ${String(evt.clientY)}px)`,
       'z-index': 2,
       'opacity':1
@@ -183,18 +184,44 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
   showContextSubMenuFast():void{
-    1
+    this.cntxtSubMenuStyle = {
+      'width': '250px', 
+      'display': 'block',
+      'position': 'absolute',
+      'background-color': '#f1f1f1',
+      'z-index': 2,
+      'left':'100%',
+    }
+  }
+
+  showContextSubMenu():void{
+    
+    setTimeout(() => {
+      this.cntxtSubMenuStyle = {
+        'width': '250px', 
+        'display': 'block',
+        'position': 'absolute',
+        'background-color': '#f1f1f1',
+        'z-index': 2,
+        'left':'100%',
+      }
+    }, 750);
+  }
+
+  hideContextSubMenu():void{
+    this.cntxtSubMenuStyle = {
+      'width': '0px', 
+      'height': '0px', 
+      'display': 'none',
+      'position': 'absolute',
+      'z-index': -1,
+    }
   }
 
   previousBackground():void{
-
-    console.log('this.CURRENT_DESTOP_NUM-prev:',this.CURRENT_DESTOP_NUM);
-
     if(this.CURRENT_DESTOP_NUM > this.MIN_NUMS_OF_DESKTOPS){
       this.CURRENT_DESTOP_NUM --;
       const curNum = this.CURRENT_DESTOP_NUM;
-
-      console.log('curNum:',curNum);
       this.buildVantaEffect(curNum);
     }
 
@@ -202,16 +229,9 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
   nextBackground():void{
-
-    console.log('this.CURRENT_DESTOP_NUM-next:',this.CURRENT_DESTOP_NUM);
-
     if(this.CURRENT_DESTOP_NUM < this.MAX_NUMS_OF_DESKTOPS){
       this.CURRENT_DESTOP_NUM ++;
       const curNum = this.CURRENT_DESTOP_NUM;
-
-      console.log('curNum:',curNum);
-
-      console.log('this.CURRENT_DESTOP_NUM-next:',this.CURRENT_DESTOP_NUM);
       this.buildVantaEffect(curNum);
     }
     
@@ -222,7 +242,6 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
     try {
       const vanta = this.VANTAS[n];
-
       if(n == 0){
         this._vantaEffect = VANTA.WAVES(vanta)
       }
@@ -245,7 +264,6 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     }
 
   }
-
 
 
   private getComponentDetail():Process{

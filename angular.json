@@ -21,12 +21,7 @@
               "browserfs",
               "ini",
               "path",
-              "js-dos",
-              "vanta/dist/vanta.waves.min",
-              "vanta/dist/vanta.birds.min",
-              "vanta/dist/vanta.rings.min",
-              "vanta/dist/vanta.globe.min",
-              "vanta/dist/vanta.net.min"
+              "js-dos"
             ],
             "outputPath": "dist/cheetah-os",
             "index": "src/index.html",
@@ -56,7 +51,7 @@
               "./src/scripts/vanta.halo.min.js",
               "./src/scripts/vanta.globe.min.js",
               "./src/scripts/vanta.birds.min.js",
-              "./src/scripts/vanta.rings.min.js"  
+              "./src/scripts/vanta.rings.min.js"
             ]
           },
           "configurations": {

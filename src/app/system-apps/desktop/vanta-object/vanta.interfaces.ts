@@ -32,7 +32,8 @@ export interface BIRDS{
     speedLimit?:5,
     separation?:20,
     alignment?:20,
-    cohesion?:20
+    cohesion?:20,
+    colorMode?: 'lerp' | 'variance' | 'lerpGradient' | 'varianceGradient'
 }
 
 export interface WAVE{

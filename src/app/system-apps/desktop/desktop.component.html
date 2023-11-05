@@ -1,11 +1,16 @@
 <main id="vanta" class="main-desktop"  (contextmenu)="showContextMenu($event)" (click)="hideContextMenu()">
     <div class="vertical-menu" [style]="cntxtMenuStyle" #cntxtMenu>
-        <span class="span container2" (click)="showContextSubMenuFast()" [class.active]>
+        <span class="span container2" (click)="showContextSubMenuFast()" (mouseenter)="showContextSubMenu()" (mouseleave)="hideContextSubMenu()">
             <span class="span head"><figure ></figure></span>
             <span class="span mid">View</span>
-            <span class="span tail"><figure> <img [src]="'osdrive/icons/arrow_next.png'"></figure> </span>
+            <span class="span tail"><figure> <img [src]="'osdrive/icons/arrow_next.png'"></figure></span>
+            <span class="span container2 sub-menu"  [style]="cntxtSubMenuStyle"   #cntxtSubMenu>
+                <a href="#">Link 1</a>
+                <a href="#">Link 2</a>
+                <a href="#">Link 3</a>
+            </span>
         </span>
-        <span class="span container2" (click)="showContextSubMenuFast()" [class.active]>
+        <span class="span container2" (click)="showContextSubMenuFast()">
             <span class="span head"><figure ></figure></span>
             <span class="span mid">Sort by </span>
             <span class="span tail"> <figure> <img [src]="'osdrive/icons/arrow_next.png'"></figure></span>
