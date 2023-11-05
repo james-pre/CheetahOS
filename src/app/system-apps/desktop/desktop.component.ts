@@ -4,23 +4,11 @@ import { ProcessIDService } from 'src/app/shared/system-service/process.id.servi
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { Process } from 'src/app/system-files/process';
-import WAVES from 'vanta/dist/vanta.waves.min';
-import BIRDS from 'vanta/dist/vanta.birds.min';
-// import FOG from 'vanta/dist/vanta.fog.min';
-// import CLOUDS from 'vanta/dist/vanta.clouds.min';
-// import CLOUDS2 from 'vanta/dist/vanta.clouds2.min';
-import GLOBE from 'vanta/dist/vanta.globe.min';
-import NET from 'vanta/dist/vanta.net.min';
-// import CELLS from 'vanta/dist/vanta.cells.min';
-// import TRUNK from 'vanta/dist/vanta.trunk.min';
-// import TOPOLOGY from 'vanta/dist/vanta.topology.min';
-// import DOTS from 'vanta/dist/vanta.dots.min';
-import RINGS from 'vanta/dist/vanta.rings.min';
-//import HALO from 'vanta/dist/vanta.halo.min';
-import * as THREE from 'three';
+import { BIRDS, GLOBE, HALO, RINGS, WAVE } from './vanta-object/vanta.interfaces';
 
-
-
+declare let VANTA: {
+  HALO: any; BIRDS: any;  WAVES: any;  GLOBE: any; RINGS: any; 
+};
 
 @Component({
   selector: 'cos-desktop',
@@ -55,20 +43,18 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   type = ComponentType.systemComponent;
   displayName = '';
 
-  VANTAS = [
-    WAVES,
-    BIRDS,
-    // FOG,
-    // CLOUDS,
-    // CLOUDS2,
-    GLOBE,
-    NET,
-    // CELLS,
-    // TRUNK,
-    // TOPOLOGY,
-    // DOTS,
-    RINGS
-    //HALO
+  waveBkgrnd:WAVE =  {el:'#vanta'}
+  ringsBkgrnd:RINGS =  {el:'#vanta'}
+  haloBkgrnd:HALO =  {el:'#vanta'}
+  globeBkgrnd:GLOBE =  {el:'#vanta'}
+  birdBkgrnd:BIRDS =  {el:'#vanta'}
+
+  VANTAS:any = [
+    this.waveBkgrnd,
+    this.ringsBkgrnd,
+    this.haloBkgrnd,
+    this.globeBkgrnd,
+    this.birdBkgrnd
   ];
 
   private MIN_NUMS_OF_DESKTOPS = 0;
@@ -87,15 +73,14 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
   ngOnInit():void{
-    const vanta = this.VANTAS[0];
-    this._vantaEffect = vanta({
+   
+    this._vantaEffect = VANTA.WAVES({
       el: '#vanta',
       color:this._numSequence,
-      // waveHeight:20,
-      // shininess: 50,
-      // waveSpeed:0.5,
-      // zoom:0.75,   
-      THREE: THREE,    
+      waveHeight:20,
+      shininess: 50,
+      waveSpeed:0.5,
+      zoom:0.75,     
     });
   }
 
@@ -231,15 +216,25 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
   private buildVantaEffect(n:number) {
 
-
-
     try {
       const vanta = this.VANTAS[n];
-      this._vantaEffect = vanta({
-        el: '#vanta',
-        THREE: THREE, // use a custom THREE when initializing
-      });
-      //this._vantaEffect.resizes()
+
+      if(n == 0){
+        this._vantaEffect = VANTA.WAVES(vanta)
+      }
+      if(n == 1){
+        this._vantaEffect = VANTA.RINGS(vanta)
+      }
+      if(n == 2){
+        this._vantaEffect = VANTA.HALO(vanta)
+      }
+      if(n == 3){
+        this._vantaEffect = VANTA.GLOBE(vanta)
+      }
+      if(n == 4){
+        this._vantaEffect = VANTA.BIRDS(vanta)
+      }
+
     } catch (err) {
       console.error('err:',err);
       //this.buildVantaEffect(this.CURRENT_DESTOP_NUM);

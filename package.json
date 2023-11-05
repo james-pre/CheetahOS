@@ -20,7 +20,7 @@
     }
   },
   "lint-staged": {
-    "*.{js,ts}": "eslint --fix"
+    "*.{ts}": "eslint --fix"
   },
   "private": true,
   "dependencies": {
@@ -42,9 +42,7 @@
     "ngx-draggable-resize": "^0.1.1",
     "notyf": "^3.10.0",
     "rxjs": "~7.5.0",
-    "three": "0.124.0",
     "tslib": "^2.3.0",
-    "vanta": "0.5.22",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {

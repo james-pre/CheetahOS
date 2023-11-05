@@ -50,7 +50,13 @@
             ],
             "scripts": [
               "./src/scripts/bundle/index.js",
-              "node_modules/js-dos/dist/js-dos.js"
+              "node_modules/js-dos/dist/js-dos.js",
+              "./src/scripts/three.min.js",
+              "./src/scripts/vanta.waves.min.js",
+              "./src/scripts/vanta.halo.min.js",
+              "./src/scripts/vanta.globe.min.js",
+              "./src/scripts/vanta.birds.min.js",
+              "./src/scripts/vanta.rings.min.js"  
             ]
           },
           "configurations": {
