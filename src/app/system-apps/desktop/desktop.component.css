@@ -44,15 +44,11 @@ span.container2:hover {
     background-color: #ccc; /* Dark grey background on mouse-over */
 }
 
-span.container2.active {
-    background-color: #04AA6D; /* Add a green color to the "active/current" link */
-    color: white;
-}
-
 span.container2.sub-menu-container {
     display: none;
     position: absolute;
     background-color: #f1f1f1;
+    box-shadow: 2px 2px rgba(0,0,0,0.3);
     width: 235px;
     z-index: 2;
     left: 100%;
@@ -70,6 +66,10 @@ span.container2.sub-menu{
     padding: 4px 0;
     text-decoration: none;
     display: inline-flex;
+}
+
+.inactive {
+    color: #6f6c6c;
 }
 
 

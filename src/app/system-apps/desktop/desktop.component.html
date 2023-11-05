@@ -1,12 +1,11 @@
 <main id="vanta" class="main-desktop"  (contextmenu)="showContextMenu($event)" (click)="hideContextMenu()">
     <div class="vertical-menu" [style]="cntxtMenuStyle" #cntxtMenu>
-        <span class="span container2" (click)="showContextSubMenuFast()" (mouseenter)="showContextSubMenu()" (mouseleave)="hideContextSubMenu()">
+        <span class="span container2" (mouseenter)="showContextSubMenu('View')" (mouseleave)="hideContextSubMenu('View')">
             <span class="span head"><figure ></figure></span>
             <span class="span mid">View</span>
             <span class="span tail"><figure> <img [src]="'osdrive/icons/arrow_next.png'"></figure></span>
-
-            
-            <span class="span container2 sub-menu-container"  [style]="cntxtSubMenuStyle"   #cntxtSubMenu>
+     
+            <span class="span container2 sub-menu-container"  [style]="cntxtSubMenuStyle">
                 <span class="container2 sub-menu">
                     <span class="span head"><figure ></figure></span>
                     <span class="span mid">Large icons</span>
@@ -45,10 +44,35 @@
                 </span>
             </span>
         </span>
-        <span class="span container2" (click)="showContextSubMenuFast()">
+
+        <span class="span container2" (mouseenter)="showContextSubMenu('Sort by')" (mouseleave)="hideContextSubMenu('Sort by')">
             <span class="span head"><figure ></figure></span>
             <span class="span mid">Sort by </span>
             <span class="span tail"> <figure> <img [src]="'osdrive/icons/arrow_next.png'"></figure></span>
+
+            <span class="span container2 sub-menu-container"  [style]="cntxtSubMenu1Style">
+                <span class="container2 sub-menu">
+                    <span class="span head"><figure ></figure></span>
+                    <span class="span mid">Name</span>
+                    <span class="span tail"><figure></figure></span>
+                </span>
+                <span class="container2 sub-menu">
+                    <span class="span head"><figure ></figure></span>
+                    <span class="span mid">Size</span>
+                    <span class="span tail"><figure></figure></span>
+                </span>
+                <span class="container2 sub-menu">
+                    <span class="span head"><figure ></figure></span>
+                    <span class="span mid">Item type</span>
+                    <span class="span tail"><figure> </figure></span>
+                </span>
+
+                <span class="container2 sub-menu">
+                    <span class="span head"><figure ></figure></span>
+                    <span class="span mid">Date modified</span>
+                    <span class="span tail"><figure> </figure></span>
+                </span>
+            </span>
         </span>
 
         <span class="span container2">

@@ -21,8 +21,9 @@ declare let VANTA: {
 })
 export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
-  @ViewChild('cntxtMenu') cntxtMenu!: ElementRef;
-  @ViewChild('cntxtSubMenu') cntxtSubMenu!: ElementRef;
+  // @ViewChild('cntxtMenu') cntxtMenu!: ElementRef;
+  // @ViewChild('cntxtSubMenu') cntxtSubMenu!: ElementRef;
+  // @ViewChild('cntxtSub1Menu') cntxtSub1Menu!: ElementRef;
 
   private _renderer: Renderer2;
 
@@ -41,6 +42,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   isCntxtSubMenuActive = false;
   cntxtMenuStyle:Record<string, unknown> = {};
   cntxtSubMenuStyle:Record<string, unknown> = {};
+  cntxtSubMenu1Style:Record<string, unknown> = {};
 
   hasWindow = false;
   icon = 'osdrive/icons/generic-program.ico';
@@ -183,38 +185,44 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     }
   }
 
-  showContextSubMenuFast():void{
-    this.cntxtSubMenuStyle = {
-      'width': '250px', 
+  showContextSubMenu(menuName:string):void{
+
+    const baseStyle = {
+      'width': '235px', 
       'display': 'block',
       'position': 'absolute',
       'background-color': '#f1f1f1',
       'z-index': 2,
       'left':'100%',
     }
-  }
 
-  showContextSubMenu():void{
+    if(menuName ==='View'){
+      setTimeout((baseStyle:any) => {
+        this.cntxtSubMenuStyle = baseStyle
+      }, 750, baseStyle);
+    }
     
-    setTimeout(() => {
-      this.cntxtSubMenuStyle = {
-        'width': '235px', 
-        'display': 'block',
-        'position': 'absolute',
-        'background-color': '#f1f1f1',
-        'z-index': 2,
-        'left':'100%',
-      }
-    }, 750);
+    if(menuName === 'Sort by'){
+      setTimeout((baseStyle:any) => {
+        this.cntxtSubMenu1Style = baseStyle
+      }, 750,baseStyle);
+    }
   }
 
-  hideContextSubMenu():void{
-    this.cntxtSubMenuStyle = {
+  hideContextSubMenu(menuName:string):void{
+   const baseStyle= {
       'width': '0px', 
       'height': '0px', 
       'display': 'none',
       'position': 'absolute',
       'z-index': -1,
+    }
+
+    if(menuName === 'View'){
+      this.cntxtSubMenuStyle = baseStyle
+    }
+    if(menuName === 'Sort by'){
+      this.cntxtSubMenu1Style = baseStyle
     }
   }
 
@@ -224,7 +232,6 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
       const curNum = this.CURRENT_DESTOP_NUM;
       this.buildVantaEffect(curNum);
     }
-
     this.hideContextMenu();
   }
 
