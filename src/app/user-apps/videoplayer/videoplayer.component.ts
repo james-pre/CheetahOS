@@ -67,10 +67,11 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   async ngAfterViewInit() {
     const options = {
+      fluid: true,
+      responsive: true,
       autoplay: true, 
       controls:true,
-      width:"640",
-      height:"264",
+      aspectRatio: '16:9',
       sources: [{ src:'/osdrive/video/test_video.mp4', type: 'video/mp4' }] 
     }
 
