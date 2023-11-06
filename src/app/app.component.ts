@@ -15,6 +15,7 @@ import { TaskmanagerMiniComponent } from './system-apps/taskmanager/taskmanager.
 import { SessionManagmentService } from './shared/system-service/session.management.service';
 import { AppDirectory } from './system-files/app.directory';
 import { JsdosComponent } from './user-apps/jsdos/jsdos.component';
+import { VideoPlayerComponent } from './system-apps/videoplayer/videoplayer.component';
 
 @Component({
   selector: 'cos-root',
@@ -59,6 +60,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
     {type: FileexplorerComponent},
     {type: TaskmanagerComponent},
     {type: TaskmanagerMiniComponent},
+    {type: VideoPlayerComponent},
     {type: TitleComponent},
     {type: GreetingComponent},
     {type: JsdosComponent}

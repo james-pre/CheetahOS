@@ -14,15 +14,17 @@ import { TaskbarentryComponent } from './system-apps/taskbarentry/taskbarentry.c
 import { FileexplorerComponent } from './system-apps/fileexplorer/fileexplorer.component';
 import { WindowComponent } from './system-apps/window/window.component';
 import { FilemanagerComponent } from './system-apps/filemanager/filemanager.component';
-import { HighlightDirective } from './system-apps/window/window.btn.highlight.directives';
-import { FlieManagerHighlightDirective } from './shared/system-directive/file.mngr.highlight.directives';
 import { GreetingComponent } from './user-apps/greeting/greeting.component';
 import { TaskmanagerComponent } from './system-apps/taskmanager/taskmanager.component';
 import { TaskmanagerMiniComponent } from './system-apps/taskmanager/taskmanager.mini.component';
 import { JsdosComponent } from './user-apps/jsdos/jsdos.component';
+import { VideoPlayerComponent } from './system-apps/videoplayer/videoplayer.component';
+
 import { SafeUrlPipe } from './shared/system-pipes/safe.resource.url.pipe';
+
+import { HighlightDirective } from './system-apps/window/window.btn.highlight.directives';
+import { FlieManagerHighlightDirective } from './shared/system-directive/file.mngr.highlight.directives';
 import { TaskBarEntryHighlightDirective } from './shared/system-directive/taskbar.entry.highlight.directives';
-import { VideoPlayerComponent } from './user-apps/videoplayer/videoplayer.component';
 
 
 
