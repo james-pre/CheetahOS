@@ -81,26 +81,27 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
   ngOnInit():void{
-   
-    this._vantaEffect = VANTA.WAVES({
-      el: '#vanta',
-      color:this._numSequence,
-      waveHeight:20,
-      shininess: 50,
-      waveSpeed:0.5,
-      zoom:0.75,     
-    });
+1
+    // this._vantaEffect = VANTA.WAVES({
+    //   el: '#vanta',
+    //   color:this._numSequence,
+    //   // waveHeight:20,
+    //   // shininess: 50,
+    //   // waveSpeed:0.5,
+    //   // zoom:0.75,     
+    // });
   }
 
   ngAfterViewInit():void{
+    
     //interval countdown also 15 second
-     this._timerSubscription = interval(15000) .subscribe(() => {
+    //  this._timerSubscription = interval(15000) .subscribe(() => {
 
-          //console.log("hexColor:",this.getNextColor());
-          this._vantaEffect.setOptions({
-            color: this.getNextColor(),
-          });
-     });
+    //       //console.log("hexColor:",this.getNextColor());
+    //       this._vantaEffect.setOptions({
+    //         color: this.getNextColor(),
+    //       });
+    //  });
 
      this.hideContextMenu();
   }

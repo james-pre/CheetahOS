@@ -52,7 +52,7 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   ngOnInit(): void {
     this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
-    this.name = this._fileInfo.getFileName;
+    //this.name = this._fileInfo.getFileName;
 
     // const myPlayer = videojs('some-player-id');
     // myPlayer.src("http://www.example.com/path/to/video.mp4");

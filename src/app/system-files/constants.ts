@@ -13,4 +13,12 @@ export class Constants{
         '.webp',
         '.xlm'
     ]
+
+
+    VIDEO_FILE_EXTENSIONS = [
+        '.mp4',
+        '.webm',
+        '.ogg',
+        '.mkv'
+    ]
 }

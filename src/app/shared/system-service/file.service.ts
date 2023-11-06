@@ -104,6 +104,15 @@ export class FileService{
                 this._fileInfo.setFileName = sc.geFileName;
                 this._fileInfo.setOpensWith = 'imageviewer';
             }
+            else if(this._consts.VIDEO_FILE_EXTENSIONS.includes(extension)){    
+                const sc = await this.getImageFileB64DataUrlAsync(path) as ShortCut;
+                this._fileInfo.setIcon = sc.getIconFile;
+                this._fileInfo.setCurrentPath = path;
+                this._fileInfo.setDataPath = sc.getShortUrl;
+                this._fileInfo.setFileType = extension;
+                this._fileInfo.setFileName = sc.geFileName;
+                this._fileInfo.setOpensWith = 'videoplayer';
+            }
              else if(extension == '.txt' || extension == '.properties'){
                 this._fileInfo.setIcon = '/osdrive/icons/file.ico';
                 this._fileInfo.setCurrentPath = path;
