@@ -20,12 +20,13 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   @ViewChild('videowindow', {static: true}) videowindow!: ElementRef;
 
-  private _fileService:FileService;
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _triggerProcessService:TriggerProcessService;
   private _fileInfo!:FileInfo;
   private player: any;
+
+  recents:string[] = [];
 
 
   name= 'videoplayer';
@@ -37,8 +38,7 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   showTopMenu = false;
 
 
-  constructor(fileService:FileService, processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService) { 
-    this._fileService = fileService
+  constructor(processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService) { 
     this._processIdService = processIdService;
     this._triggerProcessService = triggerProcessService;
     this.processId = this._processIdService.getNewProcessId();
@@ -79,15 +79,20 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
       sources: [{ src:videoSrc, type: fileType }] 
     }
 
-    // this.player = videojs(this.videowindow.nativeElement, options, function onPlayerReady(){
-    //         console.log('onPlayerReady', "player is read");
-    //   });
+    this.player = videojs(this.videowindow.nativeElement, options, function onPlayerReady(){
+            console.log('onPlayerReady:', "player is read");
+      });
   }
 
   ngOnDestroy(): void {
     if (this.player) {
       this.player.dispose();
     }
+  }
+
+  addToRecentsList(videoPath:string):void{
+    if(!this.recents.includes(videoPath))
+        this.recents.push(videoPath);
   }
 
   setVideoWindowToFocus(pid:number):void{
