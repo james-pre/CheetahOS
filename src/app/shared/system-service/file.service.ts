@@ -94,7 +94,7 @@ export class FileService{
                 this._fileInfo.setFileType = sc.getFileType;
                 this._fileInfo.setFileName = sc.geFileName;
                 this._fileInfo.setOpensWith = sc.getOpensWith;
-             }
+            }
              else if(this._consts.IMAGE_FILE_EXTENSIONS.includes(extension)){    
                 const sc = await this.getImageFileB64DataUrlAsync(path) as ShortCut;
                 this._fileInfo.setIcon = sc.getIconFile;

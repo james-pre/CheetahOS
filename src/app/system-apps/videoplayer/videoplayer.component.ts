@@ -7,10 +7,8 @@ import { Process } from 'src/app/system-files/process';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 import { FileInfo } from 'src/app/system-files/fileinfo';
-// import videojs from 'video.js';
-
 // eslint-disable-next-line no-var
-declare var videojs: (arg0: any, arg1: object, arg2: () => void) => any
+declare var videojs: (arg0: any, arg1: object, arg2: () => void) => any;
 
 
 @Component({
@@ -27,15 +25,16 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   private _runningProcessService:RunningProcessService;
   private _triggerProcessService:TriggerProcessService;
   private _fileInfo!:FileInfo;
-  private player: any ;
-  //player: videojs.Player;
+  private player: any;
+
 
   name= 'videoplayer';
   hasWindow = true;
-  icon = '/osdrive/icons/js-dos-logo.png';
+  icon = '/osdrive/icons/videoplayer.png';
   processId = 0;
   type = ComponentType.userComponent;
   displayName = 'Video-js';
+  showTopMenu = false;
 
 
   constructor(fileService:FileService, processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService) { 
@@ -49,35 +48,46 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   }
 
 
-
   ngOnInit(): void {
     this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
-    //this.name = this._fileInfo.getFileName;
-
-    // const myPlayer = videojs('some-player-id');
-    // myPlayer.src("http://www.example.com/path/to/video.mp4");
   }
 
-  ngOnDestroy(): void {
+  showMenu(): void{
+    this.showTopMenu = true;
 
-    if (this.player) {
-      this.player.dispose();
-    }
+    console.log('show menu')
   }
 
-  async ngAfterViewInit() {
+  openFileExplorer(): void{
+    this.showTopMenu = false;
+  }
+
+  playPrevious():void{
+    this.showTopMenu = false;
+  }
+
+  ngAfterViewInit() {
+    const fileType = 'video/' + this._fileInfo.getFileType.replace('.','');
+    const videoSrc = '/' +this._fileInfo.getDataPath;
+
     const options = {
       fluid: true,
       responsive: true,
       autoplay: true, 
       controls:true,
       aspectRatio: '16:9',
-      sources: [{ src:'/osdrive/video/test_video.mp4', type: 'video/mp4' }] 
+      sources: [{ src:videoSrc, type: fileType }] 
     }
 
-    this.player = videojs(this.videowindow.nativeElement, options, function onPlayerReady(){
-            console.log('onPlayerReady', "player is read");
-      });
+    // this.player = videojs(this.videowindow.nativeElement, options, function onPlayerReady(){
+    //         console.log('onPlayerReady', "player is read");
+    //   });
+  }
+
+  ngOnDestroy(): void {
+    if (this.player) {
+      this.player.dispose();
+    }
   }
 
   setVideoWindowToFocus(pid:number):void{
