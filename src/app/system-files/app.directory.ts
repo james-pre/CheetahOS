@@ -16,7 +16,7 @@ export class AppDirectory {
     }
 
     private fetchSystemApp(): string[]{
-        this._systemProcessList = ['fileexplorer','taskmanager','taskmanagermini','videoplayer'];
+        this._systemProcessList = ['fileexplorer','taskmanager','taskmanagermini','videoplayer','audioplayer'];
         return this._systemProcessList;
     }
 

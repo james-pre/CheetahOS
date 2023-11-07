@@ -2,7 +2,7 @@
 
 Building a Dektop environment in the web browser
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.1.0.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.1.2.
 
 ## Development server
 
@@ -11,6 +11,12 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The appli
 ## Code scaffolding
 
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+
+Run `npm run build` to generate the filesystem(osdrive.json). Once the filesystem is created, update the file by placing all the auto generated content within the tag {"osdrive": .................}.
+
+***Note - npm will throw an error that it is unable to find make_http_index.js. All you have to do, is to got CheetahOs/node_modules/browserfs/dist/scripts and make a copy of make_xhrfs_index.js and rename it to  make_http_index.js
+
+***Note Some other error might occur in browserfs as a result of using newer versions of typescript. You might have to comment out some sections of code.
 
 ## Build
 
