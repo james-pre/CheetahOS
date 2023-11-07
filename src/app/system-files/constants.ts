@@ -21,4 +21,12 @@ export class Constants{
         '.ogg',
         '.mkv'
     ]
+
+
+    AUDIO_FILE_EXTENSIONS = [
+        '.mp3',
+        '.flac',
+        '.aac',
+        '.dolby'
+    ]
 }

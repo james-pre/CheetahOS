@@ -19,12 +19,14 @@ import { TaskmanagerComponent } from './system-apps/taskmanager/taskmanager.comp
 import { TaskmanagerMiniComponent } from './system-apps/taskmanager/taskmanager.mini.component';
 import { JsdosComponent } from './user-apps/jsdos/jsdos.component';
 import { VideoPlayerComponent } from './system-apps/videoplayer/videoplayer.component';
+import { AudioplayerComponent } from './system-apps/audioplayer/audioplayer.component';
 
 import { SafeUrlPipe } from './shared/system-pipes/safe.resource.url.pipe';
 
 import { HighlightDirective } from './system-apps/window/window.btn.highlight.directives';
 import { FlieManagerHighlightDirective } from './shared/system-directive/file.mngr.highlight.directives';
 import { TaskBarEntryHighlightDirective } from './shared/system-directive/taskbar.entry.highlight.directives';
+
 
 
 
@@ -49,7 +51,8 @@ import { TaskBarEntryHighlightDirective } from './shared/system-directive/taskba
     TaskmanagerMiniComponent,
     JsdosComponent,
     SafeUrlPipe,
-    VideoPlayerComponent
+    VideoPlayerComponent,
+    AudioplayerComponent
   ],
   imports: [
     BrowserModule,

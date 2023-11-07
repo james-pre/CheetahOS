@@ -76,6 +76,12 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
       autoplay: true, 
       controls:true,
       aspectRatio: '16:9',
+      controlBar: {
+        skipButtons: {
+          backward: 10,
+          forward: 10
+        }
+      },
       sources: [{ src:videoSrc, type: fileType }] 
     }
 
