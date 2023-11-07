@@ -79,7 +79,7 @@ export class FileService{
 
         if(!extension){
             const sc = await this.getFolderAsync(path) as ShortCut;
-            this._fileInfo.setIcon = sc.getIconFile;
+            this._fileInfo.setIcon = this.changeFolderIcon(sc.geFileName,sc.getIconFile);
             this._fileInfo.setCurrentPath = path;
             this._fileInfo.setFileType = sc.getFileType;
             this._fileInfo.setFileName = sc.geFileName;
@@ -292,5 +292,19 @@ export class FileService{
     public uint8ToBase64(arr:Uint8Array):string{
         const base64String = btoa(String.fromCharCode(...new Uint8Array(arr)));
         return base64String;
+    }
+
+    private changeFolderIcon(fileName:string, iconPath:string):string{
+
+        if(fileName === 'audio_'){
+            return '/osdrive/icons/music_folder.ico';
+        }else if(fileName === 'video_'){
+            return '/osdrive/icons/movie_folder.ico';
+
+        }else if(fileName === 'picture_'){
+            return '/osdrive/icons/picture_folder.ico';
+        }
+
+        return iconPath;
     }
 }

@@ -53,7 +53,9 @@
               "./src/scripts/backgrounds/vanta.globe.min.js",
               "./src/scripts/backgrounds/vanta.birds.min.js",
               "./src/scripts/backgrounds/vanta.rings.min.js",
-              "./src/scripts/videoplayer/video.min.js"
+              "./src/scripts/videoplayer/video.min.js",
+              "./src/scripts/audioplayer/howler.min.js",
+              "./src/scripts/audioplayer/siriwave.umd.min.js"
             ]
           },
           "configurations": {
