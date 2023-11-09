@@ -88,7 +88,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
     this.siriWave = new SiriWave({
       container: this.siriContainer.nativeElement,
       width: 640,
-      height: 200,
+      height: 300,
     });
   }
 
