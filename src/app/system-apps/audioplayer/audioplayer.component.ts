@@ -67,6 +67,39 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   ngOnInit(): void {
     this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
+
+    const audioSrc = '/' +this._fileInfo.getDataPath;
+
+    this.audioPlayer = new Howl({
+      src: [audioSrc],
+      format:['mp3'],
+      autoplay: false,
+      loop: false,
+      volume: 0.5,
+      // html5: true,
+      preload: true,
+      onplay: function() {
+        // Display the duration.
+        // this.duration = self.formatTime(Math.round(this.audioPlayer.duration()));
+
+        //console.log(this.audioPlayer.duration())
+
+        // Start updating the progress of the track.
+        //requestAnimationFrame(self.step.bind(self));
+
+        // Start the wave animation if we have already loaded
+        // wave.container.style.display = 'block';
+        // bar.style.display = 'none';
+        // pauseBtn.style.display = 'block';
+      },
+
+      onend: function() {
+        console.log('Finished!');
+      },
+      onload: function(){
+        console.log('load!');
+      }
+    });
   }
 
   showMenu(): void{
@@ -85,40 +118,50 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   ngAfterViewInit() {
     const fileType = 'video/' + this._fileInfo.getFileType.replace('.','');
-    const audioSrc = '/' +this._fileInfo.getDataPath;
+  
 
-    this.audioPlayer = new Howl({
-      src: [audioSrc],
-      autoplay: false,
-      loop: false,
-      volume: 0.5,
-      html5: true,
-      onplay: function() {
-        // Display the duration.
-        // this.duration = self.formatTime(Math.round(this.audioPlayer.duration()));
+    // const id1 = this.audioPlayer.play()
+    // console.log('id1:',id1);
+    this.audioPlayer.load()
+    // console.log('audioPlayer:',this.audioPlayer)
+    // console.log(this.audioPlayer.duration());
+    // console.log(this.audioPlayer.state());
 
-        console.log('duration:',Math.round(this.audioPlayer))
+    // if(this.audioPlayer.state() === 'loading'){
+    //   console.log('was up')
+    // }
 
-        // Start updating the progress of the track.
-        //requestAnimationFrame(self.step.bind(self));
+    // const id1 = this.audioPlayer.play()
+    // console.log('id1:',id1);
+    // console.log('duration:',Math.round(this.audioPlayer.duration(id1)))
 
-        // Start the wave animation if we have already loaded
-        // wave.container.style.display = 'block';
-        // bar.style.display = 'none';
-        // pauseBtn.style.display = 'block';
-      },
-      onend: function() {
-        console.log('Finished!');
-      }
-    });
-
-    this.audioPlayer.play();
+      //this.audioPlayer.load()
+    //this.audioPlayer.play();
 
     this.siriWave = new SiriWave({
       container: this.siriContainer.nativeElement,
       width: 640,
       height: 300,
+      autostart: false,
     });
+
+    // setTimeout(function(data){ 
+    //   console.log('data:',data)
+    //   if(data.state() === 'loaded'){
+    //     console.log('was up 1')
+    //     console.log(data.duration());
+    //   }
+    // }, 500, this.audioPlayer);
+
+
+    setTimeout(()=>{
+      if(this.audioPlayer.state() === 'loaded'){
+        const duration = this.audioPlayer.duration();
+        this.duration = this.secondToMinutesAndSeconds(duration);
+        console.log(this.duration)
+      }
+    },500);
+
   }
 
 
@@ -130,6 +173,13 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
     if (this.audioPlayer) {
       this.audioPlayer.unload();
     }
+  }
+
+  secondToMinutesAndSeconds(seconds:number):string{
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds - (mins * 60));
+
+    return `${mins}:${secs}`
   }
 
   addToRecentsList(videoPath:string):void{
