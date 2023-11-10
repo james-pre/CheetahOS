@@ -2,5 +2,5 @@
 FileName=surf_video
 IconFile=/osdrive/icons/video.ico
 FileType=.mp4
-ShortUrl=osdrive/video_/surfs.mp4
+ShortUrl=osdrive/video/surfs.mp4
 OpensWith=videoplayer

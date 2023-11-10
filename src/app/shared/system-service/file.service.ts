@@ -296,12 +296,12 @@ export class FileService{
 
     private changeFolderIcon(fileName:string, iconPath:string):string{
 
-        if(fileName === 'audio_'){
+        if(fileName === 'audio'){
             return '/osdrive/icons/music_folder.ico';
-        }else if(fileName === 'video_'){
+        }else if(fileName === 'video'){
             return '/osdrive/icons/movie_folder.ico';
 
-        }else if(fileName === 'picture_'){
+        }else if(fileName === 'picture'){
             return '/osdrive/icons/picture_folder.ico';
         }
 

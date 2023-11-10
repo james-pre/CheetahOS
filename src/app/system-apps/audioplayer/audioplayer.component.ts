@@ -92,7 +92,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
       autoplay: false,
       loop: false,
       volume: 0.5,
-      preload: true,
+      html5: true,
       onplay: function() {
         // Display the duration.
         // this.duration = self.formatTime(Math.round(this.audioPlayer.duration()));

@@ -17,7 +17,7 @@ export class TitleComponent implements BaseComponent{
   private _runningProcessService;
 
   hasWindow = true;
-  icon = 'osdrive/picture/favicon.ico';
+  icon = 'osdrive/picture/favicon_nice.png';
   name = 'hello';
   processId = 0;
   type = ComponentType.userComponent;
