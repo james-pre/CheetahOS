@@ -20,6 +20,15 @@ declare let SiriWave:any;
 export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, AfterViewInit  {
 
   @ViewChild('siriContainer', {static: true}) siriContainer!: ElementRef;
+  // @ViewChild('playBtn', {static: true}) playBtn!: ElementRef;
+  // @ViewChild('pauseBtn', {static: true}) pauseBtn!: ElementRef;
+  // @ViewChild('siriContainer', {static: true}) siriContainer!: ElementRef;
+  // @ViewChild('siriContainer', {static: true}) siriContainer!: ElementRef;
+  // @ViewChild('siriContainer', {static: true}) siriContainer!: ElementRef;
+  // @ViewChild('siriContainer', {static: true}) siriContainer!: ElementRef;
+  // @ViewChild('siriContainer', {static: true}) siriContainer!: ElementRef;
+  // @ViewChild('siriContainer', {static: true}) siriContainer!: ElementRef;v
+  // @ViewChild('siriContainer', {static: true}) siriContainer!: ElementRef;
 
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
@@ -39,6 +48,11 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   type = ComponentType.userComponent;
   displayName = 'Howlerjs';
   showTopMenu = false;
+
+
+  track = 'WAP';
+  timer ='0:00';
+  duration = '0:00' 
 
 
   constructor(processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService) { 
@@ -75,9 +89,24 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
     this.audioPlayer = new Howl({
       src: [audioSrc],
-      autoplay: true,
-      loop: true,
+      autoplay: false,
+      loop: false,
       volume: 0.5,
+      preload: true,
+      onplay: function() {
+        // Display the duration.
+        // this.duration = self.formatTime(Math.round(this.audioPlayer.duration()));
+
+        console.log('duration:',Math.round(this.audioPlayer))
+
+        // Start updating the progress of the track.
+        //requestAnimationFrame(self.step.bind(self));
+
+        // Start the wave animation if we have already loaded
+        // wave.container.style.display = 'block';
+        // bar.style.display = 'none';
+        // pauseBtn.style.display = 'block';
+      },
       onend: function() {
         console.log('Finished!');
       }
@@ -90,6 +119,11 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
       width: 640,
       height: 300,
     });
+  }
+
+
+  onPlayBtnClicked(){
+    this.audioPlayer.play();
   }
 
   ngOnDestroy(): void {

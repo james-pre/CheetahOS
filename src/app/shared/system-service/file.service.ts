@@ -106,7 +106,7 @@ export class FileService{
             }
             else if(this._consts.VIDEO_FILE_EXTENSIONS.includes(extension)){    
                 const sc = await this.getImageFileB64DataUrlAsync(path) as ShortCut;
-                this._fileInfo.setIcon = '/osdrive/icons/audio.ico';
+                this._fileInfo.setIcon = '/osdrive/icons/video.ico';
                 this._fileInfo.setCurrentPath = path;
                 this._fileInfo.setDataPath = sc.getShortUrl;
                 this._fileInfo.setFileType = extension;
@@ -114,7 +114,7 @@ export class FileService{
                 this._fileInfo.setOpensWith = 'videoplayer';
             }else if(this._consts.AUDIO_FILE_EXTENSIONS.includes(extension)){    
                 const sc = await this.getImageFileB64DataUrlAsync(path) as ShortCut;
-                this._fileInfo.setIcon = '/osdrive/icons/video.ico';
+                this._fileInfo.setIcon = '/osdrive/icons/audio.ico';
                 this._fileInfo.setCurrentPath = path;
                 this._fileInfo.setDataPath = sc.getShortUrl;
                 this._fileInfo.setFileType = extension;
