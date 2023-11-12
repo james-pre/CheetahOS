@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FileService } from 'src/app/shared/system-service/file.service';
 import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
@@ -20,10 +19,11 @@ declare let SiriWave:any;
 export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, AfterViewInit  {
 
   @ViewChild('siriContainer', {static: true}) siriContainer!: ElementRef;
-  // @ViewChild('playBtn', {static: true}) playBtn!: ElementRef;
-  // @ViewChild('pauseBtn', {static: true}) pauseBtn!: ElementRef;
-  // @ViewChild('siriContainer', {static: true}) siriContainer!: ElementRef;
-  // @ViewChild('siriContainer', {static: true}) siriContainer!: ElementRef;
+  @ViewChild('playBtn', {static: true}) playBtn!: ElementRef;
+  @ViewChild('pauseBtn', {static: true}) pauseBtn!: ElementRef;
+  @ViewChild('progress', {static: true}) progress!: ElementRef;
+  @ViewChild('bar', {static: true}) bar!: ElementRef;
+  @ViewChild('loading', {static: true}) loading!: ElementRef;
   // @ViewChild('siriContainer', {static: true}) siriContainer!: ElementRef;
   // @ViewChild('siriContainer', {static: true}) siriContainer!: ElementRef;
   // @ViewChild('siriContainer', {static: true}) siriContainer!: ElementRef;
@@ -67,8 +67,18 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   ngOnInit(): void {
     this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
-
     const audioSrc = '/' +this._fileInfo.getDataPath;
+
+    this.siriWave = new SiriWave({
+      container: this.siriContainer.nativeElement,
+      width: 640,
+      height: 480,
+      autostart: false,
+      cover: true,
+      speed: 0.03,
+      amplitude: 0.7,
+      frequency: 2
+    });
 
     this.audioPlayer = new Howl({
       src: [audioSrc],
@@ -78,26 +88,21 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
       volume: 0.5,
       // html5: true,
       preload: true,
-      onplay: function() {
-        // Display the duration.
-        // this.duration = self.formatTime(Math.round(this.audioPlayer.duration()));
-
-        //console.log(this.audioPlayer.duration())
-
-        // Start updating the progress of the track.
-        //requestAnimationFrame(self.step.bind(self));
-
-        // Start the wave animation if we have already loaded
-        // wave.container.style.display = 'block';
-        // bar.style.display = 'none';
-        // pauseBtn.style.display = 'block';
-      },
-
-      onend: function() {
+      onend:()=>{
         console.log('Finished!');
       },
-      onload: function(){
+      onload:()=>{
         console.log('load!');
+
+        if(this.audioPlayer.state() === 'loaded'){
+          const duration = this.audioPlayer.duration();
+          this.duration = this.formatTime(duration);
+        }
+
+        // // Start the wave animation if we have already loaded
+        // this.siriContainer.nativeElement.style.display = 'block';
+        // this.bar.nativeElement.style.display = 'none';
+        // this.pauseBtn.nativeElement.style.display = 'block';
       }
     });
   }
@@ -116,58 +121,55 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
     this.showTopMenu = false;
   }
 
-  ngAfterViewInit() {
-    const fileType = 'video/' + this._fileInfo.getFileType.replace('.','');
-  
-
-    // const id1 = this.audioPlayer.play()
-    // console.log('id1:',id1);
-    this.audioPlayer.load()
-    // console.log('audioPlayer:',this.audioPlayer)
-    // console.log(this.audioPlayer.duration());
-    // console.log(this.audioPlayer.state());
-
-    // if(this.audioPlayer.state() === 'loading'){
-    //   console.log('was up')
-    // }
-
-    // const id1 = this.audioPlayer.play()
-    // console.log('id1:',id1);
-    // console.log('duration:',Math.round(this.audioPlayer.duration(id1)))
-
-      //this.audioPlayer.load()
-    //this.audioPlayer.play();
-
-    this.siriWave = new SiriWave({
-      container: this.siriContainer.nativeElement,
-      width: 640,
-      height: 300,
-      autostart: false,
-    });
-
-    // setTimeout(function(data){ 
-    //   console.log('data:',data)
-    //   if(data.state() === 'loaded'){
-    //     console.log('was up 1')
-    //     console.log(data.duration());
+  ngAfterViewInit() {  
+    1
+    // // console.log('audioPlayer:',this.audioPlayer)
+    // setTimeout(()=>{
+    //   if(this.audioPlayer.state() === 'loaded'){
+    //     const duration = this.audioPlayer.duration();
+    //     this.duration = this.formatTime(duration);
     //   }
-    // }, 500, this.audioPlayer);
-
-
-    setTimeout(()=>{
-      if(this.audioPlayer.state() === 'loaded'){
-        const duration = this.audioPlayer.duration();
-        this.duration = this.secondToMinutesAndSeconds(duration);
-        console.log(this.duration)
-      }
-    },500);
-
+    // },500);
   }
-
 
   onPlayBtnClicked(){
+    console.log('What is this:',this);
+    console.log('this.audioPlayer.state():',this.audioPlayer.state());
+
+    // Display the duration.
+    this.duration = this.formatTime(this.audioPlayer.duration());
+
+    // Start updating the progress of the track.
+    requestAnimationFrame(this.updatePlayBackPosition.bind(this))
+
+
+    // Start the wave animation if we have already loaded
+    //this.siriContainer.nativeElement.style.display = 'block';
+    this.siriWave.start();
+    this.bar.nativeElement.style.display = 'none';
+    this.pauseBtn.nativeElement.style.display = 'block';
+    this.playBtn.nativeElement.style.display = 'none';
+
     this.audioPlayer.play();
   }
+
+  onPauseBtnClicked(){
+    //this.siriContainer.nativeElement.style.display = 'block';
+    this.siriWave.stop();
+    this.bar.nativeElement.style.display = 'block';
+    this.pauseBtn.nativeElement.style.display = 'none';
+    this.playBtn.nativeElement.style.display = 'block';
+    this.audioPlayer.pause();
+  }
+
+  onPrevBtnClicked(){
+    this.audioPlayer.play();
+  }
+
+  onNextBtnClicked(){
+    this.audioPlayer.play();
+  }
+
 
   ngOnDestroy(): void {
     if (this.audioPlayer) {
@@ -175,21 +177,49 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
     }
   }
 
-  secondToMinutesAndSeconds(seconds:number):string{
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds - (mins * 60));
+  formatTime(seconds:number):string{
+    const mins = Math.floor(seconds / 60) || 0;
+    const secs = Math.floor(seconds - (mins * 60)) || 0;
 
-    return `${mins}:${secs}`
+    //return `${mins}:${secs < 10 ? '0' : ''}`
+    return mins + ':' + (secs < 10 ? '0' : '') + secs;
   }
 
-  addToRecentsList(videoPath:string):void{
-    if(!this.recents.includes(videoPath))
-        this.recents.push(videoPath);
+  addToRecentsList(audioPath:string):void{
+    if(!this.recents.includes(audioPath))
+        this.recents.push(audioPath);
   }
 
-  setAudi0WindowToFocus(pid:number):void{
+  setAudioWindowToFocus(pid:number):void{
     this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
   }
+
+
+  resizeSiriWave(){
+    const height = window.innerHeight * 0.3;
+    const width = window.innerWidth;
+    this.siriWave.height = height;
+    this.siriWave.height_2 = height / 2;
+    this.siriWave.MAX = this.siriWave.height_2 - 4;
+    this.siriWave.width = width;
+    this.siriWave.width_2 = width / 2;
+    this.siriWave.width_4 = width / 4;
+    this.siriWave.canvas.height = height;
+    this.siriWave.canvas.width = width;
+    this.siriWave.container.style.margin = -(height / 2) + 'px auto';
+  }
+
+
+  updatePlayBackPosition(){
+    const seek = this.audioPlayer.seek() || 0;
+    this.timer = this.formatTime(Math.round(seek));
+    this.progress.nativeElement.style.width =  (((seek / this.audioPlayer.duration()) * 100) || 0) + '%';
+
+    if(this.audioPlayer.playing()){
+      requestAnimationFrame(this.updatePlayBackPosition.bind(this));
+    }
+  }
+
 
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type, this._triggerProcessService.getLastProcessTrigger)
