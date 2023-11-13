@@ -55,7 +55,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   showTopMenu = false;
 
 
-  track = '';
+  track = 'N/A';
   timer ='0:00';
   duration = '0:00' ;
 
