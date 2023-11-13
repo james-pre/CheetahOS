@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { ComponentType } from 'src/app/system-files/component.types';
+import {extname, basename} from 'path';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { Process } from 'src/app/system-files/process';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
@@ -18,17 +19,18 @@ declare let SiriWave:any;
 })
 export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, AfterViewInit  {
 
-  @ViewChild('siriContainer', {static: true}) siriContainer!: ElementRef;
+  @ViewChild('waveForm', {static: true}) waveForm!: ElementRef;
   @ViewChild('playBtn', {static: true}) playBtn!: ElementRef;
   @ViewChild('pauseBtn', {static: true}) pauseBtn!: ElementRef;
+  @ViewChild('prevBtn', {static: true}) prevBtn!: ElementRef;
+  @ViewChild('nextBtn', {static: true}) nextBtn!: ElementRef;
+  @ViewChild('playlistBtn', {static: true}) playlistBtn!: ElementRef;
   @ViewChild('progress', {static: true}) progress!: ElementRef;
   @ViewChild('bar', {static: true}) bar!: ElementRef;
   @ViewChild('loading', {static: true}) loading!: ElementRef;
-  // @ViewChild('siriContainer', {static: true}) siriContainer!: ElementRef;
-  // @ViewChild('siriContainer', {static: true}) siriContainer!: ElementRef;
-  // @ViewChild('siriContainer', {static: true}) siriContainer!: ElementRef;
-  // @ViewChild('siriContainer', {static: true}) siriContainer!: ElementRef;v
-  // @ViewChild('siriContainer', {static: true}) siriContainer!: ElementRef;
+
+  // @ViewChild('waveForm', {static: true}) waveForm!: ElementRef;v
+  // @ViewChild('waveForm', {static: true}) waveForm!: ElementRef;
 
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
@@ -37,8 +39,11 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   private audioPlayer: any;
   private siriWave: any;
+  private waveFormIsVisible = false;
 
+  playList:string[] = [];
   recents:string[] = [];
+
 
 
   name= 'audioplayer';
@@ -50,11 +55,12 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   showTopMenu = false;
 
 
-  track = 'WAP';
+  track = '';
   timer ='0:00';
-  duration = '0:00' 
+  duration = '0:00' ;
 
 
+ 
   constructor(processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService) { 
     this._processIdService = processIdService;
     this._triggerProcessService = triggerProcessService;
@@ -67,10 +73,9 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   ngOnInit(): void {
     this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
-    const audioSrc = '/' +this._fileInfo.getDataPath;
 
     this.siriWave = new SiriWave({
-      container: this.siriContainer.nativeElement,
+      container: this.waveForm.nativeElement,
       width: 640,
       height: 480,
       autostart: false,
@@ -79,47 +84,11 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
       amplitude: 0.7,
       frequency: 2
     });
-
-    this.audioPlayer = new Howl({
-      src: [audioSrc],
-      format:['mp3'],
-      autoplay: false,
-      loop: false,
-      volume: 0.5,
-      // html5: true,
-      preload: true,
-      onend:()=>{
-        console.log('Finished!');
-        this.siriWave.canvas.style.opacity = 0;
-        this.bar.nativeElement.style.display = 'block';
-        this.pauseBtn.nativeElement.style.display = 'none';
-        this.playBtn.nativeElement.style.display = 'block';
     
-        this.siriWave.stop();
-      },
-      onload:()=>{
-        console.log('load!');
-
-        if(this.audioPlayer.state() === 'loaded'){
-          const duration = this.audioPlayer.duration();
-          this.duration = this.formatTime(duration);
-        }
-
-        // // Start the wave animation if we have already loaded
-        // this.siriContainer.nativeElement.style.display = 'block';
-        // this.bar.nativeElement.style.display = 'none';
-        // this.pauseBtn.nativeElement.style.display = 'block';
-      },
-      onseek:()=>{
-        // Start updating the progress of the track.
-        requestAnimationFrame(this.updatePlayBackPosition.bind(this));
-      }
-    });
   }
 
   showMenu(): void{
     this.showTopMenu = true;
-
     console.log('show menu')
   }
 
@@ -131,66 +100,101 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
     this.showTopMenu = false;
   }
 
-  ngAfterViewInit() {  
+  ngAfterViewInit():void{  
     1
-    // // console.log('audioPlayer:',this.audioPlayer)
+    // the audio src can't be overwritten, use this when you want to create a playlist later
+    // this.audioPlayer.src = []
+    // console.log('audioPlayer:',this.audioPlayer)
     // setTimeout(()=>{
     //   if(this.audioPlayer.state() === 'loaded'){
     //     const duration = this.audioPlayer.duration();
     //     this.duration = this.formatTime(duration);
     //   }
     // },500);
+
+
+      const audioSrc  = '/' +this._fileInfo.getDataPath
+
+    // console.log('file info:', basename(audioSrc, extname(audioSrc)));
+    // console.log('extname:',extname(audioSrc));
+
+
+    if(audioSrc  === '/' && this.playList.length == 0){
+      this.audioPlayer = new Howl({
+        src: '',
+        autoplay: false,
+        loop: false,
+        preload:false
+      });
+    }
+
+    if(audioSrc  !== '/' && this.playList.length == 0){
+      this.loadHowlSingleTrackObjectAsync(audioSrc)
+      .then(howl => {
+        this.audioPlayer = howl;
+        console.log('this.audioPlayer:',this.audioPlayer);
+      })
+      .catch(error => {
+        console.error('Error loading track:', error);
+      });
+    }
+  
+    if((audioSrc !== '/' && this.playList.length >= 1) || (audioSrc  === '/' && this.playList.length >= 1)){
+      1
+    }
+
   }
 
-  onPlayBtnClicked(){
-    // console.log('What is this:',this);
-    // console.log('this.audioPlayer.state():',this.audioPlayer.state());
-    // Start the wave animation if we have already loaded
-    //this.siriContainer.nativeElement.style.display = 'block';
-
-    // Display the duration.
-    //this.duration = this.formatTime(this.audioPlayer.duration());
-
+  onPlayBtnClicked():void{
     this.siriWave.canvas.style.opacity = 1;
     this.bar.nativeElement.style.display = 'none';
+    this.waveForm.nativeElement.style.display = 'block';
     this.pauseBtn.nativeElement.style.display = 'block';
     this.playBtn.nativeElement.style.display = 'none';
 
     this.siriWave.start();
     this.audioPlayer.play();
 
+    this.waveFormIsVisible = !this.waveFormIsVisible;
     // Start updating the progress of the track.
     requestAnimationFrame(this.updatePlayBackPosition.bind(this));
   }
 
-  onPauseBtnClicked(){
-    //this.siriContainer.nativeElement.style.display = 'block';
-    // console.log('this.siriContainer:',this.siriContainer);
-    // console.log('this.siriWave.canvas:',this.siriWave.canvas);
-
-
+  onPauseBtnClicked():void{
     this.siriWave.canvas.style.opacity = 0;
     this.bar.nativeElement.style.display = 'block';
+    this.waveForm.nativeElement.style.display = 'none';
     this.pauseBtn.nativeElement.style.display = 'none';
     this.playBtn.nativeElement.style.display = 'block';
 
     this.siriWave.stop();
     this.audioPlayer.pause();
+    this.waveFormIsVisible = !this.waveFormIsVisible;
   }
 
-  onPrevBtnClicked(){
-    this.audioPlayer.play();
+  onPrevBtnClicked():void{
+
+    if(this.playList.length > 0)
+      this.audioPlayer.play();
   }
 
-  onNextBtnClicked(){
-    this.audioPlayer.play();
+  onNextBtnClicked():void{
+
+    if(this.playList.length > 0)
+      this.audioPlayer.play();
   }
 
+  onWaveFormClicked(evt:MouseEvent):void{
 
-  ngOnDestroy(): void {
-    if (this.audioPlayer) {
-      this.audioPlayer.unload();
+    if(this.waveFormIsVisible){
+      console.log('window.innerWidth:',window.innerWidth);
+      console.log('evt.clientX:',evt.clientX);
     }
+
+  }
+
+  ngOnDestroy():void{
+    this.audioPlayer?.unload();
   }
 
   formatTime(seconds:number):string{
@@ -208,8 +212,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
     this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
   }
 
-
-  resizeSiriWave(){
+  resizeSiriWave():void{
     const height = window.innerHeight * 0.3;
     const width = window.innerWidth;
     this.siriWave.height = height;
@@ -223,8 +226,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
     this.siriWave.container.style.margin = -(height / 2) + 'px auto';
   }
 
-
-  updatePlayBackPosition(){
+  updatePlayBackPosition():void{
     const seek = this.audioPlayer.seek() || 0;
     this.timer = this.formatTime(Math.round(seek));
     this.progress.nativeElement.style.width =  (((seek / this.audioPlayer.duration()) * 100) || 0) + '%';
@@ -234,6 +236,94 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
     }
   }
 
+  onSeek(per:number):void{
+    // Convert the percent into a seek position.
+    if (this.audioPlayer.playing()) {
+      this.audioPlayer.seek(this.audioPlayer.duration() * per);
+    }
+  }
+
+
+  loadHowlSingleTrackObjectAsync(audioSrc:string): Promise<any> {
+
+    // Your asynchronous code here
+    return new Promise<any>((resolve, reject) => {
+     
+      const audioPlayer = new Howl({
+        src:['/osdrive/audio/titanium.mp3'],
+        autoplay: false,
+        loop: false,
+        volume: 0.5,
+        preload: true,
+        onend:()=>{
+          console.log('Finished!');
+          this.siriWave.canvas.style.opacity = 0;
+          this.bar.nativeElement.style.display = 'block';
+          this.pauseBtn.nativeElement.style.display = 'none';
+          this.playBtn.nativeElement.style.display = 'block';
+      
+          this.siriWave.stop();
+        },
+        onload:()=>{
+          console.log('loaded!');
+          const duration =audioPlayer.duration();
+          this.duration = this.formatTime(duration);
+          this.track = basename(audioSrc, extname(audioSrc))
+          resolve(audioPlayer);
+        },
+        onseek:()=>{
+          // Start updating the progress of the track.
+          requestAnimationFrame(this.updatePlayBackPosition.bind(this));
+        },
+        onloaderror:(err:any)=>{
+          console.log('there are problem:',err);
+          reject(err);
+        }
+      });
+    });
+  }
+
+  loadHowlPlayListObjectAsync(audioSrc:string): Promise<any> {
+
+    return new Promise<any>((resolve, reject) => { 
+      this.track = basename(audioSrc, extname(audioSrc))
+      const ext = extname(audioSrc)
+
+      const audioPlayer = new Howl({
+        src: [audioSrc],
+        format:[ext],
+        autoplay: false,
+        loop: false,
+        volume: 0.5,
+        preload: false,
+        autoSuspend: false,
+        onend:()=>{
+          console.log('Finished!');
+          this.siriWave.canvas.style.opacity = 0;
+          this.bar.nativeElement.style.display = 'block';
+          this.pauseBtn.nativeElement.style.display = 'none';
+          this.playBtn.nativeElement.style.display = 'block';
+      
+          this.siriWave.stop();
+        },
+        onload:()=>{
+          console.log('loaded!');
+            const duration =audioPlayer.duration();
+            this.duration = this.formatTime(duration);
+
+            resolve(audioPlayer);
+        },
+        onseek:()=>{
+          // Start updating the progress of the track.
+          requestAnimationFrame(this.updatePlayBackPosition.bind(this));
+        },
+        onloaderror:(err:any)=>{
+          console.log('there are problem:',err);
+          reject(err);
+        }
+      });
+    });
+  }
 
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type, this._triggerProcessService.getLastProcessTrigger)
