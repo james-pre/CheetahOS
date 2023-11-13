@@ -90,6 +90,12 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
       preload: true,
       onend:()=>{
         console.log('Finished!');
+        this.siriWave.canvas.style.opacity = 0;
+        this.bar.nativeElement.style.display = 'block';
+        this.pauseBtn.nativeElement.style.display = 'none';
+        this.playBtn.nativeElement.style.display = 'block';
+    
+        this.siriWave.stop();
       },
       onload:()=>{
         console.log('load!');
@@ -103,6 +109,10 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
         // this.siriContainer.nativeElement.style.display = 'block';
         // this.bar.nativeElement.style.display = 'none';
         // this.pauseBtn.nativeElement.style.display = 'block';
+      },
+      onseek:()=>{
+        // Start updating the progress of the track.
+        requestAnimationFrame(this.updatePlayBackPosition.bind(this));
       }
     });
   }
@@ -133,32 +143,38 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   }
 
   onPlayBtnClicked(){
-    console.log('What is this:',this);
-    console.log('this.audioPlayer.state():',this.audioPlayer.state());
-
-    // Display the duration.
-    this.duration = this.formatTime(this.audioPlayer.duration());
-
-    // Start updating the progress of the track.
-    requestAnimationFrame(this.updatePlayBackPosition.bind(this))
-
-
+    // console.log('What is this:',this);
+    // console.log('this.audioPlayer.state():',this.audioPlayer.state());
     // Start the wave animation if we have already loaded
     //this.siriContainer.nativeElement.style.display = 'block';
-    this.siriWave.start();
+
+    // Display the duration.
+    //this.duration = this.formatTime(this.audioPlayer.duration());
+
+    this.siriWave.canvas.style.opacity = 1;
     this.bar.nativeElement.style.display = 'none';
     this.pauseBtn.nativeElement.style.display = 'block';
     this.playBtn.nativeElement.style.display = 'none';
 
+    this.siriWave.start();
     this.audioPlayer.play();
+
+    // Start updating the progress of the track.
+    requestAnimationFrame(this.updatePlayBackPosition.bind(this));
   }
 
   onPauseBtnClicked(){
     //this.siriContainer.nativeElement.style.display = 'block';
-    this.siriWave.stop();
+    // console.log('this.siriContainer:',this.siriContainer);
+    // console.log('this.siriWave.canvas:',this.siriWave.canvas);
+
+
+    this.siriWave.canvas.style.opacity = 0;
     this.bar.nativeElement.style.display = 'block';
     this.pauseBtn.nativeElement.style.display = 'none';
     this.playBtn.nativeElement.style.display = 'block';
+
+    this.siriWave.stop();
     this.audioPlayer.pause();
   }
 
@@ -180,8 +196,6 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   formatTime(seconds:number):string{
     const mins = Math.floor(seconds / 60) || 0;
     const secs = Math.floor(seconds - (mins * 60)) || 0;
-
-    //return `${mins}:${secs < 10 ? '0' : ''}`
     return mins + ':' + (secs < 10 ? '0' : '') + secs;
   }
 

@@ -18,10 +18,9 @@
 }  
 
 .basic-info-container{
-    position: absolute;
+    position: relative;
     width: 100%;
-    height: 50px;
-    top: 30px;
+    min-height: 40px;
     /* background-color: gray; */
     display: flex;
 }
@@ -29,7 +28,7 @@
 .timer {
     position: relative;
     width: 20%;
-    height: 30px;
+    min-height: 30px;
     padding-left: 3%;
     padding-top: 15px;
     text-align: left;
@@ -45,7 +44,7 @@
 .track {
     position: relative;
     width: 60%;
-    height: 30px;
+    min-height: 30px;
     padding-top: 15px;
     text-align: center;
     font-size: 30px;
@@ -59,7 +58,7 @@
 .duration {
     position: relative;
     width: 20%;
-    height: 30px;
+    min-height: 30px;
     padding-top: 15px;
     padding-right: 3%;
     text-align: right;

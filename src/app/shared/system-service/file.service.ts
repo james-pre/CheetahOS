@@ -119,7 +119,7 @@ export class FileService{
                 this._fileInfo.setDataPath = sc.getShortUrl;
                 this._fileInfo.setFileType = extension;
                 this._fileInfo.setFileName = sc.geFileName;
-                this._fileInfo.setOpensWith = 'videoplayer';
+                this._fileInfo.setOpensWith = 'audioplayer';
             }
              else if(extension == '.txt' || extension == '.properties'){
                 this._fileInfo.setIcon = '/osdrive/icons/file.ico';
@@ -223,7 +223,6 @@ export class FileService{
         });
     }
 
-    
     public async writeFilesAsync(directory:string, files:File[]):Promise<void>{
 
         new Promise<void>((resolve, reject) =>{
