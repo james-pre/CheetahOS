@@ -20,6 +20,7 @@ declare let SiriWave:any;
 export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, AfterViewInit  {
 
   @ViewChild('waveForm', {static: true}) waveForm!: ElementRef;
+  @ViewChild('audioContainer', {static: true}) audioContainer!: ElementRef; 
   @ViewChild('playBtn', {static: true}) playBtn!: ElementRef;
   @ViewChild('pauseBtn', {static: true}) pauseBtn!: ElementRef;
   @ViewChild('prevBtn', {static: true}) prevBtn!: ElementRef;
@@ -29,8 +30,11 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   @ViewChild('bar', {static: true}) bar!: ElementRef;
   @ViewChild('loading', {static: true}) loading!: ElementRef;
 
-  // @ViewChild('waveForm', {static: true}) waveForm!: ElementRef;v
-  // @ViewChild('waveForm', {static: true}) waveForm!: ElementRef;
+  @ViewChild('volumeBtn', {static: true}) volumeBtn!: ElementRef;
+  @ViewChild('volumeSlider', {static: true}) volumeSlider!: ElementRef;
+  @ViewChild('barFull', {static: true}) barFull!: ElementRef;
+  @ViewChild('barEmpty', {static: true}) barEmpty!: ElementRef;
+  @ViewChild('sliderBtn', {static: true}) sliderBtn!: ElementRef;
 
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
@@ -39,7 +43,8 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   private audioPlayer: any;
   private siriWave: any;
-  private waveFormIsVisible = false;
+  private isSliderDown = false;
+
 
   playList:string[] = [];
   recents:string[] = [];
@@ -142,11 +147,13 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
     if((audioSrc !== '/' && this.playList.length >= 1) || (audioSrc  === '/' && this.playList.length >= 1)){
       1
     }
+  }
 
+  ngOnDestroy():void{
+    this.audioPlayer?.unload();
   }
 
   onPlayBtnClicked():void{
-    this.siriWave.canvas.style.opacity = 1;
     this.bar.nativeElement.style.display = 'none';
     this.waveForm.nativeElement.style.display = 'block';
     this.pauseBtn.nativeElement.style.display = 'block';
@@ -155,13 +162,12 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
     this.siriWave.start();
     this.audioPlayer.play();
 
-    this.waveFormIsVisible = !this.waveFormIsVisible;
     // Start updating the progress of the track.
     requestAnimationFrame(this.updatePlayBackPosition.bind(this));
   }
 
   onPauseBtnClicked():void{
-    this.siriWave.canvas.style.opacity = 0;
+
     this.bar.nativeElement.style.display = 'block';
     this.waveForm.nativeElement.style.display = 'none';
     this.pauseBtn.nativeElement.style.display = 'none';
@@ -169,7 +175,6 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
     this.siriWave.stop();
     this.audioPlayer.pause();
-    this.waveFormIsVisible = !this.waveFormIsVisible;
   }
 
   onPrevBtnClicked():void{
@@ -201,16 +206,64 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   }
 
   onWaveFormClicked(evt:MouseEvent):void{
-    if(this.waveFormIsVisible){
-      console.log('window.innerWidth:',window.innerWidth);
-      console.log('evt.clientX:',evt.clientX);
+    const rect =  this.audioContainer.nativeElement.getBoundingClientRect();
+    const boundedClinetX = evt.clientX - rect.left;
+
+    const innerWidth = this.waveForm.nativeElement.offsetWidth;
+    this.onSeek(boundedClinetX/ innerWidth);
+  }
+
+  onVolumeBtnClicked():void{
+    const display = (this.volumeSlider.nativeElement.style.display === 'block') ? 'none' : 'block';
+    setTimeout(()=> {
+      this.volumeSlider.nativeElement.style.display = display;
+    }, (display === 'block') ? 0 : 500);
+    this.volumeSlider.nativeElement.className = (display === 'block') ? 'fadein' : 'fadeout';
+  }
+
+  onVolumeSliderBtnClicked():void{
+    const display = (this.volumeSlider.nativeElement.style.display === 'block') ? 'none' : 'block';
+    setTimeout(()=> {
+      this.volumeSlider.nativeElement.style.display = display;
+    }, (display === 'block') ? 0 : 500);
+    this.volumeSlider.nativeElement.className = (display === 'block') ? 'fadein' : 'fadeout';
+  }
+
+  changeVolume(val:number):void{
+    const rect =  this.audioContainer.nativeElement.getBoundingClientRect();
+    const barWidth = (val * 90) / 100;
+    this.barFull.nativeElement.style.width = (barWidth * 100) + '%';
+    this.sliderBtn.nativeElement.style.left = (rect.width * barWidth + rect.width * 0.05 - 25) + 'px';
+  }
+
+  onBarEmptyClick(evt:MouseEvent):void{
+    const scrollWidth = this.barEmpty.nativeElement.scrollWidth;
+    const per = evt.offsetX / parseFloat(scrollWidth);
+    this.changeVolume(per);
+  }
+
+  onMousDownSliderBtn():void{
+    this.isSliderDown = true;
+  }
+
+  onVolumeMouseUp():void{
+    this.isSliderDown = false;
+  }
+
+
+  onVolumeMouseMove(evt:MouseEvent):void{
+    if(this.isSliderDown){
+      const rect =  this.audioContainer.nativeElement.getBoundingClientRect();
+      const boundedClinetX = evt.clientX - rect.left;
+
+      const x = boundedClinetX;
+      const startX = parseInt(rect.width) * 0.05;
+      const layerX = x - startX;
+      const per = Math.min(1, Math.max(0, layerX / parseFloat(this.barEmpty.nativeElement.scrollWidth)));
+      this.changeVolume(per);
     }
-
   }
 
-  ngOnDestroy():void{
-    this.audioPlayer?.unload();
-  }
 
   formatTime(seconds:number):string{
     const mins = Math.floor(seconds / 60) || 0;
@@ -252,6 +305,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   }
 
   onSeek(per:number):void{
+    console.log('percent:',per);
     // Convert the percent into a seek position.
     if (this.audioPlayer.playing()) {
       this.audioPlayer.seek(this.audioPlayer.duration() * per);
@@ -272,11 +326,12 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
         preload: true,
         onend:()=>{
           console.log('Finished!');
-          this.siriWave.canvas.style.opacity = 0;
+
           this.bar.nativeElement.style.display = 'block';
+          this.waveForm.nativeElement.style.display = 'none';
           this.pauseBtn.nativeElement.style.display = 'none';
           this.playBtn.nativeElement.style.display = 'block';
-      
+          
           this.siriWave.stop();
         },
         onload:()=>{

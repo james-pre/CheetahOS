@@ -22,7 +22,7 @@ import {
     constructor(private el: ElementRef) {
       const mousedown = fromEvent<MouseEvent>(el.nativeElement,'mousedown').pipe(
         filter((event) => event.button == 0), // Only allow left button (Primary button)
-        map((event) => true) // turn on threshold counter
+        map((event:any) => true) // turn on threshold counter
       );
     //   const touchstart = fromEvent(elementRef.nativeElement, 'touchstart').pipe(
     //     map(() => true)

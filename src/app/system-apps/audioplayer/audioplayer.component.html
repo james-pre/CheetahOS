@@ -1,5 +1,5 @@
 <cos-window [runningProcessID]="this.processId" [processAppIcon]="this.icon" [processAppName]="this.name" (click)="setAudioWindowToFocus(this.processId)">
-  <div class="body" #siriContainer>
+  <div class="body" #audioContainer>
     <!-- Top Info -->
     <div class="basic-info-container">
       <div class="timer">{{timer}}</div>
@@ -17,12 +17,12 @@
         <div class="btn nextBtn" (click) ="onNextBtnClicked()"  longPress (mouseLongPress)="onFastForward()"  #nextBtn></div>
       </div>
       <div class="btn playlistBtn" #playlistBtn></div>
-      <div class="btn volumeBtn" #volumeBtn></div>
+      <div class="btn volumeBtn" (click) ="onVolumeBtnClicked()" #volumeBtn></div>
     </div>
 
     <!-- Progress -->
     <div class="waveform" (click) ="onWaveFormClicked($event)"  #waveForm></div>
-    <div class="bar" #bar></div>
+    <div class="pause-bar" #bar></div>
     <div class="progress" #progress></div>
 
       <!-- Playlist -->
@@ -31,10 +31,10 @@
     </div>
 
     <!-- Volume -->
-    <div id="volume" class="fadeout">
-      <div id="barFull" class="bar"></div>
-      <div id="barEmpty" class="bar"></div>
-      <div id="sliderBtn"></div>
+    <div  class="volume" (mousemove)="onVolumeMouseMove($event)"  (mouseup)="onVolumeMouseUp()"  #volumeSlider>
+      <div class="volume-bar barFull"  #barFull></div>
+      <div class="volume-bar barEmpty"  (click)="onBarEmptyClick($event)"  #barEmpty></div>
+      <div class="sliderBtn" (mousedown)="onMousDownSliderBtn()"   #sliderBtn></div>
     </div>
   </div>
 </cos-window>
