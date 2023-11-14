@@ -26,6 +26,7 @@ import { SafeUrlPipe } from './shared/system-pipes/safe.resource.url.pipe';
 import { HighlightDirective } from './system-apps/window/window.btn.highlight.directives';
 import { FlieManagerHighlightDirective } from './shared/system-directive/file.mngr.highlight.directives';
 import { TaskBarEntryHighlightDirective } from './shared/system-directive/taskbar.entry.highlight.directives';
+import { LongPressDirective } from './system-apps/audioplayer/long.press.directive';
 
 
 
@@ -43,16 +44,18 @@ import { TaskBarEntryHighlightDirective } from './shared/system-directive/taskba
     FileexplorerComponent,
     WindowComponent,
     FilemanagerComponent,
-    HighlightDirective,
-    FlieManagerHighlightDirective,
-    TaskBarEntryHighlightDirective,
     GreetingComponent,
     TaskmanagerComponent,
     TaskmanagerMiniComponent,
     JsdosComponent,
     SafeUrlPipe,
     VideoPlayerComponent,
-    AudioPlayerComponent
+    AudioPlayerComponent,
+
+    HighlightDirective,
+    FlieManagerHighlightDirective,
+    TaskBarEntryHighlightDirective,
+    LongPressDirective,
   ],
   imports: [
     BrowserModule,

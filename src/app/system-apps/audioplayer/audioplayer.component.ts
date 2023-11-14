@@ -43,7 +43,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   playList:string[] = [];
   recents:string[] = [];
-
+  value = 10;
 
 
   name= 'audioplayer';
@@ -173,19 +173,34 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   }
 
   onPrevBtnClicked():void{
-
     if(this.playList.length > 0)
       this.audioPlayer.play();
+  }
+
+  onRewind():void{
+    const secs = 10
+    let timeToSeek = this.audioPlayer.seek() - secs;
+    timeToSeek = timeToSeek <= 0 ? 0 : timeToSeek;
+    this.audioPlayer.seek(timeToSeek);
   }
 
   onNextBtnClicked():void{
-
     if(this.playList.length > 0)
       this.audioPlayer.play();
   }
 
-  onWaveFormClicked(evt:MouseEvent):void{
+  onFastForward():void{
+    const secs = 10
+    const timeToSeek = this.audioPlayer.seek() + secs;
 
+    if ( timeToSeek >= this.audioPlayer.duration()) {
+      this.audioPlayer.stop();
+    } else {
+      this.audioPlayer.seek(timeToSeek);
+    }
+  }
+
+  onWaveFormClicked(evt:MouseEvent):void{
     if(this.waveFormIsVisible){
       console.log('window.innerWidth:',window.innerWidth);
       console.log('evt.clientX:',evt.clientX);

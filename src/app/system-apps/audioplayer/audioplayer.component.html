@@ -13,28 +13,28 @@
         <div class="loading"  #loading></div>
         <div class="btn playBtn" (click) ="onPlayBtnClicked()" #playBtn></div>
         <div class="btn pauseBtn" (click) ="onPauseBtnClicked()" #pauseBtn></div>
-        <div class="btn prevBtn" (click) ="onPrevBtnClicked()" #prevBtn></div>
-        <div class="btn nextBtn" (click) ="onNextBtnClicked()" #nextBtn></div>
+        <div class="btn prevBtn" (click) ="onPrevBtnClicked()"  longPress (mouseLongPress)="onRewind()" #prevBtn></div>
+        <div class="btn nextBtn" (click) ="onNextBtnClicked()"  longPress (mouseLongPress)="onFastForward()"  #nextBtn></div>
       </div>
       <div class="btn playlistBtn" #playlistBtn></div>
       <div class="btn volumeBtn" #volumeBtn></div>
     </div>
 
-      <!-- Progress -->
-      <div class="waveform" (click) ="onWaveFormClicked($event)"  #waveForm></div>
-      <div class="bar" #bar></div>
-      <div class="progress" #progress></div>
+    <!-- Progress -->
+    <div class="waveform" (click) ="onWaveFormClicked($event)"  #waveForm></div>
+    <div class="bar" #bar></div>
+    <div class="progress" #progress></div>
 
       <!-- Playlist -->
-      <!-- <div id="playlist">
-        <div id="list"></div>
-      </div> -->
+    <div id="playlist">
+      <div id="list"></div>
+    </div>
 
     <!-- Volume -->
-    <!-- <div id="volume" class="fadeout">
+    <div id="volume" class="fadeout">
       <div id="barFull" class="bar"></div>
       <div id="barEmpty" class="bar"></div>
       <div id="sliderBtn"></div>
-    </div> -->
+    </div>
   </div>
 </cos-window>
