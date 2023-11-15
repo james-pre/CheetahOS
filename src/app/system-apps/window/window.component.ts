@@ -133,6 +133,7 @@ import {openCloseAnimation, hideShowAnimation, minimizeMaximizeAnimation} from '
       if(this.windowMaximize){
         if(windowState.getPid == this.processId){
           this.setWindowToFullScreen(this.processId, windowState.getZIndex);
+          this._runningProcessService.maximizeWindowNotify.next();
         }
       }
       else if(!this.windowMaximize){
