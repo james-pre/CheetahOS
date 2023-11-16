@@ -15,23 +15,10 @@
     width: 250px; /* Set a width if you like */
     box-shadow: 2px 2px rgba(0,0,0,0.3);
     z-index:2;
-}
-  
-span{
-    display: block;
+
 }
 
-span.container{
-    max-height: 1px;
-    background-color: #eee; /* Grey background color */
-}
-
-span.section-line{
-    border: 1px solid #afadad; /* Add a border to col-md-6 */
-    margin: 0 8px;
-}
-
-span.container2{
+.vertical-menu-item{
     height: fit-content;
     padding: 4px 0; /* Add some padding */
     background-color: #eee; /* Grey background color */
@@ -40,11 +27,24 @@ span.container2{
     z-index:2;
 }
 
-span.container2:hover {
-    background-color: #ccc; /* Dark grey background on mouse-over */
+.line-container{
+    max-height: 1px;
+    background-color: #eee; /* Grey background color */
 }
 
-span.container2.sub-menu-container {
+.line{
+    border: 1px solid #afadad; /* Add a border to col-md-6 */
+    margin: 0 8px;
+}
+
+.vertical-sub-menu{
+    float: left;
+    overflow: hidden;
+    width: 100%;
+}
+
+
+.vertical-sub-menu-content{
     display: none;
     position: absolute;
     background-color: #f1f1f1;
@@ -56,21 +56,100 @@ span.container2.sub-menu-container {
 }
 
 
-span.container2.sub-menu-container:hover {
+
+.vertical-sub-menu:hover .vertical-sub-menu-content {
     display: block;
-    z-index: 2;
 }
 
-span.container2.sub-menu{
+.vertical-sub-menu-content  .vertical-menu-item:hover{
+    background-color: orange;
+}
+
+
+.vertical-span-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  
+
+.vertical-menu a:hover {
+    background-color: #ccc; /* Dark grey background on mouse-over */
+}
+
+
+.vertical-menu .vertical-menu-item:hover {
+    background-color: red; /* Dark grey background on mouse-over */
+}
+
+.vertical-menu a.active {
+    background-color: #04AA6D; /* Add a green color to the "active/current" link */
+    color: white;
+}
+
+
+
+
+
+span{
+    display: block;
+}
+
+.dropdown {
+    float: left;
+    overflow: hidden;
+  }
+  
+.dropdown .dropbtn {
+font-size: 16px;  
+border: none;
+outline: none;
+color: white;
+padding: 14px 16px;
+background-color: inherit;
+font-family: inherit;
+margin: 0;
+}
+  
+  .dropdown:hover .dropbtn {
+    background-color: red;
+  }
+
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    left:100%;
+    top:0;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+  
+.dropdown-content a {
+    float: none;
     color: black;
-    padding: 4px 0;
+    padding: 12px 16px;
     text-decoration: none;
-    display: inline-flex;
+    display: block;
+    text-align: left;
 }
 
-.inactive {
-    color: #6f6c6c;
+.dropdown-content a:hover {
+    background-color: #ddd;
 }
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+
+
+  
 
 
 span.head{

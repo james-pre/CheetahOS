@@ -177,54 +177,54 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
   hideContextMenu():void{
     
-    this.cntxtMenuStyle = {
-      'width': '0px', 
-      'height': '0px', 
-      'transform': 'translate(-100000px, 100000px)',
-      'z-index': -1,
-      'opacity':0
-    }
+    // this.cntxtMenuStyle = {
+    //   'width': '0px', 
+    //   'height': '0px', 
+    //   'transform': 'translate(-100000px, 100000px)',
+    //   'z-index': -1,
+    //   'opacity':0
+    // }
   }
 
   showContextSubMenu(menuName:string):void{
 
-    const baseStyle = {
-      'width': '235px', 
-      'display': 'block',
-      'position': 'absolute',
-      'background-color': '#f1f1f1',
-      'z-index': 2,
-      'left':'100%',
-    }
+    // const baseStyle = {
+    //   'width': '235px', 
+    //   'display': 'block',
+    //   'position': 'absolute',
+    //   'background-color': '#f1f1f1',
+    //   'z-index': 2,
+    //   'left':'100%',
+    // }
 
-    if(menuName ==='View'){
-      setTimeout((baseStyle:any) => {
-        this.cntxtSubMenuStyle = baseStyle
-      }, 750, baseStyle);
-    }
+    // if(menuName ==='View'){
+    //   setTimeout((baseStyle:any) => {
+    //     this.cntxtSubMenuStyle = baseStyle
+    //   }, 750, baseStyle);
+    // }
     
-    if(menuName === 'Sort by'){
-      setTimeout((baseStyle:any) => {
-        this.cntxtSubMenu1Style = baseStyle
-      }, 750,baseStyle);
-    }
+    // if(menuName === 'Sort by'){
+    //   setTimeout((baseStyle:any) => {
+    //     this.cntxtSubMenu1Style = baseStyle
+    //   }, 750,baseStyle);
+    // }
   }
 
   hideContextSubMenu(menuName:string):void{
-   const baseStyle= {
-      'width': '0px', 
-      'height': '0px', 
-      'display': 'none',
-      'position': 'absolute',
-      'z-index': -1,
-    }
+  //  const baseStyle= {
+  //     'width': '0px', 
+  //     'height': '0px', 
+  //     'display': 'none',
+  //     'position': 'absolute',
+  //     'z-index': -1,
+  //   }
 
-    if(menuName === 'View'){
-      this.cntxtSubMenuStyle = baseStyle
-    }
-    if(menuName === 'Sort by'){
-      this.cntxtSubMenu1Style = baseStyle
-    }
+  //   if(menuName === 'View'){
+  //     this.cntxtSubMenuStyle = baseStyle
+  //   }
+  //   if(menuName === 'Sort by'){
+  //     this.cntxtSubMenu1Style = baseStyle
+  //   }
   }
 
   previousBackground():void{
