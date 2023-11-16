@@ -31,7 +31,7 @@
     </div>
 
     <!-- Volume -->
-    <div  class="volume" (mousemove)="onVolumeMouseMove($event)"  (mouseup)="onVolumeMouseUp()"  #volumeSlider>
+    <div  class="volume fadeout" (mousemove)="onVolumeMouseMove($event)"  (mouseup)="onVolumeMouseUp()"  #volumeSlider>
       <div class="volume-bar barFull"  #barFull></div>
       <div class="volume-bar barEmpty"  (click)="onBarEmptyClick($event)"  #barEmpty></div>
       <div class="sliderBtn" (mousedown)="onMousDownSliderBtn()"   #sliderBtn></div>

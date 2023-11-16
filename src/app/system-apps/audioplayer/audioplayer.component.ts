@@ -45,11 +45,8 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   private siriWave: any;
   private isSliderDown = false;
 
-
   playList:string[] = [];
   recents:string[] = [];
-  value = 10;
-
 
   name= 'audioplayer';
   hasWindow = true;
@@ -59,11 +56,9 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   displayName = 'Howlerjs';
   showTopMenu = false;
 
-
   track = 'N/A';
   timer ='0:00';
   duration = '0:00' ;
-
 
  
   constructor(processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService) { 
@@ -94,7 +89,6 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   showMenu(): void{
     this.showTopMenu = true;
-    console.log('show menu')
   }
 
   openFileExplorer(): void{
@@ -106,23 +100,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   }
 
   ngAfterViewInit():void{  
-    1
-    // the audio src can't be overwritten, use this when you want to create a playlist later
-    // this.audioPlayer.src = []
-    // console.log('audioPlayer:',this.audioPlayer)
-    // setTimeout(()=>{
-    //   if(this.audioPlayer.state() === 'loaded'){
-    //     const duration = this.audioPlayer.duration();
-    //     this.duration = this.formatTime(duration);
-    //   }
-    // },500);
-
-
-      const audioSrc  = '/' +this._fileInfo.getDataPath
-
-    // console.log('file info:', basename(audioSrc, extname(audioSrc)));
-    // console.log('extname:',extname(audioSrc));
-
+    const audioSrc  = '/' +this._fileInfo.getDataPath
 
     if(audioSrc  === '/' && this.playList.length == 0){
       this.audioPlayer = new Howl({
@@ -137,7 +115,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
       this.loadHowlSingleTrackObjectAsync(audioSrc)
       .then(howl => {
         this.audioPlayer = howl;
-        console.log('this.audioPlayer:',this.audioPlayer);
+        //console.log('this.audioPlayer:',this.audioPlayer);
       })
       .catch(error => {
         console.error('Error loading track:', error);
@@ -281,8 +259,9 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   }
 
   resizeSiriWave():void{
-    const height = window.innerHeight * 0.3;
-    const width = window.innerWidth;
+    const rect =  this.audioContainer.nativeElement.getBoundingClientRect();
+    const height = rect.height * 0.3;
+    const width = rect.width;
     this.siriWave.height = height;
     this.siriWave.height_2 = height / 2;
     this.siriWave.MAX = this.siriWave.height_2 - 4;
@@ -292,6 +271,12 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
     this.siriWave.canvas.height = height;
     this.siriWave.canvas.width = width;
     this.siriWave.container.style.margin = -(height / 2) + 'px auto';
+
+    if(this.audioPlayer){
+      const volume = this.audioPlayer.volume();
+      const barWidth = (volume * 0.9);
+      this.sliderBtn.nativeElement.style.left = (rect.width * barWidth + rect.width * 0.05 - 25) + 'px';
+    }
   }
 
   updatePlayBackPosition():void{
@@ -305,7 +290,6 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   }
 
   onSeek(per:number):void{
-    console.log('percent:',per);
     // Convert the percent into a seek position.
     if (this.audioPlayer.playing()) {
       this.audioPlayer.seek(this.audioPlayer.duration() * per);
@@ -317,16 +301,13 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
     // Your asynchronous code here
     return new Promise<any>((resolve, reject) => {
-     
       const audioPlayer = new Howl({
-        src:['/osdrive/audio/titanium.mp3'],
+        src:[audioSrc],
         autoplay: false,
         loop: false,
         volume: 0.5,
         preload: true,
         onend:()=>{
-          console.log('Finished!');
-
           this.bar.nativeElement.style.display = 'block';
           this.waveForm.nativeElement.style.display = 'none';
           this.pauseBtn.nativeElement.style.display = 'none';
@@ -335,7 +316,6 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
           this.siriWave.stop();
         },
         onload:()=>{
-          console.log('loaded!');
           const duration =audioPlayer.duration();
           this.duration = this.formatTime(duration);
           this.track = basename(audioSrc, extname(audioSrc))
@@ -346,7 +326,6 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
           requestAnimationFrame(this.updatePlayBackPosition.bind(this));
         },
         onloaderror:(err:any)=>{
-          console.log('there are problem:',err);
           reject(err);
         }
       });
