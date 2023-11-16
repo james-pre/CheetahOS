@@ -177,25 +177,25 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
   hideContextMenu():void{
     
-    // this.cntxtMenuStyle = {
-    //   'width': '0px', 
-    //   'height': '0px', 
-    //   'transform': 'translate(-100000px, 100000px)',
-    //   'z-index': -1,
-    //   'opacity':0
-    // }
+    this.cntxtMenuStyle = {
+      'width': '0px', 
+      'height': '0px', 
+      'transform': 'translate(-100000px, 100000px)',
+      'z-index': -1,
+      'opacity':0
+    }
   }
 
   showContextSubMenu(menuName:string):void{
 
-    // const baseStyle = {
-    //   'width': '235px', 
-    //   'display': 'block',
-    //   'position': 'absolute',
-    //   'background-color': '#f1f1f1',
-    //   'z-index': 2,
-    //   'left':'100%',
-    // }
+    this.cntxtMenuStyle = {
+      'width': '235px', 
+      'display': 'block',
+      'position': 'absolute',
+      'background-color': '#f1f1f1',
+      'z-index': 2,
+      'left':'100%',
+    }
 
     // if(menuName ==='View'){
     //   setTimeout((baseStyle:any) => {

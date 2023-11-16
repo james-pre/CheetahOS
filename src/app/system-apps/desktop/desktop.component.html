@@ -1,8 +1,91 @@
  <main id="vanta" class="main-desktop" (contextmenu)="showContextMenu($event)" (click)="hideContextMenu()">
     <div class="vertical-menu" [style]="cntxtMenuStyle" #cntxtMenu>
 
-        <!-- <a href="#home">Home</a>
-        <a href="#news">News</a> -->
+        <div class="vertical-sub-menu" >
+            <div class="vertical-menu-item">
+                <span class="span head"><figure ></figure></span>
+                <span class="span mid">View</span>
+                <span class="span tail"><figure> <img [src]="'osdrive/icons/arrow_next.png'"></figure></span>
+            </div>
+     
+            <div class="vertical-sub-menu-content" >
+                <div class="vertical-menu-item">
+                    <span class="span head"><figure ></figure></span>
+                    <span class="span mid">Large icons</span>
+                    <span class="span tail"><figure></figure></span>
+                </div>
+                <div class="vertical-menu-item">
+                    <span class="span head"><figure ></figure></span>
+                    <span class="span mid">Medium icons</span>
+                    <span class="span tail"><figure></figure></span>
+                </div>
+                <div class="vertical-menu-item">
+                    <span class="span head"><figure ></figure></span>
+                    <span class="span mid">Small icon</span>
+                    <span class="span tail"><figure> </figure></span>
+                </div>
+
+                <div class="line-container"><div class="line"></div></div>
+
+                <div class="vertical-menu-item">
+                    <span class="span head"><figure ></figure></span>
+                    <span class="span mid">Auto arrange icons</span>
+                    <span class="span tail"><figure></figure></span>
+                </div>
+                <div class="vertical-menu-item">
+                    <span class="span head"><figure ></figure></span>
+                    <span class="span mid">Align icons to grid</span>
+                    <span class="span tail"><figure></figure></span>
+                </div>
+
+                <div class="line-container"><div class="line"></div></div>
+
+                <div class="vertical-menu-item">
+                    <span class="span head"><figure ></figure></span>
+                    <span class="span mid">Show desktop icons</span>
+                    <span class="span tail"><figure></figure></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="vertical-sub-menu">
+            <div class="vertical-menu-item">
+                <span class="span head"><figure ></figure></span>
+                <span class="span mid">Sort by </span>
+                <span class="span tail"> <figure> <img [src]="'osdrive/icons/arrow_next.png'"></figure></span>
+            </div>
+            <div class="vertical-sub-menu-content">
+                <div class="vertical-menu-item">
+                    <span class="span head"><figure ></figure></span>
+                    <span class="span mid">Name</span>
+                    <span class="span tail"><figure></figure></span>
+                </div>
+                <div class="vertical-menu-item">
+                    <span class="span head"><figure ></figure></span>
+                    <span class="span mid">Size</span>
+                    <span class="span tail"><figure></figure></span>
+                </div>
+                <div class="vertical-menu-item">
+                    <span class="span head"><figure ></figure></span>
+                    <span class="span mid">Item type</span>
+                    <span class="span tail"><figure> </figure></span>
+                </div>
+
+                <div class="vertical-menu-item">
+                    <span class="span head"><figure ></figure></span>
+                    <span class="span mid">Date modified</span>
+                    <span class="span tail"><figure> </figure></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="vertical-menu-item">
+            <span class="span head"> <figure > </figure></span>
+            <span class="span mid">Refresh</span>
+            <span class="span tail"> <figure> </figure> </span>
+        </div>
+
+        <div class="line-container"><div class="line"></div></div>
 
         <div class="vertical-menu-item" (click)="nextBackground()">
             <span class="span head"> <figure > </figure></span>
@@ -10,183 +93,19 @@
             <span class="span tail"> <figure> </figure> </span>
         </div>
 
-        <div class="line-container"><div class="line"></div></div>
-
         <div class="vertical-menu-item" (click)="previousBackground()">
             <span class="span head"> <figure > </figure></span>
             <span class="span mid">Previous Background</span>
             <span class="span tail"> <figure> </figure> </span>
         </div>
 
-        <!-- <div class="dropdown">
-            <button class="dropbtn">Dropdown </button>
-            <div class="dropdown-content">
-              <a href="#">Link 1</a>
-              <a href="#">Link 2</a>
-              <a href="#">Link 3</a>
-            </div>
-        </div>  -->
+        <div class="line-container"><div class="line"></div></div>
 
-
-        <div class="vertical-sub-menu">
-            <div class="vertical-menu-item">
-                <span class="span head"> <figure > </figure></span>
-                <span class="span mid">New</span>
-                <span class="span tail"> <figure> </figure> </span>
-            </div>
-            <div class="vertical-sub-menu-content">
-                <div class="vertical-menu-item" >
-                    <span class="span head"> <figure > </figure></span>
-                    <span class="span mid">Hello</span>
-                    <span class="span tail"> <figure> </figure> </span>
-                </div>
-
-                <div class="vertical-menu-item" >
-                    <span class="span head"> <figure > </figure></span>
-                    <span class="span mid">Yoyo</span>
-                    <span class="span tail"> <figure> </figure> </span>
-                </div>
-
-                <div class="vertical-menu-item" >
-                    <span class="span head"> <figure > </figure></span>
-                    <span class="span mid">Yoyo 1</span>
-                    <span class="span tail"> <figure> </figure> </span>
-                </div>
-            </div>
-        </div> 
-
-
-
-        <!-- <span class="span container2">
-            <span class="span head"><figure ></figure></span>
-            <span class="span mid">View</span>
-            <span class="span tail"><figure> <img [src]="'osdrive/icons/arrow_next.png'"></figure></span>
-     
-            <span class="span container2 sub-menu-container">
-                <span class="container2 sub-menu">
-                    <span class="span head"><figure ></figure></span>
-                    <span class="span mid">Large icons</span>
-                    <span class="span tail"><figure></figure></span>
-                </span>
-                <span class="container2 sub-menu">
-                    <span class="span head"><figure ></figure></span>
-                    <span class="span mid">Medium icons</span>
-                    <span class="span tail"><figure></figure></span>
-                </span>
-                <span class="container2 sub-menu">
-                    <span class="span head"><figure ></figure></span>
-                    <span class="span mid">Small icon</span>
-                    <span class="span tail"><figure> </figure></span>
-                </span>
-            </span>
-        </span> -->
-
-
-
-
-
-        <!-- <span class="span container2" (mouseenter)="showContextSubMenu('View')" (mouseleave)="hideContextSubMenu('View')">
-            <span class="span head"><figure ></figure></span>
-            <span class="span mid">View</span>
-            <span class="span tail"><figure> <img [src]="'osdrive/icons/arrow_next.png'"></figure></span>
-     
-            <span class="span container2 sub-menu-container"  [style]="cntxtSubMenuStyle">
-                <span class="container2 sub-menu">
-                    <span class="span head"><figure ></figure></span>
-                    <span class="span mid">Large icons</span>
-                    <span class="span tail"><figure></figure></span>
-                </span>
-                <span class="container2 sub-menu">
-                    <span class="span head"><figure ></figure></span>
-                    <span class="span mid">Medium icons</span>
-                    <span class="span tail"><figure></figure></span>
-                </span>
-                <span class="container2 sub-menu">
-                    <span class="span head"><figure ></figure></span>
-                    <span class="span mid">Small icon</span>
-                    <span class="span tail"><figure> </figure></span>
-                </span>
-
-                <span class="span container"><span class="span section-line" style="height:1px;"></span></span>
-
-                <span class="container2 sub-menu">
-                    <span class="span head"><figure ></figure></span>
-                    <span class="span mid">Auto arrange icons</span>
-                    <span class="span tail"><figure></figure></span>
-                </span>
-                <span class="container2 sub-menu">
-                    <span class="span head"><figure ></figure></span>
-                    <span class="span mid">Align icons to grid</span>
-                    <span class="span tail"><figure></figure></span>
-                </span>
-
-                <span class="span container"><span class="span section-line"></span></span>
-
-                <span class="container2 sub-menu">
-                    <span class="span head"><figure ></figure></span>
-                    <span class="span mid">Show desktop icons</span>
-                    <span class="span tail"><figure></figure></span>
-                </span>
-            </span>
-        </span> -->
-
-        <!-- <span class="span container2" (mouseenter)="showContextSubMenu('Sort by')" (mouseleave)="hideContextSubMenu('Sort by')">
-            <span class="span head"><figure ></figure></span>
-            <span class="span mid">Sort by </span>
-            <span class="span tail"> <figure> <img [src]="'osdrive/icons/arrow_next.png'"></figure></span>
-
-            <span class="span container2 sub-menu-container"  [style]="cntxtSubMenu1Style">
-                <span class="container2 sub-menu">
-                    <span class="span head"><figure ></figure></span>
-                    <span class="span mid">Name</span>
-                    <span class="span tail"><figure></figure></span>
-                </span>
-                <span class="container2 sub-menu">
-                    <span class="span head"><figure ></figure></span>
-                    <span class="span mid">Size</span>
-                    <span class="span tail"><figure></figure></span>
-                </span>
-                <span class="container2 sub-menu">
-                    <span class="span head"><figure ></figure></span>
-                    <span class="span mid">Item type</span>
-                    <span class="span tail"><figure> </figure></span>
-                </span>
-
-                <span class="container2 sub-menu">
-                    <span class="span head"><figure ></figure></span>
-                    <span class="span mid">Date modified</span>
-                    <span class="span tail"><figure> </figure></span>
-                </span>
-            </span>
-        </span> -->
-
-        <!-- <span class="span container2">
-            <span class="span head"> <figure > </figure></span>
-            <span class="span mid">Refresh</span>
-            <span class="span tail"> <figure> </figure> </span>
-        </span>
-
-        <span class="span container"><span class="span section-line"></span></span>
-
-        <span class="span container2" (click)="nextBackground()">
-            <span class="span head"> <figure > </figure></span>
-            <span class="span mid">Next Background</span>
-            <span class="span tail"> <figure> </figure> </span>
-        </span>
-
-        <span class="span container2" (click)="previousBackground()">
-            <span class="span head"> <figure > </figure></span>
-            <span class="span mid">Previous Background</span>
-            <span class="span tail"> <figure> </figure> </span>
-        </span>
-
-        <span class="span container"><span class="span section-line"></span></span>
-
-        <span class="span container2">
+        <div class="vertical-menu-item">
             <span class="span head"> <figure > </figure></span>
             <span class="span mid">New</span>
             <span class="span tail"> <figure> </figure> </span>
-        </span> -->
-    </div>
+        </div>
+       </div>
     <ng-content> </ng-content>
 </main>
