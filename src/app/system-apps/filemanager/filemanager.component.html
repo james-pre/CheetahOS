@@ -1,4 +1,4 @@
-<ol (dragover)="onDragOver($event)"  (drop)="onDrop($event)">
+<ol (dragover)="onDragOver($event)"  (drop)="onDrop($event)" (click)="hideIconContextMenu()">
     <li *ngFor="let file of files ">
         <button fileMngrHighlight (dblclick)="runProcess(file)"  (contextmenu)="showIconContextMenu($event)" (click)="hideIconContextMenu()">
             <figure>
