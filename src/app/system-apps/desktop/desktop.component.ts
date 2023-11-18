@@ -41,8 +41,6 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   isCntxtMenuActive = false;
   isCntxtSubMenuActive = false;
   cntxtMenuStyle:Record<string, unknown> = {};
-  cntxtSubMenuStyle:Record<string, unknown> = {};
-  cntxtSubMenu1Style:Record<string, unknown> = {};
 
   hasWindow = false;
   icon = 'osdrive/icons/generic-program.ico';
@@ -81,27 +79,27 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
   ngOnInit():void{
-1
-    // this._vantaEffect = VANTA.WAVES({
-    //   el: '#vanta',
-    //   color:this._numSequence,
-    //   // waveHeight:20,
-    //   // shininess: 50,
-    //   // waveSpeed:0.5,
-    //   // zoom:0.75,     
-    // });
+
+    this._vantaEffect = VANTA.WAVES({
+      el: '#vanta',
+      color:this._numSequence,
+      // waveHeight:20,
+      // shininess: 50,
+      // waveSpeed:0.5,
+      // zoom:0.75,     
+    });
   }
 
   ngAfterViewInit():void{
     
     //interval countdown also 15 second
-    //  this._timerSubscription = interval(15000) .subscribe(() => {
+     this._timerSubscription = interval(15000) .subscribe(() => {
 
-    //       //console.log("hexColor:",this.getNextColor());
-    //       this._vantaEffect.setOptions({
-    //         color: this.getNextColor(),
-    //       });
-    //  });
+          //console.log("hexColor:",this.getNextColor());
+          this._vantaEffect.setOptions({
+            color: this.getNextColor(),
+          });
+     });
 
      this.hideContextMenu();
   }
@@ -184,47 +182,6 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
       'z-index': -1,
       'opacity':0
     }
-  }
-
-  showContextSubMenu(menuName:string):void{
-
-    this.cntxtMenuStyle = {
-      'width': '235px', 
-      'display': 'block',
-      'position': 'absolute',
-      'background-color': '#f1f1f1',
-      'z-index': 2,
-      'left':'100%',
-    }
-
-    // if(menuName ==='View'){
-    //   setTimeout((baseStyle:any) => {
-    //     this.cntxtSubMenuStyle = baseStyle
-    //   }, 750, baseStyle);
-    // }
-    
-    // if(menuName === 'Sort by'){
-    //   setTimeout((baseStyle:any) => {
-    //     this.cntxtSubMenu1Style = baseStyle
-    //   }, 750,baseStyle);
-    // }
-  }
-
-  hideContextSubMenu(menuName:string):void{
-  //  const baseStyle= {
-  //     'width': '0px', 
-  //     'height': '0px', 
-  //     'display': 'none',
-  //     'position': 'absolute',
-  //     'z-index': -1,
-  //   }
-
-  //   if(menuName === 'View'){
-  //     this.cntxtSubMenuStyle = baseStyle
-  //   }
-  //   if(menuName === 'Sort by'){
-  //     this.cntxtSubMenu1Style = baseStyle
-  //   }
   }
 
   previousBackground():void{
