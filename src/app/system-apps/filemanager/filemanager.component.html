@@ -1,6 +1,6 @@
 <ol (dragover)="onDragOver($event)"  (drop)="onDrop($event)">
     <li *ngFor="let file of files ">
-        <button fileMngrHighlight (dblclick)="runProcess(file)" >
+        <button fileMngrHighlight (dblclick)="runProcess(file)"  (contextmenu)="showIconContextMenu($event)" (click)="hideIconContextMenu()">
             <figure>
                 <img [src]="file.getIcon | safeResourceUrl" [alt]="file.getFileName" />
                 <figcaption>
@@ -9,4 +9,35 @@
             </figure>
         </button>
     </li>
+
+
+<div class="icon-vertical-menu" [style]="iconCntxtMenuStyle">
+
+    <div class="icon-vertical-menu-item">
+        <span class="span head"> <figure class="figure-cntx-menu"> </figure></span>
+        <span class="span mid">Open</span>
+        <span class="span tail"> <figure class="figure-cntx-menu"> </figure> </span>
+    </div>
+
+    <div class="icon-vertical-menu-item">
+        <span class="span head"> <figure class="figure-cntx-menu"> </figure></span>
+        <span class="span mid">Pin to Start</span>
+        <span class="span tail"> <figure class="figure-cntx-menu"> </figure> </span>
+    </div>
+
+    <div class="icon-vertical-menu-item" >
+        <span class="span head"> <figure  class="figure-cntx-menu"> </figure></span>
+        <span class="span mid">Pin to taskbar</span>
+        <span class="span tail"> <figure class="figure-cntx-menu"> </figure> </span>
+    </div>
+
+    <div class="line-container"><div class="line"></div></div>
+
+    <div class="icon-vertical-menu-item">
+        <span class="span head"> <figure class="figure-cntx-menu" > </figure></span>
+        <span class="span mid">Delete</span>
+        <span class="span tail"> <figure class="figure-cntx-menu"> </figure> </span>
+    </div>
+</div>
 </ol>
+

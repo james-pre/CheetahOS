@@ -26,6 +26,10 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   private _dirFilesUpdatedSub!: Subscription;
   private _triggerProcessService:TriggerProcessService;
 
+
+  showCntxtMenu = false;
+  iconCntxtMenuStyle:Record<string, unknown> = {};
+
   hasWindow = false;
   icon = 'osdrive/icons/generic-program.ico';
   name = 'filemanager';
@@ -52,6 +56,8 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
         this.directory = '/osdrive/desktop';
     else
       this.directory = `/${this.folderPath}`;
+
+    this.hideIconContextMenu();
   }
 
   async ngAfterViewInit():Promise<void>{
@@ -117,6 +123,34 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
         await this.loadFilesInfoAsync();
     }else{
         this._triggerProcessService.startApplication(file);
+    }
+  }
+
+
+  showIconContextMenu(evt:MouseEvent):void{
+    this._runningProcessService.responseToEventCount++;
+    const evtRespCount = this._runningProcessService.responseToEventCount;
+
+    console.log('evtRespCount-fileMgr:',evtRespCount);
+
+    this.iconCntxtMenuStyle = {
+      'width': '250px', 
+      'transform':`translate(${String(evt.clientX)}px, ${String(evt.clientY)}px)`,
+      'z-index': 2,
+      'opacity':1
+    }
+
+  
+    evt.preventDefault();
+  }
+
+  hideIconContextMenu():void{
+    this.iconCntxtMenuStyle = {
+      'width': '0px', 
+      'height': '0px', 
+      'transform': 'translate(-100000px, 100000px)',
+      'z-index': -1,
+      'opacity':0
     }
   }
 
