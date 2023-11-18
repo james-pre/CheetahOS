@@ -9,7 +9,7 @@ export class FlieManagerHighlightDirective {
   constructor(private el: ElementRef) { }
 
   backgroundColor = 'hsl(206deg 77% 70%/20%)';
-  border = '3px solid hsla(0,0%,50%,25%)'
+  border = '2px solid hsla(0,0%,50%,25%)'
   padding = '0'
 
   @HostListener('mouseenter') onMouseEnter() {

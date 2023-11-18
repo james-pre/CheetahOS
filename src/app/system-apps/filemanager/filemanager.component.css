@@ -17,13 +17,22 @@ ol{
     row-gap: 22px;
 }
 
+
+figure{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: -2px;
+    place-items:center;
+}
+
+
 figcaption{
     -webkit-box-orient: vertical;
     color: #fff;
     display: -webkit-box;
     font-size: 12px;
-    letter-spacing: 0.25px;
-    -webkit-line-clamp:1;
+    letter-spacing: 0.1px;
+    -webkit-line-clamp:2;
     position: relative;
     padding: 2px 0;
     text-shadow:0 0 1px rgba(0, 0, 0, 75%),
@@ -39,6 +48,7 @@ figcaption{
                 0 2px 3px rgba(0, 0, 0, 25%);
 
     top: -1px;
+    line-height: 15px;
     overflow: hidden;
     word-break: break-all;
 }
