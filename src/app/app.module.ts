@@ -24,8 +24,8 @@ import { AudioPlayerComponent } from './system-apps/audioplayer/audioplayer.comp
 import { SafeUrlPipe } from './shared/system-pipes/safe.resource.url.pipe';
 
 import { HighlightDirective } from './system-apps/window/window.btn.highlight.directives';
-import { FlieManagerHighlightDirective } from './shared/system-directive/file.mngr.highlight.directives';
-import { TaskBarEntryHighlightDirective } from './shared/system-directive/taskbar.entry.highlight.directives';
+import { FlieManagerHighlightDirective } from './system-apps/filemanager/file.mngr.highlight.directives';
+import { TaskBarEntryHighlightDirective } from './system-apps/taskbarentries/taskbar.entry.highlight.directives';
 import { LongPressDirective } from './system-apps/audioplayer/long.press.directive';
 
 
