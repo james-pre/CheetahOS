@@ -1,20 +1,23 @@
-li{
-    display: flex;
-    justify-content: center;
-    padding: 2px;
-    height: min-content;
-    z-index: 1;
-}
 
-ol{
+  ol{
     /* column-gap: 1px; */
     display: grid;
     grid-auto-flow: column;
     grid-template-columns:  repeat(auto-fill,90px);
     grid-template-rows: repeat(auto-fill,70px);
     height: calc(100% - 40px);
+    width: 100%;
     padding: 5px 0 ;
-    row-gap: 22px;
+    row-gap: 20px;
+}
+
+
+li{
+    display: flex;
+    justify-content: center;
+    padding: 2px;
+    height: min-content;
+    z-index: 1;
 }
 
 
@@ -60,67 +63,6 @@ img{
 
 button{
     background-color: transparent;
-    width: 100%;
+    width: 90px;
     height: 70px; 
-}
-
-
-.icon-vertical-menu {
-    position: absolute;
-    width: 250px;
-    box-shadow: 2px 2px rgba(0, 0, 0, 0.3);
-    z-index: 2;
-}
-
-.icon-vertical-menu-item {
-    height: fit-content;
-    padding: 4px 0;
-    background-color: #eee;
-    display: inline-flex;
-    width: 100%;
-    z-index: 2;
-   /*  transition: background-color 0.3s ease; Add a transition for background-color */
-}
-
-.icon-vertical-menu .icon-vertical-menu-item:hover {
-    background-color: #ccc;
-}
-
-.line-container {
-    max-height: 1px;
-    background-color: #eee;
-}
-
-.line {
-    border: 1px solid #afadad;
-    margin: 0 8px;
-}
-
-span{
-    display: block;
-}
-
-span.head{
-    max-width: 25%;
-    padding-left: 4px;
-}
-
-span.mid{
-    min-width: 50%;
-    padding: 0 4px;
-    color: black; /* Black text color */
-    text-align: left;
-    font-size: small;
-}
-
-span.tail{
-    max-width: 25%;
-    padding-left: 78px;
-}
-
-.figure-cntx-menu{
-    align-items: center;
-    display:inline-flex;
-    min-width: 18px;
-    min-width: 18px;
 }

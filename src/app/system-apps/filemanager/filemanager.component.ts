@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, OnDestroy, EventEmitter, Output, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { FileService } from 'src/app/shared/system-service/file.service';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
@@ -15,6 +15,10 @@ import { TriggerProcessService } from 'src/app/shared/system-service/trigger.pro
   styleUrls: ['./filemanager.component.css']
 })
 export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
+
+  @ViewChild('myBounds', {static: true}) myBounds!: ElementRef;
+  @ViewChild('iconBtn', {static: false}) iconBtn!: ElementRef;
+
  
   @Input() folderPath = '';  
   @Output() updateExplorerIconAndName = new EventEmitter<FileInfo>();
@@ -25,6 +29,8 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   private _directoryFilesEntires!:FileEntry[];
   private _dirFilesUpdatedSub!: Subscription;
   private _triggerProcessService:TriggerProcessService;
+
+  private _renderer:Renderer2;
 
 
   showCntxtMenu = false;
@@ -39,12 +45,17 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   directory ='/osdrive/desktop';
   files:FileInfo[] = [];
 
+  gridSize = 0;
+  autoAlign = false;
+  autoArrange = false;
 
-  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, triggerProcessService:TriggerProcessService) { 
+
+  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, triggerProcessService:TriggerProcessService,renderer: Renderer2) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this._fileService = fileInfoService;
     this._triggerProcessService = triggerProcessService;
+    this._renderer = renderer;
 
     this.processId = this._processIdService.getNewProcessId();
     this._runningProcessService.addProcess(this.getComponentDetail());
@@ -127,7 +138,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   }
 
 
-  showIconContextMenu(evt:MouseEvent):void{
+  showIconContextMenu(evt:MouseEvent, file:FileInfo):void{
     this._runningProcessService.responseToEventCount++;
     const evtRespCount = this._runningProcessService.responseToEventCount;
 
@@ -151,6 +162,72 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
       'transform': 'translate(-100000px, 100000px)',
       'z-index': -1,
       'opacity':0
+    }
+  }
+
+  onDragStart(evt:any):void{
+    // const rect =  this.myBounds.nativeElement.getBoundingClientRect(); 
+    // console.log('start:',evt.id )
+
+
+    // const btnTransform = window.getComputedStyle(evt)
+    // const matrix = new DOMMatrixReadOnly(btnTransform.transform)
+
+    // const transform = {
+    //   translateX: matrix.m41,
+    //   translateY: matrix.m42
+    // }
+
+    // // const transX = matrix.m41;
+    // // const transY = matrix.m42;
+
+
+    // console.log('start-transform:', transform)
+    // console.log('rect:',rect )
+  }
+
+  onDragEnd(evt:any, evt1:MouseEvent):void{
+
+    const btnTransform = window.getComputedStyle(evt)
+    const matrix = new DOMMatrixReadOnly(btnTransform.transform)
+    let x = 0;
+    let y = 0;
+
+    const transform = {
+      translateX: matrix.m41,
+      translateY: matrix.m42
+    }
+
+    console.log('clientX:',evt.getBoundingClientRect());
+
+    console.log('end-transform:', transform)
+    const xRemainder = (transform.translateX % 90);
+    const yRemainder = (transform.translateY % 90);
+
+    // 45 is 50% of 90. so i round up to 90 else round down  to 0
+    if(xRemainder > 45){ 
+      const diff = 90 - xRemainder;
+      x = transform.translateX + diff;
+      console.log('x >45:', x)
+    }else{
+      x = transform.translateX - xRemainder; 
+      console.log('x <45:', x)
+    }
+
+    if(yRemainder > 45){ 
+      const diff = 90 - yRemainder;
+      y = transform.translateY + diff;
+      console.log('y >45:', y)
+    }else{
+      y = transform.translateY - yRemainder; 
+      console.log('y <45:', y)
+    }
+
+    const btnElement = document.getElementById(evt.id) as HTMLElement;
+    if(btnElement){
+      console.log('btnElement:',btnElement)
+      console.log('set button to:',`translate(${x}px, ${y}px)`)
+      btnElement.style.transform = `translate(${x}px, ${y}px)`;
     }
   }
 

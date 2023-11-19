@@ -1,6 +1,10 @@
-<ol (dragover)="onDragOver($event)"  (drop)="onDrop($event)" (click)="hideIconContextMenu()">
-    <li *ngFor="let file of files ">
-        <button fileMngrHighlight (dblclick)="runProcess(file)"  (contextmenu)="showIconContextMenu($event)" (click)="hideIconContextMenu()">
+<ol (dragover)="onDragOver($event)"  (drop)="onDrop($event)" (click)="hideIconContextMenu()" #myBounds>
+    <li *ngFor="let file of files; let i = index">
+        <!-- (contextmenu)="showIconContextMenu($event, file)" (click)="hideIconContextMenu()" -->
+        <button fileMngrHighlight (dblclick)="runProcess(file)"  
+        ngDraggable [bounds]="myBounds" [inBounds]="true" [gridSize]="gridSize" zIndex="1" [preventDefaultEvent]="true"
+        (stopped)="onDragEnd($event,$event)" (started)="onDragStart($event)"
+        id="iconBtn{{i}}">
             <figure>
                 <img [src]="file.getIcon | safeResourceUrl" [alt]="file.getFileName" />
                 <figcaption>
@@ -40,4 +44,3 @@
     </div>
 </div>
 </ol>
-
