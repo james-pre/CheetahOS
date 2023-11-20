@@ -1,6 +1,6 @@
 [InternetShortcut]
 FileName=hello
-IconFile=/osdrive/picture/favicon_nice.png
+IconFileUrl=/osdrive/picture/favicon_nice.png
 FileType=.ico
-ShortUrl=hello
+ContentUrl=hello
 OpensWith=hello

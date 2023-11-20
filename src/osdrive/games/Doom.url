@@ -1,6 +1,6 @@
 [InternetShortcut]
 FileName=D3D
-IconFile=/osdrive/games/icons/d3d.png
+IconFileUrl=/osdrive/games/icons/d3d.png
 FileType=.jsdos
-ShortUrl=/osdrive/games/data/Doom.jsdos
+ContentUrl=/osdrive/games/data/Doom.jsdos
 OpensWith=jsdos

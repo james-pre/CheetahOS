@@ -1,6 +1,6 @@
 [InternetShortcut]
 FileName=titanium
-IconFile=/osdrive/icons/audio.ico
+IconFileUrl=/osdrive/icons/audio.ico
 FileType=.mp3
-ShortUrl=osdrive/audio/titanium.mp3
+ContentUrl=osdrive/audio/titanium.mp3
 OpensWith=audioplayer

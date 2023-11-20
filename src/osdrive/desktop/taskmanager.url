@@ -1,6 +1,6 @@
 [InternetShortcut]
 FileName=Task Manager
-IconFile=/osdrive/icons/taskmanger.png
+IconFileUrl=/osdrive/icons/taskmanger.png
 FileType=.png
-ShortUrl=Task Manager
+ContentUrl=Task Manager
 OpensWith=taskmanager

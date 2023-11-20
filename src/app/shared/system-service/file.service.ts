@@ -5,10 +5,12 @@ import {extname, basename, resolve, dirname} from 'path';
 import { Constants } from "src/app/system-files/constants";
 import { FSModule } from "browserfs/dist/node/core/FS";
 import { FileEntry } from 'src/app/system-files/fileentry';
+import { FileMetaData } from "src/app/system-files/file.metadata";
 import { Subject } from "rxjs";
 import * as BrowserFS from 'browserfs';
 import osDriveFileSystemIndex from '../../../osdrive.json';
 import ini  from 'ini';
+
 
 @Injectable({
     providedIn: 'root'
@@ -86,40 +88,51 @@ export class FileService{
             this._fileInfo.setOpensWith = sc.getOpensWith;
         }
         else{
+
+            const fileMetaData = await this.getExtraFileMetaDataAsync(path) as FileMetaData;
+
             if(extension == '.url'){
                 const sc = await this.getShortCutAsync(path) as ShortCut;
                 this._fileInfo.setIcon = sc.getIconFile;
                 this._fileInfo.setCurrentPath = path;
-                this._fileInfo.setDataPath = sc.getShortUrl;
+                this._fileInfo.setContentPath = sc.getContentUrl;
                 this._fileInfo.setFileType = sc.getFileType;
                 this._fileInfo.setFileName = sc.geFileName;
                 this._fileInfo.setOpensWith = sc.getOpensWith;
+                this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
+                this._fileInfo.setSize = fileMetaData.getSize;
             }
              else if(this._consts.IMAGE_FILE_EXTENSIONS.includes(extension)){    
                 const sc = await this.getImageFileB64DataUrlAsync(path) as ShortCut;
                 this._fileInfo.setIcon = sc.getIconFile;
                 this._fileInfo.setCurrentPath = path;
-                this._fileInfo.setDataPath = sc.getShortUrl;
+                this._fileInfo.setContentPath = sc.getContentUrl;
                 this._fileInfo.setFileType = extension;
                 this._fileInfo.setFileName = sc.geFileName;
                 this._fileInfo.setOpensWith = 'imageviewer';
+                this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
+                this._fileInfo.setSize = fileMetaData.getSize;
             }
             else if(this._consts.VIDEO_FILE_EXTENSIONS.includes(extension)){    
                 const sc = await this.getImageFileB64DataUrlAsync(path) as ShortCut;
                 this._fileInfo.setIcon = '/osdrive/icons/video.ico';
                 this._fileInfo.setCurrentPath = path;
-                this._fileInfo.setDataPath = sc.getShortUrl;
+                this._fileInfo.setContentPath = sc.getContentUrl;
                 this._fileInfo.setFileType = extension;
                 this._fileInfo.setFileName = sc.geFileName;
                 this._fileInfo.setOpensWith = 'videoplayer';
+                this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
+                this._fileInfo.setSize = fileMetaData.getSize;
             }else if(this._consts.AUDIO_FILE_EXTENSIONS.includes(extension)){    
                 const sc = await this.getImageFileB64DataUrlAsync(path) as ShortCut;
                 this._fileInfo.setIcon = '/osdrive/icons/audio.ico';
                 this._fileInfo.setCurrentPath = path;
-                this._fileInfo.setDataPath = sc.getShortUrl;
+                this._fileInfo.setContentPath = sc.getContentUrl;
                 this._fileInfo.setFileType = extension;
                 this._fileInfo.setFileName = sc.geFileName;
                 this._fileInfo.setOpensWith = 'audioplayer';
+                this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
+                this._fileInfo.setSize = fileMetaData.getSize;
             }
              else if(extension == '.txt' || extension == '.properties'){
                 this._fileInfo.setIcon = '/osdrive/icons/file.ico';
@@ -127,18 +140,24 @@ export class FileService{
                 this._fileInfo.setFileType = extname(path);
                 this._fileInfo.setFileName = basename(path, extname(path));
                 this._fileInfo.setOpensWith = 'textopener';
+                this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
+                this._fileInfo.setSize = fileMetaData.getSize;
             }
             else if(extension == '.jsdos'){
                 this._fileInfo.setIcon = '/osdrive/icons/js-dos-logo.png';
                 this._fileInfo.setCurrentPath = path;
                 this._fileInfo.setFileType = extname(path);
                 this._fileInfo.setFileName = basename(path, extname(path));
-                this._fileInfo.setOpensWith = 'none';
+                this._fileInfo.setOpensWith = 'jsdos';
+                this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
+                this._fileInfo.setSize = fileMetaData.getSize;
             }
              else{
                 this._fileInfo.setIcon='/osdrive/icons/unknown.ico';
                 this._fileInfo.setCurrentPath = path;
                 this._fileInfo.setFileName = basename(path, extname(path));
+                this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
+                this._fileInfo.setSize = fileMetaData.getSize;
             }
         }
         return this._fileInfo;
@@ -162,6 +181,21 @@ export class FileService{
         });
     }
 
+
+    public async getExtraFileMetaDataAsync(path: string) {
+        await this.initBrowserFsAsync();
+
+        return new Promise((resolve, reject) =>{
+            this._fileSystem.stat(path,(err, stats) =>{
+                if(err){
+                    console.log('getExtraFileMetaDataAsync error:',err)
+                    reject(err)
+                }
+                resolve(new FileMetaData(stats?.ctime, stats?.mtime, stats?.size));
+            });
+        });
+    }
+
     public async getShortCutAsync(path:string) {
         await this.initBrowserFsAsync();
 
@@ -172,15 +206,15 @@ export class FileService{
                     reject(err)
                 }
                 const stage = contents? contents.toString(): Buffer.from('').toString();
-                const shortCut = ini.parse(stage) as unknown || {InternetShortcut:{ FileName:'hi', IconFile:'', FileType:'', ShortUrl:'', OpensWith:''}};
+                const shortCut = ini.parse(stage) as unknown || {InternetShortcut:{ FileName:'hi', IconFileUrl:'', FileType:'',ContentUrl:'', OpensWith:''}};
                 if (typeof shortCut === 'object') {
                     const iSCut = (shortCut as {InternetShortcut:unknown})?.['InternetShortcut'];
                     const  fileName=  (iSCut as {FileName:unknown})?.['FileName'] as string;
-                    const iconFile = (iSCut as {IconFile:unknown})?.['IconFile'] as string;
+                    const iconFileUrl = (iSCut as {IconFileUrl:unknown})?.['IconFileUrl'] as string;
                     const fileType = (iSCut as {FileType:unknown})?.['FileType'] as string;
-                    const shortUrl = (iSCut as {ShortUrl:unknown})?.['ShortUrl'] as string;
+                    const contentUrl = (iSCut as {ContentUrl:unknown})?.['ContentUrl'] as string;
                     const opensWith = (iSCut as {OpensWith:unknown})?.['OpensWith'] as string;
-                    resolve(new ShortCut(iconFile,fileName,fileType,shortUrl,opensWith));
+                    resolve(new ShortCut(iconFileUrl,fileName,fileType,contentUrl,opensWith));
                 }
 
                 resolve(new ShortCut('','','','',''));

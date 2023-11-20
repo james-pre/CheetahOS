@@ -73,11 +73,11 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
       //console.log('fileInfo in Js-DOS:',this._fileInfo) //TBD 
       //let data = await this._fileService.getFileAsync('/osdrive/games/data/3d_duke.jsdos');
    
-      if(this._fileInfo.getDataPath != ''){
+      if(this._fileInfo.getContentPath != ''){
 
-        const data = await this._fileService.getFileAsync(this._fileInfo.getDataPath);
+        const data = await this._fileService.getFileAsync(this._fileInfo.getContentPath);
         this._ci = await  Dos(this.dosWindow.nativeElement, this.dosOptions).run(data);
-        URL.revokeObjectURL(this._fileInfo.getDataPath);
+        URL.revokeObjectURL(this._fileInfo.getContentPath);
       }else{
         alert(`JS-Dos could not started. Sorry :()`)
       }

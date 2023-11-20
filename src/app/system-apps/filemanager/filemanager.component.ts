@@ -15,9 +15,7 @@ import { TriggerProcessService } from 'src/app/shared/system-service/trigger.pro
   styleUrls: ['./filemanager.component.css']
 })
 export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
-
   @ViewChild('myBounds', {static: true}) myBounds!: ElementRef;
-  @ViewChild('iconBtn', {static: false}) iconBtn!: ElementRef;
 
  
   @Input() folderPath = '';  
@@ -32,8 +30,6 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
 
   private _renderer:Renderer2;
 
-
-  showCntxtMenu = false;
   iconCntxtMenuStyle:Record<string, unknown> = {};
 
   hasWindow = false;
@@ -117,6 +113,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     //console.log("this is file entry count:", this._directoryFilesEntires)//TBD
     for(let i = 0; i < dirFileEntries.length; i++){
       const fileEntry = this._directoryFilesEntires[i];
+
       const fileInfo = await this._fileService.getFileInfoAsync(fileEntry.getPath);
       //console.log("this is fmgr. fileInfo:", fileInfo)//TBD
       this.files.push(fileInfo)
@@ -142,7 +139,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     this._runningProcessService.responseToEventCount++;
     const evtRespCount = this._runningProcessService.responseToEventCount;
 
-    console.log('evtRespCount-fileMgr:',evtRespCount);
+    //console.log('evtRespCount-fileMgr:',evtRespCount);
 
     this.iconCntxtMenuStyle = {
       'width': '250px', 
@@ -151,7 +148,6 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
       'opacity':1
     }
 
-  
     evt.preventDefault();
   }
 
@@ -191,11 +187,27 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
 1
   }
 
+
+  sortIcons(sortBy:string): void {
+  
+    if(sortBy == "Size"){
+      this.files = this.files.sort((objA, objB) => objB.getSize - objA.getSize);
+    }else if(sortBy == "Date Modified"){
+      this.files = this.files.sort((objA, objB) => objB.getDateModified.getTime() - objA.getDateModified.getTime());
+    }else if(sortBy == "Name"){
+      this.files = this.files.sort((objA, objB) => {
+        return objA.getFileName < objB.getFileName ? -1 : 1;
+      });
+    }else if(sortBy == "Type"){
+      this.files = this.files.sort((objA, objB) => {
+        return objA.getFileType < objB.getFileType ? -1 : 1;
+      });
+    }
+  }
+
+
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type);
   }
 
 }
-
-
-

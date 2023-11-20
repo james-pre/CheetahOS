@@ -1,6 +1,6 @@
 [InternetShortcut]
 FileName=Diggers
-IconFile=/osdrive/games/icons/diggers.png
+IconFileUrl=/osdrive/games/icons/diggers.png
 FileType=.jsdos
-ShortUrl=/osdrive/games/data/Digger.jsdos
+ContentUrl=/osdrive/games/data/Digger.jsdos
 OpensWith=jsdos

@@ -100,7 +100,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   }
 
   ngAfterViewInit():void{  
-    const audioSrc  = '/' +this._fileInfo.getDataPath
+    const audioSrc  = '/' +this._fileInfo.getContentPath
 
     if(audioSrc  === '/' && this.playList.length == 0){
       this.audioPlayer = new Howl({

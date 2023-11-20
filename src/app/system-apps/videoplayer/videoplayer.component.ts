@@ -67,7 +67,7 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   ngAfterViewInit() {
     const fileType = 'video/' + this._fileInfo.getFileType.replace('.','');
-    const videoSrc = '/' +this._fileInfo.getDataPath;
+    const videoSrc = '/' +this._fileInfo.getContentPath;
 
     const options = {
       fluid: true,
