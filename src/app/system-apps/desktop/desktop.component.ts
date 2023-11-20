@@ -1,10 +1,12 @@
-import { AfterViewInit, OnInit,OnDestroy, Component,ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import { AfterViewInit, OnInit,OnDestroy, Component} from '@angular/core';
 import { Subscription, interval} from 'rxjs';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { Process } from 'src/app/system-files/process';
 import { BIRDS, GLOBE, HALO, RINGS, WAVE } from './vanta-object/vanta.interfaces';
+import { IconsSizes, SortBys } from './desktop.enums';
+import { FileManagerService } from 'src/app/shared/system-service/file.manager.services';
 
 declare let VANTA: {
   HALO: any; 
@@ -21,14 +23,9 @@ declare let VANTA: {
 })
 export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
-  // @ViewChild('cntxtMenu') cntxtMenu!: ElementRef;
-  // @ViewChild('cntxtSubMenu') cntxtSubMenu!: ElementRef;
-  // @ViewChild('cntxtSub1Menu') cntxtSub1Menu!: ElementRef;
-
-  private _renderer: Renderer2;
-
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
+  private _fileManagerServices:FileManagerService;
   private _timerSubscription!: Subscription;
 
   private _vantaEffect: any;
@@ -36,8 +33,18 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   private _charSquence = 'a';
   private _charSquenceCount = 0;
 
+  readonly largeIcons = IconsSizes.LARGE_ICONS;
+  readonly mediumIcons = IconsSizes.MEDIUM_ICONS;
+  readonly smallIcons = IconsSizes.SMALL_ICONS
 
-  showCntxtMenu = false;
+  readonly sortByName = SortBys.NAME;
+  readonly sortByItemType = SortBys.ITEM_TYPE;
+  readonly sortBySize = SortBys.SIZE;
+  readonly sortByDateModified = SortBys.DATE_MODIFIED;
+
+  autoAlignIcons = false;
+  autoArrangeIcons = false;
+ 
   cntxtMenuStyle:Record<string, unknown> = {};
 
   hasWindow = false;
@@ -66,14 +73,14 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   private CURRENT_DESTOP_NUM = 0;
 
 
-  constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService, renderer: Renderer2) { 
+  constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService,fileManagerServices:FileManagerService) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
+    this._fileManagerServices = fileManagerServices;
+
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail());
     this._numSequence = this.getRandomInt(100, 999);
-
-    this._renderer = renderer;
   }
 
   ngOnInit():void{
@@ -180,6 +187,28 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
       'z-index': -1,
       'opacity':0
     }
+  }
+
+  viewBy(viewBy:string):void{
+    this._fileManagerServices.viewByNotify.next(viewBy);
+  }
+
+  autoArrangeIcon():void{
+    this.autoArrangeIcons = !this.autoArrangeIcons
+    this._fileManagerServices.autoArrangeIconsNotify.next(this.autoArrangeIcons)
+  }
+
+  autoAlignIcon():void{
+    this.autoAlignIcons = !this.autoAlignIcons
+    this._fileManagerServices.alignIconsToGridNotify.next(this.autoAlignIcons)
+  }
+
+  sortBy(sortBy:string):void{
+    this._fileManagerServices.sortByNotify.next(sortBy);
+  }
+
+  refresh():void{
+    this._fileManagerServices.refreshNotify.next();
   }
 
   previousBackground():void{

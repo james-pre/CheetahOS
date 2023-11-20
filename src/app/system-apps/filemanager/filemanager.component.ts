@@ -189,7 +189,6 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
 
 
   sortIcons(sortBy:string): void {
-  
     if(sortBy == "Size"){
       this.files = this.files.sort((objA, objB) => objB.getSize - objA.getSize);
     }else if(sortBy == "Date Modified"){

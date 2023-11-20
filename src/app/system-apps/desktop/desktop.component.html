@@ -8,18 +8,18 @@
                 <span class="span tail"><figure> <img [src]="'osdrive/icons/arrow_next.png'"></figure></span>
             </div>
      
-            <div class="vertical-sub-menu-content" >
-                <div class="vertical-menu-item">
+            <div class="vertical-sub-menu-content">
+                <div class="vertical-menu-item" (click)="viewBy(largeIcons)">
                     <span class="span head"><figure ></figure></span>
                     <span class="span mid">Large icons</span>
                     <span class="span tail"><figure></figure></span>
                 </div>
-                <div class="vertical-menu-item">
+                <div class="vertical-menu-item" (click)="viewBy(mediumIcons)">
                     <span class="span head"><figure ></figure></span>
                     <span class="span mid">Medium icons</span>
                     <span class="span tail"><figure></figure></span>
                 </div>
-                <div class="vertical-menu-item">
+                <div class="vertical-menu-item" (click)="viewBy(smallIcons)">
                     <span class="span head"><figure ></figure></span>
                     <span class="span mid">Small icon</span>
                     <span class="span tail"><figure> </figure></span>
@@ -27,12 +27,12 @@
 
                 <div class="line-container"><div class="line"></div></div>
 
-                <div class="vertical-menu-item">
+                <div class="vertical-menu-item" (click)="autoArrangeIcon()">
                     <span class="span head"><figure ></figure></span>
                     <span class="span mid">Auto arrange icons</span>
                     <span class="span tail"><figure></figure></span>
                 </div>
-                <div class="vertical-menu-item">
+                <div class="vertical-menu-item" (click)="autoAlignIcon()">
                     <span class="span head"><figure ></figure></span>
                     <span class="span mid">Align icons to grid</span>
                     <span class="span tail"><figure></figure></span>
@@ -55,23 +55,23 @@
                 <span class="span tail"> <figure> <img [src]="'osdrive/icons/arrow_next.png'"></figure></span>
             </div>
             <div class="vertical-sub-menu-content">
-                <div class="vertical-menu-item">
+                <div class="vertical-menu-item" (click)="sortBy(sortByName)">
                     <span class="span head"><figure ></figure></span>
                     <span class="span mid">Name</span>
                     <span class="span tail"><figure></figure></span>
                 </div>
-                <div class="vertical-menu-item">
+                <div class="vertical-menu-item" (click)="sortBy(sortBySize)">
                     <span class="span head"><figure ></figure></span>
                     <span class="span mid">Size</span>
                     <span class="span tail"><figure></figure></span>
                 </div>
-                <div class="vertical-menu-item">
+                <div class="vertical-menu-item" (click)="sortBy(sortByItemType)">
                     <span class="span head"><figure ></figure></span>
                     <span class="span mid">Item type</span>
                     <span class="span tail"><figure> </figure></span>
                 </div>
 
-                <div class="vertical-menu-item">
+                <div class="vertical-menu-item" (click)="sortBy(sortByDateModified)">
                     <span class="span head"><figure ></figure></span>
                     <span class="span mid">Date modified</span>
                     <span class="span tail"><figure> </figure></span>
@@ -79,7 +79,7 @@
             </div>
         </div>
 
-        <div class="vertical-menu-item">
+        <div class="vertical-menu-item" (click)="refresh()">
             <span class="span head"> <figure > </figure></span>
             <span class="span mid">Refresh</span>
             <span class="span tail"> <figure> </figure> </span>
