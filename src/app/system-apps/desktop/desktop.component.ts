@@ -89,7 +89,6 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
   ngOnInit():void{
-1
     this._vantaEffect = VANTA.WAVES({
       el: '#vanta',
       color:this._numSequence,
@@ -214,6 +213,11 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
   refresh():void{
     this._fileManagerServices.refreshNotify.next();
+  }
+
+  showDesktopIcon():void{
+    this.showDesktopIcons = !this.showDesktopIcons
+    this._fileManagerServices.showDesktopIconsNotify.next(this.showDesktopIcons);
   }
 
   previousBackground():void{
