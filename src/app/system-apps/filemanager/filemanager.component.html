@@ -1,6 +1,5 @@
 <ol (dragover)="onDragOver($event)"  (drop)="onDrop($event)" (click)="hideIconContextMenu()" #myBounds>
     <li *ngFor="let file of files; let i = index">
-        <!--  -->
         <button fileMngrHighlight (dblclick)="runProcess(file)"  
         ngDraggable [bounds]="myBounds" [inBounds]="true" [gridSize]="gridSize" zIndex="1" [preventDefaultEvent]="true"
         (stopped)="onDragEnd($event)" (started)="onDragStart($event)"
@@ -19,29 +18,29 @@
 <div class="icon-vertical-menu" [style]="iconCntxtMenuStyle">
 
     <div class="icon-vertical-menu-item">
-        <span class="span head"> <figure class="figure-cntx-menu"> </figure></span>
+        <span class="span head"> <figure class="figure-cntxt-menu"> </figure></span>
         <span class="span mid">Open</span>
-        <span class="span tail"> <figure class="figure-cntx-menu"> </figure> </span>
+        <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
     </div>
 
     <div class="icon-vertical-menu-item">
-        <span class="span head"> <figure class="figure-cntx-menu"> </figure></span>
+        <span class="span head"> <figure class="figure-cntxt-menu"> </figure></span>
         <span class="span mid">Pin to Start</span>
-        <span class="span tail"> <figure class="figure-cntx-menu"> </figure> </span>
+        <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
     </div>
 
     <div class="icon-vertical-menu-item" >
-        <span class="span head"> <figure  class="figure-cntx-menu"> </figure></span>
+        <span class="span head"> <figure  class="figure-cntxt-menu"> </figure></span>
         <span class="span mid">Pin to taskbar</span>
-        <span class="span tail"> <figure class="figure-cntx-menu"> </figure> </span>
+        <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
     </div>
 
     <div class="line-container"><div class="line"></div></div>
 
     <div class="icon-vertical-menu-item">
-        <span class="span head"> <figure class="figure-cntx-menu" > </figure></span>
+        <span class="span head"> <figure class="figure-cntxt-menu" > </figure></span>
         <span class="span mid">Delete</span>
-        <span class="span tail"> <figure class="figure-cntx-menu"> </figure> </span>
+        <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
     </div>
 </div>
 </ol>

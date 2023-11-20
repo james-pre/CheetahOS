@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit, OnDestroy, EventEmitter, Output, ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, OnDestroy, EventEmitter, Output, ViewChild, ElementRef} from '@angular/core';
 import { FileService } from 'src/app/shared/system-service/file.service';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
@@ -8,6 +8,7 @@ import { FileEntry } from 'src/app/system-files/fileentry';
 import { FileInfo } from 'src/app/system-files/fileinfo';
 import { Subscription } from 'rxjs';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
+import { FileManagerService } from 'src/app/shared/system-service/file.manager.services';
 
 @Component({
   selector: 'cos-filemanager',
@@ -16,8 +17,6 @@ import { TriggerProcessService } from 'src/app/shared/system-service/trigger.pro
 })
 export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   @ViewChild('myBounds', {static: true}) myBounds!: ElementRef;
-
- 
   @Input() folderPath = '';  
   @Output() updateExplorerIconAndName = new EventEmitter<FileInfo>();
   
@@ -25,10 +24,14 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   private _runningProcessService:RunningProcessService;
   private _fileService:FileService
   private _directoryFilesEntires!:FileEntry[];
-  private _dirFilesUpdatedSub!: Subscription;
   private _triggerProcessService:TriggerProcessService;
 
-  private _renderer:Renderer2;
+  private _viewByNotifySub!:Subscription;
+  private _sortByNotifySub!:Subscription;
+  private _refreshNotifySub!:Subscription;
+  private _autoArrangeIconsNotifySub!:Subscription;
+  private _autoAlignIconsNotifyBySub!:Subscription;
+  private _dirFilesUpdatedSub!: Subscription;
 
   iconCntxtMenuStyle:Record<string, unknown> = {};
 
@@ -42,20 +45,25 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   files:FileInfo[] = [];
 
   gridSize = 90;
-  autoAlign = true;
-  autoArrange = false;
+  private autoAlign = true;
+  private autoArrange = false;
 
 
-  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, triggerProcessService:TriggerProcessService,renderer: Renderer2) { 
+  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, triggerProcessService:TriggerProcessService, fileManagerService:FileManagerService) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this._fileService = fileInfoService;
     this._triggerProcessService = triggerProcessService;
-    this._renderer = renderer;
 
     this.processId = this._processIdService.getNewProcessId();
     this._runningProcessService.addProcess(this.getComponentDetail());
-    this._dirFilesUpdatedSub = this._fileService.dirFilesUpdateNotify.subscribe(() =>{this.loadFilesInfoAsync();})
+
+    this._dirFilesUpdatedSub = this._fileService.dirFilesUpdateNotify.subscribe(() =>{this.loadFilesInfoAsync()});
+    this._viewByNotifySub = fileManagerService.viewByNotify.subscribe((p) =>{this.changeIconsSize(p)});
+    this._sortByNotifySub = fileManagerService.sortByNotify.subscribe((p)=>{this.sortIcons(p)});
+    this._autoArrangeIconsNotifySub = fileManagerService.autoArrangeIconsNotify.subscribe((p) =>{this.toggleAutoArrangeIcons(p)});
+    this._autoAlignIconsNotifyBySub = fileManagerService.alignIconsToGridNotify.subscribe((p) => {this.toggleAutoAlignIconsToGrid(p)});
+    this._refreshNotifySub = fileManagerService.refreshNotify.subscribe(()=>{this.refreshIcons()});
   }
 
   ngOnInit():void{
@@ -69,18 +77,14 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
 
   async ngAfterViewInit():Promise<void>{
     await this.loadFilesInfoAsync();
-
-    setTimeout(()=> {
-        const filePaths = this.files;
-        if(filePaths != null || filePaths != undefined){
-            for(const filePath of filePaths){
-              URL.revokeObjectURL(filePath.getIcon);
-            }
-        }
-    }, 5000);
   }
 
   ngOnDestroy(): void {
+    this._viewByNotifySub?.unsubscribe();
+    this._sortByNotifySub?.unsubscribe();
+    this._refreshNotifySub?.unsubscribe();
+    this._autoArrangeIconsNotifySub?.unsubscribe();
+    this._autoAlignIconsNotifyBySub?.unsubscribe();
     this._dirFilesUpdatedSub?.unsubscribe();
   }
 
@@ -189,19 +193,47 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
 
 
   sortIcons(sortBy:string): void {
-    if(sortBy == "Size"){
+    if(sortBy === "Size"){
       this.files = this.files.sort((objA, objB) => objB.getSize - objA.getSize);
-    }else if(sortBy == "Date Modified"){
+    }else if(sortBy === "Date Modified"){
       this.files = this.files.sort((objA, objB) => objB.getDateModified.getTime() - objA.getDateModified.getTime());
-    }else if(sortBy == "Name"){
+    }else if(sortBy === "Name"){
       this.files = this.files.sort((objA, objB) => {
         return objA.getFileName < objB.getFileName ? -1 : 1;
       });
-    }else if(sortBy == "Type"){
+    }else if(sortBy === "Item Type"){
       this.files = this.files.sort((objA, objB) => {
         return objA.getFileType < objB.getFileType ? -1 : 1;
       });
     }
+  }
+
+  changeIconsSize(iconSize:string):void{
+    //
+  }
+
+  toggleAutoAlignIconsToGrid(alignIcon:boolean):void{
+    this.autoAlign = alignIcon;
+    if(!this.autoAlign){
+      this.gridSize = 0;
+    }else{
+      this.gridSize = 90;
+    }
+  }
+
+  toggleAutoArrangeIcons(arrangeIcon:boolean):void{
+
+    this.autoArrange = arrangeIcon;
+
+    if(this.autoArrange){
+      // clear (x,y) position of icons in memory
+      this.refreshIcons();
+    }
+    
+  }
+
+  refreshIcons():void{
+    1
   }
 
 

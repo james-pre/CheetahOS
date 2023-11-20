@@ -88,7 +88,6 @@ export class FileService{
             this._fileInfo.setOpensWith = sc.getOpensWith;
         }
         else{
-
             const fileMetaData = await this.getExtraFileMetaDataAsync(path) as FileMetaData;
 
             if(extension == '.url'){
