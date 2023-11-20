@@ -37,14 +37,19 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   readonly mediumIcons = IconsSizes.MEDIUM_ICONS;
   readonly smallIcons = IconsSizes.SMALL_ICONS
 
+  isLargeIcon = true;
+  isMediumIcon = false;
+  isSmallIcon = false;
+
   readonly sortByName = SortBys.NAME;
   readonly sortByItemType = SortBys.ITEM_TYPE;
   readonly sortBySize = SortBys.SIZE;
   readonly sortByDateModified = SortBys.DATE_MODIFIED;
 
-  autoAlignIcons = false;
-  autoArrangeIcons = false;
- 
+  autoAlignIcons = true;
+  autoArrangeIcons = true;
+  showDesktopIcons = true;
+
   cntxtMenuStyle:Record<string, unknown> = {};
 
   hasWindow = false;
@@ -85,14 +90,14 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
   ngOnInit():void{
 1
-    // this._vantaEffect = VANTA.WAVES({
-    //   el: '#vanta',
-    //   color:this._numSequence,
-    //   // waveHeight:20,
-    //   // shininess: 50,
-    //   // waveSpeed:0.5,
-    //   // zoom:0.75,     
-    // });
+    this._vantaEffect = VANTA.WAVES({
+      el: '#vanta',
+      color:this._numSequence,
+      // waveHeight:20,
+      // shininess: 50,
+      // waveSpeed:0.5,
+      // zoom:0.75,     
+    });
   }
 
   ngAfterViewInit():void{

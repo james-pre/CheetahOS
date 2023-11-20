@@ -31,9 +31,12 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   private _refreshNotifySub!:Subscription;
   private _autoArrangeIconsNotifySub!:Subscription;
   private _autoAlignIconsNotifyBySub!:Subscription;
+  private _showDesktopIconNotifySub!:Subscription;
   private _dirFilesUpdatedSub!: Subscription;
 
   iconCntxtMenuStyle:Record<string, unknown> = {};
+  iconSizeStyle:Record<string, unknown> = {};
+  btnStyle:Record<string, unknown> = {};
 
   hasWindow = false;
   icon = 'osdrive/icons/generic-program.ico';
@@ -44,10 +47,13 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   directory ='/osdrive/desktop';
   files:FileInfo[] = [];
 
+
   gridSize = 90;
   private autoAlign = true;
   private autoArrange = false;
+  private showDesktopIcon = true;
 
+  private selectedFile!:FileInfo;
 
   constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, triggerProcessService:TriggerProcessService, fileManagerService:FileManagerService) { 
     this._processIdService = processIdService;
@@ -64,6 +70,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     this._autoArrangeIconsNotifySub = fileManagerService.autoArrangeIconsNotify.subscribe((p) =>{this.toggleAutoArrangeIcons(p)});
     this._autoAlignIconsNotifyBySub = fileManagerService.alignIconsToGridNotify.subscribe((p) => {this.toggleAutoAlignIconsToGrid(p)});
     this._refreshNotifySub = fileManagerService.refreshNotify.subscribe(()=>{this.refreshIcons()});
+    this._showDesktopIconNotifySub = fileManagerService.showDesktopIconsNotify.subscribe((p) =>{this.toggleDesktopIcons(p)});
   }
 
   ngOnInit():void{
@@ -85,6 +92,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     this._refreshNotifySub?.unsubscribe();
     this._autoArrangeIconsNotifySub?.unsubscribe();
     this._autoAlignIconsNotifyBySub?.unsubscribe();
+    this._showDesktopIconNotifySub?.unsubscribe();
     this._dirFilesUpdatedSub?.unsubscribe();
   }
 
@@ -109,17 +117,13 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   private async loadFilesInfoAsync():Promise<void>{
     this.files = [];
     this._fileService.resetDirectoryFiles();
-    //console.log('I was called-loadFilesInfo')TBD
     const dirFileEntries  = await this._fileService.getFilesFromDirectoryAsync(this.directory) as [];
     this._directoryFilesEntires = this._fileService.getFileEntriesFromDirectory(dirFileEntries,this.directory);
 
-    //console.log("this is file entry count:", dirFileEntries)//TBD
-    //console.log("this is file entry count:", this._directoryFilesEntires)//TBD
     for(let i = 0; i < dirFileEntries.length; i++){
       const fileEntry = this._directoryFilesEntires[i];
-
       const fileInfo = await this._fileService.getFileInfoAsync(fileEntry.getPath);
-      //console.log("this is fmgr. fileInfo:", fileInfo)//TBD
+
       this.files.push(fileInfo)
     }
   }
@@ -138,12 +142,14 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  triggerRunProcess():void{
+    this.runProcess(this.selectedFile);
+  }
+
 
   showIconContextMenu(evt:MouseEvent, file:FileInfo):void{
     this._runningProcessService.responseToEventCount++;
-    const evtRespCount = this._runningProcessService.responseToEventCount;
-
-    //console.log('evtRespCount-fileMgr:',evtRespCount);
+    this.selectedFile = file;
 
     this.iconCntxtMenuStyle = {
       'width': '250px', 
@@ -209,7 +215,39 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   }
 
   changeIconsSize(iconSize:string):void{
-    //
+    if(iconSize === 'Large Icons'){
+      this.iconSizeStyle = {
+        'width': '45px', 
+        'height': '45px'
+      }
+    }
+
+    if(iconSize === 'Medium Icons'){
+      this.iconSizeStyle = {
+        'width': '35px', 
+        'height': '35px'
+      }
+    }
+
+    if(iconSize === 'Small Icons'){
+      this.iconSizeStyle = {
+        'width': '30px', 
+        'height': '30px'
+      }
+    }
+  }
+
+  toggleDesktopIcons(showIcons:boolean):void{
+    this.showDesktopIcon = showIcons;
+    if(this.showDesktopIcon){
+      this.btnStyle ={
+        'display': 'none',
+      }
+    }else{
+      this.btnStyle ={
+        'display': 'block',
+      }
+    }
   }
 
   toggleAutoAlignIconsToGrid(alignIcon:boolean):void{

@@ -4,9 +4,9 @@
         ngDraggable [bounds]="myBounds" [inBounds]="true" [gridSize]="gridSize" zIndex="1" [preventDefaultEvent]="true"
         (stopped)="onDragEnd($event)" (started)="onDragStart($event)"
         (contextmenu)="showIconContextMenu($event, file)" (click)="hideIconContextMenu()"
-        id="iconBtn{{i}}">
+        id="iconBtn{{i}}"  [style]="btnStyle">
             <figure>
-                <img [src]="file.getIcon | safeResourceUrl" [alt]="file.getFileName" />
+                <img [src]="file.getIcon | safeResourceUrl" [alt]="file.getFileName"  [style]="iconSizeStyle"/>
                 <figcaption>
                         {{file.getFileName}}
                 </figcaption>
@@ -17,7 +17,7 @@
 
 <div class="icon-vertical-menu" [style]="iconCntxtMenuStyle">
 
-    <div class="icon-vertical-menu-item">
+    <div class="icon-vertical-menu-item" (click)="triggerRunProcess()">
         <span class="span head"> <figure class="figure-cntxt-menu"> </figure></span>
         <span class="span mid">Open</span>
         <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>

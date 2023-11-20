@@ -12,4 +12,5 @@ export class FileManagerService{
     viewByNotify: Subject<string> = new Subject<string>();
     sortByNotify: Subject<string> = new Subject<string>();
     refreshNotify: Subject<void> = new Subject<void>();
+    showDesktopIconsNotify: Subject<boolean> = new Subject<boolean>();
 }
