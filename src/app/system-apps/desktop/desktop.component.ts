@@ -46,6 +46,11 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   readonly sortBySize = SortBys.SIZE;
   readonly sortByDateModified = SortBys.DATE_MODIFIED;
 
+  isSortByName = false;
+  isSortByItemType = false;
+  isSortBySize = false;
+  isSortByDateModified = false;
+
   autoAlignIcons = true;
   autoArrangeIcons = true;
   showDesktopIcons = true;
@@ -190,7 +195,58 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
   viewBy(viewBy:string):void{
+    if(viewBy === IconsSizes.LARGE_ICONS){
+      this.isLargeIcon = true;
+      this.isMediumIcon = false;
+      this.isSmallIcon = false;
+    }
+
+    if(viewBy === IconsSizes.MEDIUM_ICONS){
+      this.isMediumIcon = true;
+      this.isLargeIcon = false;
+      this.isSmallIcon = false;
+    }
+
+    if(viewBy === IconsSizes.SMALL_ICONS){
+      this.isSmallIcon = true;
+      this.isMediumIcon = false;
+      this.isLargeIcon = false;
+    }
+
     this._fileManagerServices.viewByNotify.next(viewBy);
+  }
+
+  sortBy(sortBy:string):void{
+
+    if(sortBy === SortBys.DATE_MODIFIED){
+      this.isSortByDateModified = true;
+      this.isSortByItemType = false;
+      this.isSortByName = false;
+      this.isSortBySize = false;
+    }
+
+    if(sortBy === SortBys.ITEM_TYPE){
+      this.isSortByItemType = true;
+      this.isSortByDateModified = false;
+      this.isSortByName = false;
+      this.isSortBySize = false;
+    }
+
+    if(sortBy === SortBys.SIZE){
+      this.isSortBySize  = true;
+      this.isSortByItemType = false;
+      this.isSortByName = false;
+      this.isSortByDateModified = false;
+    }
+
+    if(sortBy === SortBys.NAME){
+      this.isSortByName  = true;
+      this.isSortByItemType = false;
+      this.isSortByDateModified = false;
+      this.isSortBySize = false;
+    }
+
+    this._fileManagerServices.sortByNotify.next(sortBy);
   }
 
   autoArrangeIcon():void{
@@ -201,10 +257,6 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   autoAlignIcon():void{
     this.autoAlignIcons = !this.autoAlignIcons
     this._fileManagerServices.alignIconsToGridNotify.next(this.autoAlignIcons)
-  }
-
-  sortBy(sortBy:string):void{
-    this._fileManagerServices.sortByNotify.next(sortBy);
   }
 
   refresh():void{

@@ -93,6 +93,7 @@ span{
 span.head{
     max-width: 25%;
     padding-left: 4px;
+
 }
 
 span.mid{
@@ -100,7 +101,7 @@ span.mid{
     padding: 0 4px;
     color: black; /* Black text color */
     text-align: left;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: normal;
 }
 
@@ -123,3 +124,18 @@ img{
     margin: 0 0 0 0;
 }
   
+.img-alt{
+    height: 8px;
+    width: 8px;
+    image-rendering:optimizeQuality;
+    position: relative;
+}
+
+.figure-alt{
+    position: relative;
+    align-items: center;
+    display: inline-flex;
+    min-width: 18px;
+    top: -25%;
+    left: 35%;
+}
