@@ -1,5 +1,5 @@
 import { AfterViewInit, OnInit,OnDestroy, Component} from '@angular/core';
-import { Subscription, interval} from 'rxjs';
+import { Subscription} from 'rxjs';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { ComponentType } from 'src/app/system-files/component.types';
@@ -7,14 +7,9 @@ import { Process } from 'src/app/system-files/process';
 import { BIRDS, GLOBE, HALO, RINGS, WAVE } from './vanta-object/vanta.interfaces';
 import { IconsSizes, SortBys } from './desktop.enums';
 import { FileManagerService } from 'src/app/shared/system-service/file.manager.services';
+import { Colors } from './colorutil/colors';
 
-declare let VANTA: {
-  HALO: any; 
-  BIRDS: any;  
-  WAVES: any;  
-  GLOBE: any; 
-  RINGS: any; 
-};
+declare let VANTA: { HALO: any; BIRDS: any;  WAVES: any;   GLOBE: any;  RINGS: any;};
 
 @Component({
   selector: 'cos-desktop',
@@ -29,9 +24,6 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   private _timerSubscription!: Subscription;
 
   private _vantaEffect: any;
-  private _numSequence = 0;
-  private _charSquence = 'a';
-  private _charSquenceCount = 0;
 
   readonly largeIcons = IconsSizes.LARGE_ICONS;
   readonly mediumIcons = IconsSizes.MEDIUM_ICONS;
@@ -70,18 +62,18 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   globeBkgrnd:GLOBE =  {el:'#vanta'}
   birdBkgrnd:BIRDS =  {el:'#vanta'}
 
-  VANTAS:any = [
-    this.waveBkgrnd,
-    this.ringsBkgrnd,
-    this.haloBkgrnd,
-    this.globeBkgrnd,
-    this.birdBkgrnd
-  ];
-
+  VANTAS:any = [this.waveBkgrnd, this.ringsBkgrnd,this.haloBkgrnd, this.globeBkgrnd, this.birdBkgrnd ];
   private MIN_NUMS_OF_DESKTOPS = 0;
   private MAX_NUMS_OF_DESKTOPS = this.VANTAS.length - 1;
   private CURRENT_DESTOP_NUM = 0;
 
+  private MIN_DEG = 0;
+  private MAX_DEG = 360;
+  private CURRENT_DEG = 0;
+  private defaultColor = 0x274c;
+  private nextColor:Colors = new Colors();
+  private animationId:any;
+ 
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService,fileManagerServices:FileManagerService) { 
     this._processIdService = processIdService;
@@ -90,13 +82,13 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail());
-    this._numSequence = this.getRandomInt(100, 999);
+    this.CURRENT_DEG = this.getRandomInt(0, 360);
   }
 
   ngOnInit():void{
     this._vantaEffect = VANTA.WAVES({
       el: '#vanta',
-      color:0x5588, //this._numSequence,
+      color:this.defaultColor, //this._numSequence,
       // waveHeight:20,
       // shininess: 50,
       // waveSpeed:0.5,
@@ -105,50 +97,28 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
   ngAfterViewInit():void{
-    
-    // //interval countdown also 15 second
-    //  this._timerSubscription = interval(15000) .subscribe(() => {
-
-    //       //console.log("hexColor:",this.getNextColor());
-    //       this._vantaEffect.setOptions({
-    //         color: this.getNextColor(),
-    //       });
-    //  });
-
+  
+    //this.animationId = requestAnimationFrame(this.changeAnimationColor.bind(this));  
+  
      this.hideContextMenu();
+  }
+
+  changeAnimationColor():void{
+  
+    this.CURRENT_DEG = (this.CURRENT_DEG > this.MAX_DEG) ? this.MIN_DEG : this.CURRENT_DEG + 1;
+
+    console.log('nextColor:', Number(this.nextColor.changeHue('#4f32c2',this.CURRENT_DEG)?.replace('#','0x')))
+    this._vantaEffect.setOptions({
+      color: Number(this.nextColor.changeHue('#4f32c2',this.CURRENT_DEG)?.replace('#','0x')),
+    });
+
+    //this.animationId = requestAnimationFrame(this.changeAnimationColor.bind(this)); 
   }
 
   ngOnDestroy(): void {
     this._timerSubscription?.unsubscribe();
+    cancelAnimationFrame(this.animationId);
     this._vantaEffect?.destroy();
-  }
-
-  getNextColor():number{
-    const minMun = 100;
-    const maxNum = 999;
-    const charSet:string[] = ['a','b','c','d','e','f'];
-    let mid = this._numSequence;
-    let tail = this._charSquence;
-    let charCount = this._charSquenceCount;
-
-    if(mid < maxNum){
-      mid = mid + 1;
-      this._numSequence = mid;
-    }else if(mid >= maxNum ){
-      mid = minMun
-      this._numSequence = minMun;
-
-      if(tail == charSet[5]){
-          this._charSquenceCount = 0;
-          tail = charSet[0];
-      }else{
-        charCount = charCount + 1;
-        this._charSquenceCount = charCount;
-        tail = charSet[charCount]
-      }
-    }
-
-    return Number(`0x${mid}${tail}`);
   }
 
   getRandomInt(min:number, max:number):number{

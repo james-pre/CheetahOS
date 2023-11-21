@@ -239,7 +239,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
 
   toggleDesktopIcons(showIcons:boolean):void{
     this.showDesktopIcon = showIcons;
-    if(this.showDesktopIcon){
+    if(!this.showDesktopIcon){
       this.btnStyle ={
         'display': 'none',
       }
