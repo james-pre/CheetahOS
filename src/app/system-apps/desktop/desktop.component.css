@@ -139,3 +139,19 @@ img{
     top: -25%;
     left: 35%;
 }
+
+.img-alt2{
+    height: 16px;
+    width: 16px;
+    image-rendering:optimizeQuality;
+    position: relative;
+}
+
+.figure-alt2{
+    position: relative;
+    align-items: center;
+    display: inline-flex;
+    min-width: 18px;
+    top: 0;
+    left: 15%;
+}

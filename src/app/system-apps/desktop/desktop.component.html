@@ -31,12 +31,12 @@
                 <div class="empty-line-container"></div>
 
                 <div class="vertical-menu-item" (click)="autoArrangeIcon()">
-                    <span class="span head"><figure ></figure></span>
+                    <span class="span head"><figure class="figure-alt2"><img *ngIf="autoArrangeIcons" class="img-alt2" [src]="'osdrive/icons/chkmark32.png'"/></figure></span>
                     <span class="span mid">Auto arrange icons</span>
                     <span class="span tail"><figure></figure></span>
                 </div>
                 <div class="vertical-menu-item" (click)="autoAlignIcon()">
-                    <span class="span head"><figure ></figure></span>
+                    <span class="span head"><figure class="figure-alt2"><img *ngIf="autoAlignIcons" class="img-alt2" [src]="'osdrive/icons/chkmark32.png'"/></figure></span>
                     <span class="span mid">Align icons to grid</span>
                     <span class="span tail"><figure></figure></span>
                 </div>
@@ -46,7 +46,7 @@
                 <div class="empty-line-container"></div>
 
                 <div class="vertical-menu-item" (click)="showDesktopIcon()">
-                    <span class="span head"><figure ></figure></span>
+                    <span class="span head"><figure class="figure-alt2"><img *ngIf="showDesktopIcons" class="img-alt2" [src]="'osdrive/icons/chkmark32.png'"/></figure></span>
                     <span class="span mid">Show desktop icons</span>
                     <span class="span tail"><figure></figure></span>
                 </div>
