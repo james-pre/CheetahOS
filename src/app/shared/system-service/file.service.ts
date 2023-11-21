@@ -6,10 +6,12 @@ import { Constants } from "src/app/system-files/constants";
 import { FSModule } from "browserfs/dist/node/core/FS";
 import { FileEntry } from 'src/app/system-files/fileentry';
 import { FileMetaData } from "src/app/system-files/file.metadata";
+
 import { Subject } from "rxjs";
 import * as BrowserFS from 'browserfs';
 import osDriveFileSystemIndex from '../../../osdrive.json';
 import ini  from 'ini';
+
 
 
 @Injectable({
@@ -81,20 +83,21 @@ export class FileService{
 
         if(!extension){
             const sc = await this.getFolderAsync(path) as ShortCut;
-            this._fileInfo.setIcon = this.changeFolderIcon(sc.geFileName,sc.getIconFile);
+            this._fileInfo.setIconPath = this.changeFolderIcon(sc.geFileName,sc.getIconPath);
             this._fileInfo.setCurrentPath = path;
             this._fileInfo.setFileType = sc.getFileType;
             this._fileInfo.setFileName = sc.geFileName;
             this._fileInfo.setOpensWith = sc.getOpensWith;
         }
         else{
+
             const fileMetaData = await this.getExtraFileMetaDataAsync(path) as FileMetaData;
 
             if(extension == '.url'){
                 const sc = await this.getShortCutAsync(path) as ShortCut;
-                this._fileInfo.setIcon = sc.getIconFile;
+                this._fileInfo.setIconPath = sc.getIconPath;
                 this._fileInfo.setCurrentPath = path;
-                this._fileInfo.setContentPath = sc.getContentUrl;
+                this._fileInfo.setContentPath = sc.getContentPath;
                 this._fileInfo.setFileType = sc.getFileType;
                 this._fileInfo.setFileName = sc.geFileName;
                 this._fileInfo.setOpensWith = sc.getOpensWith;
@@ -103,9 +106,9 @@ export class FileService{
             }
              else if(this._consts.IMAGE_FILE_EXTENSIONS.includes(extension)){    
                 const sc = await this.getImageFileB64DataUrlAsync(path) as ShortCut;
-                this._fileInfo.setIcon = sc.getIconFile;
+                this._fileInfo.setIconPath = sc.getIconPath;
                 this._fileInfo.setCurrentPath = path;
-                this._fileInfo.setContentPath = sc.getContentUrl;
+                this._fileInfo.setContentPath = sc.getContentPath;
                 this._fileInfo.setFileType = extension;
                 this._fileInfo.setFileName = sc.geFileName;
                 this._fileInfo.setOpensWith = 'imageviewer';
@@ -114,9 +117,9 @@ export class FileService{
             }
             else if(this._consts.VIDEO_FILE_EXTENSIONS.includes(extension)){    
                 const sc = await this.getImageFileB64DataUrlAsync(path) as ShortCut;
-                this._fileInfo.setIcon = '/osdrive/icons/video.ico';
+                this._fileInfo.setIconPath = '/osdrive/icons/video.ico';
                 this._fileInfo.setCurrentPath = path;
-                this._fileInfo.setContentPath = sc.getContentUrl;
+                this._fileInfo.setContentPath = sc.getContentPath;
                 this._fileInfo.setFileType = extension;
                 this._fileInfo.setFileName = sc.geFileName;
                 this._fileInfo.setOpensWith = 'videoplayer';
@@ -124,9 +127,9 @@ export class FileService{
                 this._fileInfo.setSize = fileMetaData.getSize;
             }else if(this._consts.AUDIO_FILE_EXTENSIONS.includes(extension)){    
                 const sc = await this.getImageFileB64DataUrlAsync(path) as ShortCut;
-                this._fileInfo.setIcon = '/osdrive/icons/audio.ico';
+                this._fileInfo.setIconPath = '/osdrive/icons/audio.ico';
                 this._fileInfo.setCurrentPath = path;
-                this._fileInfo.setContentPath = sc.getContentUrl;
+                this._fileInfo.setContentPath = sc.getContentPath;
                 this._fileInfo.setFileType = extension;
                 this._fileInfo.setFileName = sc.geFileName;
                 this._fileInfo.setOpensWith = 'audioplayer';
@@ -134,7 +137,7 @@ export class FileService{
                 this._fileInfo.setSize = fileMetaData.getSize;
             }
              else if(extension == '.txt' || extension == '.properties'){
-                this._fileInfo.setIcon = '/osdrive/icons/file.ico';
+                this._fileInfo.setIconPath = '/osdrive/icons/file.ico';
                 this._fileInfo.setCurrentPath = path;
                 this._fileInfo.setFileType = extname(path);
                 this._fileInfo.setFileName = basename(path, extname(path));
@@ -143,7 +146,7 @@ export class FileService{
                 this._fileInfo.setSize = fileMetaData.getSize;
             }
             else if(extension == '.jsdos'){
-                this._fileInfo.setIcon = '/osdrive/icons/js-dos-logo.png';
+                this._fileInfo.setIconPath = '/osdrive/icons/js-dos-logo.png';
                 this._fileInfo.setCurrentPath = path;
                 this._fileInfo.setFileType = extname(path);
                 this._fileInfo.setFileName = basename(path, extname(path));
@@ -152,7 +155,7 @@ export class FileService{
                 this._fileInfo.setSize = fileMetaData.getSize;
             }
              else{
-                this._fileInfo.setIcon='/osdrive/icons/unknown.ico';
+                this._fileInfo.setIconPath='/osdrive/icons/unknown.ico';
                 this._fileInfo.setCurrentPath = path;
                 this._fileInfo.setFileName = basename(path, extname(path));
                 this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
@@ -205,15 +208,15 @@ export class FileService{
                     reject(err)
                 }
                 const stage = contents? contents.toString(): Buffer.from('').toString();
-                const shortCut = ini.parse(stage) as unknown || {InternetShortcut:{ FileName:'hi', IconFileUrl:'', FileType:'',ContentUrl:'', OpensWith:''}};
+                const shortCut = ini.parse(stage) as unknown || {InternetShortcut:{ FileName:'hi', IconPath:'', FileType:'',ContentPath:'', OpensWith:''}};
                 if (typeof shortCut === 'object') {
                     const iSCut = (shortCut as {InternetShortcut:unknown})?.['InternetShortcut'];
                     const  fileName=  (iSCut as {FileName:unknown})?.['FileName'] as string;
-                    const iconFileUrl = (iSCut as {IconFileUrl:unknown})?.['IconFileUrl'] as string;
+                    const iconPath = (iSCut as {IconPath:unknown})?.['IconPath'] as string;
                     const fileType = (iSCut as {FileType:unknown})?.['FileType'] as string;
-                    const contentUrl = (iSCut as {ContentUrl:unknown})?.['ContentUrl'] as string;
+                    const contentPath = (iSCut as {ContentPath:unknown})?.['ContentPath'] as string;
                     const opensWith = (iSCut as {OpensWith:unknown})?.['OpensWith'] as string;
-                    resolve(new ShortCut(iconFileUrl,fileName,fileType,contentUrl,opensWith));
+                    resolve(new ShortCut(iconPath,fileName,fileType,contentPath,opensWith));
                 }
 
                 resolve(new ShortCut('','','','',''));

@@ -1,6 +1,6 @@
 [InternetShortcut]
 FileName=File Explorer
-IconFileUrl=/osdrive/icons/file_explorer.ico
+IconPath=/osdrive/icons/file_explorer.ico
 FileType=folder
-ContentUrl=File Explorer
+ContentPath=File Explorer
 OpensWith=fileexplorer

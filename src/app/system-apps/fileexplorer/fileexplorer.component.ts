@@ -34,7 +34,7 @@ export class FileexplorerComponent implements BaseComponent {
   updateIconAndName(updatedData:FileInfo):void{
     this.directory = updatedData.getCurrentPath;
     this.name = updatedData.getFileName;
-    this.icon = updatedData.getIcon;
+    this.icon = updatedData.getIconPath;
   }
 
   private getComponentDetail():Process{

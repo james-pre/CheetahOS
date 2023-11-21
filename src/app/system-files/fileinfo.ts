@@ -1,5 +1,5 @@
 export class FileInfo{
-    private _icon:string;
+    private _IconPath:string;
     private _currentPath:string;
     private _contentPath:string;
     private _fileType:string;
@@ -10,7 +10,7 @@ export class FileInfo{
 
 
     constructor(){
-        this._icon = '';
+        this._IconPath = '';
         this._currentPath = '';
         this._contentPath = '';
         this._fileType = '';
@@ -20,11 +20,11 @@ export class FileInfo{
         this._size = 0;
     }
 
-    get getIcon(){
-        return this._icon;
+    get getIconPath(){
+        return this._IconPath;
     }
-    set setIcon(icon:string){
-        this._icon = icon;
+    set setIconPath(iconPath:string){
+        this._IconPath = iconPath;
     }
 
     get getCurrentPath(){

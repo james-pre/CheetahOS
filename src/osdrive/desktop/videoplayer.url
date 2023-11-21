@@ -1,6 +1,6 @@
 [InternetShortcut]
 FileName=surf_video
-IconFileUrl=/osdrive/icons/video.ico
+IconPath=/osdrive/icons/video.ico
 FileType=.mp4
-ContentUrl=osdrive/video/surfs.mp4
+ContentPath=osdrive/video/surfs.mp4
 OpensWith=videoplayer

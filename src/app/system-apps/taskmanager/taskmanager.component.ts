@@ -436,7 +436,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
   onFewerDetailsBtnClick():void{
     const file:FileInfo = new FileInfo();
-    file.setIcon = '/osdrive/icons/taskmanger.png';
+    file.setIconPath = '/osdrive/icons/taskmanger.png';
     file.setOpensWith = 'taskmanagermini';
     file.setFileType ='.png';
 

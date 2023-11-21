@@ -6,7 +6,7 @@
         (contextmenu)="showIconContextMenu($event, file)" (click)="hideIconContextMenu()"
         id="iconBtn{{i}}"  [style]="btnStyle">
             <figure>
-                <img [src]="file.getIcon | safeResourceUrl" [alt]="file.getFileName"  [style]="iconSizeStyle"/>
+                <img [src]="file.getIconPath | safeResourceUrl" [alt]="file.getFileName"  [style]="iconSizeStyle"/>
                 <figcaption>
                         {{file.getFileName}}
                 </figcaption>

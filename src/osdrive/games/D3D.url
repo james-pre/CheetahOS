@@ -1,6 +1,6 @@
 [InternetShortcut]
 FileName=Doom
-IconFileUrl=/osdrive/games/icons/doom.png
+IconPath=/osdrive/games/icons/doom.png
 FileType=.jsdos
-ContentUrl=/osdrive/games/data/Doom.jsdos
+ContentPath=/osdrive/games/data/Doom.jsdos
 OpensWith=jsdos

@@ -1,6 +1,6 @@
 [InternetShortcut]
 FileName=heat
-IconFileUrl=/osdrive/picture/heat.png
+IconPath=/osdrive/picture/heat.png
 FileType=.png
-ContentUrl=heat
+ContentPath=heat
 OpensWith=imageviewer
