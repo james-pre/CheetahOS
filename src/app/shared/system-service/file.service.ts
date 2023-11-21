@@ -293,6 +293,43 @@ export class FileService{
         });
     }
 
+    public async renameFileAsync(path:string, newFileName:string): Promise<void> {
+        await this.initBrowserFsAsync();
+
+        new Promise((resolve, reject) =>{
+
+            this._fileSystem.unlink(path,(err) =>{
+                if(err){
+                    console.log('deleteFileAsync error:',err)
+                    reject(err)
+                }
+               
+                resolve(console.log('successfully deleted'));
+            });
+        }).then(()=>{
+            //Send update notification
+            this.dirFilesUpdateNotify.next();
+        });
+    }
+
+    public async deleteFileAsync(path:string): Promise<void> {
+        await this.initBrowserFsAsync();
+
+        new Promise((resolve, reject) =>{
+            this._fileSystem.unlink(path,(err) =>{
+                if(err){
+                    console.log('deleteFileAsync error:',err)
+                    reject(err)
+                }
+               
+                resolve(console.log('successfully deleted'));
+            });
+        }).then(()=>{
+            //Send update notification
+            this.dirFilesUpdateNotify.next();
+        });
+    }
+
     public  getFileEntriesFromDirectory(fileList:string[], directory:string):FileEntry[]{
 
         for(let i = 0; i < fileList.length; i++){

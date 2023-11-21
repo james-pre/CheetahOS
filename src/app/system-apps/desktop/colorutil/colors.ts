@@ -102,11 +102,5 @@ export class Colors{
     };
   
     return toHex(r) + toHex(g) + toHex(b);
-  }
-  
-//   // Example usage:
-//   const originalColor = '#3498db';
-//   const modifiedColor = changeHue(originalColor, 45); // Shift hue by 45 degrees
-//   console.log(modifiedColor);
-  
+  }  
 }

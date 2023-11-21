@@ -47,7 +47,6 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   directory ='/osdrive/desktop';
   files:FileInfo[] = [];
 
-
   gridSize = 90;
   private autoAlign = true;
   private autoArrange = false;
@@ -132,7 +131,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
 
     console.log('runProcess:',file)
     // console.log('what was clicked:',file.getFileName +'-----' + file.getOpensWith +'---'+ file.getCurrentPath +'----'+ file.getIcon) TBD
-    if((file.getOpensWith == 'fileexplorer' && file.getFileName != 'File Explorer') && file.getFileType =='folder'){
+    if((file.getOpensWith === 'fileexplorer' && file.getFileName !== 'File Explorer') && file.getFileType ==='folder'){
         this.updateExplorerIconAndName.emit(file);
         this.directory = file.getCurrentPath;
 
@@ -272,6 +271,21 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
 
   refreshIcons():void{
     1
+  }
+
+  deleteFile():void{
+    //this.deletedFiles.push(this.selectedFile);
+    this._fileService.deleteFileAsync(this.selectedFile.getCurrentPath)
+
+    // this.files = this.files.filter((files_el) =>{
+    //   return this.deletedFiles.filter(function(delFiles_el){
+    //      return delFiles_el.getCurrentPath !== files_el.getCurrentPath;
+    //   }).length == 0
+    // });
+  }
+
+  renameFile():void{
+1
   }
 
 

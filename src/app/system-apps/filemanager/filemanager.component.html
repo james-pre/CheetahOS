@@ -40,11 +40,18 @@
     <div class="line-container"><div class="line"></div></div>
     <div class="empty-line-container"></div>
 
-    <div class="icon-vertical-menu-item">
+    <div class="icon-vertical-menu-item"(click)="deleteFile()">
         <span class="span head"> <figure class="figure-cntxt-menu" > </figure></span>
         <span class="span mid">Delete</span>
         <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
     </div>
+
+    <div class="icon-vertical-menu-item" (click)="renameFile()">
+        <span class="span head"> <figure class="figure-cntxt-menu" > </figure></span>
+        <span class="span mid">Rename</span>
+        <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
+    </div>
+
     <div class="empty-line-container"></div>
 </div>
 </ol>
