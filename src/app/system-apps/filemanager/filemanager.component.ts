@@ -152,7 +152,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     this.selectedFile = file;
 
     this.iconCntxtMenuStyle = {
-      'width': '250px', 
+      'width': '205px', 
       'transform':`translate(${String(evt.clientX)}px, ${String(evt.clientY)}px)`,
       'z-index': 2,
       'opacity':1

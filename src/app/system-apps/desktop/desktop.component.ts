@@ -91,7 +91,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   ngOnInit():void{
     this._vantaEffect = VANTA.WAVES({
       el: '#vanta',
-      color:this._numSequence,
+      color:0x5588, //this._numSequence,
       // waveHeight:20,
       // shininess: 50,
       // waveSpeed:0.5,
@@ -168,15 +168,11 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     }
 
     this.cntxtMenuStyle = {
-      'width': '250px', 
+      'width': '225px', 
       'transform':`translate(${String(evt.clientX + 2)}px, ${String(evt.clientY)}px)`,
       'z-index': 2,
       'opacity':1
     }
-
-    // //this.cntxMenu.nativeElement.style.transform = `translate(${String(x)}px, ${String(y)}px)`, 
-    // this._renderer.setStyle(this.cntxtMenu.nativeElement,'transform',`translate(${String(x)}px, ${String(y)}px)`);
-    // //this.showCntxtMenu = !this.showCntxtMenu;
 
     this._runningProcessService.responseToEventCount = 0;
     evt.preventDefault();

@@ -1,6 +1,6 @@
  <main id="vanta" class="main-desktop" (contextmenu)="showContextMenu($event)" (click)="hideContextMenu()">   <!--(contextmenu)="showContextMenu($event)" (click)="hideContextMenu()" -->
     <div class="vertical-menu" [style]="cntxtMenuStyle" #cntxtMenu>
-
+        <div class="empty-line-container"></div>
         <div class="vertical-sub-menu" >
             <div class="vertical-menu-item">
                 <span class="span head"><figure ></figure></span>
@@ -9,6 +9,7 @@
             </div>
      
             <div class="vertical-sub-menu-content">
+                <div class="empty-line-container"></div>
                 <div class="vertical-menu-item" (click)="viewBy(largeIcons)">
                     <span class="span head"><figure ></figure></span>
                     <span class="span mid">Large icons</span>
@@ -25,7 +26,9 @@
                     <span class="span tail"><figure> </figure></span>
                 </div>
 
+                <div class="empty-line-container"></div>
                 <div class="line-container"><div class="line"></div></div>
+                <div class="empty-line-container"></div>
 
                 <div class="vertical-menu-item" (click)="autoArrangeIcon()">
                     <span class="span head"><figure ></figure></span>
@@ -38,13 +41,17 @@
                     <span class="span tail"><figure></figure></span>
                 </div>
 
+                <div class="empty-line-container"></div>
                 <div class="line-container"><div class="line"></div></div>
+                <div class="empty-line-container"></div>
 
                 <div class="vertical-menu-item" (click)="showDesktopIcon()">
                     <span class="span head"><figure ></figure></span>
                     <span class="span mid">Show desktop icons</span>
                     <span class="span tail"><figure></figure></span>
                 </div>
+
+                <div class="empty-line-container"></div>
             </div>
         </div>
 
@@ -85,7 +92,9 @@
             <span class="span tail"> <figure> </figure> </span>
         </div>
 
+        <div class="empty-line-container"></div>
         <div class="line-container"><div class="line"></div></div>
+        <div class="empty-line-container"></div>
 
         <div class="vertical-menu-item" (click)="nextBackground()">
             <span class="span head"> <figure > </figure></span>
@@ -99,13 +108,17 @@
             <span class="span tail"> <figure> </figure> </span>
         </div>
 
+        <div class="empty-line-container"></div>
         <div class="line-container"><div class="line"></div></div>
+        <div class="empty-line-container"></div>
 
         <div class="vertical-menu-item">
             <span class="span head"> <figure > </figure></span>
             <span class="span mid">New</span>
             <span class="span tail"> <figure> </figure> </span>
         </div>
+
+        <div class="empty-line-container"></div>
     </div>
     <ng-content> </ng-content>
 </main>
