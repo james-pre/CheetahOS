@@ -354,7 +354,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     // form is dirty and not submitted
     //return true;
 
-
+    
   }
 
   onTriggerRenameFileStep1():void{
