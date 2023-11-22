@@ -1,9 +1,9 @@
- <ol (dragover)="onDragOver($event)"  (drop)="onDrop($event)" (click)="hideIconContextMenu()"  #myBounds> 
+ <ol (dragover)="onDragOver($event)"  (drop)="onDrop($event)" (click)="onHideIconContextMenu()"  #myBounds> 
     <li *ngFor="let file of files; let i = index">
-        <button fileMngrHighlight (dblclick)="runProcess(file)"  
+        <button (dblclick)="runProcess(file)"  (mouseenter)="onMouseEnter(i)" (mouseleave)="onMouseLeave(i)"
         ngDraggable [bounds]="myBounds" [inBounds]="true" [gridSize]="gridSize" zIndex="1" [preventDefaultEvent]="true"
         (stopped)="onDragEnd($event)" (started)="onDragStart($event)"
-        (contextmenu)="showIconContextMenu($event, file, i)" 
+        (contextmenu)="onShowIconContextMenu($event, file, i)" 
         id="iconBtn{{i}}"  [style]="btnStyle">
             <figure>
                 <img [src]="file.getIconPath | safeResourceUrl" [alt]="file.getFileName"  [style]="iconSizeStyle"/>
@@ -11,7 +11,7 @@
                         {{file.getFileName}}
                 </figcaption>
                 <div class="rename-textbox"  id="renameContainer{{i}}">
-                    <form [formGroup]="renameForm" (ngSubmit)="renameFile()">
+                    <form [formGroup]="renameForm" (ngSubmit)="isFormDirty()">
                         <input type="text" formControlName="renameInput" autofocus spellcheck="false" id="renameTxtBox{{i}}"/>
                     </form>
                 </div>
@@ -23,7 +23,7 @@
     <div class="icon-vertical-menu" [style]="iconCntxtMenuStyle">
         <div class="empty-line-container"></div>
 
-        <div class="icon-vertical-menu-item" (click)="triggerRunProcess()">
+        <div class="icon-vertical-menu-item" (click)="onTriggerRunProcess()">
             <span class="span head"> <figure class="figure-cntxt-menu"> </figure></span>
             <span class="span mid" style="font-weight: bold;">Open</span>
             <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
@@ -45,13 +45,13 @@
         <div class="line-container"><div class="line"></div></div>
         <div class="empty-line-container"></div>
 
-        <div class="icon-vertical-menu-item"(click)="deleteFile()">
+        <div class="icon-vertical-menu-item"(click)="onDeleteFile()">
             <span class="span head"> <figure class="figure-cntxt-menu" > </figure></span>
             <span class="span mid">Delete</span>
             <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
         </div>
 
-        <div class="icon-vertical-menu-item" (click)="triggerRenameFile()">
+        <div class="icon-vertical-menu-item" (click)="onTriggerRenameFileStep1()">
             <span class="span head"> <figure class="figure-cntxt-menu" > </figure></span>
             <span class="span mid">Rename</span>
             <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
