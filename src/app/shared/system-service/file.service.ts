@@ -99,7 +99,7 @@ export class FileService{
                 this._fileInfo.setCurrentPath = path;
                 this._fileInfo.setContentPath = sc.getContentPath;
                 this._fileInfo.setFileType = sc.getFileType;
-                this._fileInfo.setFileName = sc.geFileName;
+                this._fileInfo.setFileName = basename(path, extname(path));
                 this._fileInfo.setOpensWith = sc.getOpensWith;
                 this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
                 this._fileInfo.setSize = fileMetaData.getSize;
