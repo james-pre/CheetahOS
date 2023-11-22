@@ -3,13 +3,18 @@
         <button fileMngrHighlight (dblclick)="runProcess(file)"  
         ngDraggable [bounds]="myBounds" [inBounds]="true" [gridSize]="gridSize" zIndex="1" [preventDefaultEvent]="true"
         (stopped)="onDragEnd($event)" (started)="onDragStart($event)"
-        (contextmenu)="showIconContextMenu($event, file)" (click)="hideIconContextMenu()"
+        (contextmenu)="showIconContextMenu($event, file, i)" (click)="hideIconContextMenu()"
         id="iconBtn{{i}}"  [style]="btnStyle">
             <figure>
                 <img [src]="file.getIconPath | safeResourceUrl" [alt]="file.getFileName"  [style]="iconSizeStyle"/>
-                <figcaption>
+                <figcaption  id="figCap{{i}}">
                         {{file.getFileName}}
                 </figcaption>
+                <div class="rename-textbox"  id="renameContainer{{i}}">
+                    <form [formGroup]="renameForm" (ngSubmit)="renameTheFile()"  id="renameTxtBox{{i}}">
+                        <input type="text" formControlName="renameInput" autofocus/>
+                    </form>
+                </div>
             </figure>
         </button>
     </li>
@@ -55,3 +60,17 @@
     <div class="empty-line-container"></div>
 </div>
 </ol>
+
+
+
+<!-- 
+<figcaption *ngIf="!isRenameMode, else elseBlock">
+    {{file.getFileName}}
+</figcaption>
+<ng-template #elseBlock>
+<div class="rename-textbox">
+    <form [formGroup]="renameForm" (ngSubmit)="renameTheFile()">
+      <input type="text" formControlName="renameInput" autofocus/>
+    </form>
+  </div>
+</ng-template> -->

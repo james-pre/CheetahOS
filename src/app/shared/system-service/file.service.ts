@@ -298,13 +298,40 @@ export class FileService{
 
         new Promise((resolve, reject) =>{
 
-            this._fileSystem.unlink(path,(err) =>{
+            // const basePath = basename(path)
+            // const fileExt = extname(path)
+            // const dir = dirname(path);
+
+            // console.log('basePath:',basePath);
+            // console.log('fileExt:',fileExt);
+            // console.log('dir:',dir);
+
+            // console.log('current path:', path);
+            // console.log('file rename:', `${dir}/${newFileName}${fileExt}`);
+
+
+            this._fileSystem.readFile(path,(err, contents = Buffer.from('')) =>{
                 if(err){
-                    console.log('deleteFileAsync error:',err)
+                    console.log('getFile in renameFileAsync error:',err)
                     reject(err)
+                }else{
+                    this._fileSystem.writeFile(`${dirname(path)}/${newFileName}${extname(path)}`,contents,(err)=>{  
+                        if(err){
+                            console.log('writeFile in renameFileAsync error:',err);
+                            reject(err);
+                        }else{
+                            this._fileSystem.unlink(path,(err) =>{
+                                if(err){
+                                    console.log('deleteFileAsync error:',err)
+                                    reject(err)
+                                }
+                                resolve(console.log('successfully deleted'));
+                            });
+                            resolve(console.log('successfully renamed'));
+                        }
+                    });
+                    resolve(console.log('successfully fetched'));
                 }
-               
-                resolve(console.log('successfully deleted'));
             });
         }).then(()=>{
             //Send update notification

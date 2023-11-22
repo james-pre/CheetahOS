@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { AngularDraggableModule } from 'ngx-draggable-resize';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -60,7 +61,8 @@ import { LongPressDirective } from './system-apps/audioplayer/long.press.directi
   imports: [
     BrowserModule,
     AngularDraggableModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

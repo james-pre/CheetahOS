@@ -9,6 +9,7 @@ import { FileInfo } from 'src/app/system-files/fileinfo';
 import { Subscription } from 'rxjs';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 import { FileManagerService } from 'src/app/shared/system-service/file.manager.services';
+import { FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'cos-filemanager',
@@ -22,9 +23,10 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
-  private _fileService:FileService
+  private _fileService:FileService;
   private _directoryFilesEntires!:FileEntry[];
   private _triggerProcessService:TriggerProcessService;
+  private _formBuilder;
 
   private _viewByNotifySub!:Subscription;
   private _sortByNotifySub!:Subscription;
@@ -53,12 +55,16 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   private showDesktopIcon = true;
 
   private selectedFile!:FileInfo;
+  renameForm!: FormGroup;
+  elementId = -1;
 
-  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, triggerProcessService:TriggerProcessService, fileManagerService:FileManagerService) { 
+
+  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, triggerProcessService:TriggerProcessService, fileManagerService:FileManagerService, formBuilder: FormBuilder,) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this._fileService = fileInfoService;
     this._triggerProcessService = triggerProcessService;
+    this._formBuilder = formBuilder;
 
     this.processId = this._processIdService.getNewProcessId();
     this._runningProcessService.addProcess(this.getComponentDetail());
@@ -73,6 +79,11 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit():void{
+
+    this.renameForm = this._formBuilder.nonNullable.group({
+      renameInput: '',
+    });
+
     if(this.folderPath === '')
         this.directory = '/osdrive/desktop';
     else
@@ -146,7 +157,8 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   }
 
 
-  showIconContextMenu(evt:MouseEvent, file:FileInfo):void{
+  showIconContextMenu(evt:MouseEvent, file:FileInfo, id:number):void{
+    this.elementId = id;
     this._runningProcessService.responseToEventCount++;
     this.selectedFile = file;
 
@@ -285,7 +297,49 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   }
 
   renameFile():void{
-1
+    const figCapElement= document.getElementById(`figCap${this.elementId}`) as HTMLElement;
+    const renameContainerElement= document.getElementById(`renameContainer${this.elementId}`) as HTMLElement;
+
+    if(figCapElement){
+      figCapElement.style.display = 'none';
+    }
+
+    if(renameContainerElement){
+      renameContainerElement.style.display = 'block';
+
+      this.renameForm.setValue({
+        renameInput:' '+ this.selectedFile.getFileName
+      })
+    }
+
+  }
+
+  renameTheFile():void{
+    console.log('I will change the File Name to this:', this.renameForm.value.renameInput);
+
+    const renameText = this.renameForm.value.renameInput as string
+
+    if( renameText === '' || renameText.trimStart().length == 0)
+      return;
+
+    this._fileService.renameFileAsync(this.selectedFile.getCurrentPath, renameText.trimStart());
+    
+    const btnElement = document.getElementById(`iconBtn${this.elementId}`) as HTMLElement;
+    const figCapElement= document.getElementById(`figCap${this.elementId}`) as HTMLElement;
+    const renameContainerElement= document.getElementById(`renameContainer${this.elementId}`) as HTMLElement;
+
+    if(btnElement){
+      btnElement.style.backgroundColor = 'hsl(206deg 77% 70%/20%)';
+      btnElement.style.border = '2px solid hsla(0,0%,50%,25%)'
+    }
+
+    if(figCapElement){
+      figCapElement.style.display = 'block';
+    }
+
+    if(renameContainerElement){
+      renameContainerElement.style.display = 'none';
+    }
   }
 
 
