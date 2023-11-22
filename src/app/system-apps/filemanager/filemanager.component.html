@@ -1,9 +1,9 @@
-<ol (dragover)="onDragOver($event)"  (drop)="onDrop($event)" (click)="hideIconContextMenu()" #myBounds>
+ <ol (dragover)="onDragOver($event)"  (drop)="onDrop($event)" (click)="hideIconContextMenu()"  #myBounds> 
     <li *ngFor="let file of files; let i = index">
         <button fileMngrHighlight (dblclick)="runProcess(file)"  
         ngDraggable [bounds]="myBounds" [inBounds]="true" [gridSize]="gridSize" zIndex="1" [preventDefaultEvent]="true"
         (stopped)="onDragEnd($event)" (started)="onDragStart($event)"
-        (contextmenu)="showIconContextMenu($event, file, i)" (click)="hideIconContextMenu()"
+        (contextmenu)="showIconContextMenu($event, file, i)" 
         id="iconBtn{{i}}"  [style]="btnStyle">
             <figure>
                 <img [src]="file.getIconPath | safeResourceUrl" [alt]="file.getFileName"  [style]="iconSizeStyle"/>
@@ -11,8 +11,8 @@
                         {{file.getFileName}}
                 </figcaption>
                 <div class="rename-textbox"  id="renameContainer{{i}}">
-                    <form [formGroup]="renameForm" (ngSubmit)="renameTheFile()"  id="renameTxtBox{{i}}">
-                        <input type="text" formControlName="renameInput" autofocus/>
+                    <form [formGroup]="renameForm" (ngSubmit)="renameFile()">
+                        <input type="text" formControlName="renameInput" autofocus spellcheck="false" id="renameTxtBox{{i}}"/>
                     </form>
                 </div>
             </figure>
@@ -20,57 +20,43 @@
     </li>
 
 
-<div class="icon-vertical-menu" [style]="iconCntxtMenuStyle">
-    <div class="empty-line-container"></div>
+    <div class="icon-vertical-menu" [style]="iconCntxtMenuStyle">
+        <div class="empty-line-container"></div>
 
-    <div class="icon-vertical-menu-item" (click)="triggerRunProcess()">
-        <span class="span head"> <figure class="figure-cntxt-menu"> </figure></span>
-        <span class="span mid" style="font-weight: bold;">Open</span>
-        <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
+        <div class="icon-vertical-menu-item" (click)="triggerRunProcess()">
+            <span class="span head"> <figure class="figure-cntxt-menu"> </figure></span>
+            <span class="span mid" style="font-weight: bold;">Open</span>
+            <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
+        </div>
+
+        <div class="icon-vertical-menu-item">
+            <span class="span head"> <figure class="figure-cntxt-menu"> </figure></span>
+            <span class="span mid">Pin to Start</span>
+            <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
+        </div>
+
+        <div class="icon-vertical-menu-item" >
+            <span class="span head"> <figure  class="figure-cntxt-menu"> </figure></span>
+            <span class="span mid">Pin to taskbar</span>
+            <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
+        </div>
+
+        <div class="empty-line-container"></div>
+        <div class="line-container"><div class="line"></div></div>
+        <div class="empty-line-container"></div>
+
+        <div class="icon-vertical-menu-item"(click)="deleteFile()">
+            <span class="span head"> <figure class="figure-cntxt-menu" > </figure></span>
+            <span class="span mid">Delete</span>
+            <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
+        </div>
+
+        <div class="icon-vertical-menu-item" (click)="triggerRenameFile()">
+            <span class="span head"> <figure class="figure-cntxt-menu" > </figure></span>
+            <span class="span mid">Rename</span>
+            <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
+        </div>
+
+        <div class="empty-line-container"></div>
     </div>
-
-    <div class="icon-vertical-menu-item">
-        <span class="span head"> <figure class="figure-cntxt-menu"> </figure></span>
-        <span class="span mid">Pin to Start</span>
-        <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
-    </div>
-
-    <div class="icon-vertical-menu-item" >
-        <span class="span head"> <figure  class="figure-cntxt-menu"> </figure></span>
-        <span class="span mid">Pin to taskbar</span>
-        <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
-    </div>
-
-    <div class="empty-line-container"></div>
-    <div class="line-container"><div class="line"></div></div>
-    <div class="empty-line-container"></div>
-
-    <div class="icon-vertical-menu-item"(click)="deleteFile()">
-        <span class="span head"> <figure class="figure-cntxt-menu" > </figure></span>
-        <span class="span mid">Delete</span>
-        <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
-    </div>
-
-    <div class="icon-vertical-menu-item" (click)="renameFile()">
-        <span class="span head"> <figure class="figure-cntxt-menu" > </figure></span>
-        <span class="span mid">Rename</span>
-        <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
-    </div>
-
-    <div class="empty-line-container"></div>
-</div>
 </ol>
-
-
-
-<!-- 
-<figcaption *ngIf="!isRenameMode, else elseBlock">
-    {{file.getFileName}}
-</figcaption>
-<ng-template #elseBlock>
-<div class="rename-textbox">
-    <form [formGroup]="renameForm" (ngSubmit)="renameTheFile()">
-      <input type="text" formControlName="renameInput" autofocus/>
-    </form>
-  </div>
-</ng-template> -->
