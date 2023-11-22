@@ -88,7 +88,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   ngOnInit():void{
 
     this.renameForm = this._formBuilder.nonNullable.group({
-      renameInput: ['',[Validators.required, CustomValidator.invalidCharacters()]],
+      renameInput: '',
     });
 
     if(this.folderPath === '')
@@ -325,15 +325,33 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     this._fileService.deleteFileAsync(this.selectedFile.getCurrentPath)
   }
 
+  onInputChange(evt:any):boolean{
+
+    const regexStr = '^[a-zA-Z0-9_]+$';
+    console.log('the user is typing:',evt.target.value);
+    console.log( 'Whats happening here:',new RegExp(regexStr).test(evt.key));
+    const res = new RegExp(regexStr).test(evt.key)
+
+    if(res){
+      console.log('allowed:',evt)
+      return res
+    }else{
+      return res;
+    }
+     
+    const invalidChars:string[] = ['#','%','&','{','}','|','\\','<','>','*','?','/','','$','!',"'",'"',':','@','+','`','=']   
+    return false
+  }
+
   isFormDirty(): void {
     // form is not dirty and not submitted
 
     console.log('this.isFormSubmitted :',this.isFormSubmitted);
     console.log('this.renameForm.dirty  :',this.renameForm.dirty );
-    console.log('this.renameForm.valid  :',this.renameForm.valueChanges );
+    console.log('this.renameForm.valid  :',this.renameForm.valid );
 
     if (this.renameForm.dirty == true && this.renameForm.valid){
-      console.log('nothing changed')
+      console.log('nothing changed:', this.renameForm.value.renameInput)
     } else if (this.renameForm.dirty == false){
       this.renameFileTriggerCnt ++;
 
@@ -349,12 +367,6 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
 
       //return false;
     }
-    
-
-    // form is dirty and not submitted
-    //return true;
-
-    
   }
 
   onTriggerRenameFileStep1():void{
