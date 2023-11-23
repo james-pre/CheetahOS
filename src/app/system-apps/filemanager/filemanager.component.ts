@@ -9,8 +9,7 @@ import { FileInfo } from 'src/app/system-files/fileinfo';
 import { Subscription } from 'rxjs';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 import { FileManagerService } from 'src/app/shared/system-service/file.manager.services';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { CustomValidator } from './file.manager.validator';
+import { FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'cos-filemanager',
@@ -327,20 +326,50 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
 
   onInputChange(evt:any):boolean{
 
+    // console.log('the user is typing:',evt.target.value);
+    // console.log( 'Whats happening here:',new RegExp(regexStr).test(evt.key));
     const regexStr = '^[a-zA-Z0-9_]+$';
-    console.log('the user is typing:',evt.target.value);
-    console.log( 'Whats happening here:',new RegExp(regexStr).test(evt.key));
     const res = new RegExp(regexStr).test(evt.key)
-
     if(res){
       console.log('allowed:',evt)
       return res
     }else{
+      this.showInvalidCharsToolTip();
+
+      setTimeout(()=>{
+        this.hideInvalidCharsToolTip();
+      },5000)
+
       return res;
     }
-     
-    const invalidChars:string[] = ['#','%','&','{','}','|','\\','<','>','*','?','/','','$','!',"'",'"',':','@','+','`','=']   
-    return false
+  }
+
+  showInvalidCharsToolTip():void{
+    // get the position of the textbox
+    const toolTipID = 'invalidChars';
+    const invalidCharToolTipElement = document.getElementById(toolTipID) as HTMLElement;
+    const renameContainerElement= document.getElementById(`renameContainer${this.elementId}`) as HTMLElement;
+
+    const rect = renameContainerElement.getBoundingClientRect();
+
+    if(invalidCharToolTipElement){
+      invalidCharToolTipElement.style.transform =`translate(${rect.x + 2}px, ${rect.y + 2}px)`;
+      invalidCharToolTipElement.style.zIndex = '3';
+      invalidCharToolTipElement.style.opacity = '1';
+      invalidCharToolTipElement.style.transition = 'opacity 0.5s ease';
+    }
+  }
+
+  hideInvalidCharsToolTip():void{
+    const toolTipID = 'invalidChars';
+    const invalidCharToolTipElement = document.getElementById(toolTipID) as HTMLElement;
+
+    if(invalidCharToolTipElement){
+      invalidCharToolTipElement.style.transform =`translate(${-100000}px, ${100000}px)`;
+      invalidCharToolTipElement.style.zIndex = '-1';
+      invalidCharToolTipElement.style.opacity = '0';
+      invalidCharToolTipElement.style.transition = 'opacity 0.75s ease';
+    }
   }
 
   isFormDirty(): void {
