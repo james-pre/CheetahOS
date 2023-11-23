@@ -1,6 +1,6 @@
  <ol (dragover)="onDragOver($event)"  (drop)="onDrop($event)" (click)="onHideIconContextMenu()"  #myBounds> 
     <li *ngFor="let file of files; let i = index">
-        <button (dblclick)="runProcess(file)"  (mouseenter)="onMouseEnter(i)" (mouseleave)="onMouseLeave(i)"
+        <button fileMngrHighlight (dblclick)="runProcess(file)" (mouseenter)="onMouseEnter(i)" (mouseleave)="onMouseLeave(i)"
         ngDraggable [bounds]="myBounds" [inBounds]="true" [gridSize]="gridSize" zIndex="1" [preventDefaultEvent]="true"
         (stopped)="onDragEnd($event)" (started)="onDragStart($event)"
         (contextmenu)="onShowIconContextMenu($event, file, i)" (click)="onBtnClick(i)"
