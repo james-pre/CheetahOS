@@ -191,7 +191,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     this.hideCntxtMenuEvtCnt++;
 
     if(this.isRenameActive){
-      //this.isFormDirty();
+      this.isFormDirty();
     }
     if(this.isIconHighlightActive){
       this.iconWasInfocus();
@@ -325,20 +325,17 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   }
 
   onInputChange(evt:any):boolean{
-
-    // console.log('the user is typing:',evt.target.value);
-    // console.log( 'Whats happening here:',new RegExp(regexStr).test(evt.key));
     const regexStr = '^[a-zA-Z0-9_]+$';
     const res = new RegExp(regexStr).test(evt.key)
     if(res){
-      console.log('allowed:',evt)
+      this.hideInvalidCharsToolTip();
       return res
     }else{
       this.showInvalidCharsToolTip();
 
-      setTimeout(()=>{
+      setTimeout(()=>{ // hide after 6 secs
         this.hideInvalidCharsToolTip();
-      },5000)
+      },6000) 
 
       return res;
     }
@@ -368,33 +365,29 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
       invalidCharToolTipElement.style.transform =`translate(${-100000}px, ${100000}px)`;
       invalidCharToolTipElement.style.zIndex = '-1';
       invalidCharToolTipElement.style.opacity = '0';
-      invalidCharToolTipElement.style.transition = 'opacity 0.75s ease';
+      invalidCharToolTipElement.style.transition = 'opacity 1s ease 1';
     }
   }
 
   isFormDirty(): void {
     // form is not dirty and not submitted
 
-    console.log('this.isFormSubmitted :',this.isFormSubmitted);
-    console.log('this.renameForm.dirty  :',this.renameForm.dirty );
-    console.log('this.renameForm.valid  :',this.renameForm.valid );
+    // console.log('this.isFormSubmitted :',this.isFormSubmitted);
+    // console.log('this.renameForm.dirty  :',this.renameForm.dirty );
+    // console.log('this.renameForm.valid  :',this.renameForm.valid );
 
-    if (this.renameForm.dirty == true && this.renameForm.valid){
-      console.log('nothing changed:', this.renameForm.value.renameInput)
-    } else if (this.renameForm.dirty == false){
+    if (this.renameForm.dirty == true){
+      this.onTriggerRenameFileStep2();
+      this.hideCntxtMenuEvtCnt = 0;
+    }else if (this.renameForm.dirty == false){
       this.renameFileTriggerCnt ++;
 
       if(this.renameFileTriggerCnt > 1){
-        // the first trigger is a false 
-        console.log('nothing changed 2')
-        // hide renameText box and show figCaption
         this.untriggerRenameFile();
 
         this.renameFileTriggerCnt = 0;
         this.hideCntxtMenuEvtCnt = 0;
       }
-
-      //return false;
     }
   }
 
@@ -427,11 +420,10 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     const figCapElement= document.getElementById(`figCap${this.elementId}`) as HTMLElement;
     const renameContainerElement= document.getElementById(`renameContainer${this.elementId}`) as HTMLElement;
 
-    const renameText = this.renameForm.value.renameInput as string
-    if( renameText === '' || renameText.length == 0)
-      return;
+    const renameText = this.renameForm.value.renameInput as string;
 
-    this._fileService.renameFileAsync(this.selectedFile.getCurrentPath, renameText);
+    if( renameText !== '' || renameText.length !== 0)
+        this._fileService.renameFileAsync(this.selectedFile.getCurrentPath, renameText);
 
     if(btnElement){
       btnElement.style.backgroundColor = 'hsl(206deg 77% 70%/20%)';
