@@ -56,10 +56,11 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
 
   isFormSubmitted = false;
   isRenameActive = false;
-  isIconHighlightActive = false;
+  isHighlighIconDueToPriorActionActive = false;
   private selectedFile!:FileInfo;
   renameForm!: FormGroup;
   selectedElementId = -1;
+  prevSelectedElementId = -1;
 
   hideCntxtMenuEvtCnt = 0; // this is a dirty solution
   renameFileTriggerCnt = 0; // this is a dirty solution
@@ -158,20 +159,22 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  onBtnClick():void{
-    this.isIconHighlightActive = false;
+  onBtnClick(id:number):void{
+    this.prevSelectedElementId = this.selectedElementId 
+    this.selectedElementId = id;
+    this.removeIconWasInfocusStyle(this.prevSelectedElementId);
+
   }
 
   onTriggerRunProcess():void{
     this.runProcess(this.selectedFile);
   }
 
-
   onShowIconContextMenu(evt:MouseEvent, file:FileInfo, id:number):void{
     this.selectedElementId = id;
     this._runningProcessService.responseToEventCount++;
     this.selectedFile = file;
-    this.isIconHighlightActive = false;
+    this.isHighlighIconDueToPriorActionActive = false;
 
     this.iconCntxtMenuStyle = {
       'width': '205px', 
@@ -197,7 +200,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     if(this.isRenameActive){
       this.isFormDirty();
     }
-    if(this.isIconHighlightActive){
+    if(this.isHighlighIconDueToPriorActionActive){
       this.iconWasInfocus();
     }
   }
@@ -243,9 +246,26 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
         btnElement.style.backgroundColor = 'transparent';
         btnElement.style.border = 'none'
       }
-    }else if((id == this.selectedElementId) && this.isIconHighlightActive){
+    }else if((id == this.selectedElementId) && this.isHighlighIconDueToPriorActionActive){
       this.iconWasInfocus();
     }
+  }
+
+  removeIconWasInfocusStyle(id:number):void{
+    const btnElement = document.getElementById(`iconBtn${id}`) as HTMLElement;
+    if((this.isHighlighIconDueToPriorActionActive) && (id != this.selectedElementId )){
+      if(btnElement){
+        btnElement.style.backgroundColor = 'transparent';
+        btnElement.style.border = 'none'
+      }
+      this.isHighlighIconDueToPriorActionActive = false;
+    }else if((!this.isHighlighIconDueToPriorActionActive) && (id != this.selectedElementId )){
+      if(btnElement){
+        btnElement.style.backgroundColor = 'transparent';
+        btnElement.style.border = 'none'
+      }
+    }
+    this.prevSelectedElementId = -1;
   }
 
   sortIcons(sortBy:string): void {
@@ -321,7 +341,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   }
 
   async refreshIcons():Promise<void>{
-    this.isIconHighlightActive = false;
+    this.isHighlighIconDueToPriorActionActive = false;
     await this.loadFilesInfoAsync();
   }
 
@@ -435,7 +455,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     if(btnElement){
       btnElement.style.backgroundColor = 'hsl(206deg 77% 70%/20%)';
       btnElement.style.border = '2px solid hsla(0,0%,50%,25%)'
-      this.isIconHighlightActive = true;
+      this.isHighlighIconDueToPriorActionActive = true;
     }
 
     if(figCapElement){
@@ -445,8 +465,6 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     if(renameContainerElement){
       renameContainerElement.style.display = 'none';
     }
-
-    //this.selectedElementId = -1;
   }
 
   untriggerRenameFile():void{
@@ -465,7 +483,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     if(btnElement){
       btnElement.style.backgroundColor = 'hsl(206deg 77% 70%/20%)';
       btnElement.style.border = '2px solid hsla(0,0%,50%,25%)'
-      this.isIconHighlightActive = true;
+      this.isHighlighIconDueToPriorActionActive = true;
     }
   }
 

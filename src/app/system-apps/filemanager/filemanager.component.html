@@ -3,7 +3,7 @@
         <button (dblclick)="runProcess(file)"  (mouseenter)="onMouseEnter(i)" (mouseleave)="onMouseLeave(i)"
         ngDraggable [bounds]="myBounds" [inBounds]="true" [gridSize]="gridSize" zIndex="1" [preventDefaultEvent]="true"
         (stopped)="onDragEnd($event)" (started)="onDragStart($event)"
-        (contextmenu)="onShowIconContextMenu($event, file, i)" (click)="onBtnClick()"
+        (contextmenu)="onShowIconContextMenu($event, file, i)" (click)="onBtnClick(i)"
         id="iconBtn{{i}}"  [style]="btnStyle">
             <figure>
                 <img [src]="file.getIconPath | safeResourceUrl" [alt]="file.getFileName"  [style]="iconSizeStyle"/>
