@@ -2,7 +2,7 @@
 
 Building a Dektop environment in the web browser
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.1.2.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.12.
 
 ## Development server
 
@@ -16,7 +16,16 @@ Run `npm run build` to generate the filesystem(osdrive.json). Once the filesyste
 
 ***Note - npm will throw an error that it is unable to find make_http_index.js. All you have to do, is to got CheetahOs/node_modules/browserfs/dist/scripts and make a copy of make_xhrfs_index.js and rename it to  make_http_index.js
 
-***Note Some other error might occur in browserfs as a result of using newer versions of typescript. You might have to comment out some sections of code.
+***Note Some other error might occur in browserfs as a result of missing libs.
+|---> Cannot find namespace 'Dropbox' : replace reference to 'Dropbox' with 'any'. like client: Dropbox.Client; --> client: any;
+
+|---> Cannot find namespace 'NodeBuffer' : replace reference to 'NodeBuffer' with 'any'. like client: buffer: NodeBuffer; --> buffer: any;
+
+|---> Property 'put' in type 'IndexedDBRWTransaction' is not assignable to the same property in base type 'AsyncKeyValueRWTransaction'.
+ |change (key: string, data: Buffer, overwrite: boolean, cb: BFSCallback<boolean>)  to (key: string, data: Buffer, overwrite: boolean, cb: any) 
+
+|---> Type 'Stats' is missing the following properties from type 'StatsBase<number>': atimeMs, mtimeMs, ctimeMs, birthtimeMs
+ | add this line of code:  atimeMs: number; mtimeMs: number; ctimeMs: number; birthtimeMs: number;
 
 ## Build
 

@@ -149,7 +149,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
 
     console.log('runProcess:',file)
     // console.log('what was clicked:',file.getFileName +'-----' + file.getOpensWith +'---'+ file.getCurrentPath +'----'+ file.getIcon) TBD
-    if((file.getOpensWith === 'fileexplorer' && file.getFileName !== 'File Explorer') && file.getFileType ==='folder'){
+    if((file.getOpensWith === 'fileexplorer' && file.getFileName !== 'fileexplorer') && file.getFileType ==='folder'){
         this.updateExplorerIconAndName.emit(file);
         this.directory = file.getCurrentPath;
 
