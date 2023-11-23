@@ -89,10 +89,10 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     this._vantaEffect = VANTA.WAVES({
       el: '#vanta',
       color:this.defaultColor, //this._numSequence,
-      // waveHeight:20,
-      // shininess: 50,
-      // waveSpeed:0.5,
-      // zoom:0.75,     
+      waveHeight:20,
+      shininess: 50,
+      waveSpeed:0.5,
+      zoom:0.75,     
     });
   }
 

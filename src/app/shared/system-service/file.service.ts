@@ -297,19 +297,6 @@ export class FileService{
         await this.initBrowserFsAsync();
 
         new Promise((resolve, reject) =>{
-
-            // const basePath = basename(path)
-            // const fileExt = extname(path)
-            // const dir = dirname(path);
-
-            // console.log('basePath:',basePath);
-            // console.log('fileExt:',fileExt);
-            // console.log('dir:',dir);
-
-            // console.log('current path:', path);
-            // console.log('file rename:', `${dir}/${newFileName}${fileExt}`);
-
-
             this._fileSystem.readFile(path,(err, contents = Buffer.from('')) =>{
                 if(err){
                     console.log('getFile in renameFileAsync error:',err)
@@ -333,9 +320,6 @@ export class FileService{
                     resolve(console.log('successfully fetched'));
                 }
             });
-        }).then(()=>{
-            //Send update notification
-            this.dirFilesUpdateNotify.next();
         });
     }
 

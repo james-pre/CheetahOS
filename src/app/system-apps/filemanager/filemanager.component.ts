@@ -49,7 +49,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   directory ='/osdrive/desktop';
   files:FileInfo[] = [];
 
-  gridSize = 90;
+  gridSize = 90; //column size of grid = 90px
   private autoAlign = true;
   private autoArrange = false;
   private showDesktopIcon = true;
@@ -59,7 +59,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   isIconHighlightActive = false;
   private selectedFile!:FileInfo;
   renameForm!: FormGroup;
-  elementId = -1;
+  selectedElementId = -1;
 
   hideCntxtMenuEvtCnt = 0; // this is a dirty solution
   renameFileTriggerCnt = 0; // this is a dirty solution
@@ -85,7 +85,6 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit():void{
-
     this.renameForm = this._formBuilder.nonNullable.group({
       renameInput: '',
     });
@@ -159,15 +158,20 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  onBtnClick():void{
+    this.isIconHighlightActive = false;
+  }
+
   onTriggerRunProcess():void{
     this.runProcess(this.selectedFile);
   }
 
 
   onShowIconContextMenu(evt:MouseEvent, file:FileInfo, id:number):void{
-    this.elementId = id;
+    this.selectedElementId = id;
     this._runningProcessService.responseToEventCount++;
     this.selectedFile = file;
+    this.isIconHighlightActive = false;
 
     this.iconCntxtMenuStyle = {
       'width': '205px', 
@@ -185,7 +189,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
       'height': '0px', 
       'transform': 'translate(-100000px, 100000px)',
       'z-index': -1,
-      'opacity':0
+      'opacity':0,
     }
 
     this.hideCntxtMenuEvtCnt++;
@@ -234,12 +238,12 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
 
   onMouseLeave(id:number):void{
     const btnElement = document.getElementById(`iconBtn${id}`) as HTMLElement;
-    if(id != this.elementId){
+    if(id != this.selectedElementId){
       if(btnElement){
         btnElement.style.backgroundColor = 'transparent';
         btnElement.style.border = 'none'
       }
-    }else if((id == this.elementId) && this.isIconHighlightActive){
+    }else if((id == this.selectedElementId) && this.isIconHighlightActive){
       this.iconWasInfocus();
     }
   }
@@ -316,8 +320,9 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     
   }
 
-  refreshIcons():void{
-    1
+  async refreshIcons():Promise<void>{
+    this.isIconHighlightActive = false;
+    await this.loadFilesInfoAsync();
   }
 
   onDeleteFile():void{
@@ -345,7 +350,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     // get the position of the textbox
     const toolTipID = 'invalidChars';
     const invalidCharToolTipElement = document.getElementById(toolTipID) as HTMLElement;
-    const renameContainerElement= document.getElementById(`renameContainer${this.elementId}`) as HTMLElement;
+    const renameContainerElement= document.getElementById(`renameContainer${this.selectedElementId}`) as HTMLElement;
 
     const rect = renameContainerElement.getBoundingClientRect();
 
@@ -365,21 +370,15 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
       invalidCharToolTipElement.style.transform =`translate(${-100000}px, ${100000}px)`;
       invalidCharToolTipElement.style.zIndex = '-1';
       invalidCharToolTipElement.style.opacity = '0';
-      invalidCharToolTipElement.style.transition = 'opacity 1s ease 1';
+      invalidCharToolTipElement.style.transition = 'opacity 0.5s ease 1';
     }
   }
 
   isFormDirty(): void {
-    // form is not dirty and not submitted
-
-    // console.log('this.isFormSubmitted :',this.isFormSubmitted);
-    // console.log('this.renameForm.dirty  :',this.renameForm.dirty );
-    // console.log('this.renameForm.valid  :',this.renameForm.valid );
-
     if (this.renameForm.dirty == true){
-      this.onTriggerRenameFileStep2();
-      this.hideCntxtMenuEvtCnt = 0;
-    }else if (this.renameForm.dirty == false){
+        this.onTriggerRenameFileStep2();
+        this.hideCntxtMenuEvtCnt = 0;
+    }else if(this.renameForm.dirty == false){
       this.renameFileTriggerCnt ++;
 
       if(this.renameFileTriggerCnt > 1){
@@ -394,9 +393,9 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   onTriggerRenameFileStep1():void{
     this.isRenameActive = !this.isRenameActive;
 
-    const figCapElement= document.getElementById(`figCap${this.elementId}`) as HTMLElement;
-    const renameContainerElement= document.getElementById(`renameContainer${this.elementId}`) as HTMLElement;
-    const renameTxtBoxElement= document.getElementById(`renameTxtBox${this.elementId}`) as HTMLInputElement;
+    const figCapElement= document.getElementById(`figCap${this.selectedElementId}`) as HTMLElement;
+    const renameContainerElement= document.getElementById(`renameContainer${this.selectedElementId}`) as HTMLElement;
+    const renameTxtBoxElement= document.getElementById(`renameTxtBox${this.selectedElementId}`) as HTMLInputElement;
 
     if(figCapElement){
       figCapElement.style.display = 'none';
@@ -415,19 +414,28 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   }
 
   onTriggerRenameFileStep2():void{
+    this.isRenameActive = !this.isRenameActive;
 
-    const btnElement = document.getElementById(`iconBtn${this.elementId}`) as HTMLElement;
-    const figCapElement= document.getElementById(`figCap${this.elementId}`) as HTMLElement;
-    const renameContainerElement= document.getElementById(`renameContainer${this.elementId}`) as HTMLElement;
+    const btnElement = document.getElementById(`iconBtn${this.selectedElementId}`) as HTMLElement;
+    const figCapElement= document.getElementById(`figCap${this.selectedElementId}`) as HTMLElement;
+    const renameContainerElement= document.getElementById(`renameContainer${this.selectedElementId}`) as HTMLElement;
 
     const renameText = this.renameForm.value.renameInput as string;
 
-    if( renameText !== '' || renameText.length !== 0)
-        this._fileService.renameFileAsync(this.selectedFile.getCurrentPath, renameText);
+    if(renameText !== '' || renameText.length !== 0){
+      this._fileService.renameFileAsync(this.selectedFile.getCurrentPath, renameText);
+
+      // renamFileAsync, doesn't trigger a reload of the file directory, so to give the user the impression that the file has been updated, the code below
+      const fileIdx = this.files.findIndex(f => (f.getCurrentPath == this.selectedFile.getContentPath) && (f.getFileName == this.selectedFile.getFileName));
+      this.selectedFile.setFileName = renameText;
+      this.selectedFile.setDateModified = Date.now();
+      this.files[fileIdx] = this.selectedFile;
+    }
 
     if(btnElement){
       btnElement.style.backgroundColor = 'hsl(206deg 77% 70%/20%)';
       btnElement.style.border = '2px solid hsla(0,0%,50%,25%)'
+      this.isIconHighlightActive = true;
     }
 
     if(figCapElement){
@@ -438,15 +446,15 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
       renameContainerElement.style.display = 'none';
     }
 
-    //this.elementId = -1;
+    //this.selectedElementId = -1;
   }
 
   untriggerRenameFile():void{
     this.isRenameActive = !this.isRenameActive;
 
-    const btnElement = document.getElementById(`iconBtn${this.elementId}`) as HTMLElement;
-    const figCapElement= document.getElementById(`figCap${this.elementId}`) as HTMLElement;
-    const renameContainerElement= document.getElementById(`renameContainer${this.elementId}`) as HTMLElement;
+    const btnElement = document.getElementById(`iconBtn${this.selectedElementId}`) as HTMLElement;
+    const figCapElement= document.getElementById(`figCap${this.selectedElementId}`) as HTMLElement;
+    const renameContainerElement= document.getElementById(`renameContainer${this.selectedElementId}`) as HTMLElement;
 
     if(figCapElement){
       figCapElement.style.display = 'block';
@@ -462,9 +470,9 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   }
 
   iconWasInfocus():void{
-    const btnElement = document.getElementById(`iconBtn${this.elementId}`) as HTMLElement;
+    const btnElement = document.getElementById(`iconBtn${this.selectedElementId}`) as HTMLElement;
 
-    if(this.hideCntxtMenuEvtCnt >= 1){
+    if(this.hideCntxtMenuEvtCnt >= 0){
       if(btnElement){
         btnElement.style.backgroundColor = 'transparent';
         btnElement.style.border = '1px dotted white'
