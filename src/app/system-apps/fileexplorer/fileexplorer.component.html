@@ -4,11 +4,11 @@
     <div class="fileexp-header-container">
         <div class="header-nav-btn-container">
             <figure class="figure-alt">
-                <img class="img-alt" [src]="'osdrive/icons/nav_left_32.png' | safeResourceUrl" />
+                <img class="img-alt-left-right" [src]="'osdrive/icons/nav_left_32.png' | safeResourceUrl" />
             </figure>
 
             <figure class="figure-alt">
-                <img class="img-alt" [src]="'osdrive/icons/nav_right_32.png' | safeResourceUrl" />
+                <img class="img-alt-left-right" [src]="'osdrive/icons/nav_right_32.png' | safeResourceUrl" />
             </figure>
 
             <figure class="figure-alt">
@@ -16,7 +16,7 @@
             </figure>
 
             <figure class="figure-alt">
-                <img class="img-alt" [src]="'osdrive/icons/nav_up-32.png' | safeResourceUrl" />
+                <img class="img-alt-up" [src]="'osdrive/icons/nav_up-32.png' | safeResourceUrl" />
             </figure>
         </div>
 
@@ -163,5 +163,12 @@
             </div>
 
         </div>
+    </div>
+    <div class="fileexp-footer-container" >
+        <span class="span-footer"> </span>
+        <span class="span-footer">{{files.length}} items</span>
+        <span class="span-footer">|</span>
+        <span class="span-footer">{{files.length}} items selected</span>
+        <span class="span-footer">|</span>
     </div>
 </cos-window>

@@ -8,7 +8,18 @@
     display: flex;
 }
 
+.fileexp-footer-container{
+    width: 100%;
+    display: inline-flex;
+    background-color: #3f3e3e;
+}
 
+.span-footer{
+    color: #fff;
+    font-size: 12px;
+    font-weight: normal;
+    margin: 3px 4px;
+}
 /*****************************Header navigation view Ended*****************************/
 
 .fileexp-header-container{
@@ -33,9 +44,10 @@
     display: flex;
 }
 
-.img-alt{
+.img-alt-left-right{
     height: 20px;
     width: 20px;
+    top:5px;
     image-rendering:optimizeQuality;
     position: relative;
 }
@@ -45,9 +57,16 @@
     width: 12px;
     image-rendering:optimizeQuality;
     position: relative;
-    top: 5px
+    top: 8px
 }
 
+.img-alt-up{
+    height: 20px;
+    width: 20px;
+    top:6px;
+    image-rendering:optimizeQuality;
+    position: relative;
+}
 .figure-alt{
     position: relative;
     align-items: center;
@@ -65,7 +84,7 @@
     min-width: 350px;
     width: 100%;
     height: 30px;
-    border: 1px solid #ccc;
+    border: 0.5px solid #9d9d9d;
     background-color: #080808;
 }
 
@@ -81,7 +100,7 @@
     min-width: 105px;
     max-width: 100%;
     height: 30px;
-    border: 1px solid #ccc;
+    border: 0.5px solid #9d9d9d;
     background-color: #080808;
 }
 /*****************************Header navigation view Ended*****************************/
@@ -138,16 +157,16 @@ ul, #myUL {
 /*****************************navigation view Started*****************************/
 
 .file-content-container{
-    border-left: 1px solid #ccc;
+    border-left: 0.5px solid #5a5a5a;
     width: 100%; /* Set a maximum width for the responsive container */
     overflow: auto;
 }
 
 .previewOrdetails-content-container{
     min-width: 200px;
-    border-left: 1px solid #ccc;
+    border-left: 0.5px solid #5a5a5a;
+    display: none;
 }
-
 
 ol{
     /* column-gap: 1px; */
