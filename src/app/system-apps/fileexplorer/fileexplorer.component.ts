@@ -19,7 +19,7 @@ import { ViewOptions } from './fileexplorer.enums';
 })
 
 export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('myBounds', {static: true}) myBounds!: ElementRef;
+  @ViewChild('fileExplorerContainer', {static: true}) fileExplorerContainer!: ElementRef;
  
   
   private _processIdService:ProcessIDService;
@@ -37,7 +37,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   private _showDesktopIconNotifySub!:Subscription;
   private _dirFilesUpdatedSub!: Subscription;
 
-  iconCntxtMenuStyle:Record<string, unknown> = {};
+  fxIconCntxtMenuStyle:Record<string, unknown> = {};
   iconSizeStyle:Record<string, unknown> = {};
   btnStyle:Record<string, unknown> = {};
 
@@ -178,14 +178,18 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   }
 
   onShowIconContextMenu(evt:MouseEvent, file:FileInfo, id:number):void{
+    const rect =  this.fileExplorerContainer.nativeElement.getBoundingClientRect();
+    const x = evt.clientX - rect.left;
+    const y = evt.clientY - rect.top;
+    
     this.selectedElementId = id;
     this._runningProcessService.responseToEventCount++;
     this.selectedFile = file;
     this.isHighlighIconDueToPriorActionActive = false;
 
-    this.iconCntxtMenuStyle = {
+    this.fxIconCntxtMenuStyle = {
       'width': '205px', 
-      'transform':`translate(${String(evt.clientX)}px, ${String(evt.clientY)}px)`,
+      'transform':`translate(${String(x)}px, ${String(y)}px)`,
       'z-index': 2,
       'opacity':1
     }
@@ -194,7 +198,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   }
 
   onHideIconContextMenu():void{
-    this.iconCntxtMenuStyle = {
+    this.fxIconCntxtMenuStyle = {
       'width': '0px', 
       'height': '0px', 
       'transform': 'translate(-100000px, 100000px)',
