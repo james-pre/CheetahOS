@@ -62,6 +62,8 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   isHighlighIconDueToPriorActionActive = false;
   private selectedFile!:FileInfo;
   renameForm!: FormGroup;
+  pathForm!: FormGroup;
+  searchForm!: FormGroup;
   selectedElementId = -1;
   prevSelectedElementId = -1;
 
@@ -100,6 +102,12 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   ngOnInit():void{
     this.renameForm = this._formBuilder.nonNullable.group({
       renameInput: '',
+    });
+    this.pathForm = this._formBuilder.nonNullable.group({
+      pathInput: '',
+    });
+    this.searchForm = this._formBuilder.nonNullable.group({
+      searchInput: '',
     });
 
     this.onHideIconContextMenu();

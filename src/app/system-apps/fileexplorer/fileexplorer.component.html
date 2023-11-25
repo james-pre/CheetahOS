@@ -1,8 +1,44 @@
 
 <cos-window [runningProcessID]="this.processId" [processAppIcon]="this.icon" [processAppName]="this.name">
+    <div class="header-empty-line-container"></div>
+    <div class="fileexp-header-container">
+        <div class="header-nav-btn-container">
+            <figure class="figure-alt">
+                <img class="img-alt" [src]="'osdrive/icons/nav_left_32.png' | safeResourceUrl" />
+            </figure>
+
+            <figure class="figure-alt">
+                <img class="img-alt" [src]="'osdrive/icons/nav_right_32.png' | safeResourceUrl" />
+            </figure>
+
+            <figure class="figure-alt">
+                <img class="img-alt-caret" [src]="'osdrive/icons/nav_expand_32.png' | safeResourceUrl" />
+            </figure>
+
+            <figure class="figure-alt">
+                <img class="img-alt" [src]="'osdrive/icons/nav_up-32.png' | safeResourceUrl" />
+            </figure>
+        </div>
+
+        <div class="header-nav-path-container">
+            <!-- <div class="nav-path-container">
+
+            </div> -->
+            <form [formGroup]="pathForm"  (ngSubmit)="isFormDirty()">
+                <input class="path-input"  type="text" placeholder="{{this.directory}}" formControlName="pathInput"  (keypress)="onInputChange($event)" autofocus spellcheck="false" id="pathTxtBox-{{this.processId}}"/>
+            </form>
+        </div>
+
+        <div class="header-nav-search-container">
+            <form [formGroup]="searchForm"  (ngSubmit)="isFormDirty()">
+                <input class="search-input"type="text" placeholder="Search OSDisk(C:)" formControlName="searchInput"  (keypress)="onInputChange($event)" autofocus spellcheck="false" id="searchTxtBox-{{this.processId}}"/>
+            </form>
+        </div>
+    </div>
+    <div class="header-empty-line-container2"></div>
     <div class="fileexp-main-container"  #fileExplorerContainer>
         <div class="fileexp-content-container">
-            <!-- <div class="navigation-content-container">
+            <div class="navigation-content-container">
                 <ul id="myUL">
                     <li><span class="caret">Beverages</span>
                       <ul class="nested">
@@ -25,7 +61,7 @@
                       </ul>
                     </li>
                   </ul>
-            </div> -->
+            </div>
             <div class="file-content-container">
                 <ol (dragover)="onDragOver($event)"  (drop)="onDrop($event)" (click)="onHideIconContextMenu()"  #myBounds> 
     
@@ -122,9 +158,9 @@
                     </div>
                 </ol>
             </div>
-            <!-- <div class="previewOrdetails-content-container">
+            <div class="previewOrdetails-content-container">
                 <p>hide/show</p>
-            </div> -->
+            </div>
 
         </div>
     </div>
