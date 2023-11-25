@@ -23,14 +23,12 @@
 }
 
 .left-header-section{
-  width: 90%;
+  width:calc(100% - 135px);
   height: 30px;
   left: 0;
-  display: flex;
 }
 
 .right-header-section{
-  width: 10%;
   height: 30px;
   right: 0;
 }
@@ -65,8 +63,9 @@ h1{
   font-weight: normal;
   height: 29px;
   border-bottom: 1px transparent blue;  
-  width: 35px;
+  width: fit-content;
   flex-grow: 1;
+  display: flex;
   left: 0;
 }
 
@@ -110,6 +109,7 @@ svg{
 nav{
   display: flex;
   position: absolute;
+  width: fit-content;
   right: 0;
   height: 30px;
 }
