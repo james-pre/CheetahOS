@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 import { FileManagerService } from 'src/app/shared/system-service/file.manager.services';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { ViewOptions } from './fileexplorer.enums';
 
 @Component({
   selector: 'cos-fileexplorer',
@@ -66,9 +67,18 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
   hideCntxtMenuEvtCnt = 0; // this is a dirty solution
   renameFileTriggerCnt = 0; // this is a dirty solution
+  viewOptions = ViewOptions.MEDIUM_ICON_VIEW;
+
+  readonly smallIconsView = ViewOptions.SMALL_ICON_VIEW;
+  readonly mediumIconsView = ViewOptions.MEDIUM_ICON_VIEW;
+  readonly largeIconsView = ViewOptions.LARGE_ICON_VIEW;
+  readonly listView = ViewOptions.LIST_VIEW;
+  readonly detailsView = ViewOptions.DETAILS_VIEW;
+  readonly contentView = ViewOptions.CONTENT_VIEW;
+  readonly titleView = ViewOptions.TITLE_VIEW;
 
 
-  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, triggerProcessService:TriggerProcessService, fileManagerService:FileManagerService, formBuilder: FormBuilder,) { 
+  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, triggerProcessService:TriggerProcessService, fileManagerService:FileManagerService, formBuilder: FormBuilder) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this._fileService = fileInfoService;
@@ -368,7 +378,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     // get the position of the textbox
     const toolTipID = 'invalidChars';
     const invalidCharToolTipElement = document.getElementById(toolTipID) as HTMLElement;
-    const renameContainerElement= document.getElementById(`renameContainer${this.selectedElementId}`) as HTMLElement;
+    const renameContainerElement= document.getElementById(`renameContainer-${this.processId}-${this.selectedElementId}`) as HTMLElement;
 
     const rect = renameContainerElement.getBoundingClientRect();
 
@@ -411,9 +421,9 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   onTriggerRenameFileStep1():void{
     this.isRenameActive = !this.isRenameActive;
 
-    const figCapElement= document.getElementById(`figCap${this.selectedElementId}`) as HTMLElement;
-    const renameContainerElement= document.getElementById(`renameContainer${this.selectedElementId}`) as HTMLElement;
-    const renameTxtBoxElement= document.getElementById(`renameTxtBox${this.selectedElementId}`) as HTMLInputElement;
+    const figCapElement= document.getElementById(`figCap-${this.processId}-${this.selectedElementId}`) as HTMLElement;
+    const renameContainerElement= document.getElementById(`renameContainer-${this.processId}-${this.selectedElementId}`) as HTMLElement;
+    const renameTxtBoxElement= document.getElementById(`renameTxtBox${this.processId}-${this.selectedElementId}`) as HTMLInputElement;
 
     if(figCapElement){
       figCapElement.style.display = 'none';
@@ -435,8 +445,8 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     this.isRenameActive = !this.isRenameActive;
 
     const btnElement = document.getElementById(`iconBtn-${this.processId}-${this.selectedElementId}`) as HTMLElement;
-    const figCapElement= document.getElementById(`figCap${this.selectedElementId}`) as HTMLElement;
-    const renameContainerElement= document.getElementById(`renameContainer${this.selectedElementId}`) as HTMLElement;
+    const figCapElement= document.getElementById(`figCap-${this.processId}-${this.selectedElementId}`) as HTMLElement;
+    const renameContainerElement= document.getElementById(`renameContainer-${this.processId}-${this.selectedElementId}`) as HTMLElement;
 
     const renameText = this.renameForm.value.renameInput as string;
 
@@ -469,8 +479,8 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     this.isRenameActive = !this.isRenameActive;
 
     const btnElement = document.getElementById(`iconBtn-${this.processId}-${this.selectedElementId}`) as HTMLElement;
-    const figCapElement= document.getElementById(`figCap${this.selectedElementId}`) as HTMLElement;
-    const renameContainerElement= document.getElementById(`renameContainer${this.selectedElementId}`) as HTMLElement;
+    const figCapElement= document.getElementById(`figCap-${this.processId}-${this.selectedElementId}`) as HTMLElement;
+    const renameContainerElement= document.getElementById(`renameContainer-${this.processId}-${this.selectedElementId}`) as HTMLElement;
 
     if(figCapElement){
       figCapElement.style.display = 'block';

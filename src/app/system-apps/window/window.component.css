@@ -35,11 +35,9 @@
   right: 0;
 }
 
-.content-container{
+.window-content-container{
   width: 100%;
   min-height: 5%;
-  max-width: 100%;  /*Set the width of the parent container */
-  max-height: 100%;  /*Set the height of the parent container */
   position: relative;
 }
 
