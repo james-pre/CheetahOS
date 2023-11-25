@@ -2,8 +2,76 @@
 <cos-window [runningProcessID]="this.processId" [processAppIcon]="this.icon" [processAppName]="this.name">
     <div class="main-container">
         <div class="file-content-container">
-            <cos-filemanager tabindex="0" id="fileMgrSec" [folderPath]="this.directory"  (updateExplorerIconAndName)="updateIconAndName($event)" (click)="setFileExplorerWindowToFocus(this.processId)">  
-            </cos-filemanager>
+            <ol (dragover)="onDragOver($event)"  (drop)="onDrop($event)" (click)="onHideIconContextMenu()"  #myBounds> 
+                <li *ngFor="let file of files; let i = index">
+                    <button (dblclick)="runProcess(file)" (mouseenter)="onMouseEnter1(i)" (mouseleave)="onMouseLeave(i)"
+                    ngDraggable [bounds]="myBounds" [inBounds]="true" [gridSize]="gridSize" zIndex="1" [preventDefaultEvent]="true"
+                    (stopped)="onDragEnd($event)" (started)="onDragStart($event)"
+                    (contextmenu)="onShowIconContextMenu($event, file, i)" (click)="onBtnClick(i)"
+                    id="iconBtn-{{this.processId}}-{{i}}"  [style]="btnStyle">
+                        <figure>
+                            <img [src]="file.getIconPath | safeResourceUrl" [alt]="file.getFileName"  [style]="iconSizeStyle"/>
+                            <figcaption  id="figCap{{i}}">
+                                    {{file.getFileName}}
+                            </figcaption>
+                            <div class="rename-textbox"  id="renameContainer{{i}}">
+                                <form [formGroup]="renameForm"  (ngSubmit)="isFormDirty()">
+                                    <input type="text" formControlName="renameInput"  (keypress)="onInputChange($event)" autofocus spellcheck="false" id="renameTxtBox{{i}}"/>
+                                </form>
+                            </div>
+                        </figure>
+                    </button>
+                </li>
+            
+                <div class="tool-tip-container" id="invalidChars">
+                    <div class="tool-tip-arrow"> </div>
+                    <div class="tool-tip-base"> A file name can't contain any of the following characters: <br /><br />
+                         \ / : * ? " < > |
+                    </div>
+                </div>
+            
+            
+                <div class="icon-vertical-menu" [style]="iconCntxtMenuStyle">
+                    <div class="empty-line-container"></div>
+            
+                    <div class="icon-vertical-menu-item" (click)="onTriggerRunProcess()">
+                        <span class="span head"> <figure class="figure-cntxt-menu"> </figure></span>
+                        <span class="span mid" style="font-weight: bold;">Open</span>
+                        <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
+                    </div>
+            
+                    <div class="icon-vertical-menu-item">
+                        <span class="span head"> <figure class="figure-cntxt-menu"> </figure></span>
+                        <span class="span mid">Pin to Start</span>
+                        <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
+                    </div>
+            
+                    <div class="icon-vertical-menu-item" >
+                        <span class="span head"> <figure  class="figure-cntxt-menu"> </figure></span>
+                        <span class="span mid">Pin to taskbar</span>
+                        <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
+                    </div>
+            
+                    <div class="empty-line-container"></div>
+                    <div class="line-container"><div class="line"></div></div>
+                    <div class="empty-line-container"></div>
+            
+                    <div class="icon-vertical-menu-item"(click)="onDeleteFile()">
+                        <span class="span head"> <figure class="figure-cntxt-menu" > </figure></span>
+                        <span class="span mid">Delete</span>
+                        <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
+                    </div>
+            
+                    <div class="icon-vertical-menu-item" (click)="onTriggerRenameFileStep1()">
+                        <span class="span head"> <figure class="figure-cntxt-menu" > </figure></span>
+                        <span class="span mid">Rename</span>
+                        <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
+                    </div>
+            
+                    <div class="empty-line-container"></div>
+                </div>
+            </ol>
+            
         </div>
     </div>
 </cos-window>
