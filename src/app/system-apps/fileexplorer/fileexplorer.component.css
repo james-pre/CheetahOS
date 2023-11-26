@@ -1,3 +1,44 @@
+
+.search-history-containter{
+    position: absolute;
+    width: inherit;
+    border: 1px solid #5a5a5a;
+    margin-right: 10px;
+    max-height: 150px;
+    overflow-y: scroll;
+    background-color: inherit;
+    display: none;
+}
+
+.search-entry-containter{
+    display: inline-flex;
+    width: 100%;
+    margin: 8px 8px 8px 0;
+    overflow-y: scroll;
+}
+
+.img-alt-search-list{
+    height: 20px;
+    width: 20px;
+    top:0px;
+    image-rendering:optimizeQuality;
+    position: relative;
+}
+
+span.mid1{
+    min-width: 50%;
+    padding: 0 2px;
+    color: #fff; /* white text color */
+    text-align: left;
+    font-size: 13px;
+    font-weight: normal;
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis; 
+}
+
+
+
 .fileexp-main-container{
     width: 100%;
     height: 100%;
@@ -25,16 +66,19 @@
 .fileexp-header-container{
     width: 100%;
     display: flex;
-    background-color: #080808;
+       /* background-color: #080808; */
+       background-color: #ffff;
 }
 
 .header-empty-line-container {
     height: 5px;
-    background-color: #080808;
+    /* background-color: #080808; */
+    background-color: #ffff;
 }
 .header-empty-line-container2 {
     height: 8px;
-    background-color: #080808;
+    /* background-color: #080808; */
+    background-color: #ffff;
 }
 
 
@@ -85,7 +129,8 @@
     width: 100%;
     height: 30px;
     border: 0.5px solid #9d9d9d;
-    background-color: #080808;
+     /* background-color: #080808; */
+     background-color: #ffff;
 }
 
 
@@ -101,7 +146,8 @@
     max-width: 100%;
     height: 30px;
     border: 0.5px solid #9d9d9d;
-    background-color: #080808;
+    /* background-color: #080808; */
+    background-color: #ffff;
 }
 /*****************************Header navigation view Ended*****************************/
 
@@ -109,7 +155,8 @@
 
 .navigation-content-container{
     min-width: 150px;
-    background-color: #080808;
+     /* background-color: #080808; */
+     background-color: #ffff;
 }
 
 
@@ -158,14 +205,16 @@ ul, #myUL {
 
 .file-content-container{
     border-left: 0.5px solid #5a5a5a;
+    min-width: 100px;
     width: 100%; /* Set a maximum width for the responsive container */
-    overflow: auto;
+    overflow: scroll;
+    min-height: 350px;
 }
 
 .previewOrdetails-content-container{
     min-width: 200px;
     border-left: 0.5px solid #5a5a5a;
-    display: none;
+    /* display: none; */
 }
 
 ol{

@@ -29,10 +29,17 @@
             </form>
         </div>
 
+
         <div class="header-nav-search-container">
             <form [formGroup]="searchForm"  (ngSubmit)="isFormDirty()">
-                <input class="search-input"type="text" placeholder="Search OSDisk(C:)" formControlName="searchInput"  (keypress)="onInputChange($event)" autofocus spellcheck="false" id="searchTxtBox-{{this.processId}}"/>
+                <input class="search-input" type="text" placeholder="Search OSDisk(C:)" formControlName="searchInput" (focus)="hideShowSearchHistory()"  (keypress)="onInputChange($event)" spellcheck="false" id="searchTxtBox-{{this.processId}}"/>
             </form>
+            <div class="search-history-containter" id="searchHistory-{{this.processId}}">
+                <div class="search-entry-containter" *ngFor="let entry of searchHistory; let i = index">
+                    <span class="span head"><figure class="figure-alt"><img class="img-alt-search-list" [src]="'osdrive/icons/white_history_32.png' | safeResourceUrl"/></figure></span>
+                    <span class="span mid1">{{entry}}</span>
+                </div>
+            </div>
         </div>
     </div>
     <div class="header-empty-line-container2"></div>
@@ -63,8 +70,9 @@
                   </ul>
             </div>
             <div class="file-content-container">
-                <ol (dragover)="onDragOver($event)"  (drop)="onDrop($event)" (click)="onHideIconContextMenu()"  #myBounds> 
-    
+            <!-- ngResizable [rzHandles]="'w'" [rzMinWidth]="270" -->
+            
+                <ol (dragover)="onDragOver($event)"  (drop)="onDrop($event)" (click)="onHideIconContextMenu()"> 
                     <ng-container [ngTemplateOutlet]="viewOptions === smallIconsView ? iconsView :
                                                         viewOptions === mediumIconsView ? iconsView :
                                                         viewOptions === largeIconsView ? iconsView : 
@@ -76,7 +84,7 @@
                     <ng-template #iconsView>
                         <li *ngFor="let file of files; let i = index">
                             <button (dblclick)="runProcess(file)" (mouseenter)="onMouseEnter1(i)" (mouseleave)="onMouseLeave(i)"
-                            ngDraggable [bounds]="myBounds" [inBounds]="true" [gridSize]="gridSize" zIndex="1" [preventDefaultEvent]="true"
+                            ngDraggable  [inBounds]="true" zIndex="1" [preventDefaultEvent]="true"
                             (stopped)="onDragEnd($event)" (started)="onDragStart($event)"
                             (contextmenu)="onShowIconContextMenu($event, file, i)" (click)="onBtnClick(i)"
                             id="iconBtn-{{this.processId}}-{{i}}"  [style]="btnStyle">
@@ -159,6 +167,7 @@
                 </ol>
             </div>
             <div class="previewOrdetails-content-container">
+            <!-- ngResizable [rzHandles]="'w'" [rzMinWidth]="200" -->
                 <p>hide/show</p>
             </div>
 

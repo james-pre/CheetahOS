@@ -52,23 +52,18 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
   files:FileInfo[] = [];
 
-  gridSize = 90; //column size of grid = 90px
-  private autoAlign = true;
-  private autoArrange = false;
   private showDesktopIcon = true;
 
   isFormSubmitted = false;
   isRenameActive = false;
   isHighlighIconDueToPriorActionActive = false;
   private selectedFile!:FileInfo;
-  renameForm!: FormGroup;
-  pathForm!: FormGroup;
-  searchForm!: FormGroup;
   selectedElementId = -1;
   prevSelectedElementId = -1;
 
   hideCntxtMenuEvtCnt = 0; // this is a dirty solution
   renameFileTriggerCnt = 0; // this is a dirty solution
+
   viewOptions = ViewOptions.MEDIUM_ICON_VIEW;
 
   readonly smallIconsView = ViewOptions.SMALL_ICON_VIEW;
@@ -78,6 +73,13 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   readonly detailsView = ViewOptions.DETAILS_VIEW;
   readonly contentView = ViewOptions.CONTENT_VIEW;
   readonly titleView = ViewOptions.TITLE_VIEW;
+
+  renameForm!: FormGroup;
+  pathForm!: FormGroup;
+  searchForm!: FormGroup;
+
+  searchHistory =['Java','ProgramFile', 'Perenne'];
+  pathHistory =['/osdrive/icons','/osdrive/games', '/osdrive/video'];
 
 
   constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, triggerProcessService:TriggerProcessService, fileManagerService:FileManagerService, formBuilder: FormBuilder) { 
@@ -93,8 +95,6 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     this._dirFilesUpdatedSub = this._fileService.dirFilesUpdateNotify.subscribe(() =>{this.loadFilesInfoAsync()});
     this._viewByNotifySub = fileManagerService.viewByNotify.subscribe((p) =>{this.changeIconsSize(p)});
     this._sortByNotifySub = fileManagerService.sortByNotify.subscribe((p)=>{this.sortIcons(p)});
-    this._autoArrangeIconsNotifySub = fileManagerService.autoArrangeIconsNotify.subscribe((p) =>{this.toggleAutoArrangeIcons(p)});
-    this._autoAlignIconsNotifyBySub = fileManagerService.alignIconsToGridNotify.subscribe((p) => {this.toggleAutoAlignIconsToGrid(p)});
     this._refreshNotifySub = fileManagerService.refreshNotify.subscribe(()=>{this.refreshIcons()});
     this._showDesktopIconNotifySub = fileManagerService.showDesktopIconsNotify.subscribe((p) =>{this.toggleDesktopIcons(p)});
   }
@@ -340,26 +340,6 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     }
   }
 
-  toggleAutoAlignIconsToGrid(alignIcon:boolean):void{
-    this.autoAlign = alignIcon;
-    if(!this.autoAlign){
-      this.gridSize = 0;
-    }else{
-      this.gridSize = 90;
-    }
-  }
-
-  toggleAutoArrangeIcons(arrangeIcon:boolean):void{
-
-    this.autoArrange = arrangeIcon;
-
-    if(this.autoArrange){
-      // clear (x,y) position of icons in memory
-      this.refreshIcons();
-    }
-    
-  }
-
   async refreshIcons():Promise<void>{
     this.isHighlighIconDueToPriorActionActive = false;
     await this.loadFilesInfoAsync();
@@ -514,6 +494,21 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
       if(btnElement){
         btnElement.style.backgroundColor = 'transparent';
         btnElement.style.border = '1px dotted white'
+      }
+    }
+  }
+
+
+
+
+  hideShowSearchHistory():void{
+    console.log('whats up');
+
+    const searchHistoryElement = document.getElementById(`searchHistory-${this.processId}`) as HTMLElement;
+
+    if(searchHistoryElement){
+      if(this.searchHistory.length > 0){
+        searchHistoryElement.style.display = 'block';
       }
     }
   }
