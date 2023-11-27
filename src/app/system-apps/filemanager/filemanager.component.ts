@@ -341,7 +341,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   }
 
   onInputChange(evt:any):boolean{
-    const regexStr = '^[a-zA-Z0-9_]+$';
+    const regexStr = '^[a-zA-Z0-9_.]+$';
     const res = new RegExp(regexStr).test(evt.key)
     if(res){
       this.hideInvalidCharsToolTip();
