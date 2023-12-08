@@ -30,10 +30,12 @@ span.mid1{
     padding: 0 2px;
     color: #fff; /* white text color */
     text-align: left;
-    font-size: 13px;
+    font-size: 10px;
     font-weight: normal;
     white-space: nowrap; 
     overflow: hidden;
+    display: inline-flex;
+    align-items: center;
     text-overflow: ellipsis; 
 }
 
@@ -61,7 +63,7 @@ span.mid1{
     font-weight: normal;
     margin: 3px 4px;
 }
-/*****************************Header navigation view Ended*****************************/
+/*****************************Header navigation view Started*****************************/
 
 .fileexp-header-container{
     width: 100%;
