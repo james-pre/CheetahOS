@@ -34,7 +34,7 @@
             <form [formGroup]="searchForm"  (ngSubmit)="isFormDirty()">
                 <div class="search-container">
                     <input class="search-input" type="text" placeholder="Search OSDisk(C:)" formControlName="searchInput" (focus)="hideShowSearchHistory()"  (keypress)="onInputChange($event)" spellcheck="false" id="searchTxtBox-{{this.processId}}"/>
-                    <span class="span head-search-cntnr"><figure class="figure-search-cntnr"><img class="img-search-cntnr" [src]="'osdrive/icons/white_history_32.png' | safeResourceUrl"/></figure></span>
+                    <span class="span head-search-cntnr"><figure class="figure-search-cntnr"><img class="img-search-cntnr" [src]="'osdrive/icons/cross_mark_32.png' | safeResourceUrl"/></figure></span>
                     <span class="span head-search-cntnr1"><figure class="figure-search-cntnr"><img class="img-search-cntnr" [src]="'osdrive/icons/nav_right_32.png' | safeResourceUrl"/></figure></span>
                 </div>
             </form>
