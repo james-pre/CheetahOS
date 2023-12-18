@@ -35,15 +35,15 @@
                 <div class="search-container">
                     <span class="span head-search-cntnr"><figure class="figure-search-cntnr"><img class="img-search-cntnr" [src]="'osdrive/icons/search_32.png' | safeResourceUrl"/></figure></span>
                     <input class="search-input" type="text" placeholder="Search OSDisk(C:)" formControlName="searchInput" (focus)="showSearchHistory()"  (focusout)="hideSearchHistory()" (input)="onInputChange()"  spellcheck="false" id="searchTxtBox-{{this.processId}}"/>
-                    <span class="span head-search-cntnr1"><figure class="figure-search-cntnr"><img *ngIf="isSearchBoxNotEmpty" class="img-search-cntnr" [src]="'osdrive/icons/cross_mark_32.png' | safeResourceUrl"/></figure></span>
-                    <span class="span head-search-cntnr2" [class.active]="isSearchBoxNotEmpty"><figure class="figure-search-cntnr"><img *ngIf="isSearchBoxNotEmpty" class="img-search-cntnr" [src]="'osdrive/icons/nav_right_32.png' | safeResourceUrl"/></figure></span>
+                    <span class="span head-search-cntnr1" (click)="onClearSearchTextBox()" [style]="clearSearchStyle"><figure class="figure-search-cntnr"><img *ngIf="isSearchBoxNotEmpty" class="img-search-cntnr" [src]="'osdrive/icons/cross_mark_32.png' | safeResourceUrl"/></figure></span>
+                    <span class="span head-search-cntnr2" [class.active]="isSearchBoxNotEmpty" (click)="onSearch()" [style]="searchStyle" (mouseenter)="handleSearchIconHighlights()" (mouseleave)="handleSearchIconHighlights()"><figure class="figure-search-cntnr"><img *ngIf="isSearchBoxNotEmpty" class="img-search-cntnr" [src]="'osdrive/icons/nav_right_32.png' | safeResourceUrl"/></figure></span>
                 </div>
             </form>
 
             <div class="search-history-containter" id="searchHistory-{{this.processId}}">
                 <div class="search-entry-containter" *ngFor="let entry of searchHistory; let i = index">
-                    <span class="span head"><figure class="figure-alt"><img class="img-alt-search-list" [src]="'osdrive/icons/white_history_32.png' | safeResourceUrl"/></figure></span>
-                    <span class="span mid1">{{entry}}</span>
+                    <span class="span"><figure class="figure-search-entry"><img class="img-search-entry" [src]="'osdrive/icons/white_history_32.png' | safeResourceUrl"/></figure></span>
+                    <span class="span mid-search-entry">{{entry}}</span>
                 </div>
             </div>
         </div>

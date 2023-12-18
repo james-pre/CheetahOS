@@ -39,6 +39,8 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
   fxIconCntxtMenuStyle:Record<string, unknown> = {};
   iconSizeStyle:Record<string, unknown> = {};
+  clearSearchStyle:Record<string, unknown> = {};
+  searchStyle:Record<string, unknown> = {};
   btnStyle:Record<string, unknown> = {};
 
   hasWindow = true;
@@ -57,6 +59,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   isFormSubmitted = false;
   isRenameActive = false;
   isSearchBoxNotEmpty = false;
+  onSearchIconHover = false;
   isHighlighIconDueToPriorActionActive = false;
   private selectedFile!:FileInfo;
   selectedElementId = -1;
@@ -377,6 +380,59 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
       this.isSearchBoxNotEmpty = false;
     }
 
+    this.handleSearchIconHighlights();
+  }
+
+  onClearSearchTextBox():void{
+    const SearchTxtBox = document.getElementById(`searchTxtBox-${this.processId}`) as HTMLInputElement
+    SearchTxtBox.value = '';
+    this.isSearchBoxNotEmpty = false;
+
+    this.handleSearchIconHighlights();
+  }
+
+
+  handleClearSearchIconHighlights():void{
+    if(this.isSearchBoxNotEmpty){
+      this.clearSearchStyle = {
+
+        'background-color': '#3f3e3e',
+        'transition': 'background-color 0.3s ease'
+      }
+    }else if(!this.isSearchBoxNotEmpty){
+      this.clearSearchStyle = {
+        'background-color': '',
+      }
+    }
+
+  }
+
+  handleSearchIconHighlights():void{
+    this.onSearchIconHover = !this.onSearchIconHover;
+
+    if(this.isSearchBoxNotEmpty){
+
+      if(this.onSearchIconHover){
+        this.searchStyle = {
+          'background-color': 'rgb(18, 107, 240)',
+          'transition': 'background-color 0.3s ease'
+        }
+      }else if(!this.onSearchIconHover){
+        this.searchStyle = {
+          'background-color': 'blue',
+        }
+      }
+
+    }else if(!this.isSearchBoxNotEmpty){
+      this.searchStyle = {
+        'background-color': '#080808',
+      }
+    }
+
+  }
+
+  onSearch():void{
+    const searchText = this.searchForm.value.searchInput as string;
   }
 
   showInvalidCharsToolTip():void{
