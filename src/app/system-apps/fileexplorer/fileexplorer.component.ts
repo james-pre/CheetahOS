@@ -401,7 +401,6 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     if(this.isSearchBoxNotEmpty){
       if(this.onClearSearchIconHover){
         this.clearSearchStyle = {
-  
           'background-color': '#3f3e3e',
           'transition': 'background-color 0.3s ease'
         }
@@ -438,8 +437,6 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
         }
       }
     }
-
-
   }
 
   resetSearchIconHiglight():void{
