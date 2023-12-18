@@ -56,6 +56,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
   isFormSubmitted = false;
   isRenameActive = false;
+  isSearchBoxNotEmpty = false;
   isHighlighIconDueToPriorActionActive = false;
   private selectedFile!:FileInfo;
   selectedElementId = -1;
@@ -349,9 +350,10 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     this._fileService.deleteFileAsync(this.selectedFile.getCurrentPath)
   }
 
-  onInputChange(evt:any):boolean{
+  onKeyPress(evt:any):boolean{
     const regexStr = '^[a-zA-Z0-9_]+$';
     const res = new RegExp(regexStr).test(evt.key)
+
     if(res){
       this.hideInvalidCharsToolTip();
       return res
@@ -364,6 +366,17 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
       return res;
     }
+  }
+
+  onInputChange():void{
+    const SearchTxtBox = document.getElementById(`searchTxtBox-${this.processId}`) as HTMLInputElement
+    const charLength = SearchTxtBox.value.length
+    if( charLength > 0){
+      this.isSearchBoxNotEmpty = true;
+    }else if( charLength <= 0){
+      this.isSearchBoxNotEmpty = false;
+    }
+
   }
 
   showInvalidCharsToolTip():void{
@@ -501,9 +514,8 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
 
 
-  hideShowSearchHistory():void{
+  showSearchHistory():void{
     console.log('whats up');
-
     const searchHistoryElement = document.getElementById(`searchHistory-${this.processId}`) as HTMLElement;
 
     if(searchHistoryElement){
@@ -511,8 +523,15 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
         searchHistoryElement.style.display = 'block';
       }
     }
+    
   }
 
+
+  hideSearchHistory():void{
+    // this.isSearchBoxinFocus = !this.isSearchBoxinFocus ;
+    const searchHistoryElement = document.getElementById(`searchHistory-${this.processId}`) as HTMLElement;
+    searchHistoryElement.style.display = 'none';
+  }
 
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type);

@@ -25,7 +25,7 @@
 
             </div> -->
             <form [formGroup]="pathForm"  (ngSubmit)="isFormDirty()">
-                <input class="path-input"  type="text" placeholder="{{this.directory}}" formControlName="pathInput"  (keypress)="onInputChange($event)" autofocus spellcheck="false" id="pathTxtBox-{{this.processId}}"/>
+                <input class="path-input"  type="text" placeholder="{{this.directory}}" formControlName="pathInput"  autofocus spellcheck="false" id="pathTxtBox-{{this.processId}}"/>
             </form>
         </div>
 
@@ -33,9 +33,9 @@
         <div class="header-nav-search-container">
             <form [formGroup]="searchForm"  (ngSubmit)="isFormDirty()">
                 <div class="search-container">
-                    <input class="search-input" type="text" placeholder="Search OSDisk(C:)" formControlName="searchInput" (focus)="hideShowSearchHistory()"  (keypress)="onInputChange($event)" spellcheck="false" id="searchTxtBox-{{this.processId}}"/>
-                    <span class="span head-search-cntnr"><figure class="figure-search-cntnr"><img class="img-search-cntnr" [src]="'osdrive/icons/cross_mark_32.png' | safeResourceUrl"/></figure></span>
-                    <span class="span head-search-cntnr1"><figure class="figure-search-cntnr"><img class="img-search-cntnr" [src]="'osdrive/icons/nav_right_32.png' | safeResourceUrl"/></figure></span>
+                    <input class="search-input" type="text" placeholder="Search OSDisk(C:)" formControlName="searchInput" (focus)="showSearchHistory()"  (focusout)="hideSearchHistory()" (input)="onInputChange()"  spellcheck="false" id="searchTxtBox-{{this.processId}}"/>
+                    <span class="span head-search-cntnr"><figure class="figure-search-cntnr"><img *ngIf="isSearchBoxNotEmpty" class="img-search-cntnr" [src]="'osdrive/icons/cross_mark_32.png' | safeResourceUrl"/></figure></span>
+                    <span class="span head-search-cntnr1" [class.active]="isSearchBoxNotEmpty"><figure class="figure-search-cntnr"><img *ngIf="isSearchBoxNotEmpty" class="img-search-cntnr" [src]="'osdrive/icons/nav_right_32.png' | safeResourceUrl"/></figure></span>
                 </div>
             </form>
 
@@ -100,7 +100,7 @@
                                     </figcaption>
                                     <div class="rename-textbox"  id="renameContainer-{{this.processId}}-{{i}}">
                                         <form [formGroup]="renameForm"  (ngSubmit)="isFormDirty()">
-                                            <input type="text" formControlName="renameInput"  (keypress)="onInputChange($event)" autofocus spellcheck="false" id="renameTxtBox-{{this.processId}}-{{i}}"/>
+                                            <input type="text" formControlName="renameInput"  (keypress)="onKeyPress($event)" autofocus spellcheck="false" id="renameTxtBox-{{this.processId}}-{{i}}"/>
                                         </form>
                                     </div>
                                 </figure>
