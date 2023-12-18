@@ -59,6 +59,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   isFormSubmitted = false;
   isRenameActive = false;
   isSearchBoxNotEmpty = false;
+  onClearSearchIconHover = false;
   onSearchIconHover = false;
   isHighlighIconDueToPriorActionActive = false;
   private selectedFile!:FileInfo;
@@ -380,7 +381,8 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
       this.isSearchBoxNotEmpty = false;
     }
 
-    this.handleSearchIconHighlights();
+    this.resetSearchIconHiglight();
+    this.resetClearSearchIconHiglight();
   }
 
   onClearSearchTextBox():void{
@@ -388,30 +390,43 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     SearchTxtBox.value = '';
     this.isSearchBoxNotEmpty = false;
 
-    this.handleSearchIconHighlights();
+    this.resetSearchIconHiglight();
+    this.resetClearSearchIconHiglight();
   }
 
 
   handleClearSearchIconHighlights():void{
-    if(this.isSearchBoxNotEmpty){
-      this.clearSearchStyle = {
+    this.onClearSearchIconHover = !this.onClearSearchIconHover;
 
-        'background-color': '#3f3e3e',
-        'transition': 'background-color 0.3s ease'
-      }
-    }else if(!this.isSearchBoxNotEmpty){
-      this.clearSearchStyle = {
-        'background-color': '',
+    if(this.isSearchBoxNotEmpty){
+      if(this.onClearSearchIconHover){
+        this.clearSearchStyle = {
+  
+          'background-color': '#3f3e3e',
+          'transition': 'background-color 0.3s ease'
+        }
+      }else if(!this.onClearSearchIconHover){
+        this.clearSearchStyle = {
+          'background-color': '#080808',
+        }
       }
     }
+  }
 
+  resetClearSearchIconHiglight():void{
+    this.clearSearchStyle = {
+      'background-color': '#080808',
+    }
+
+    if(!this.isSearchBoxNotEmpty){
+      this.onClearSearchIconHover = false;
+    }
   }
 
   handleSearchIconHighlights():void{
     this.onSearchIconHover = !this.onSearchIconHover;
 
     if(this.isSearchBoxNotEmpty){
-
       if(this.onSearchIconHover){
         this.searchStyle = {
           'background-color': 'rgb(18, 107, 240)',
@@ -422,13 +437,24 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
           'background-color': 'blue',
         }
       }
+    }
 
-    }else if(!this.isSearchBoxNotEmpty){
+
+  }
+
+  resetSearchIconHiglight():void{
+
+    if(this.isSearchBoxNotEmpty){
+      this.searchStyle = {
+        'background-color': 'blue',
+      }
+    }else{
       this.searchStyle = {
         'background-color': '#080808',
       }
-    }
 
+      this.onSearchIconHover = false;
+    }
   }
 
   onSearch():void{

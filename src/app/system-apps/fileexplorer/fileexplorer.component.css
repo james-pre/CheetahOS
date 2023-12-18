@@ -128,44 +128,6 @@
     position: relative;
 }
 
-.img-search-cntnr1{
-    height: 18px;
-    width: 18px;
-    margin: 0 10px;
-    image-rendering:optimizeQuality;
-    position: relative;
-}
-
-.img-search-cntnr1:hover{
-    height: 18px;
-    width: 18px;
-    margin: 0 10px;
-    image-rendering:optimizeQuality;
-    position: relative;
-    background-color: #3f3e3e;
-    transition: background-color 0.3s ease;
-}
-
-.img-search-cntnr2{
-    height: 18px;
-    width: 18px;
-    margin: 0 10px;
-    image-rendering:optimizeQuality;
-    position: relative;
-}
-
-.img-search-cntnr2:hover{
-    height: 18px;
-    width: 18px;
-    margin: 0 10px;
-    image-rendering:optimizeQuality;
-    position: relative;
-    background-color: rgb(18, 107, 240);
-    transition: background-color 0.3s ease;
-}
-
-
-
 span.head-search-cntnr{
     align-items: center;
     display:inline-flex;
