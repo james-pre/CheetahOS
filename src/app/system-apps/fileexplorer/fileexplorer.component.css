@@ -152,6 +152,7 @@ span.head-nav-path-gen-cntnr:hover{
     align-items: center;
     display:inline-flex;
     border: 0.5px solid #9d9d9d;
+    background-color: #3f3e3e;
 }
 
 span.mid-nav-path-gen-cntnr{
