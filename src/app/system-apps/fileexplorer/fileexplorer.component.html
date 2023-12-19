@@ -20,12 +20,20 @@
             </figure>
         </div>
 
-        <div class="header-nav-path-container">
-            <!-- <div class="nav-path-container">
-
-            </div> -->
+        <div class="header-nav-path-container" tabindex="0" (focus)="showPathTextBox()"  (focusout)="hidePathTextBox()">
             <form [formGroup]="pathForm"  (ngSubmit)="isFormDirty()">
-                <input class="path-input"  type="text" placeholder="{{this.directory}}" formControlName="pathInput"  autofocus spellcheck="false" id="pathTxtBox-{{this.processId}}"/>
+                <div class="nav-path-container">
+                    <span class="span head-nav-path-cntnr"><figure class="figure-nav-path-cntnr"><img class="img-nav-path-cntnr" [src]="'osdrive/icons/my_computer.ico' | safeResourceUrl"/></figure></span>
+                    <div class="nav-path-gen-main-container" id="pathIconBox-{{this.processId}}">
+                        <div class="nav-path-gen-container" *ngFor="let dirHops of _directoryHops">
+                            <span class="span head-nav-path-gen-cntnr" ><figure class="figure-nav-path-gen-cntnr"><img class="img-nav-path-gen-cntnr" [src]="'osdrive/icons/grey_nav_forward_32.png' | safeResourceUrl"/></figure> </span>
+                            <span class="span mid-nav-path-gen-cntnr">{{dirHops}}</span>
+                        </div>
+                    </div>
+                    <input class="path-input" type="text" placeholder="{{this.directory}}" formControlName="pathInput"  autofocus spellcheck="false" id="pathTxtBox-{{this.processId}}"/>
+                    <span class="span head-nav-path-cntnr1"><figure class="figure-nav-path-cntnr1"><img class="img-nav-path-cntnr1" [src]="'osdrive/icons/grey_nav_expand_32.png' | safeResourceUrl"/></figure></span>
+                    <span class="span head-nav-path-cntnr2"><figure class="figure-nav-path-cntnr2"><img class="img-nav-path-cntnr2" [src]="'osdrive/icons/grey_nav_refresh_32.png' | safeResourceUrl"/></figure></span>
+                </div>
             </form>
         </div>
 

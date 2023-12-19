@@ -37,6 +37,9 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   private _showDesktopIconNotifySub!:Subscription;
   private _dirFilesUpdatedSub!: Subscription;
 
+
+  public _directoryHops:string[] = ['osdrive'];
+
   fxIconCntxtMenuStyle:Record<string, unknown> = {};
   iconSizeStyle:Record<string, unknown> = {};
   clearSearchStyle:Record<string, unknown> = {};
@@ -173,6 +176,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
         this.directory = file.getCurrentPath;
         this.name = file.getFileName;
         this.icon = file.getIconPath;
+        this.populateHopsList();
         await this.loadFilesInfoAsync();
     }else{
         this._triggerProcessService.startApplication(file);
@@ -458,6 +462,43 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     const searchText = this.searchForm.value.searchInput as string;
   }
 
+  showPathTextBox():void{
+    const pathTxtBoxElement = document.getElementById(`pathTxtBox-${this.processId}`) as HTMLElement;
+    const pathIconBoxElement = document.getElementById(`pathIconBox-${this.processId}`) as HTMLElement;
+
+    console.log('showPathTextBox');
+
+    if(pathTxtBoxElement){
+      pathTxtBoxElement.style.display = 'block';
+    }
+
+    if(pathIconBoxElement){
+      pathIconBoxElement.style.display = 'none';
+    }
+  }
+
+  hidePathTextBox():void{
+    const pathTxtBoxElement = document.getElementById(`pathTxtBox-${this.processId}`) as HTMLElement;
+    const pathIconBoxElement = document.getElementById(`pathIconBox-${this.processId}`) as HTMLElement;
+
+    console.log('hidePathTextBox');
+
+    if(pathTxtBoxElement){
+      pathTxtBoxElement.style.display = 'none';
+    }
+
+    if(pathIconBoxElement){
+      pathIconBoxElement.style.display = 'flex';
+    }
+  }
+
+  populateHopsList():void{
+    const tmpArray = this.directory.slice(0,-1).split('/');
+    tmpArray.shift();
+    this._directoryHops = tmpArray;
+    console.log('this._directoryHops:', this._directoryHops);
+  }
+
   showInvalidCharsToolTip():void{
     // get the position of the textbox
     const toolTipID = 'invalidChars';
@@ -590,11 +631,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     }
   }
 
-
-
-
   showSearchHistory():void{
-    console.log('whats up');
     const searchHistoryElement = document.getElementById(`searchHistory-${this.processId}`) as HTMLElement;
 
     if(searchHistoryElement){
@@ -604,7 +641,6 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     }
     
   }
-
 
   hideSearchHistory():void{
     // this.isSearchBoxinFocus = !this.isSearchBoxinFocus ;
