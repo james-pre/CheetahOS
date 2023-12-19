@@ -25,8 +25,9 @@
                 <div class="nav-path-container">
                     <span class="span head-nav-path-cntnr"><figure class="figure-nav-path-cntnr"><img class="img-nav-path-cntnr" [src]="'osdrive/icons/my_computer.ico' | safeResourceUrl"/></figure></span>
                     <div class="nav-path-gen-main-container" id="pathIconBox-{{this.processId}}" >
-                        <div class="nav-path-gen-container" *ngFor="let dirHops of _directoryHops">
-                            <span class="span head-nav-path-gen-cntnr"><figure class="figure-nav-path-gen-cntnr"><img class="img-nav-path-gen-cntnr" [src]="'osdrive/icons/grey_nav_forward_32.png' | safeResourceUrl"/></figure> </span>
+                        <span class="span head-nav-path-gen-cntnr0"><figure class="figure-nav-path-gen-cntnr"><img class="img-nav-path-gen-cntnr" [src]="'osdrive/icons/grey_nav_forward_32.png' | safeResourceUrl"/></figure> </span>
+                        <div class="nav-path-gen-container" *ngFor="let dirHops of _directoryHops let j = index">
+                            <span *ngIf="j > 0" class="span head-nav-path-gen-cntnr"><figure class="figure-nav-path-gen-cntnr"><img class="img-nav-path-gen-cntnr" [src]="'osdrive/icons/grey_nav_forward_32.png' | safeResourceUrl"/></figure> </span>
                             <span class="span mid-nav-path-gen-cntnr">{{dirHops}}</span>
                         </div>
                     </div>

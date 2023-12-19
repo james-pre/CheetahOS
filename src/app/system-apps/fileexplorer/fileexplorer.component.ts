@@ -500,7 +500,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   }
 
   populateHopsList():void{
-    const tmpArray = this.directory.slice(0,-1).split('/');
+    const tmpArray = this.directory.split('/');
     tmpArray.shift();
     this._directoryHops = tmpArray;
     console.log('this._directoryHops:', this._directoryHops);
