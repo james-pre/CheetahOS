@@ -463,13 +463,20 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   }
 
   showPathTextBox():void{
-    const pathTxtBoxElement = document.getElementById(`pathTxtBox-${this.processId}`) as HTMLElement;
+    const pathTxtBoxElement = document.getElementById(`pathTxtBox-${this.processId}`) as HTMLInputElement;
     const pathIconBoxElement = document.getElementById(`pathIconBox-${this.processId}`) as HTMLElement;
 
     console.log('showPathTextBox');
 
     if(pathTxtBoxElement){
       pathTxtBoxElement.style.display = 'block';
+
+      this.pathForm.setValue({
+        pathInput:this.directory
+      })
+
+      pathTxtBoxElement?.focus();
+      pathTxtBoxElement?.select();
     }
 
     if(pathIconBoxElement){

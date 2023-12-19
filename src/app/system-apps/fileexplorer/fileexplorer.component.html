@@ -11,22 +11,22 @@
                 <img class="img-alt-left-right" [src]="'osdrive/icons/nav_right_32.png' | safeResourceUrl" />
             </figure>
 
-            <figure class="figure-alt">
+            <figure class="figure-alt-caret">
                 <img class="img-alt-caret" [src]="'osdrive/icons/nav_expand_32.png' | safeResourceUrl" />
             </figure>
 
-            <figure class="figure-alt">
+            <figure class="figure-alt-up">
                 <img class="img-alt-up" [src]="'osdrive/icons/nav_up-32.png' | safeResourceUrl" />
             </figure>
         </div>
 
-        <div class="header-nav-path-container" tabindex="0" (focus)="showPathTextBox()"  (focusout)="hidePathTextBox()">
+        <div class="header-nav-path-container" (click)="showPathTextBox()" (focusout)="hidePathTextBox()">
             <form [formGroup]="pathForm"  (ngSubmit)="isFormDirty()">
                 <div class="nav-path-container">
                     <span class="span head-nav-path-cntnr"><figure class="figure-nav-path-cntnr"><img class="img-nav-path-cntnr" [src]="'osdrive/icons/my_computer.ico' | safeResourceUrl"/></figure></span>
-                    <div class="nav-path-gen-main-container" id="pathIconBox-{{this.processId}}">
+                    <div class="nav-path-gen-main-container" id="pathIconBox-{{this.processId}}" >
                         <div class="nav-path-gen-container" *ngFor="let dirHops of _directoryHops">
-                            <span class="span head-nav-path-gen-cntnr" ><figure class="figure-nav-path-gen-cntnr"><img class="img-nav-path-gen-cntnr" [src]="'osdrive/icons/grey_nav_forward_32.png' | safeResourceUrl"/></figure> </span>
+                            <span class="span head-nav-path-gen-cntnr"><figure class="figure-nav-path-gen-cntnr"><img class="img-nav-path-gen-cntnr" [src]="'osdrive/icons/grey_nav_forward_32.png' | safeResourceUrl"/></figure> </span>
                             <span class="span mid-nav-path-gen-cntnr">{{dirHops}}</span>
                         </div>
                     </div>
