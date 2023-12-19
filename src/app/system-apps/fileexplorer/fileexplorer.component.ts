@@ -53,7 +53,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   type = ComponentType.systemComponent;
   directory ='/osdrive/';
   displayName = 'File Explorer';
-
+  
 
   files:FileInfo[] = [];
 
@@ -62,6 +62,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   isFormSubmitted = false;
   isRenameActive = false;
   isSearchBoxNotEmpty = false;
+  showPathHistory = false;
   onClearSearchIconHover = false;
   onSearchIconHover = false;
   isHighlighIconDueToPriorActionActive = false;
@@ -466,15 +467,20 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     const pathTxtBoxElement = document.getElementById(`pathTxtBox-${this.processId}`) as HTMLInputElement;
     const pathIconBoxElement = document.getElementById(`pathIconBox-${this.processId}`) as HTMLElement;
 
-    console.log('showPathTextBox');
-
     if(pathTxtBoxElement){
       pathTxtBoxElement.style.display = 'block';
 
-      this.pathForm.setValue({
-        pathInput:this.directory
-      })
-
+      if(this.showPathHistory){
+        if(this.directory === '/osdrive/'){
+          this.pathForm.setValue({
+            pathInput:'osdrive'
+          })
+        }
+      }else{
+        this.pathForm.setValue({
+          pathInput:this.directory
+        })
+      }
       pathTxtBoxElement?.focus();
       pathTxtBoxElement?.select();
     }
@@ -487,8 +493,6 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   hidePathTextBox():void{
     const pathTxtBoxElement = document.getElementById(`pathTxtBox-${this.processId}`) as HTMLElement;
     const pathIconBoxElement = document.getElementById(`pathIconBox-${this.processId}`) as HTMLElement;
-
-    console.log('hidePathTextBox');
 
     if(pathTxtBoxElement){
       pathTxtBoxElement.style.display = 'none';
@@ -646,13 +650,38 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
         searchHistoryElement.style.display = 'block';
       }
     }
-    
   }
 
   hideSearchHistory():void{
     // this.isSearchBoxinFocus = !this.isSearchBoxinFocus ;
     const searchHistoryElement = document.getElementById(`searchHistory-${this.processId}`) as HTMLElement;
     searchHistoryElement.style.display = 'none';
+  }
+
+
+  hideshowPathHistory():void{
+    const pathHistoryElement = document.getElementById(`pathHistory-${this.processId}`) as HTMLElement;
+    const hdrNavPathCntnrElement =  document.getElementById(`hdrNavPathCntnr-${this.processId}`) as HTMLElement; 
+    const minus24 = hdrNavPathCntnrElement.offsetWidth - 25;
+
+    this.showPathHistory = !this.showPathHistory;
+
+    if(this.showPathHistory){
+      if(pathHistoryElement){
+        if(this.pathHistory.length > 0){
+          pathHistoryElement.style.display = 'block';
+          pathHistoryElement.style.width = `${minus24}px`;
+        }
+      }
+    }else if(!this.showPathHistory){
+      pathHistoryElement.style.display = 'none';
+    }
+  }
+  
+  hidePathHistory():void{
+    const pathHistoryElement = document.getElementById(`pathHistory-${this.processId}`) as HTMLElement;
+    pathHistoryElement.style.display = 'none';
+    this.showPathHistory = false;
   }
 
   private getComponentDetail():Process{
