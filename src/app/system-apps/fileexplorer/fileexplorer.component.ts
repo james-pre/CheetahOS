@@ -184,11 +184,18 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     }
   }
 
-  onBtnClick(id:number):void{
+  onBtnFocus(id:number):void{
     this.prevSelectedElementId = this.selectedElementId 
     this.selectedElementId = id;
     this.removeIconWasInfocusStyle(this.prevSelectedElementId);
+    this.setBtnToFocus(id);
+  }
 
+  onBtnFocusOut(id:number):void{
+    this.prevSelectedElementId = this.selectedElementId 
+    this.selectedElementId = id;
+    this.removeIconWasInfocusStyle(this.prevSelectedElementId);
+    this.setBtnToFocuOut(id);
   }
 
   onTriggerRunProcess():void{
@@ -260,12 +267,27 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 1
   }
 
-  onMouseEnter1(id:number):void{
-    console.log('mouseEnter1');
+  onMouseEnter(id:number):void{
     const btnElement = document.getElementById(`iconBtn-${this.processId}-${id}`) as HTMLElement;
     if(btnElement){
-      btnElement.style.backgroundColor = 'hsl(206deg 77% 70%/20%)';
-      btnElement.style.border = '2px solid hsla(0,0%,50%,25%)'
+      btnElement.style.backgroundColor = '#4c4c4c';
+      btnElement.style.border = '1px solid #3c3c3c';
+    }
+  }
+
+  setBtnToFocus(id:number):void{
+    const btnElement = document.getElementById(`iconBtn-${this.processId}-${id}`) as HTMLElement;
+    if(btnElement){
+      btnElement.style.backgroundColor = '#777777';
+      btnElement.style.border = '1px solid #3c3c3c';
+    }
+  }
+
+  setBtnToFocuOut(id:number):void{
+    const btnElement = document.getElementById(`iconBtn-${this.processId}-${id}`) as HTMLElement;
+    if(btnElement){
+      btnElement.style.backgroundColor = 'transparent';
+      btnElement.style.border = '0.5px solid white'
     }
   }
 
@@ -411,7 +433,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
         }
       }else if(!this.onClearSearchIconHover){
         this.clearSearchStyle = {
-          'background-color': '#080808',
+          'background-color': '#191919',
         }
       }
     }
@@ -419,7 +441,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
   resetClearSearchIconHiglight():void{
     this.clearSearchStyle = {
-      'background-color': '#080808',
+      'background-color': '#191919',
     }
 
     if(!this.isSearchBoxNotEmpty){
@@ -452,7 +474,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
       }
     }else{
       this.searchStyle = {
-        'background-color': '#080808',
+        'background-color': '#191919',
       }
 
       this.onSearchIconHover = false;
@@ -597,8 +619,8 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     }
 
     if(btnElement){
-      btnElement.style.backgroundColor = 'hsl(206deg 77% 70%/20%)';
-      btnElement.style.border = '2px solid hsla(0,0%,50%,25%)'
+      btnElement.style.backgroundColor = '#4c4c4c';
+      btnElement.style.border = '1px solid #3c3c3c';
       this.isHighlighIconDueToPriorActionActive = true;
     }
 
@@ -625,8 +647,8 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
       renameContainerElement.style.display = 'none';
     }
     if(btnElement){
-      btnElement.style.backgroundColor = 'hsl(206deg 77% 70%/20%)';
-      btnElement.style.border = '2px solid hsla(0,0%,50%,25%)'
+      btnElement.style.backgroundColor = '#4c4c4c';
+      btnElement.style.border = '1px solid #3c3c3c';
       this.isHighlighIconDueToPriorActionActive = true;
     }
   }
@@ -637,7 +659,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     if(this.hideCntxtMenuEvtCnt >= 0){
       if(btnElement){
         btnElement.style.backgroundColor = 'transparent';
-        btnElement.style.border = '1px dotted white'
+        btnElement.style.border = '0.5px solid white'
       }
     }
   }

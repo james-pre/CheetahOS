@@ -23,7 +23,7 @@
         <div class="header-nav-path-container" id="hdrNavPathCntnr-{{this.processId}}">
             <form [formGroup]="pathForm"  (ngSubmit)="isFormDirty()">
                 <div class="nav-path-container" (click)="showPathTextBox()" (focusout)="hidePathTextBox()">
-                    <span class="span head-nav-path-cntnr"><figure class="figure-nav-path-cntnr"><img class="img-nav-path-cntnr" [src]="'osdrive/icons/my_computer.ico' | safeResourceUrl"/></figure></span>
+                    <span class="span head-nav-path-cntnr"><figure class="figure-nav-path-cntnr"><img class="img-nav-path-cntnr" [src]="'osdrive/icons/folder.ico' | safeResourceUrl"/></figure></span>
                     <div class="nav-path-gen-main-container" id="pathIconBox-{{this.processId}}" >
                         <span class="span head-nav-path-gen-cntnr0"><figure class="figure-nav-path-gen-cntnr"><img class="img-nav-path-gen-cntnr" [src]="'osdrive/icons/grey_nav_forward_32.png' | safeResourceUrl"/></figure> </span>
                         <div class="nav-path-gen-container" *ngFor="let dirHops of _directoryHops let j = index">
@@ -65,7 +65,7 @@
         </div>
     </div>
     <div class="header-empty-line-container2"></div>
-    <div class="fileexp-main-container"  #fileExplorerContainer>
+    <div class="fileexp-main-container">
         <div class="fileexp-content-container">
             <div class="navigation-content-container">
                 <ul id="myUL">
@@ -91,8 +91,11 @@
                     </li>
                   </ul>
             </div>
-            <div class="file-content-container">
+            <div class="file-content-container" #fileExplorerContainer>
             <!-- ngResizable [rzHandles]="'w'" [rzMinWidth]="270" -->
+
+            <!-- ngDraggable  [inBounds]="true" zIndex="1" [preventDefaultEvent]="true"
+                (stopped)="onDragEnd($event)" (started)="onDragStart($event)" -->
             
                 <ol (dragover)="onDragOver($event)"  (drop)="onDrop($event)" (click)="onHideIconContextMenu()"> 
                     <ng-container [ngTemplateOutlet]="viewOptions === smallIconsView ? iconsView :
@@ -105,10 +108,8 @@
     
                     <ng-template #iconsView>
                         <li *ngFor="let file of files; let i = index">
-                            <button (dblclick)="runProcess(file)" (mouseenter)="onMouseEnter1(i)" (mouseleave)="onMouseLeave(i)"
-                            ngDraggable  [inBounds]="true" zIndex="1" [preventDefaultEvent]="true"
-                            (stopped)="onDragEnd($event)" (started)="onDragStart($event)"
-                            (contextmenu)="onShowIconContextMenu($event, file, i)" (click)="onBtnClick(i)"
+                            <button tabindex="0" (dblclick)="runProcess(file)" (mouseenter)="onMouseEnter(i)" (mouseleave)="onMouseLeave(i)"
+                            (contextmenu)="onShowIconContextMenu($event, file, i)" (focus)="onBtnFocus(i)" (focusout)="onBtnFocusOut(i)" 
                             id="iconBtn-{{this.processId}}-{{i}}"  [style]="btnStyle">
                                 <figure>
                                     <img [src]="file.getIconPath | safeResourceUrl" [alt]="file.getFileName"  [style]="iconSizeStyle"/>

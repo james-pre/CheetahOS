@@ -6,17 +6,18 @@
 .fileexp-content-container{
     width: 100%;
     display: flex;
+    background-color: #202020;
 }
 
 .fileexp-footer-container{
     width: 100%;
     display: inline-flex;
-    background-color: #3f3e3e;
+    background-color: #383434;
 }
 
 .span-footer{
-    color: #fff;
-    font-size: 12px;
+    color: white;
+    font-size: 10px;
     font-weight: normal;
     margin: 3px 4px;
 }
@@ -26,16 +27,16 @@
 .fileexp-header-container{
     width: 100%;
     display: flex;
-    background-color: #080808;
+    background-color: #191919;
 }
 
 .header-empty-line-container {
     height: 6px;
-    background-color: #080808;
+    background-color: #191919;
 }
 .header-empty-line-container2 {
     height: 7px;
-    background-color: #080808;
+    background-color: #191919;
 }
 
 
@@ -169,7 +170,7 @@ span.head-nav-path-gen-cntnr.active{
 .nav-path-gen-container:hover span.head-nav-path-gen-cntnr{
     align-items: center;
     display:inline-flex;
-    border-right: 0.5px solid #080808;
+    border-right: 0.5px solid #191919;
 }
 
 span.mid-nav-path-gen-cntnr{
@@ -271,9 +272,9 @@ span.head-nav-path-cntnr2:hover{
     border: 0.5px solid #9d9d9d;
     border-left: none;
     border-right: none;
-    color: #ffff;
-    background-color: #080808;
-    /* background-color: #ffff; */
+    color: whitefff;
+    background-color: #191919;
+    /* background-color: whitef; */
     display: none;
 }
 
@@ -285,7 +286,7 @@ span.head-nav-path-cntnr2:hover{
     margin-right: 10px;
     max-height: 180px;
     overflow-y: scroll;
-    background-color: #080808;
+    background-color: #191919;
     z-index: 2;
     display: none;
 }
@@ -314,7 +315,7 @@ span.head-nav-path-cntnr2:hover{
 
 span.mid-nav-path-entry{
     padding: 0 2px;
-    color: #fff; /* white text color */
+    color: white; /* white text color */
     text-align: left;
     font-size: 10px;
     font-weight: normal;
@@ -344,7 +345,7 @@ span.mid-nav-path-entry{
     border-left: none;
     border-right: none;
     color: #ccc;
-    background-color: #080808;
+    background-color: #191919;
 }
 
 .search-container{
@@ -401,7 +402,7 @@ span.head-search-cntnr2.active{
     margin-right: 10px;
     max-height: 180px;
     overflow-y: scroll;
-    background-color: #080808;
+    background-color: #191919;
     z-index: 2;
     display: none;
 }
@@ -430,7 +431,7 @@ span.head-search-cntnr2.active{
 
 span.mid-search-entry{
     padding: 0 2px;
-    color: #fff; /* white text color */
+    color: white; /* white text color */
     text-align: left;
     font-size: 10px;
     font-weight: normal;
@@ -450,8 +451,8 @@ span.mid-search-entry{
 
 .navigation-content-container{
     min-width: 150px;
-     /* background-color: #080808; */
-     /* background-color: #ffff; */
+     background-color: #191919;
+     /* background-color: whitef; */
 }
 
 
@@ -470,7 +471,7 @@ ul, #myUL {
 .caret {
   cursor: pointer; 
   user-select: none; /* Prevent text selection */
-  color: #fff;
+  color: white;
 }
 
 /* Create the caret/arrow with a unicode, and style it */
@@ -502,13 +503,14 @@ ul, #myUL {
     border-left: 0.5px solid #5a5a5a;
     min-width: 100px;
     width: 100%; /* Set a maximum width for the responsive container */
-    overflow: scroll;
-    min-height: 350px;
+    overflow-y: scroll;
+    height: 350px;
 }
 
 .previewOrdetails-content-container{
     min-width: 200px;
     border-left: 0.5px solid #5a5a5a;
+    background-color: #202020;
     /* display: none; */
 }
 
@@ -544,7 +546,7 @@ figure{
 
 figcaption{
     -webkit-box-orient: vertical;
-    color: #fff;
+    color: white;
     display: -webkit-box;
     font-size: 12px;
     letter-spacing: 0.1px;
@@ -581,6 +583,8 @@ button{
 }
 
 
+/*00000000000000000000000000000000 Context Menu Started 000000000000000000000000 */
+
 .fx-icon-vertical-menu {
     position: absolute;
     width: 205px;
@@ -592,7 +596,7 @@ button{
 .fx-icon-vertical-menu-item {
     height: fit-content;
     padding: 2px 0;
-    background-color: #eee;
+    background-color: #2b2b2b;
     display: inline-flex;
     width: 100%;
     z-index: 2;
@@ -600,12 +604,12 @@ button{
 }
 
 .fx-icon-vertical-menu .fx-icon-vertical-menu-item:hover {
-    background-color: #ccc;
+    background-color: #484444;
 }
 
 .line-container {
     max-height: 1px;
-    background-color: #eee;
+    background-color: #2b2b2b;
 }
 
 .line {
@@ -616,7 +620,7 @@ button{
 .empty-line-container {
     max-height: 3px;
     min-height: 3px;
-    background-color: #eee;
+    background-color: #2b2b2b;
 }
 
 span{
@@ -624,21 +628,18 @@ span{
 }
 
 span.head{
-    /* max-width: 25%; */
     padding-left: 4px;
 }
 
 span.mid{
-    /* min-width: 50%; */
     padding: 0 4px;
-    color: black; /* Black text color */
+    color: white; /* Black text color */
     text-align: left;
     font-size: 11px;
     font-weight: normal;
 }
 
 span.tail{
-    /* max-width: 25%; */
     padding-left: 78px;
 }
 
@@ -647,6 +648,8 @@ span.tail{
     display:inline-flex;
     min-width: 18px;
 }
+
+/*00000000000000000000000000000000 Context Menu Ended 000000000000000000000000 */
 
 .rename-textbox{
     position: relative;
@@ -669,7 +672,7 @@ span.tail{
 
 input::selection{
     background-color: #0056b3;
-    color: #fff;
+    color: white;
 }
 
 .tool-tip-container{
