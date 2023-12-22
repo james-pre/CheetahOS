@@ -72,6 +72,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   isPrevBtnActive = false;
   isNextBtnActive = false;
   isUpBtnActive = true;
+  isNavigatedBefore = false;
   isFormSubmitted = false;
   isRenameActive = false;
   isSearchBoxNotEmpty = false;
@@ -193,6 +194,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   async goUpAlevel():Promise<void>{
     if(this.upPathEntries.length > 0){
 
+      this.isNavigatedBefore = true;
       const currentDirPath =  this.directory;
       this.prevPathEntries.push(currentDirPath);
       this.isPrevBtnActive = true;
@@ -247,6 +249,13 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
       }else{
         this.upPathEntries.push(currentDirPath);
       }
+
+      const idx1 = this.prevPathEntries.indexOf(currentDirPath);
+      if(idx1 != -1){
+        this.prevPathEntries.splice(idx1,1);
+      }
+
+
       this.nextPathEntries.push(currentDirPath);
 
       this.isNextBtnActive = true;
@@ -258,13 +267,8 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
         'fill': '#fff'
       }
 
-
       this.directory = this.prevPathEntries.pop() ?? '';
       const folderName = basename(this.directory);
-
-
-      // console.log('this.dir:',this.directory);
-      // console.log('folderName:',folderName)
 
       if(this.prevPathEntries.length == 0){
         this.isPrevBtnActive = false;
@@ -391,16 +395,22 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     // console.log('what was clicked:',file.getFileName +'-----' + file.getOpensWith +'---'+ file.getCurrentPath +'----'+ file.getIcon) TBD
     if((file.getOpensWith === 'fileexplorer' && file.getFileName !== 'fileexplorer') && file.getFileType ==='folder'){
 
+      if(!this.isNavigatedBefore){
         this.prevPathEntries.push(this.directory);
-        this.upPathEntries.push(this.directory);
-        this.isPrevBtnActive = true;
+        this.isNavigatedBefore = true;
+      }
 
-        this.directory = file.getCurrentPath;
-        this.name = file.getFileName;
-        this.icon = file.getIconPath;
-        this.populateHopsList();
-        this.setNavPathIcon(file.getFileName, file.getCurrentPath);
-        await this.loadFilesInfoAsync();
+      this.isPrevBtnActive = true;
+      this.directory = file.getCurrentPath;
+      this.name = file.getFileName;
+      this.icon = file.getIconPath;
+
+      this.prevPathEntries.push(this.directory);
+      this.upPathEntries.push(this.directory);
+
+      this.populateHopsList();
+      this.setNavPathIcon(file.getFileName, file.getCurrentPath);
+      await this.loadFilesInfoAsync();
     }else{
         this._triggerProcessService.startApplication(file);
     }
