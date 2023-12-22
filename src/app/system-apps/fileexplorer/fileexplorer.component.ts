@@ -184,6 +184,10 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     }
   }
 
+  setNavPathIcon(){
+    //
+  }
+
   onBtnFocus(id:number):void{
     this.prevSelectedElementId = this.selectedElementId 
     this.selectedElementId = id;

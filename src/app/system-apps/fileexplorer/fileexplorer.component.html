@@ -33,7 +33,7 @@
                     </div>
                     <input class="path-input" type="text" placeholder="{{this.directory}}" formControlName="pathInput"  autofocus spellcheck="false" id="pathTxtBox-{{this.processId}}"/>
                     <span class="span head-nav-path-cntnr1" [class.active]="showPathHistory" (click)="hideshowPathHistory()"><figure class="figure-nav-path-cntnr1"><img class="img-nav-path-cntnr1" [src]="'osdrive/icons/grey_nav_expand_32.png' | safeResourceUrl"/></figure></span>
-                    <span class="span head-nav-path-cntnr2"><figure class="figure-nav-path-cntnr2"><img class="img-nav-path-cntnr2" [src]="'osdrive/icons/grey_nav_refresh_32.png' | safeResourceUrl"/></figure></span>
+                    <span class="span head-nav-path-cntnr2" (click)="refreshIcons()"><figure class="figure-nav-path-cntnr2"><img class="img-nav-path-cntnr2" [src]="'osdrive/icons/grey_nav_refresh_32.png' | safeResourceUrl"/></figure></span>
                 </div>
             </form>
 

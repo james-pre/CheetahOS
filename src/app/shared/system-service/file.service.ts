@@ -379,13 +379,22 @@ export class FileService{
 
     private changeFolderIcon(fileName:string, iconPath:string):string{
 
-        if(fileName === 'audio'){
+        if(fileName === 'Music'){
             return '/osdrive/icons/music_folder.ico';
-        }else if(fileName === 'video'){
-            return '/osdrive/icons/movie_folder.ico';
+        }else if(fileName === 'Videos'){
+            return '/osdrive/icons/video_folder.ico';
 
-        }else if(fileName === 'picture'){
+        }else if(fileName === 'Pictures'){
             return '/osdrive/icons/picture_folder.ico';
+        }
+        else if(fileName === 'Desktop'){
+            return '/osdrive/icons/desktop_folder.ico';
+        }
+        else if(fileName === 'Documents'){
+            return '/osdrive/icons/documents_folder.ico';
+        }
+        else if(fileName === 'Downloads'){
+            return '/osdrive/icons/downloads_folder.ico';
         }
 
         return iconPath;
