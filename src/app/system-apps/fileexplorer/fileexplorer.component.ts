@@ -34,7 +34,6 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   private _refreshNotifySub!:Subscription;
   private _autoArrangeIconsNotifySub!:Subscription;
   private _autoAlignIconsNotifyBySub!:Subscription;
-  private _showDesktopIconNotifySub!:Subscription;
   private _dirFilesUpdatedSub!: Subscription;
 
 
@@ -45,6 +44,10 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   clearSearchStyle:Record<string, unknown> = {};
   searchStyle:Record<string, unknown> = {};
   btnStyle:Record<string, unknown> = {};
+  prevNavBtnStyle:Record<string, unknown> = {};
+  nextNavBtnStyle:Record<string, unknown> = {};
+  recentNavBtnStyle:Record<string, unknown> = {};
+  upNavBtnStyle:Record<string, unknown> = {};
 
   hasWindow = true;
   icon = 'osdrive/icons/file_explorer.ico';
@@ -57,9 +60,16 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   
 
   files:FileInfo[] = [];
+  prevPathEntries:string[] = [];
+  nextPathEntries:string[] = [];
+  recentPathEntries:string[] = [];
+  upPathEntries:string[] = ['/osdrive/Desktop'];
 
-  private showDesktopIcon = true;
 
+
+  isPrevBtnActive = false;
+  isNextBtnActive = false;
+  isUpBtnActive = false;
   isFormSubmitted = false;
   isRenameActive = false;
   isSearchBoxNotEmpty = false;
@@ -106,7 +116,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     this._viewByNotifySub = fileManagerService.viewByNotify.subscribe((p) =>{this.changeIconsSize(p)});
     this._sortByNotifySub = fileManagerService.sortByNotify.subscribe((p)=>{this.sortIcons(p)});
     this._refreshNotifySub = fileManagerService.refreshNotify.subscribe(()=>{this.refreshIcons()});
-    this._showDesktopIconNotifySub = fileManagerService.showDesktopIconsNotify.subscribe((p) =>{this.toggleDesktopIcons(p)});
+
   }
 
   ngOnInit():void{
@@ -120,6 +130,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
       searchInput: '',
     });
 
+    this.setNavButtonsColor();
     this.onHideIconContextMenu();
   }
 
@@ -128,13 +139,30 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   }
   
 
+  setNavButtonsColor(){
+    this.prevNavBtnStyle ={
+      'fill': '#ccc'
+    }
+
+    this.nextNavBtnStyle ={
+      'fill': '#ccc'
+    }
+
+    this.recentNavBtnStyle ={
+      'fill': '#ccc'
+    }
+
+    this.upNavBtnStyle ={
+      'fill': '#fff'
+    }
+  }
+
   ngOnDestroy(): void {
     this._viewByNotifySub?.unsubscribe();
     this._sortByNotifySub?.unsubscribe();
     this._refreshNotifySub?.unsubscribe();
     this._autoArrangeIconsNotifySub?.unsubscribe();
     this._autoAlignIconsNotifyBySub?.unsubscribe();
-    this._showDesktopIconNotifySub?.unsubscribe();
     this._dirFilesUpdatedSub?.unsubscribe();
   }
 
@@ -390,18 +418,6 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     }
   }
 
-  toggleDesktopIcons(showIcons:boolean):void{
-    this.showDesktopIcon = showIcons;
-    if(!this.showDesktopIcon){
-      this.btnStyle ={
-        'display': 'none',
-      }
-    }else{
-      this.btnStyle ={
-        'display': 'block',
-      }
-    }
-  }
 
   async refreshIcons():Promise<void>{
     this.isHighlighIconDueToPriorActionActive = false;
