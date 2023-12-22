@@ -11,6 +11,7 @@ import { TriggerProcessService } from 'src/app/shared/system-service/trigger.pro
 import { FileManagerService } from 'src/app/shared/system-service/file.manager.services';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ViewOptions } from './fileexplorer.enums';
+import {dirname,basename} from 'path';
 
 @Component({
   selector: 'cos-fileexplorer',
@@ -48,6 +49,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   nextNavBtnStyle:Record<string, unknown> = {};
   recentNavBtnStyle:Record<string, unknown> = {};
   upNavBtnStyle:Record<string, unknown> = {};
+  upNavBtnCntnrStyle:Record<string, unknown> = {};
 
   hasWindow = true;
   icon = 'osdrive/icons/file_explorer.ico';
@@ -69,7 +71,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
   isPrevBtnActive = false;
   isNextBtnActive = false;
-  isUpBtnActive = false;
+  isUpBtnActive = true;
   isFormSubmitted = false;
   isRenameActive = false;
   isSearchBoxNotEmpty = false;
@@ -157,6 +159,191 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     }
   }
 
+  colorChevron():void{
+    this.recentNavBtnStyle ={
+      'fill': 'rgb(18, 107, 240)'
+    }
+  }
+
+  unColorChevron():void{
+    this.recentNavBtnStyle ={
+      'fill': '#ccc'
+    }
+  }
+
+  uncolorUpNavArrow():void{
+    this.upNavBtnCntnrStyle ={
+      'background-color': ''
+    }
+  }
+
+  colorUpNavArrow():void{
+    if(!this.isUpBtnActive){
+      this.upNavBtnCntnrStyle ={
+        'background-color': ''
+      }
+    }else{
+      this.upNavBtnCntnrStyle ={
+        'background-color': '#3f3e3e',
+        'transition':'background-color 0.3s ease'
+      }
+    }
+  }
+
+  async goUpAlevel():Promise<void>{
+    if(this.upPathEntries.length > 0){
+
+      const currentDirPath =  this.directory;
+      this.prevPathEntries.push(currentDirPath);
+      this.isPrevBtnActive = true;
+      this.prevNavBtnStyle ={
+        'fill': '#fff'
+      }
+
+
+      this.directory = this.upPathEntries.pop() ?? '';
+      const folderName = basename(this.directory);
+
+      if(this.upPathEntries.length == 0){
+        this.isUpBtnActive = false;
+        this.upNavBtnStyle ={
+          'fill': '#ccc'
+        }
+      }
+
+      this.populateHopsList();
+      this.setNavPathIcon(folderName,this.directory);
+      await this.loadFilesInfoAsync();
+    }
+  }
+
+
+  colorPrevNavArrow():void{
+    if(!this.isPrevBtnActive){
+      this.prevNavBtnStyle ={
+        'fill': '#ccc'
+      }
+    }else{
+      this.prevNavBtnStyle ={
+        'fill': 'rgb(18, 107, 240)'
+      }
+    }
+  }
+
+  uncolorPrevNavArrow():void{
+    this.prevNavBtnStyle ={
+      'fill': '#ccc'
+    }
+  }
+
+  async goBackAlevel():Promise<void>{
+    if(this.prevPathEntries.length > 0){
+
+      const currentDirPath =  this.directory;
+
+      const idx = this.upPathEntries.indexOf(currentDirPath);
+      if(idx != -1){
+        this.upPathEntries.splice(idx,1);
+      }else{
+        this.upPathEntries.push(currentDirPath);
+      }
+      this.nextPathEntries.push(currentDirPath);
+
+      this.isNextBtnActive = true;
+      this.isUpBtnActive = true;
+      this.nextNavBtnStyle ={
+        'fill': '#fff'
+      }
+      this.upNavBtnStyle ={
+        'fill': '#fff'
+      }
+
+
+      this.directory = this.prevPathEntries.pop() ?? '';
+      const folderName = basename(this.directory);
+
+
+      // console.log('this.dir:',this.directory);
+      // console.log('folderName:',folderName)
+
+      if(this.prevPathEntries.length == 0){
+        this.isPrevBtnActive = false;
+        this.prevNavBtnStyle ={
+          'fill': '#ccc'
+        }
+      }
+
+      this.populateHopsList();
+      this.setNavPathIcon(folderName,this.directory);
+      await this.loadFilesInfoAsync();
+    }
+  }
+
+
+  colorNextNavArrow():void{
+    if(!this.isNextBtnActive){
+      this.nextNavBtnStyle ={
+        'fill': '#ccc'
+      }
+    }else{
+      this.nextNavBtnStyle ={
+        'fill': 'rgb(18, 107, 240)'
+      }
+    }
+  }
+
+  uncolorNextNavArrow():void{
+    this.nextNavBtnStyle ={
+      'fill': '#ccc'
+    }
+  }
+
+  async goForwardAlevel():Promise<void>{
+    if(this.nextPathEntries.length > 0){
+
+      const currentDirPath =  this.directory;
+      this.prevPathEntries.push(currentDirPath);
+      this.isPrevBtnActive = true;
+      this.prevNavBtnStyle ={
+        'fill': '#fff'
+      }
+
+      console.log('currentDirPath:',currentDirPath);
+      // console.log('folderName:',folderName)
+
+      const nextDirPath = this.directory = this.nextPathEntries.pop() ?? '';
+
+      console.log('nextDirPath:',nextDirPath);
+
+      const idx = this.upPathEntries.indexOf(nextDirPath)
+      console.log('idx:',idx)
+      if (idx !== -1) {
+           this.upPathEntries.splice(idx, 1);
+      }
+
+      if(this.upPathEntries.length == 0){
+        this.isUpBtnActive = false;
+        this.upNavBtnStyle ={
+          'fill': '#ccc'
+        }
+      }
+
+
+      const folderName = basename(this.directory);
+
+      if(this.nextPathEntries.length == 0){
+        this.isNextBtnActive = false;
+        this.nextNavBtnStyle ={
+          'fill': '#ccc'
+        }
+      }
+
+      this.populateHopsList();
+      this.setNavPathIcon(folderName,this.directory);
+      await this.loadFilesInfoAsync();
+    }
+  }
+
   ngOnDestroy(): void {
     this._viewByNotifySub?.unsubscribe();
     this._sortByNotifySub?.unsubscribe();
@@ -203,6 +390,11 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     console.log('runProcess:',file)
     // console.log('what was clicked:',file.getFileName +'-----' + file.getOpensWith +'---'+ file.getCurrentPath +'----'+ file.getIcon) TBD
     if((file.getOpensWith === 'fileexplorer' && file.getFileName !== 'fileexplorer') && file.getFileType ==='folder'){
+
+        this.prevPathEntries.push(this.directory);
+        this.upPathEntries.push(this.directory);
+        this.isPrevBtnActive = true;
+
         this.directory = file.getCurrentPath;
         this.name = file.getFileName;
         this.icon = file.getIconPath;
@@ -236,7 +428,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     else if(fileName === 'Games' && directory === '/osdrive/Games'){
       this.navPathIcon = 'osdrive/icons/games.ico';
     }
-    else if(fileName === 'fileexplorer' && directory === '/osdrive/'){
+    else if((fileName === 'fileexplorer' && directory === '/osdrive/') || fileName === 'osdrive' && directory === '/osdrive/'){
       this.navPathIcon = 'osdrive/icons/my_computer.ico';
     }else{
       this.navPathIcon = 'osdrive/icons/folder.ico';

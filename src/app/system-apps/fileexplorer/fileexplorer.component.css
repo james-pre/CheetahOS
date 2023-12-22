@@ -44,7 +44,8 @@
 
 .header-nav-btn-container{
     left: 0;
-    width: 120px;
+    height: 24px;
+    width: fit-content;
     display: flex;
 }
 
@@ -59,23 +60,30 @@
 .figure-alt{
     position: relative;
     align-items: center;
-    min-width: 8px;
+    width: fit-content;
     margin: 0 10px;
 }
 
-.img-alt-caret{
-    height: 10px;
-    width: 10px;
+.img-alt-chevron{
+    height: 9px;
+    width: 9px;
     image-rendering:optimizeQuality;
     position: relative;
-    top: 6px
+    top: 5px
 }
 
-.figure-alt-caret{
+.figure-alt-chevron{
     position: relative;
     align-items: center;
-    min-width: 8px;
+    width: fit-content;
     margin: 0 1px;
+}
+
+.figure-alt-up{
+    position: relative;
+    align-items: center;
+    width: fit-content;
+    padding: 0 0 0 5px;
 }
 
 .img-alt-up{
@@ -85,18 +93,12 @@
     image-rendering:optimizeQuality;
     position: relative;
 }
-
-.figure-alt-up{
-    position: relative;
-    align-items: center;
-    min-width: 8px;
-    margin: 0 5px;
-}
 /*++++++++++++++++++++++++++++++++Header navigation btn section Ended++++++++++++++++++++++++++++++++*/
 
 /*xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxHeader navigation path box Startedxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx*/
 .header-nav-path-container{
     width:100%;
+    padding: 0 0 0 2px;
 }
 
 .nav-path-container{
