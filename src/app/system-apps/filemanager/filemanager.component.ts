@@ -44,7 +44,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   processId = 0;
   type = ComponentType.systemComponent;
   displayName = '';
-  directory ='/osdrive/desktop';
+  directory ='/osdrive/Desktop';
   files:FileInfo[] = [];
 
   gridSize = 90; //column size of grid = 90px

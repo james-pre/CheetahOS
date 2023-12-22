@@ -88,7 +88,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   searchForm!: FormGroup;
 
   searchHistory =['Java','ProgramFile', 'Perenne'];
-  pathHistory =['/osdrive/icons','/osdrive/games', '/osdrive/video'];
+  pathHistory =['/osdrive/icons','/osdrive/Games', '/osdrive/Videos'];
 
 
   constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, triggerProcessService:TriggerProcessService, fileManagerService:FileManagerService, formBuilder: FormBuilder) { 
