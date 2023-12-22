@@ -312,17 +312,19 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
         'fill': '#fff'
       }
 
-      console.log('currentDirPath:',currentDirPath);
-      // console.log('folderName:',folderName)
+      // console.log('currentDirPath:',currentDirPath);
+      // // console.log('folderName:',folderName)
 
       const nextDirPath = this.directory = this.nextPathEntries.pop() ?? '';
 
-      console.log('nextDirPath:',nextDirPath);
+      // console.log('nextDirPath:',nextDirPath);
 
       const idx = this.upPathEntries.indexOf(nextDirPath)
-      console.log('idx:',idx)
+      // console.log('idx:',idx)
       if (idx !== -1) {
            this.upPathEntries.splice(idx, 1);
+      }else{
+        this.upPathEntries.push(nextDirPath);
       }
 
       if(this.upPathEntries.length == 0){
