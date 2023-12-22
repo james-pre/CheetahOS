@@ -3,9 +3,7 @@
     <div class="header-empty-line-container"></div>
     <div class="fileexp-header-container">
         <div class="header-nav-btn-container">
-            <figure class="figure-alt">
-                <!-- <img  class="img-alt-left-right" [src]="'osdrive/icons/nav_left_32.png' | safeResourceUrl" /> -->
-  
+            <figure class="figure-alt">  
                 <div class="img-alt-left-right">
                     <svg xmlns="http://www.w3.org/2000/svg" [style]="prevNavBtnStyle"
                         height="16" width="16" 
@@ -17,7 +15,6 @@
             </figure>
 
             <figure class="figure-alt">
-                <!-- <img class="img-alt-left-right" [src]="'osdrive/icons/nav_right_32.png' | safeResourceUrl" /> -->
                 <div class="img-alt-left-right">
                     <svg xmlns="http://www.w3.org/2000/svg"  [style]="nextNavBtnStyle"
                         height="16" width="16" 
@@ -28,7 +25,6 @@
             </figure>
 
             <figure class="figure-alt-caret">
-                <!-- <img class="img-alt-caret" [src]="'osdrive/icons/nav_expand_32.png' | safeResourceUrl" /> -->
                 <div class="img-alt-caret">
                     <svg xmlns="http://www.w3.org/2000/svg"  [style]="recentNavBtnStyle"
                         height="10" width="10" 
@@ -39,7 +35,6 @@
             </figure>
 
             <figure class="figure-alt-up">
-                <!-- <img class="img-alt-up" [src]="'osdrive/icons/nav_up-32.png' | safeResourceUrl" /> -->
                 <div class="img-alt-up">
                     <svg xmlns="http://www.w3.org/2000/svg" [style]="upNavBtnStyle"
                         height="16" width="16" 
@@ -97,7 +92,9 @@
     <div class="header-empty-line-container2"></div>
     <div class="fileexp-main-container">
         <div class="fileexp-content-container">
-            <div class="navigation-content-container">
+            <div class="navigation-content-container"  #navExplorerContainer>
+            <!--down-chevron<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
+            right-chevron<svg xmlns="http://www.w3.org/2000/svg" height="16" width="10" viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg> -->
                 <ul id="myUL">
                     <li><span class="caret">Beverages</span>
                       <ul class="nested">
