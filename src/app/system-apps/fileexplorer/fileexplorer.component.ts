@@ -48,6 +48,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
   hasWindow = true;
   icon = 'osdrive/icons/file_explorer.ico';
+  navPathIcon = 'osdrive/icons/my_computer.ico'
   name = 'fileexplorer';
   processId = 0;
   type = ComponentType.systemComponent;
@@ -178,14 +179,40 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
         this.name = file.getFileName;
         this.icon = file.getIconPath;
         this.populateHopsList();
+        this.setNavPathIcon(file.getFileName, file.getCurrentPath);
         await this.loadFilesInfoAsync();
     }else{
         this._triggerProcessService.startApplication(file);
     }
   }
 
-  setNavPathIcon(){
-    //
+  setNavPathIcon(fileName:string, directory:string){
+    if(fileName === 'Desktop' && directory === '/osdrive/Desktop'){
+      this.navPathIcon = 'osdrive/icons/desktop.ico';
+    }
+    else if(fileName === 'Documents' && directory === '/osdrive/Documents'){
+      this.navPathIcon = 'osdrive/icons/documents.ico';
+    }
+    else if(fileName === 'Downloads' && directory === '/osdrive/Downloads'){
+      this.navPathIcon = 'osdrive/icons/downloads.ico';
+    }
+    else if(fileName === 'Music' && directory === '/osdrive/Music'){
+      this.navPathIcon = 'osdrive/icons/music.png';
+    }
+    else if(fileName === 'Pictures' && directory === '/osdrive/Pictures'){
+      this.navPathIcon = 'osdrive/icons/pictures.ico';
+    }
+    else if(fileName === 'Videos' && directory === '/osdrive/Videos'){
+      this.navPathIcon = 'osdrive/icons/video.ico';
+    }
+    else if(fileName === 'Games' && directory === '/osdrive/Games'){
+      this.navPathIcon = 'osdrive/icons/games.ico';
+    }
+    else if(fileName === 'fileexplorer' && directory === '/osdrive/'){
+      this.navPathIcon = 'osdrive/icons/my_computer.ico';
+    }else{
+      this.navPathIcon = 'osdrive/icons/folder.ico';
+    }
   }
 
   onBtnFocus(id:number):void{

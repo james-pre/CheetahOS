@@ -117,7 +117,7 @@ export class FileService{
             }
             else if(this._consts.VIDEO_FILE_EXTENSIONS.includes(extension)){    
                 const sc = await this.getImageFileB64DataUrlAsync(path) as ShortCut;
-                this._fileInfo.setIconPath = '/osdrive/icons/video.ico';
+                this._fileInfo.setIconPath = '/osdrive/icons/video_file.ico';
                 this._fileInfo.setCurrentPath = path;
                 this._fileInfo.setContentPath = sc.getContentPath;
                 this._fileInfo.setFileType = extension;
@@ -127,7 +127,7 @@ export class FileService{
                 this._fileInfo.setSize = fileMetaData.getSize;
             }else if(this._consts.AUDIO_FILE_EXTENSIONS.includes(extension)){    
                 const sc = await this.getImageFileB64DataUrlAsync(path) as ShortCut;
-                this._fileInfo.setIconPath = '/osdrive/icons/audio.ico';
+                this._fileInfo.setIconPath = '/osdrive/icons/music_file.ico';
                 this._fileInfo.setCurrentPath = path;
                 this._fileInfo.setContentPath = sc.getContentPath;
                 this._fileInfo.setFileType = extension;
