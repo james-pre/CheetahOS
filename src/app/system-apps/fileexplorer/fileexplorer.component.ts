@@ -172,13 +172,13 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     }
   }
 
-  uncolorUpNavArrow():void{
+  uncolorUpNavBtn():void{
     this.upNavBtnCntnrStyle ={
       'background-color': ''
     }
   }
 
-  colorUpNavArrow():void{
+  colorUpNavBtn():void{
     if(!this.isUpBtnActive){
       this.upNavBtnCntnrStyle ={
         'background-color': ''
@@ -193,11 +193,10 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
   async goUpAlevel():Promise<void>{
     if(this.upPathEntries.length > 0){
-
       const currentDirPath =  this.directory;
-      console.log('goUpAlevel-currentDirPath:',currentDirPath)
 
       if(!this.isNavigatedBefore){
+        this.isNavigatedBefore = true;
         this.prevPathEntries.push(currentDirPath);
         this.isPrevBtnActive = true;
         this.prevNavBtnStyle ={
@@ -205,18 +204,16 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
         }
       }
 
-
-      this.isNavigatedBefore = true;
-
       let nextDirPath = this.upPathEntries.pop() ?? '';
       if(currentDirPath === nextDirPath){
         nextDirPath = this.upPathEntries.pop() ?? '';
         this.directory = nextDirPath;
+        this.prevPathEntries.push(nextDirPath);
       }else{
         this.directory = nextDirPath;
+        this.prevPathEntries.push(nextDirPath);
       }
 
-      console.log('goUpAlevel-nextDirPath:',this.directory)
       const folderName = basename(this.directory);
 
       if(this.upPathEntries.length == 0){
@@ -233,7 +230,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   }
 
 
-  colorPrevNavArrow():void{
+  colorPrevNavBtn():void{
     if(!this.isPrevBtnActive){
       this.prevNavBtnStyle ={
         'fill': '#ccc'
@@ -245,7 +242,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     }
   }
 
-  uncolorPrevNavArrow():void{
+  uncolorPrevNavBtn():void{
     this.prevNavBtnStyle ={
       'fill': '#ccc'
     }
@@ -253,8 +250,11 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
   async goBackAlevel():Promise<void>{
     if(this.prevPathEntries.length > 0){
-
       const currentDirPath =  this.directory;
+
+      if(this.recentPathEntries.indexOf(currentDirPath) == -1){
+        this.recentPathEntries.push(currentDirPath);
+      }
 
       const idx = this.upPathEntries.indexOf(currentDirPath);
       if(idx != -1){
@@ -263,14 +263,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
         this.upPathEntries.push(currentDirPath);
       }
 
-      const idx1 = this.prevPathEntries.indexOf(currentDirPath);
-      if(idx1 != -1){
-        this.prevPathEntries.splice(idx1,1);
-      }
-
-
       this.nextPathEntries.push(currentDirPath);
-
       this.isNextBtnActive = true;
       this.isUpBtnActive = true;
       this.nextNavBtnStyle ={
@@ -280,7 +273,14 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
         'fill': '#fff'
       }
 
-      this.directory = this.prevPathEntries.pop() ?? '';
+      let nextDirPath = this.prevPathEntries.pop() ?? '';
+      if(currentDirPath === nextDirPath){
+        nextDirPath = this.prevPathEntries.pop() ?? '';
+        this.directory = nextDirPath;
+      }else{
+        this.directory = nextDirPath;
+      }
+
       const folderName = basename(this.directory);
 
       if(this.prevPathEntries.length == 0){
@@ -296,8 +296,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     }
   }
 
-
-  colorNextNavArrow():void{
+  colorNextNavBtn():void{
     if(!this.isNextBtnActive){
       this.nextNavBtnStyle ={
         'fill': '#ccc'
@@ -309,7 +308,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     }
   }
 
-  uncolorNextNavArrow():void{
+  uncolorNextNavBtn():void{
     this.nextNavBtnStyle ={
       'fill': '#ccc'
     }
@@ -325,15 +324,9 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
         'fill': '#fff'
       }
 
-      // console.log('currentDirPath:',currentDirPath);
-      // // console.log('folderName:',folderName)
-
       const nextDirPath = this.directory = this.nextPathEntries.pop() ?? '';
-
-      // console.log('nextDirPath:',nextDirPath);
-
       const idx = this.upPathEntries.indexOf(nextDirPath)
-      // console.log('idx:',idx)
+
       if (idx !== -1) {
            this.upPathEntries.splice(idx, 1);
       }else{
@@ -347,9 +340,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
         }
       }
 
-
       const folderName = basename(this.directory);
-
       if(this.nextPathEntries.length == 0){
         this.isNextBtnActive = false;
         this.nextNavBtnStyle ={
@@ -412,6 +403,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
       if(!this.isNavigatedBefore){
         this.prevPathEntries.push(this.directory);
+        this.upPathEntries.push(this.directory);
         this.isNavigatedBefore = true;
       }
 
@@ -422,6 +414,10 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
       this.prevPathEntries.push(this.directory);
       this.upPathEntries.push(this.directory);
+
+      if(this.recentPathEntries.indexOf(this.directory) == -1){
+        this.recentPathEntries.push(this.directory);
+      }
 
       this.populateHopsList();
       this.setNavPathIcon(file.getFileName, file.getCurrentPath);
