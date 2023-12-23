@@ -194,16 +194,29 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   async goUpAlevel():Promise<void>{
     if(this.upPathEntries.length > 0){
 
-      this.isNavigatedBefore = true;
       const currentDirPath =  this.directory;
-      this.prevPathEntries.push(currentDirPath);
-      this.isPrevBtnActive = true;
-      this.prevNavBtnStyle ={
-        'fill': '#fff'
+      console.log('goUpAlevel-currentDirPath:',currentDirPath)
+
+      if(!this.isNavigatedBefore){
+        this.prevPathEntries.push(currentDirPath);
+        this.isPrevBtnActive = true;
+        this.prevNavBtnStyle ={
+          'fill': '#fff'
+        }
       }
 
 
-      this.directory = this.upPathEntries.pop() ?? '';
+      this.isNavigatedBefore = true;
+
+      let nextDirPath = this.upPathEntries.pop() ?? '';
+      if(currentDirPath === nextDirPath){
+        nextDirPath = this.upPathEntries.pop() ?? '';
+        this.directory = nextDirPath;
+      }else{
+        this.directory = nextDirPath;
+      }
+
+      console.log('goUpAlevel-nextDirPath:',this.directory)
       const folderName = basename(this.directory);
 
       if(this.upPathEntries.length == 0){
