@@ -163,10 +163,8 @@
                     <ng-template #titleView>
                         <p>Title View</p>
                     </ng-template>
-    
-    
                 
-                    <div class="tool-tip-container" id="invalidChars">
+                    <div class="tool-tip-container" id="invalidChars-{{this.processId}}">
                         <div class="tool-tip-arrow"> </div>
                         <div class="tool-tip-base"> A file name can't contain any of the following characters: <br /><br />
                              \ / : * ? " < > |
@@ -219,7 +217,6 @@
             <!-- ngResizable [rzHandles]="'w'" [rzMinWidth]="200" -->
                 <p>hide/show</p>
             </div>
-
         </div>
     </div>
     <div class="fileexp-footer-container" >

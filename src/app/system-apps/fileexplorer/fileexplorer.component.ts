@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit, OnDestroy, EventEmitter, Output, ViewChild, ElementRef} from '@angular/core';
+import { AfterViewInit, Component, OnInit, OnDestroy, ViewChild, ElementRef} from '@angular/core';
 import { FileService } from 'src/app/shared/system-service/file.service';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
@@ -11,7 +11,7 @@ import { TriggerProcessService } from 'src/app/shared/system-service/trigger.pro
 import { FileManagerService } from 'src/app/shared/system-service/file.manager.services';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ViewOptions } from './fileexplorer.enums';
-import {dirname,basename} from 'path';
+import {basename} from 'path';
 
 @Component({
   selector: 'cos-fileexplorer',
@@ -105,7 +105,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   pathHistory =['/osdrive/icons','/osdrive/Games', '/osdrive/Videos'];
 
 
-  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, triggerProcessService:TriggerProcessService, fileManagerService:FileManagerService, formBuilder: FormBuilder) { 
+  constructor(processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, triggerProcessService:TriggerProcessService, fileManagerService:FileManagerService, formBuilder: FormBuilder) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this._fileService = fileInfoService;
@@ -475,6 +475,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   }
 
   onShowIconContextMenu(evt:MouseEvent, file:FileInfo, id:number):void{
+
     const rect =  this.fileExplorerContainer.nativeElement.getBoundingClientRect();
     const x = evt.clientX - rect.left;
     const y = evt.clientY - rect.top;
@@ -681,7 +682,6 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     this.resetClearSearchIconHiglight();
   }
 
-
   handleClearSearchIconHighlights():void{
     this.onClearSearchIconHover = !this.onClearSearchIconHover;
 
@@ -794,23 +794,25 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
   showInvalidCharsToolTip():void{
     // get the position of the textbox
-    const toolTipID = 'invalidChars';
-    const invalidCharToolTipElement = document.getElementById(toolTipID) as HTMLElement;
+    const invalidCharToolTipElement = document.getElementById(`invalidChars-${this.processId}`) as HTMLElement;
     const renameContainerElement= document.getElementById(`renameContainer-${this.processId}-${this.selectedElementId}`) as HTMLElement;
 
+    const fileRect =  this.fileExplorerContainer.nativeElement.getBoundingClientRect();
     const rect = renameContainerElement.getBoundingClientRect();
 
+    const x = rect.left - fileRect.left;
+    const y = rect.top - fileRect.top ;
+
     if(invalidCharToolTipElement){
-      invalidCharToolTipElement.style.transform =`translate(${rect.x + 2}px, ${rect.y + 2}px)`;
-      invalidCharToolTipElement.style.zIndex = '3';
+      invalidCharToolTipElement.style.transform =`translate(${x + 2}px, ${y + 2}px)`;
+      invalidCharToolTipElement.style.zIndex = '2';
       invalidCharToolTipElement.style.opacity = '1';
       invalidCharToolTipElement.style.transition = 'opacity 0.5s ease';
     }
   }
 
   hideInvalidCharsToolTip():void{
-    const toolTipID = 'invalidChars';
-    const invalidCharToolTipElement = document.getElementById(toolTipID) as HTMLElement;
+    const invalidCharToolTipElement = document.getElementById(`invalidChars-${this.processId}`) as HTMLElement;
 
     if(invalidCharToolTipElement){
       invalidCharToolTipElement.style.transform =`translate(${-100000}px, ${100000}px)`;
@@ -841,7 +843,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
     const figCapElement= document.getElementById(`figCap-${this.processId}-${this.selectedElementId}`) as HTMLElement;
     const renameContainerElement= document.getElementById(`renameContainer-${this.processId}-${this.selectedElementId}`) as HTMLElement;
-    const renameTxtBoxElement= document.getElementById(`renameTxtBox${this.processId}-${this.selectedElementId}`) as HTMLInputElement;
+    const renameTxtBoxElement= document.getElementById(`renameTxtBox-${this.processId}-${this.selectedElementId}`) as HTMLInputElement;
 
     if(figCapElement){
       figCapElement.style.display = 'none';
