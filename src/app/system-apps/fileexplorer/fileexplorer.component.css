@@ -22,6 +22,49 @@
     margin: 3px 4px;
 }
 
+
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@Header Tabs View Started@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+/* Styles for the tabbed window container */
+.fileexp-header-tab-container {
+    width: 100%;
+    border: 1px solid #9d9d9d;
+  }
+  
+  /* Styles for the tab navigation */
+  .fileexp-header-tabs {
+    display: flex;
+    background-color: #202020;
+    border-bottom: 1px solid #9d9d9d;
+  }
+  
+  .tab {
+    flex: 1;
+    padding: 10px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .tab.active {
+    background-color: #007bff;
+    color: #fff;
+  }
+  
+  /* Styles for tab content */
+  .fileexp-header-tab-content {
+    padding: 20px;
+  }
+  
+  .tab-pane {
+    display: none;
+  }
+  
+  .tab-pane.active {
+    display: block;
+  }
+  
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@Header Tabs View Ended@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+
 /*****************************Header navigation view Started*****************************/
 
 .fileexp-header-container{
