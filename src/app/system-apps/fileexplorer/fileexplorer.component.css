@@ -27,43 +27,170 @@
 /* Styles for the tabbed window container */
 .fileexp-header-tab-container {
     width: 100%;
-    border: 1px solid #9d9d9d;
-  }
+    /* border:0.5px solid #9d9d9d; */
+}
   
-  /* Styles for the tab navigation */
-  .fileexp-header-tabs {
+/* Styles for the tab navigation */
+.fileexp-header-tabs {
     display: flex;
-    background-color: #202020;
-    border-bottom: 1px solid #9d9d9d;
-  }
-  
-  .tab {
-    flex: 1;
-    padding: 10px 20px;
+    background-color: #080404;
+}
+
+.tab {
+    /* flex: 1; */
+    width: 40px;
+    padding: 4px 8px;
+    margin: 0 4px;
+    font-weight: normal;
+    font-size: 9px;
     text-align: center;
-    cursor: pointer;
+    cursor:default;
+    background-color: #000;
+    color: white;
     transition: background-color 0.3s;
-  }
-  
-  .tab.active {
-    background-color: #007bff;
-    color: #fff;
-  }
-  
-  /* Styles for tab content */
-  .fileexp-header-tab-content {
-    padding: 20px;
-  }
-  
-  .tab-pane {
+}
+
+.tab.highlight-default {
+    margin: 0px 0px;
+    background-color: #0464ac;
+    color: white;
+}
+
+.tab.active {
+    border:0.3px solid #9d9d9d;
+    border-bottom: none;
+    background-color: #202020;
+    color: white;
+}
+
+/* Styles for tab content */
+.fileexp-header-tab-content-container {
+    /* padding: 20px; */
+    /* border-bottom: 0.3px solid #9d9d9d; */
+
+}
+
+.tab-pane {
     display: none;
-  }
-  
-  .tab-pane.active {
+}
+
+.tab-pane.active {
     display: block;
-  }
+}
   
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@Header Tabs View Ended@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+
+/*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Header Tabs Controls  Started%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
+.view-tab-pane-container{
+    width: fit-content;
+    height: 70px;
+}
+
+.tab-empty-line-container {
+    height: 1.5px;
+    background-color: white;  /*#191919;*/
+}
+
+.tab-empty-space{
+    height: 10px;
+}
+
+.view-tab-pane-top-cntnr{
+    display: flex;
+    width: 100%;
+    padding-top: 4px;
+    border-right: 0.5px solid #9d9d9d;
+}
+
+
+.view-tab-pane-top1{
+    padding-left: 5px;
+}
+
+
+.figure-tab-view-pane{
+    position: relative;
+    min-width: 8px;
+    place-items:center;
+}
+
+.img-tab-view-pane{
+    height: 24px; 
+    width: 24px;
+}
+
+.span-tab-view-pane{
+    text-align: center;
+    color: white;
+    font-size: 9px;
+    font-weight: normal;
+    padding-top: 5px;
+}
+
+.span-tab-view-pane1{
+    text-align: center;
+    color: white;
+    font-size: 9px;
+    font-weight: normal;
+}
+
+.view-tab-pane-top2{
+    display: block;
+    padding-right: 2px;
+}
+
+.tab-pane-top2-1{
+    padding: 4px 2px 0 2px;
+}
+.tab-pane-top2-2{
+    padding: 0 2px 3px 2px;
+}
+
+.span-tab-pane-cntnr{
+    display: flex;
+}
+
+.figure-tab-view-pane1{
+    position: relative;
+    min-width: 8px;
+    place-items:center;
+}
+
+.img-tab-view-pane1{
+    height: 14px; 
+    width: 14px;
+    margin: 0 1px;
+}
+
+.span-tab-view-pane2{
+    display: inline-flex;
+    align-items: center;
+    text-align: center;
+    color: white;
+    font-size: 9px;
+    font-weight: normal;
+    margin: 0 1px;
+}
+
+.view-tab-pane-bottom{
+    font-size: 9px;
+    color: white;
+    font-weight: normal;
+    text-align: center;
+}
+
+.view-tab-layout-container{
+    width: fit-content;
+    height: 50px;
+}
+
+.view-tab-current-view-container{
+    width: fit-content;
+    height: 50px;
+}
+
+/*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Header Tabs Controls  Ended%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
+
 
 /*****************************Header navigation view Started*****************************/
 
