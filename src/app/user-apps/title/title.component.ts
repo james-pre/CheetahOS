@@ -21,7 +21,7 @@ export class TitleComponent implements BaseComponent{
   private _maximizeWindowSub!: Subscription;
 
   hasWindow = true;
-  icon = 'osdrive/picture/favicon_nice.png';
+  icon = 'osdrive/Pictures/favicon_nice.png';
   name = 'hello';
   processId = 0;
   type = ComponentType.userComponent;
