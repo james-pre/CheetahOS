@@ -56,23 +56,23 @@
             <div class="view-tab-layout-container">
                 <div class="tab-empty-line-container"></div>
                 <div class="view-tab-layout-top-cntnr">
-                    <div class="view-tab-layout-top1">
+                    <div class="view-tab-layout-top1" (mouseenter)="colorTabLayoutContainer()" (mouseleave)="unColorTabLayoutContainer()" [style]="tabLayoutCntnrStyle">
                         <div class="view-tab-layout-content">
-                            <span class="span-tab-layout-cntnr">
+                            <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.extraLargeIconsView, 1)" (mouseleave)="onMouseLeaveTabLayoutBtn(1)"     id="tabLayoutIconCntnr-{{this.processId}}-1">
                                 <figure class="figure-tab-view-layout">
                                     <img class="img-tab-view-layout" [src]="'osdrive/icons/extral_large_image.ico' | safeResourceUrl"/>
                                 </figure>
                                 <div class="div-tab-view-layout">Extra large icons</div>
                             </span>
 
-                            <span class="span-tab-layout-cntnr">
+                            <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.largeIconsView, 2)" (mouseleave)="onMouseLeaveTabLayoutBtn(2)" id="tabLayoutIconCntnr-{{this.processId}}-2">
                                 <figure class="figure-tab-view-layout">
                                     <img class="img-tab-view-layout" [src]="'osdrive/icons/large_image.ico' | safeResourceUrl"/>
                                 </figure>
                                 <div class="div-tab-view-layout">Large icons</div>
                             </span>
 
-                            <span class="span-tab-layout-cntnr">
+                            <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.mediumIconsView, 3)" (mouseleave)="onMouseLeaveTabLayoutBtn(3)" id="tabLayoutIconCntnr-{{this.processId}}-3">
                                 <figure class="figure-tab-view-layout">
                                     <img class="img-tab-view-layout" [src]="'osdrive/icons/medium_icons_view.ico' | safeResourceUrl"/>
                                 </figure>
@@ -80,21 +80,21 @@
                             </span>
                         </div>
                         <div class="view-tab-layout-content">
-                            <span class="span-tab-layout-cntnr">
+                            <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.smallIconsView, 4)" (mouseleave)="onMouseLeaveTabLayoutBtn(4)"  id="tabLayoutIconCntnr-{{this.processId}}-4">
                                 <figure class="figure-tab-view-layout">
                                     <img class="img-tab-view-layout" [src]="'osdrive/icons/small_icons_view.ico' | safeResourceUrl"/>
                                 </figure>
                                 <div class="div-tab-view-layout">Small icons</div>
                             </span>
 
-                            <span class="span-tab-layout-cntnr">
+                            <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.listView, 5)" (mouseleave)="onMouseLeaveTabLayoutBtn(5)" id="tabLayoutIconCntnr-{{this.processId}}-5">
                                 <figure class="figure-tab-view-layout">
                                     <img class="img-tab-view-layout" [src]="'osdrive/icons/list_of_thumbnails_view.ico' | safeResourceUrl"/>
                                 </figure>
                                 <div class="div-tab-view-layout">List</div>
                             </span>
 
-                            <span class="span-tab-layout-cntnr">
+                            <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.detailsView, 6)" (mouseleave)="onMouseLeaveTabLayoutBtn(6)" id="tabLayoutIconCntnr-{{this.processId}}-6">
                                 <figure class="figure-tab-view-layout">
                                     <img class="img-tab-view-layout" [src]="'osdrive/icons/details_view.ico' | safeResourceUrl"/>
                                 </figure>
@@ -102,14 +102,14 @@
                             </span>
                         </div>
                         <div class="view-tab-layout-content">
-                            <span class="span-tab-layout-cntnr">
+                            <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.titleView, 7)" (mouseleave)="onMouseLeaveTabLayoutBtn(7)" id="tabLayoutIconCntnr-{{this.processId}}-7">
                                 <figure class="figure-tab-view-layout">
                                     <img class="img-tab-view-layout" [src]="'osdrive/icons/tiles_view.ico' | safeResourceUrl"/>
                                 </figure>
                                 <div class="div-tab-view-layout">Tiles</div>
                             </span>
 
-                            <span class="span-tab-layout-cntnr">
+                            <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.contentView, 8)" (mouseleave)="onMouseLeaveTabLayoutBtn(8)" id="tabLayoutIconCntnr-{{this.processId}}-8">
                                 <figure class="figure-tab-view-layout">
                                     <img class="img-tab-view-layout" [src]="'osdrive/icons/content_view.ico' | safeResourceUrl"/>
                                 </figure>
@@ -123,7 +123,6 @@
                     Layout
                 </div>
             </div>
-
             <div class="view-tab-current-view-container"> </div>
           </div>
         </div>
@@ -253,11 +252,11 @@
             
                 <ol (dragover)="onDragOver($event)"  (drop)="onDrop($event)" (click)="onHideIconContextMenu()"> 
                     <ng-container [ngTemplateOutlet]="viewOptions === smallIconsView ? iconsView :
-                                                        viewOptions === mediumIconsView ? iconsView :
-                                                        viewOptions === largeIconsView ? iconsView : 
-                                                        viewOptions === listView ? listView0 :
-                                                        viewOptions === detailsView ? detailsView0 :
-                                                        viewOptions === contentView ? contentView0 : titleView ">
+                                                      viewOptions === mediumIconsView ? iconsView :
+                                                      viewOptions === largeIconsView ? iconsView : 
+                                                      viewOptions === listView ? listView0 :
+                                                      viewOptions === detailsView ? detailsView0 :
+                                                      viewOptions === contentView ? contentView0 : titleView0 ">
                     </ng-container>
     
                     <ng-template #iconsView>
@@ -288,7 +287,7 @@
                     <ng-template #contentView0>
                         <p>Content View</p>
                     </ng-template>
-                    <ng-template #titleView>
+                    <ng-template #titleView0>
                         <p>Title View</p>
                     </ng-template>
                 

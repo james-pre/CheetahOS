@@ -6,4 +6,5 @@ export enum ViewOptions {
     SMALL_ICON_VIEW = 'Small Icon View',
     MEDIUM_ICON_VIEW = 'Medium Icon View',
     LARGE_ICON_VIEW = 'Large Icon View',
+    EXTRA_LARGE_ICON_VIEW = 'Extra Large Icon View',
 }

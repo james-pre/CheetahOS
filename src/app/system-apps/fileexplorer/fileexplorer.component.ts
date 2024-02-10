@@ -50,6 +50,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   recentNavBtnStyle:Record<string, unknown> = {};
   upNavBtnStyle:Record<string, unknown> = {};
   upNavBtnCntnrStyle:Record<string, unknown> = {};
+  tabLayoutCntnrStyle:Record<string, unknown> = {};
 
   hasWindow = true;
   icon = 'osdrive/icons/file_explorer.ico';
@@ -92,6 +93,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   readonly smallIconsView = ViewOptions.SMALL_ICON_VIEW;
   readonly mediumIconsView = ViewOptions.MEDIUM_ICON_VIEW;
   readonly largeIconsView = ViewOptions.LARGE_ICON_VIEW;
+  readonly extraLargeIconsView = ViewOptions.EXTRA_LARGE_ICON_VIEW;
   readonly listView = ViewOptions.LIST_VIEW;
   readonly detailsView = ViewOptions.DETAILS_VIEW;
   readonly contentView = ViewOptions.CONTENT_VIEW;
@@ -142,7 +144,41 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   }
   
 
-  setNavButtonsColor(){
+
+  colorTabLayoutContainer():void{
+    this.tabLayoutCntnrStyle ={
+      'background-color': '#777777'
+    }
+  }
+
+  unColorTabLayoutContainer():void{
+    this.tabLayoutCntnrStyle ={
+      'background-color': ''
+    }
+  }
+
+  onMouseEnterTabLayoutBtn(iconView:string, id:number):void{
+    const btnElement = document.getElementById(`tabLayoutIconCntnr-${this.processId}-${id}`) as HTMLElement;
+    if(btnElement){
+      // btnElement.style.backgroundColor = '#777777';
+      // btnElement.style.border = '1px solid #3c3c3c';
+      btnElement.style.backgroundColor = 'transparent';
+      // btnElement.style.border = '0.5px solid #fff'; this color should be for selected icon view
+      btnElement.style.border = '0.5px solid #ccc';
+      btnElement.style.margin = '-0.5px';
+    }
+  }
+
+  onMouseLeaveTabLayoutBtn(id:number):void{
+    const btnElement = document.getElementById(`tabLayoutIconCntnr-${this.processId}-${id}`) as HTMLElement;
+    if(btnElement){
+      btnElement.style.backgroundColor = '';
+      btnElement.style.border = '';
+      btnElement.style.margin = '0';
+    }
+  }
+
+  setNavButtonsColor():void{
     this.prevNavBtnStyle ={
       'fill': '#ccc'
     }
