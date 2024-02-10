@@ -89,6 +89,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   renameFileTriggerCnt = 0; // this is a dirty solution
 
   viewOptions = ViewOptions.MEDIUM_ICON_VIEW;
+  selectedViewOptions = ''
 
   readonly smallIconsView = ViewOptions.SMALL_ICON_VIEW;
   readonly mediumIconsView = ViewOptions.MEDIUM_ICON_VIEW;
@@ -167,6 +168,10 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
       btnElement.style.border = '0.5px solid #ccc';
       btnElement.style.margin = '-0.5px';
     }
+
+    if(iconView == this.smallIconsView || iconView == this.mediumIconsView ||iconView == this.largeIconsView ){
+      this.changeIconsSize(iconView);
+    }
   }
 
   onMouseLeaveTabLayoutBtn(id:number):void{
@@ -176,7 +181,35 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
       btnElement.style.border = '';
       btnElement.style.margin = '0';
     }
+
+    if(this.selectedViewOptions == ''){
+      this.changeIconsSize(this.viewOptions);
+    }
   }
+
+  changeIconsSize(iconSize:string):void{
+    if(iconSize === this.largeIconsView){
+      this.iconSizeStyle = {
+        'width': '55px', 
+        'height': '55px'
+      }
+    }
+
+    if(iconSize === this.mediumIconsView){
+      this.iconSizeStyle = {
+        'width': '45px', 
+        'height': '45px'
+      }
+    }
+
+    if(iconSize === this.smallIconsView){
+      this.iconSizeStyle = {
+        'width': '30px', 
+        'height': '30px'
+      }
+    }
+  }
+
 
   setNavButtonsColor():void{
     this.prevNavBtnStyle ={
@@ -644,30 +677,6 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
       });
     }
   }
-
-  changeIconsSize(iconSize:string):void{
-    if(iconSize === 'Large Icons'){
-      this.iconSizeStyle = {
-        'width': '45px', 
-        'height': '45px'
-      }
-    }
-
-    if(iconSize === 'Medium Icons'){
-      this.iconSizeStyle = {
-        'width': '35px', 
-        'height': '35px'
-      }
-    }
-
-    if(iconSize === 'Small Icons'){
-      this.iconSizeStyle = {
-        'width': '30px', 
-        'height': '30px'
-      }
-    }
-  }
-
 
   async refreshIcons():Promise<void>{
     this.isHighlighIconDueToPriorActionActive = false;
