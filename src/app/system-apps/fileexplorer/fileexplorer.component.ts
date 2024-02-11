@@ -51,6 +51,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   upNavBtnStyle:Record<string, unknown> = {};
   upNavBtnCntnrStyle:Record<string, unknown> = {};
   tabLayoutCntnrStyle:Record<string, unknown> = {};
+  liStyle:Record<string, unknown> = {};
 
   hasWindow = true;
   icon = 'osdrive/icons/file_explorer.ico';
@@ -237,8 +238,12 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
     if(iconSize === this.listView){
       this.btnStyle = {
-        'width': '100%', 
+        'max-width': '250px', 
         'height': '20px'
+      }
+
+      this.liStyle = {
+        'justify-content': 'left'
       }
     }
   }
