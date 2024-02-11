@@ -171,6 +171,14 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
     if(iconView == this.smallIconsView || iconView == this.mediumIconsView ||iconView == this.largeIconsView ){
       this.changeIconsSize(iconView);
+      this.changeOrderedlistStyle(iconView);
+      this.changeButtonSize(iconView);
+    }
+
+    if(iconView == this.listView){
+      this.changeIconsSize(iconView);
+      this.changeOrderedlistStyle(iconView);
+      this.changeButtonSize(iconView);
     }
   }
 
@@ -208,6 +216,48 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
         'height': '30px'
       }
     }
+
+    if(iconSize === this.listView){
+      this.iconSizeStyle = {
+        'width': '18px', 
+        'height': '18px'
+      }
+    }
+  }
+
+  changeButtonSize(iconSize:string):void{
+    if(iconSize === this.smallIconsView || iconSize === this.mediumIconsView || iconSize === this.largeIconsView){
+      this.btnStyle = {
+        'width': '90px', 
+        'height': '70px'
+      }
+    }
+
+    if(iconSize === this.listView){
+      this.btnStyle = {
+        'width': '100px', 
+        'height': '20px'
+      }
+    }
+  }
+
+  changeOrderedlistStyle(iconView:string):void{
+
+    const olStyleElement = document.getElementById(`olStyle-${this.processId}`) as HTMLElement;
+    
+    if(iconView == this.smallIconsView || iconView == this.mediumIconsView || iconView == this.largeIconsView){
+      olStyleElement.style.gridTemplateColumns = 'repeat(auto-fill,90px)';
+      olStyleElement.style.gridTemplateRows = 'repeat(auto-fill,70px)';
+      olStyleElement.style.rowGap = '20px';
+      olStyleElement.style.padding = '5px 0';
+    }
+
+    if(iconView == this.listView){
+      olStyleElement.style.gridTemplateColumns = 'repeat(auto-fill,100px)';
+      olStyleElement.style.gridTemplateRows = 'repeat(auto-fill,20px)';
+      olStyleElement.style.columnGap = '20px';
+      olStyleElement.style.padding = '2px 0';
+    }
   }
 
 
@@ -228,6 +278,8 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
       'fill': '#fff'
     }
   }
+
+
 
   colorChevron():void{
     this.recentNavBtnStyle ={
