@@ -283,13 +283,13 @@
                             (contextmenu)="onShowIconContextMenu($event, file, i)" (focus)="onBtnFocus(i)" (focusout)="onBtnFocusOut(i)" 
                             id="iconBtn-{{this.processId}}-{{i}}"  [style]="btnStyle">
 
-                                <span class="span-tab-layout-cntnr">
-                                    <figure class="figure-tab-view-layout">
-                                        <img class="img-tab-view-layout" [src]="file.getIconPath | safeResourceUrl" [alt]="file.getFileName"  [style]="iconSizeStyle"/>
+                                <span class="span-list-view">
+                                    <figure class="figure-list-view">
+                                        <img class="img-list-view" [src]="file.getIconPath | safeResourceUrl" [alt]="file.getFileName"  [style]="iconSizeStyle"/>
                                     </figure>
 
-                                    <div class="div-tab-view-layout">Extra large icons</div>
-                                    <!-- <div class="div-tab-view-layout"  id="figCap-{{this.processId}}-{{i}}">
+                                    <figcaption class="figcaption-list-view" id="figCap-{{this.processId}}-{{i}}">{{file.getFileName}}</figcaption>
+                                    <!-- <div class="div-tab-view-layout"  >
                                         {{file.getFileName}}
                                     </div> -->
                                     <!-- <div class="rename-textbox"  id="renameContainer-{{this.processId}}-{{i}}">

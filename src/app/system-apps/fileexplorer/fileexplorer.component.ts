@@ -170,12 +170,14 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     }
 
     if(iconView == this.smallIconsView || iconView == this.mediumIconsView ||iconView == this.largeIconsView ){
+      this.viewOptions = iconView;
       this.changeIconsSize(iconView);
       this.changeOrderedlistStyle(iconView);
       this.changeButtonSize(iconView);
     }
 
     if(iconView == this.listView){
+      this.viewOptions = iconView;
       this.changeIconsSize(iconView);
       this.changeOrderedlistStyle(iconView);
       this.changeButtonSize(iconView);
@@ -235,7 +237,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
     if(iconSize === this.listView){
       this.btnStyle = {
-        'width': '100px', 
+        'width': '120px', 
         'height': '20px'
       }
     }

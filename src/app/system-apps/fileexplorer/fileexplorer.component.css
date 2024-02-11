@@ -831,6 +831,38 @@ button{
     height: 70px; 
 }
 
+/*-------------------------List View-------------------------------*/
+
+.span-list-view{
+    display: flex;
+}
+
+.figure-list-view{
+    position: relative;
+    min-width: 8px;
+    place-items:center;
+}
+
+.img-list-view{
+    height: 18px; 
+    width: 18px;
+    margin: 0 1px;
+}
+
+.figcaption-list-view{
+    display: flex;
+    position: relative;
+    width: 100%;
+    align-items: center;
+    text-align: left;
+    color: white;
+    font-size: 10px;
+    font-weight:300;
+    margin: 0 1px;
+}
+
+/*-------------------------List View-------------------------------*/
+
 
 /*00000000000000000000000000000000 Context Menu Started 000000000000000000000000 */
 
