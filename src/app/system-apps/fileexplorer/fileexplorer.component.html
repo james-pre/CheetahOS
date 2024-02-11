@@ -266,7 +266,7 @@
                                 <figure>
                                     <img [src]="file.getIconPath | safeResourceUrl" [alt]="file.getFileName"  [style]="iconSizeStyle"/>
                                     <figcaption  id="figCap-{{this.processId}}-{{i}}">
-                                            {{file.getFileName}}
+                                            {{file.getFileName}} 
                                     </figcaption>
                                     <div class="rename-textbox"  id="renameContainer-{{this.processId}}-{{i}}">
                                         <form [formGroup]="renameForm"  (ngSubmit)="isFormDirty()">
@@ -288,15 +288,14 @@
                                         <img class="img-list-view" [src]="file.getIconPath | safeResourceUrl" [alt]="file.getFileName"  [style]="iconSizeStyle"/>
                                     </figure>
 
-                                    <figcaption class="figcaption-list-view" id="figCap-{{this.processId}}-{{i}}">{{file.getFileName}}</figcaption>
-                                    <!-- <div class="div-tab-view-layout"  >
+                                    <figcaption class="figcaption-list-view" id="figCap-{{this.processId}}-{{i}}">
                                         {{file.getFileName}}
-                                    </div> -->
-                                    <!-- <div class="rename-textbox"  id="renameContainer-{{this.processId}}-{{i}}">
+                                    </figcaption>
+                                    <div class="rename-textbox"  id="renameContainer-{{this.processId}}-{{i}}">
                                         <form [formGroup]="renameForm"  (ngSubmit)="isFormDirty()">
                                             <input type="text" formControlName="renameInput"  (keypress)="onKeyPress($event)" autofocus spellcheck="false" id="renameTxtBox-{{this.processId}}-{{i}}"/>
                                         </form>
-                                    </div> -->
+                                    </div>
                                 </span>
                             </button>
                         </li>

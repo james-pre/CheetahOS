@@ -237,7 +237,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
     if(iconSize === this.listView){
       this.btnStyle = {
-        'width': '120px', 
+        'width': '100%', 
         'height': '20px'
       }
     }
@@ -251,14 +251,18 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
       olStyleElement.style.gridTemplateColumns = 'repeat(auto-fill,90px)';
       olStyleElement.style.gridTemplateRows = 'repeat(auto-fill,70px)';
       olStyleElement.style.rowGap = '20px';
+      olStyleElement.style.columnGap = '0px';
       olStyleElement.style.padding = '5px 0';
+      olStyleElement.style.gridAutoFlow = 'row';
     }
 
     if(iconView == this.listView){
-      olStyleElement.style.gridTemplateColumns = 'repeat(auto-fill,100px)';
+      olStyleElement.style.gridTemplateColumns = 'repeat(auto-fill,  minmax(50px, 250px)';
       olStyleElement.style.gridTemplateRows = 'repeat(auto-fill,20px)';
-      olStyleElement.style.columnGap = '20px';
+      olStyleElement.style.columnGap = '10px';
+      olStyleElement.style.rowGap = '0px';
       olStyleElement.style.padding = '2px 0';
+      olStyleElement.style.gridAutoFlow = 'column';       
     }
   }
 
