@@ -243,7 +243,8 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
       }
 
       this.liStyle = {
-        'justify-content': 'left'
+        'justify-content': 'left',
+        'padding-left':'15px'
       }
     }
   }
