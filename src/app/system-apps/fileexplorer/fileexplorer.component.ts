@@ -99,7 +99,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   readonly listView = ViewOptions.LIST_VIEW;
   readonly detailsView = ViewOptions.DETAILS_VIEW;
   readonly contentView = ViewOptions.CONTENT_VIEW;
-  readonly titleView = ViewOptions.TITLE_VIEW;
+  readonly tilesView = ViewOptions.TILES_VIEW;
 
   renameForm!: FormGroup;
   pathForm!: FormGroup;
@@ -177,7 +177,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
       this.changeButtonSize(iconView);
     }
 
-    if(iconView == this.listView){
+    if(iconView == this.listView || iconView == this.detailsView || iconView == this.tilesView || iconView == this.contentView){
       this.viewOptions = iconView;
       this.changeIconsSize(iconView);
       this.changeOrderedlistStyle(iconView);
@@ -206,7 +206,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
       }
     }
 
-    if(iconSize === this.mediumIconsView){
+    if(iconSize === this.mediumIconsView || iconSize === this.tilesView){
       this.iconSizeStyle = {
         'width': '45px', 
         'height': '45px'
@@ -247,6 +247,18 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
         'padding-left':'15px'
       }
     }
+
+    if(iconSize === this.tilesView){
+      this.btnStyle = {
+        'width': '250px', 
+        'height': '45px'
+      }
+
+      this.liStyle = {
+        'justify-content': 'left',
+        'padding-left':'15px'
+      }
+    }
   }
 
   changeOrderedlistStyle(iconView:string):void{
@@ -263,15 +275,23 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     }
 
     if(iconView == this.listView){
-      olStyleElement.style.gridTemplateColumns = 'repeat(auto-fill,  minmax(50px, 250px)';
-      olStyleElement.style.gridTemplateRows = 'repeat(auto-fill,20px)';
+      olStyleElement.style.gridTemplateColumns = 'repeat(auto-fill, minmax(50px, 250px)';
+      olStyleElement.style.gridTemplateRows = 'repeat(auto-fill, 20px)';
+      olStyleElement.style.columnGap = '10px';
+      olStyleElement.style.rowGap = '0px';
+      olStyleElement.style.padding = '2px 0';
+      olStyleElement.style.gridAutoFlow = 'column';       
+    }
+
+    if(iconView == this.tilesView){
+      olStyleElement.style.gridTemplateColumns = 'repeat(auto-fill, minmax(50px, 250px)';
+      olStyleElement.style.gridTemplateRows = 'repeat(auto-fill, 50px)';
       olStyleElement.style.columnGap = '10px';
       olStyleElement.style.rowGap = '0px';
       olStyleElement.style.padding = '2px 0';
       olStyleElement.style.gridAutoFlow = 'column';       
     }
   }
-
 
   setNavButtonsColor():void{
     this.prevNavBtnStyle ={
@@ -290,8 +310,6 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
       'fill': '#fff'
     }
   }
-
-
 
   colorChevron():void{
     this.recentNavBtnStyle ={
@@ -361,7 +379,6 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
       await this.loadFilesInfoAsync();
     }
   }
-
 
   colorPrevNavBtn():void{
     if(!this.isPrevBtnActive){

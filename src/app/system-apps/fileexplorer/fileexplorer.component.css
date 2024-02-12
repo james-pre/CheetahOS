@@ -879,6 +879,55 @@ button{
 /*-------------------------List View-------------------------------*/
 
 
+/*-------------------------Tiles View-------------------------------*/
+
+.span-tiles-view{
+    display: flex;
+}
+
+.figure-tiles-view{
+    position: relative;
+    width: 45px;
+    place-items:center;
+}
+
+.img-tiles-view{
+    height: 45px; 
+    width: 45px;
+    margin: 0 1px;
+}
+
+.figcaption-tiles-view{
+    display: flex;
+    position: relative;
+    width: 100%;
+    align-items: center;
+    text-align: left;
+    color: white;
+    font-size: 12px;
+    font-weight:300;
+    margin: 0 1px;
+    padding-left: 3px;
+    text-shadow:0 0 1px rgba(0, 0, 0, 75%),
+                0 0 2px rgba(0, 0, 0, 50%),
+                0 0 3px rgba(0, 0, 0, 25%),
+
+                0 1px 1px rgba(0, 0, 0, 75%),
+                0 1px 2px rgba(0, 0, 0, 50%),
+                0 1px 3px rgba(0, 0, 0, 25%),
+                
+                0 2px 1px rgba(0, 0, 0, 75%),
+                0 2px 2px rgba(0, 0, 0, 50%),
+                0 2px 3px rgba(0, 0, 0, 25%);
+
+    top: -8px;
+    line-height: 13px;
+    text-overflow: ellipsis;
+}
+
+/*-------------------------Tiles View-------------------------------*/
+
+
 /*00000000000000000000000000000000 Context Menu Started 000000000000000000000000 */
 
 .fx-icon-vertical-menu {

@@ -102,7 +102,7 @@
                             </span>
                         </div>
                         <div class="view-tab-layout-content">
-                            <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.titleView, 7)" (mouseleave)="onMouseLeaveTabLayoutBtn(7)" id="tabLayoutIconCntnr-{{this.processId}}-7">
+                            <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.tilesView, 7)" (mouseleave)="onMouseLeaveTabLayoutBtn(7)" id="tabLayoutIconCntnr-{{this.processId}}-7">
                                 <figure class="figure-tab-view-layout">
                                     <img class="img-tab-view-layout" [src]="'osdrive/icons/tiles_view.ico' | safeResourceUrl"/>
                                 </figure>
@@ -255,7 +255,7 @@
                                                       viewOptions === largeIconsView ? iconsView : 
                                                       viewOptions === listView ? listView0 :
                                                       viewOptions === detailsView ? detailsView0 :
-                                                      viewOptions === contentView ? contentView0 : titleView0 ">
+                                                      viewOptions === contentView ? contentView0 : tilesView0 ">
                     </ng-container>
     
                     <ng-template #iconsView>
@@ -306,8 +306,28 @@
                     <ng-template #contentView0>
                         <p>Content View</p>
                     </ng-template>
-                    <ng-template #titleView0>
-                        <p>Title View</p>
+                    <ng-template #tilesView0>
+                        <li *ngFor="let file of files; let i = index" [style]="liStyle">
+                            <button tabindex="0" (dblclick)="runProcess(file)" (mouseenter)="onMouseEnter(i)" (mouseleave)="onMouseLeave(i)"
+                            (contextmenu)="onShowIconContextMenu($event, file, i)" (focus)="onBtnFocus(i)" (focusout)="onBtnFocusOut(i)" 
+                            id="iconBtn-{{this.processId}}-{{i}}"  [style]="btnStyle">
+
+                                <span class="span-tiles-view">
+                                    <figure class="figure-tiles-view">
+                                        <img class="img-list-view" [src]="file.getIconPath | safeResourceUrl" [alt]="file.getFileName"  [style]="iconSizeStyle"/>
+                                    </figure>
+
+                                    <figcaption class="figcaption-tiles-view" id="figCap-{{this.processId}}-{{i}}">
+                                        {{file.getFileName}}
+                                    </figcaption>
+                                    <div class="rename-textbox"  id="renameContainer-{{this.processId}}-{{i}}">
+                                        <form [formGroup]="renameForm"  (ngSubmit)="isFormDirty()">
+                                            <input type="text" formControlName="renameInput"  (keypress)="onKeyPress($event)" autofocus spellcheck="false" id="renameTxtBox-{{this.processId}}-{{i}}"/>
+                                        </form>
+                                    </div>
+                                </span>
+                            </button>
+                        </li>
                     </ng-template>
                 
                     <div class="tool-tip-container" id="invalidChars-{{this.processId}}">
@@ -316,7 +336,6 @@
                              \ / : * ? " < > |
                         </div>
                     </div>
-                
                 
                     <div class="fx-icon-vertical-menu" [style]="fxIconCntxtMenuStyle">
                         <div class="empty-line-container"></div>
