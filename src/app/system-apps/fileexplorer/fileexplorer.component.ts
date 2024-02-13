@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, OnDestroy, ViewChild, ElementRef} from '@angular/core';
+import { AfterViewInit, Component, OnInit, OnDestroy, ViewChild, ElementRef, ViewEncapsulation} from '@angular/core';
 import { FileService } from 'src/app/shared/system-service/file.service';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
@@ -16,7 +16,8 @@ import {basename} from 'path';
 @Component({
   selector: 'cos-fileexplorer',
   templateUrl: './fileexplorer.component.html',
-  styleUrls: ['./fileexplorer.component.css']
+  styleUrls: ['./fileexplorer.component.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 
 export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy {
@@ -41,17 +42,16 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   public _directoryHops:string[] = ['osdrive'];
 
   fxIconCntxtMenuStyle:Record<string, unknown> = {};
-  iconSizeStyle:Record<string, unknown> = {};
   clearSearchStyle:Record<string, unknown> = {};
   searchStyle:Record<string, unknown> = {};
-  btnStyle:Record<string, unknown> = {};
   prevNavBtnStyle:Record<string, unknown> = {};
   nextNavBtnStyle:Record<string, unknown> = {};
   recentNavBtnStyle:Record<string, unknown> = {};
   upNavBtnStyle:Record<string, unknown> = {};
   upNavBtnCntnrStyle:Record<string, unknown> = {};
   tabLayoutCntnrStyle:Record<string, unknown> = {};
-  liStyle:Record<string, unknown> = {};
+
+  olClassName = 'ol-icon-size-view';
 
   hasWindow = true;
   icon = 'osdrive/icons/file_explorer.ico';
@@ -120,7 +120,6 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     this._runningProcessService.addProcess(this.getComponentDetail());
 
     this._dirFilesUpdatedSub = this._fileService.dirFilesUpdateNotify.subscribe(() =>{this.loadFilesInfoAsync()});
-    this._viewByNotifySub = fileManagerService.viewByNotify.subscribe((p) =>{this.changeIconsSize(p)});
     this._sortByNotifySub = fileManagerService.sortByNotify.subscribe((p)=>{this.sortIcons(p)});
     this._refreshNotifySub = fileManagerService.refreshNotify.subscribe(()=>{this.refreshIcons()});
 
@@ -170,18 +169,16 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
       btnElement.style.margin = '-0.5px';
     }
 
-    if(iconView == this.smallIconsView || iconView == this.mediumIconsView ||iconView == this.largeIconsView ){
+    if(iconView == this.smallIconsView || iconView == this.mediumIconsView ||iconView == this.largeIconsView || iconView == this.extraLargeIconsView ){
       this.viewOptions = iconView;
-      this.changeIconsSize(iconView);
+      this.changeLayoutCss(this.viewOptions);
       this.changeOrderedlistStyle(iconView);
-      this.changeButtonSize(iconView);
+      this.changeButtonAndImageSize(iconView);
     }
 
     if(iconView == this.listView || iconView == this.detailsView || iconView == this.tilesView || iconView == this.contentView){
       this.viewOptions = iconView;
-      this.changeIconsSize(iconView);
-      this.changeOrderedlistStyle(iconView);
-      this.changeButtonSize(iconView);
+      this.changeLayoutCss(this.viewOptions);
     }
   }
 
@@ -194,131 +191,72 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     }
 
     if(this.selectedViewOptions == ''){
-      this.changeIconsSize(this.viewOptions);
+      //this.changeLayoutCss(this.viewOptions);
     }
   }
 
-  changeIconsSize(iconSize:string):void{
-    if(iconSize === this.largeIconsView){
-      this.iconSizeStyle = {
-        'width': '55px', 
-        'height': '55px'
-      }
-    }
 
-    if(iconSize === this.mediumIconsView || iconSize === this.tilesView){
-      this.iconSizeStyle = {
-        'width': '45px', 
-        'height': '45px'
-      }
-    }
+  changeLayoutCss(iconSize:string):void{
 
-    if(iconSize === this.smallIconsView){
-      this.iconSizeStyle = {
-        'width': '30px', 
-        'height': '30px'
-      }
-    }
+    const layoutOptions:string[] = [this.smallIconsView,this.mediumIconsView,this.largeIconsView,this.extraLargeIconsView,
+                              this.listView,this.detailsView,this.tilesView,this.contentView];
+    const cssLayoutOptions:string[] = ['icon-view','list-view', 'details-view', 'tiles-view','content-view']
+    const layoutIdx = layoutOptions.indexOf(iconSize)
 
-    if(iconSize === this.listView){
-      this.iconSizeStyle = {
-        'width': '18px', 
-        'height': '18px'
-      }
+    if(layoutIdx > 0 && layoutIdx <= 3){
+      this.olClassName = 'ol-icon-size-view';
+    }
+    else if (layoutIdx >= 4){
+      /*
+         the icon-views has various sizes, but it is still treated as one distinct layout. 
+         So, options 0 - 3 in the layoutOptions = option 0 in the cssLayoutOptions
+       */
+      const idx = layoutIdx - 3;
+      this.olClassName = `ol-${cssLayoutOptions[idx]}`;
     }
   }
 
-  changeButtonSize(iconSize:string):void{
-    if(iconSize === this.smallIconsView || iconSize === this.mediumIconsView || iconSize === this.largeIconsView){
-      this.btnStyle = {
-        'width': '90px', 
-        'height': '70px'
-      }
-    }
+  changeButtonAndImageSize(iconSize:string):void{
 
-    if(iconSize === this.listView){
-      this.btnStyle = {
-        'max-width': '250px', 
-        'height': '20px'
-      }
+    const icon_sizes:string[] = [this.smallIconsView,this.mediumIconsView,this.largeIconsView,this.extraLargeIconsView];
+    const fig_img_sizes:string[] = ['30px', '45px', '75px', '90px']; //small, med, large,ext large
+    const btn_width_height_sizes = [['90px', '70px'], ['110px', '90px']];
 
-      this.liStyle = {
-        'justify-content': 'left',
-        'padding-left':'15px'
-      }
-    }
+    const iconIdx = icon_sizes.indexOf(iconSize);
+    const btnIdx = (iconIdx <= 2) ? 0 : 1;
 
-    if(iconSize === this.tilesView){
-      this.btnStyle = {
-        'width': '250px', 
-        'height': '45px'
+    for(let i = 0; i < this.files.length; i++){
+      const btnElmnt = document.getElementById(`btnElmnt-${this.processId}-${i}`) as HTMLElement;
+      const imgElmnt = document.getElementById(`imgElmnt-${this.processId}-${i}`) as HTMLElement;
+
+      if(btnElmnt){
+        btnElmnt.style.width = btn_width_height_sizes[btnIdx][0];
+        btnElmnt.style.height = btn_width_height_sizes[btnIdx][1];
       }
 
-      this.liStyle = {
-        'justify-content': 'left',
-        'padding-left':'15px'
-      }
-    }
-
-    if(iconSize === this.contentView){
-      this.btnStyle = {
-        'width': '100%', 
-        'height': '34px'
-      }
-
-      this.liStyle = {
-        'justify-content': 'left',
-        'padding-left':'15px'
+      if(imgElmnt){
+        imgElmnt.style.width = fig_img_sizes[iconIdx];
+        imgElmnt.style.height = fig_img_sizes[iconIdx];
       }
     }
   }
 
-  changeOrderedlistStyle(iconView:string):void{
-
-    const olStyleElement = document.getElementById(`olStyle-${this.processId}`) as HTMLElement;
+  changeOrderedlistStyle(iconSize:string):void{
+    const icon_sizes:string[] = [this.smallIconsView,this.mediumIconsView,this.largeIconsView,this.extraLargeIconsView];
+    const btn_width_height_sizes = [['90px', '70px'], ['110px', '90px']];
+    const iconIdx = icon_sizes.indexOf(iconSize);
+    const btnIdx = (iconIdx <= 2) ? 0 : 1;
     
-    if(iconView == this.smallIconsView || iconView == this.mediumIconsView || iconView == this.largeIconsView){
-      olStyleElement.style.gridTemplateColumns = 'repeat(auto-fill,90px)';
-      olStyleElement.style.gridTemplateRows = 'repeat(auto-fill,70px)';
-      olStyleElement.style.rowGap = '20px';
-      olStyleElement.style.columnGap = '0px';
-      olStyleElement.style.padding = '5px 0';
-      olStyleElement.style.gridAutoFlow = 'row';
-    }
-
-    if(iconView == this.listView){
-      olStyleElement.style.gridTemplateColumns = 'repeat(auto-fill, minmax(50px, 250px)';
-      olStyleElement.style.gridTemplateRows = 'repeat(auto-fill, 20px)';
-      olStyleElement.style.columnGap = '10px';
-      olStyleElement.style.rowGap = '0px';
-      olStyleElement.style.padding = '2px 0';
-      olStyleElement.style.gridAutoFlow = 'column';       
-    }
-
-    if(iconView == this.tilesView){
-      olStyleElement.style.gridTemplateColumns = 'repeat(auto-fill, minmax(50px, 250px)';
-      olStyleElement.style.gridTemplateRows = 'repeat(auto-fill, 50px)';
-      olStyleElement.style.columnGap = '10px';
-      olStyleElement.style.rowGap = '0px';
-      olStyleElement.style.padding = '2px 0';
-      olStyleElement.style.gridAutoFlow = 'column';       
-    }
-
-    if(iconView == this.contentView){
-
-      const rect =  this.fileExplorerContainer.nativeElement.getBoundingClientRect();
-
-      console.log('rect:',rect);
-      olStyleElement.style.gridTemplateColumns = `repeat(auto-fill, minmax(50px, ${rect.width}px)`;
-      olStyleElement.style.gridTemplateRows = 'repeat(auto-fill, 40px)';
-      olStyleElement.style.columnGap = '0px';
-      olStyleElement.style.rowGap = '0px';
-      olStyleElement.style.padding = '0px';
-      olStyleElement.style.gridAutoFlow = 'row';       
+    const olElmnt = document.getElementById(`olElmnt-${this.processId}`) as HTMLElement;
+    if(olElmnt){
+      olElmnt.style.gridTemplateColumns = `repeat(auto-fill,${btn_width_height_sizes[btnIdx][0]})`;
+      olElmnt.style.gridTemplateRows = `repeat(auto-fill,${btn_width_height_sizes[btnIdx][1]})`;
+      olElmnt.style.rowGap = '20px';
+      olElmnt.style.columnGap = '0px';
+      olElmnt.style.padding = '5px 0';
+      olElmnt.style.gridAutoFlow = 'row';
     }
   }
-
-
 
   setNavButtonsColor():void{
     this.prevNavBtnStyle ={
@@ -718,7 +656,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   }
 
   onMouseEnter(id:number):void{
-    const btnElement = document.getElementById(`iconBtn-${this.processId}-${id}`) as HTMLElement;
+    const btnElement = document.getElementById(`btnElmnt-${this.processId}-${id}`) as HTMLElement;
     if(btnElement){
       btnElement.style.backgroundColor = '#4c4c4c';
       btnElement.style.border = '1px solid #3c3c3c';
@@ -726,7 +664,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   }
 
   setBtnToFocus(id:number):void{
-    const btnElement = document.getElementById(`iconBtn-${this.processId}-${id}`) as HTMLElement;
+    const btnElement = document.getElementById(`btnElmnt-${this.processId}-${id}`) as HTMLElement;
     if(btnElement){
       btnElement.style.backgroundColor = '#777777';
       btnElement.style.border = '1px solid #3c3c3c';
@@ -734,7 +672,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   }
 
   setBtnToFocuOut(id:number):void{
-    const btnElement = document.getElementById(`iconBtn-${this.processId}-${id}`) as HTMLElement;
+    const btnElement = document.getElementById(`btnElmnt-${this.processId}-${id}`) as HTMLElement;
     if(btnElement){
       btnElement.style.backgroundColor = 'transparent';
       btnElement.style.border = '0.5px solid white'
@@ -742,7 +680,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   }
 
   onMouseLeave(id:number):void{
-    const btnElement = document.getElementById(`iconBtn-${this.processId}-${id}`) as HTMLElement;
+    const btnElement = document.getElementById(`btnElmnt-${this.processId}-${id}`) as HTMLElement;
     if(id != this.selectedElementId){
       if(btnElement){
         btnElement.style.backgroundColor = 'transparent';
@@ -754,7 +692,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   }
 
   removeIconWasInfocusStyle(id:number):void{
-    const btnElement = document.getElementById(`iconBtn-${this.processId}-${id}`) as HTMLElement;
+    const btnElement = document.getElementById(`olElmnt-${this.processId}-${id}`) as HTMLElement;
     if((this.isHighlighIconDueToPriorActionActive) && (id != this.selectedElementId )){
       if(btnElement){
         btnElement.style.backgroundColor = 'transparent';
@@ -994,7 +932,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   onTriggerRenameFileStep1():void{
     this.isRenameActive = !this.isRenameActive;
 
-    const figCapElement= document.getElementById(`figCap-${this.processId}-${this.selectedElementId}`) as HTMLElement;
+    const figCapElement= document.getElementById(`figCapElmnt-${this.processId}-${this.selectedElementId}`) as HTMLElement;
     const renameContainerElement= document.getElementById(`renameContainer-${this.processId}-${this.selectedElementId}`) as HTMLElement;
     const renameTxtBoxElement= document.getElementById(`renameTxtBox-${this.processId}-${this.selectedElementId}`) as HTMLInputElement;
 
@@ -1017,8 +955,8 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   onTriggerRenameFileStep2():void{
     this.isRenameActive = !this.isRenameActive;
 
-    const btnElement = document.getElementById(`iconBtn-${this.processId}-${this.selectedElementId}`) as HTMLElement;
-    const figCapElement= document.getElementById(`figCap-${this.processId}-${this.selectedElementId}`) as HTMLElement;
+    const btnElement = document.getElementById(`olElmnt-${this.processId}-${this.selectedElementId}`) as HTMLElement;
+    const figCapElement= document.getElementById(`figCapElmnt-${this.processId}-${this.selectedElementId}`) as HTMLElement;
     const renameContainerElement= document.getElementById(`renameContainer-${this.processId}-${this.selectedElementId}`) as HTMLElement;
 
     const renameText = this.renameForm.value.renameInput as string;
@@ -1051,8 +989,8 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   untriggerRenameFile():void{
     this.isRenameActive = !this.isRenameActive;
 
-    const btnElement = document.getElementById(`iconBtn-${this.processId}-${this.selectedElementId}`) as HTMLElement;
-    const figCapElement= document.getElementById(`figCap-${this.processId}-${this.selectedElementId}`) as HTMLElement;
+    const btnElement = document.getElementById(`olElmnt-${this.processId}-${this.selectedElementId}`) as HTMLElement;
+    const figCapElement= document.getElementById(`figCapElmnt-${this.processId}-${this.selectedElementId}`) as HTMLElement;
     const renameContainerElement= document.getElementById(`renameContainer-${this.processId}-${this.selectedElementId}`) as HTMLElement;
 
     if(figCapElement){
@@ -1069,7 +1007,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   }
 
   iconWasInfocus():void{
-    const btnElement = document.getElementById(`iconBtn-${this.processId}-${this.selectedElementId}`) as HTMLElement;
+    const btnElement = document.getElementById(`olElmnt-${this.processId}-${this.selectedElementId}`) as HTMLElement;
 
     if(this.hideCntxtMenuEvtCnt >= 0){
       if(btnElement){

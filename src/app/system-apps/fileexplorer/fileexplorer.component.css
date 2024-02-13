@@ -83,7 +83,7 @@
 /*----------------------------------------- Panes Control Stared---------------------------------*/
 .view-tab-pane-container{
     width: fit-content;
-    height: 80px;
+    height: 84px;
     background-color: #191919;
     border-bottom: 1px solid #2d2d2d;
     border-top: 1px solid #2d2d2d;
@@ -102,7 +102,7 @@
     display: flex;
     width: 100%;
     padding-top: 4px;
-    padding-bottom: 1.5px;
+    padding-bottom: 5px;
     border-right: 0.5px solid #9d9d9d;
 }
 
@@ -154,7 +154,8 @@
 
 .figure-tab-view-pane1{
     position: relative;
-    min-width: 8px;
+    height: 16px; 
+    width: 17px;
     place-items:center;
 }
 
@@ -180,14 +181,14 @@
     color: white;
     font-weight:300;
     text-align: center;
-    padding-top: 6px;
+    padding-top: 3px;
 }
 /*----------------------------------------- Panes Control Ended---------------------------------*/
 
 /*+++++++++++++++++++++++++++++++++++++++++ Layout Control Stared+++++++++++++++++++++++++++++++++++++++++*/
 .view-tab-layout-container{
     width: fit-content;
-    height: 80px;
+    height: 84px;
     background-color: #191919;
     border-bottom: 1px solid #2d2d2d;
     border-top: 1px solid #2d2d2d;
@@ -201,28 +202,29 @@
 }
 
 .view-tab-layout-top1{
-    margin-top: 2px;
-    width: 300px;
-    height: 55px;
+    margin-top:4px;
+    width: 312px;
+    height: 60px;
     border: 1px solid #2d2d2d;
 }
 
 .view-tab-layout-top2{
-    width: 8px;
-    height: 54px;
+    width: 4px;
+    height: 62px;
     border-right: 0.5px solid #9d9d9d;
-    padding-left: 2px;
+    /* padding-left: 1px; */
 }
 
 .view-tab-layout-content{
     display: flex;
-    padding: 2px 0;
+    padding: 2px 2px;
     width: 100%;
 }
 
 .figure-tab-view-layout{
     position: relative;
-    min-width: 8px;
+    height: 15px; 
+    width: 20px;
     place-items:center;
 }
 
@@ -240,6 +242,7 @@
     display: flex;
     width: 80px;
     align-items: center;
+    vertical-align: top;
     text-align: left;
     color: white;
     font-size: 10px;
@@ -252,7 +255,7 @@
     color: white;
     font-weight: normal;
     text-align: center;
-    padding-top: 4px;
+    padding-top: 3px;
     margin-bottom: 4px;
 }
 /*+++++++++++++++++++++++++++++++++++++++++ Layout Control Ended+++++++++++++++++++++++++++++++++++++++++*/
@@ -260,7 +263,7 @@
 .view-tab-current-view-container{
     display: flex;
     width: 100%;
-    height: 80px;
+    height: 84px;
     background-color: #191919;
     border-bottom: 1px solid #2d2d2d;
     border-top: 1px solid #2d2d2d;
@@ -763,7 +766,11 @@ ul, #myUL {
     /* display: none; */
 }
 
-ol{
+
+/*****************************icon view and layout Started*****************************/
+
+/*-------------------------Icon Size View Start -------------------------------*/
+.ol-icon-size-view{
     /* column-gap: 1px; */
     display: grid;
     grid-auto-flow: row;
@@ -776,7 +783,7 @@ ol{
 }
 
 
-li{
+.li-icon-size-view{
     display: flex;
     justify-content: center;
     padding: 2px;
@@ -785,7 +792,7 @@ li{
 }
 
 
-figure{
+.figure-icon-size-view{
     display: flex;
     flex-direction: column;
     margin-bottom: -2px;
@@ -793,7 +800,7 @@ figure{
 }
 
 
-figcaption{
+.figcaption-icon-size-view{
     -webkit-box-orient: vertical;
     color: white;
     display: -webkit-box;
@@ -808,26 +815,49 @@ figcaption{
     word-break: break-all;
 }
 
-img{
+.img-icon-size-view{
     height: 45px; 
     width: 45px;
 }
 
-button{
+.button-icon-size-view{
     background-color: transparent;
     width: 90px;
     height: 70px; 
 }
 
-/*-------------------------List View-------------------------------*/
+/*-------------------------Icon Size View Start -------------------------------*/
+
+/*-------------------------List View Start-------------------------------*/
+
+.ol-list-view{
+    display: grid;
+    grid-auto-flow: column !important;
+    grid-template-columns:  repeat(auto-fill,250px) !important;
+    grid-template-rows: repeat(auto-fill,20px) !important;
+    height: calc(100% - 40px);
+    width: 100%;
+    padding: 5px 0;
+    row-gap: 20px !important;
+    column-gap: 2px !important;
+}
+
+.li-list-view{
+    display: flex;
+    justify-content: left;
+    padding: 2px;
+    padding-left:15px;
+    height: min-content;
+    z-index: 1;
+}
 
 .span-list-view{
     display: flex;
 }
 
 .figure-list-view{
+    display: flex;
     position: relative;
-    min-width: 8px;
     place-items:center;
 }
 
@@ -844,6 +874,7 @@ button{
     align-items: center;
     text-align: left;
     color: white;
+    padding-left:4px;
     font-size: 12px;
     font-weight:300;
     margin: 0 1px;
@@ -852,18 +883,46 @@ button{
     text-overflow: ellipsis;
 }
 
-/*-------------------------List View-------------------------------*/
+.button-list-view{
+    max-width: 250px;
+    height: 20px; 
+}
+
+/*-------------------------List View End-------------------------------*/
 
 
-/*-------------------------Tiles View-------------------------------*/
+/*-------------------------Tiles View Start-------------------------------*/
+
+.ol-tiles-view{
+    display: grid;
+    grid-auto-flow: column !important;
+    grid-template-columns:  repeat(auto-fill,250px) !important;
+    grid-template-rows: repeat(auto-fill,50px) !important;
+    height: calc(100% - 40px);
+    width: 100%;
+    padding: 2px 0;
+    row-gap: 0px !important;
+    column-gap: 10px !important;
+}
+
+.li-tiles-view{
+    display: flex;
+    justify-content: left;
+    padding: 2px;
+    padding-left:15px;
+    height: min-content;
+    z-index: 1;
+}
+
 
 .span-tiles-view{
     display: flex;
 }
 
 .figure-tiles-view{
+    display: flex;
     position: relative;
-    width: 45px;
+    /* width: 45px; */
     place-items:center;
 }
 
@@ -907,9 +966,14 @@ button{
     line-height: 13px;
     padding: 1px 0;
 }
-/*-------------------------Tiles View-------------------------------*/
 
-/*-------------------------Content View-------------------------------*/
+.button-tiles-view{
+    width: 250px;
+    height: 45px; 
+}
+/*-------------------------Tiles View End-------------------------------*/
+
+/*-------------------------Content View Start-------------------------------*/
 
 .span-content-view{
     display: flex;
@@ -922,8 +986,8 @@ button{
 }
 
 .img-content-view{
-    height: 34px; 
-    width: 34px;
+    height: 35px; 
+    width: 35px;
     margin: 0 1px;
 }
 
@@ -943,16 +1007,17 @@ button{
 }
 
 .line-container {
-    height: 0.5px;
+    height: 0.3px;
     background-color: #202020;
-    padding: 2px 0;
+    /* padding: 2px 0; */
 }
 
 .line {
-    border: 0.5px solid white;
+    border: 0.2px solid white;
 }
-/*-------------------------Content View-------------------------------*/
+/*-------------------------Content View End-------------------------------*/
 
+/*****************************icon view and layout Started*****************************/
 
 /*00000000000000000000000000000000 Context Menu Started 000000000000000000000000 */
 
