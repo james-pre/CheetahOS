@@ -317,9 +317,17 @@
                                         <img class="img-list-view" [src]="file.getIconPath | safeResourceUrl" [alt]="file.getFileName"  [style]="iconSizeStyle"/>
                                     </figure>
 
-                                    <figcaption class="figcaption-tiles-view" id="figCap-{{this.processId}}-{{i}}">
+                                    <figcaption *ngIf="!file.getIsFile, else elseBlock" class="figcaption-tiles-view" id="figCap-{{this.processId}}-{{i}}">
                                         {{file.getFileName}}
                                     </figcaption>
+                                    <ng-template #elseBlock>
+                                        <div class="figcaption-title-view-cntnr">
+                                                <span class="span-figcaption-tiles-view">{{file.getFileName}}</span>
+                                                <span class="span-figcaption-tiles-view">{{file.getFileType}}</span>
+                                                <span class="span-figcaption-tiles-view">{{file.getSize1}} {{file.getFileSizeUnit}}</span>
+                                        </div>
+                                    </ng-template>
+
                                     <div class="rename-textbox"  id="renameContainer-{{this.processId}}-{{i}}">
                                         <form [formGroup]="renameForm"  (ngSubmit)="isFormDirty()">
                                             <input type="text" formControlName="renameInput"  (keypress)="onKeyPress($event)" autofocus spellcheck="false" id="renameTxtBox-{{this.processId}}-{{i}}"/>

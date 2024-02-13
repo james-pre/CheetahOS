@@ -925,6 +925,35 @@ button{
     text-overflow: ellipsis;
 }
 
+.figcaption-title-view-cntnr{
+    /* margin-top: 0px; */
+    width: 100%;
+    height: 45px;
+    padding-left: 3px;
+    /* border: 1px solid #2d2d2d; */
+}
+
+.span-figcaption-tiles-view{
+    align-items: center;
+    text-align: left;
+    color: white;
+    font-size: 12px;
+    font-weight:300;
+    margin: 0 1px;
+    text-shadow:0 0 1px rgba(0, 0, 0, 75%),
+    0 0 2px rgba(0, 0, 0, 50%),
+    0 0 3px rgba(0, 0, 0, 25%),
+
+    0 1px 1px rgba(0, 0, 0, 75%),
+    0 1px 2px rgba(0, 0, 0, 50%),
+    0 1px 3px rgba(0, 0, 0, 25%),
+    
+    0 2px 1px rgba(0, 0, 0, 75%),
+    0 2px 2px rgba(0, 0, 0, 50%),
+    0 2px 3px rgba(0, 0, 0, 25%);
+    line-height: 13px;
+    padding: 1px 0;
+}
 /*-------------------------Tiles View-------------------------------*/
 
 

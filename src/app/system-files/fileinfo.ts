@@ -7,6 +7,8 @@ export class FileInfo{
     private _opensWith:string;
     private _dateModified:Date;
     private _size:number;
+    private _isFile:boolean;
+    private _fileSizeUnit:string;
 
 
     constructor(){
@@ -18,6 +20,8 @@ export class FileInfo{
         this._opensWith = '';
         this._dateModified = new Date('1990-01-01');
         this._size = 0;
+        this._isFile = true;
+        this._fileSizeUnit = 'B';
     }
 
     get getIconPath(){
@@ -77,7 +81,49 @@ export class FileInfo{
     get getSize(){
         return this._size;
     }
+
+    get getSize1(){
+        let  tmpSize = 0
+
+        if(this._size >= 0 && this._size <= 999){
+            tmpSize = this._size;
+        }
+
+        if(this._size >= 1000 && this._size <= 999999){
+            tmpSize= Math.round((this._size/1000) * 100) /100;
+        }
+
+        if(this._size >= 1000000 && this._size <= 999999999){
+            tmpSize = Math.round((this._size/1000000) * 100) / 100;
+        }
+
+        return tmpSize;
+    }
     set setSize(size:number){
         this._size = size;
+    }
+
+    get getIsFile(){
+        return this._isFile;
+    }
+    set setIsFile(isFile:boolean){
+        this._isFile = isFile;
+    }
+
+    get getFileSizeUnit(){
+
+        if( this._size >= 0 && this._size <= 999){
+            this._fileSizeUnit = 'B';
+        }
+
+        if( this._size >= 1000 && this._size <= 999999){
+            this._fileSizeUnit = 'KB';
+        }
+
+        if( this._size >= 1000000 && this._size <= 999999999){
+            this._fileSizeUnit = 'MB';
+        }
+
+        return this._fileSizeUnit;
     }
 }

@@ -88,6 +88,7 @@ export class FileService{
             this._fileInfo.setFileType = sc.getFileType;
             this._fileInfo.setFileName = sc.geFileName;
             this._fileInfo.setOpensWith = sc.getOpensWith;
+            this._fileInfo.setIsFile = false;
         }
         else{
 

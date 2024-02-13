@@ -293,6 +293,8 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     }
   }
 
+  
+
   setNavButtonsColor():void{
     this.prevNavBtnStyle ={
       'fill': '#ccc'
