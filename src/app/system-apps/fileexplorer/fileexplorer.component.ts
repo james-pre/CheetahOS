@@ -259,6 +259,18 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
         'padding-left':'15px'
       }
     }
+
+    if(iconSize === this.contentView){
+      this.btnStyle = {
+        'width': '100%', 
+        'height': '34px'
+      }
+
+      this.liStyle = {
+        'justify-content': 'left',
+        'padding-left':'15px'
+      }
+    }
   }
 
   changeOrderedlistStyle(iconView:string):void{
@@ -291,9 +303,22 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
       olStyleElement.style.padding = '2px 0';
       olStyleElement.style.gridAutoFlow = 'column';       
     }
+
+    if(iconView == this.contentView){
+
+      const rect =  this.fileExplorerContainer.nativeElement.getBoundingClientRect();
+
+      console.log('rect:',rect);
+      olStyleElement.style.gridTemplateColumns = `repeat(auto-fill, minmax(50px, ${rect.width}px)`;
+      olStyleElement.style.gridTemplateRows = 'repeat(auto-fill, 40px)';
+      olStyleElement.style.columnGap = '0px';
+      olStyleElement.style.rowGap = '0px';
+      olStyleElement.style.padding = '0px';
+      olStyleElement.style.gridAutoFlow = 'row';       
+    }
   }
 
-  
+
 
   setNavButtonsColor():void{
     this.prevNavBtnStyle ={
