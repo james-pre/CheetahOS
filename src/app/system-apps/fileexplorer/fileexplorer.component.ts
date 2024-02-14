@@ -169,7 +169,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
       btnElement.style.margin = '-0.5px';
     }
 
-    if(iconView == this.smallIconsView || iconView == this.mediumIconsView ||iconView == this.largeIconsView || iconView == this.extraLargeIconsView ){
+    if(iconView == this.smallIconsView || iconView == this.mediumIconsView ||iconView == this.largeIconsView || iconView == this.extraLargeIconsView){
       this.viewOptions = iconView;
       this.changeLayoutCss(this.viewOptions);
       this.changeOrderedlistStyle(iconView);
@@ -179,6 +179,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     if(iconView == this.listView || iconView == this.detailsView || iconView == this.tilesView || iconView == this.contentView){
       this.viewOptions = iconView;
       this.changeLayoutCss(this.viewOptions);
+      this.changeOrderedlistStyle(iconView);
     }
   }
 
@@ -241,20 +242,30 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     }
   }
 
-  changeOrderedlistStyle(iconSize:string):void{
+  changeOrderedlistStyle(iconView:string):void{
     const icon_sizes:string[] = [this.smallIconsView,this.mediumIconsView,this.largeIconsView,this.extraLargeIconsView];
     const btn_width_height_sizes = [['90px', '70px'], ['110px', '90px']];
-    const iconIdx = icon_sizes.indexOf(iconSize);
+    const iconIdx = icon_sizes.indexOf(iconView);
     const btnIdx = (iconIdx <= 2) ? 0 : 1;
     
     const olElmnt = document.getElementById(`olElmnt-${this.processId}`) as HTMLElement;
-    if(olElmnt){
-      olElmnt.style.gridTemplateColumns = `repeat(auto-fill,${btn_width_height_sizes[btnIdx][0]})`;
-      olElmnt.style.gridTemplateRows = `repeat(auto-fill,${btn_width_height_sizes[btnIdx][1]})`;
-      olElmnt.style.rowGap = '20px';
-      olElmnt.style.columnGap = '0px';
-      olElmnt.style.padding = '5px 0';
-      olElmnt.style.gridAutoFlow = 'row';
+
+    if(iconView == this.smallIconsView || iconView == this.mediumIconsView ||iconView == this.largeIconsView || iconView == this.extraLargeIconsView){
+      if(olElmnt){
+        olElmnt.style.gridTemplateColumns = `repeat(auto-fill,${btn_width_height_sizes[btnIdx][0]})`;
+        olElmnt.style.gridTemplateRows = `repeat(auto-fill,${btn_width_height_sizes[btnIdx][1]})`;
+        olElmnt.style.rowGap = '20px';
+        olElmnt.style.columnGap = '0px';
+        olElmnt.style.padding = '5px 0';
+        olElmnt.style.gridAutoFlow = 'row';
+      }
+    }else if(iconView == this.contentView){
+
+      const rect =  this.fileExplorerContainer.nativeElement.getBoundingClientRect();
+      if(olElmnt){
+        olElmnt.style.gridTemplateColumns = `repeat(auto-fill, minmax(50px, ${rect.width}px)`;
+        olElmnt.style.gridTemplateRows = 'repeat(auto-fill, 43px)'; 
+      }
     }
   }
 
@@ -591,23 +602,23 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
   onShowIconContextMenu(evt:MouseEvent, file:FileInfo, id:number):void{
 
-    const rect =  this.fileExplorerContainer.nativeElement.getBoundingClientRect();
-    const x = evt.clientX - rect.left;
-    const y = evt.clientY - rect.top;
+    // const rect =  this.fileExplorerContainer.nativeElement.getBoundingClientRect();
+    // const x = evt.clientX - rect.left;
+    // const y = evt.clientY - rect.top;
     
-    this.selectedElementId = id;
-    this._runningProcessService.responseToEventCount++;
-    this.selectedFile = file;
-    this.isHighlighIconDueToPriorActionActive = false;
+    // this.selectedElementId = id;
+    // this._runningProcessService.responseToEventCount++;
+    // this.selectedFile = file;
+    // this.isHighlighIconDueToPriorActionActive = false;
 
-    this.fxIconCntxtMenuStyle = {
-      'width': '205px', 
-      'transform':`translate(${String(x)}px, ${String(y)}px)`,
-      'z-index': 2,
-      'opacity':1
-    }
+    // this.fxIconCntxtMenuStyle = {
+    //   'width': '205px', 
+    //   'transform':`translate(${String(x)}px, ${String(y)}px)`,
+    //   'z-index': 2,
+    //   'opacity':1
+    // }
 
-    evt.preventDefault();
+    // evt.preventDefault();
   }
 
   onHideIconContextMenu():void{
