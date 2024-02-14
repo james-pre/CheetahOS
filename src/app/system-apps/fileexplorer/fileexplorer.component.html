@@ -317,20 +317,25 @@
                                         <img class="img-content-view" [src]="file.getIconPath | safeResourceUrl" [alt]="file.getFileName"  id="figCapElmnt-{{this.processId}}-{{i}}"/>
                                     </figure>
 
-                                    <figcaption class="figcaption-content-view" id="figCap-{{this.processId}}-{{i}}">
+                                    <!-- <figcaption class="figcaption-content-view" id="figCap-{{this.processId}}-{{i}}">
                                         {{file.getFileName}}
-                                    </figcaption>
-                                    
-                                    <!-- <span class="span-content-view">
+                                    </figcaption> -->
+
+                                    <div class="div-content-view">
                                         <figcaption class="figcaption-content-view" id="figCap-{{this.processId}}-{{i}}">
                                             {{file.getFileName}}
                                         </figcaption>
 
-                                        <div class="div-extra-info-cntnr">
-                                            <div class="div-extra-info-content"> Date modified: {{file.getDateModifiedUS}} </div>
-                                            <div class="div-extra-info-content">{{file.getSize1}} {{file.getFileSizeUnit}} </div>
+                                        <div class="div-extra-info-cntnr" *ngIf="!file.getIsFile, else elseBlock">
+                                            <div class="div-extra-info-content">Date modified: {{file.getDateModifiedUS}} </div>
                                         </div>
-                                    </span> -->
+                                        <ng-template #elseBlock>
+                                            <div class="div-extra-info-cntnr">
+                                                <div class="div-extra-info-content">Date modified: {{file.getDateModifiedUS}} </div>
+                                                <div class="div-extra-info-content">{{file.getSize1}} {{file.getFileSizeUnit}} </div>
+                                            </div>
+                                        </ng-template>
+                                    </div>
    
 
                                     <div class="rename-textbox"  id="renameContainer-{{this.processId}}-{{i}}">
