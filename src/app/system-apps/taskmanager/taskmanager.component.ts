@@ -27,7 +27,8 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   // @ViewChild('diskId',{ static: true }) diskId!: ElementRef;
   // @ViewChild('networkId',{ static: true }) networkId!: ElementRef;
 
-  @ViewChild('tableId') tableId!: ElementRef;
+  @ViewChild('tskMgrTable') tskMgrTable!: ElementRef;
+
 
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
@@ -74,6 +75,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   groupedData: any = {};
   selectedRefreshRate = 0;
 
+  cntxtMenuStyle:Record<string, unknown> = {};
   thStyle:Record<string,unknown> = {};
   thStyle1:Record<string,unknown> = {};
   thStyle2:Record<string,unknown> = {};
@@ -84,7 +86,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
   selectedRow = -1;
   showDDList = false;
-  showHeaderList = false;
+
   cpuUtil = 0;
   memUtil = 0;
   diskUtil = 0;
@@ -131,7 +133,9 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
   ngAfterViewInit(): void {
 
-    // const table = this.tableId.nativeElement as HTMLCollection;
+    this.hideContextMenu();
+
+    // const table = this.tskMgrTable.nativeElement as HTMLCollection;
     // new ResizableTableColumns(table, null); table column resize is acting.....not right.
 
     this.applyDefaultColumnStyle();
@@ -141,8 +145,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       this.sortTable(this._sorting.column, false);
     });
 
-    this._chnageTaskmgrRefreshIntervalSub 
-    .pipe(
+    this._chnageTaskmgrRefreshIntervalSub.pipe(
       switchMap( newRefreshRate => {
         //un-sub from current interval
         this._taskmgrRefreshIntervalSub?.unsubscribe();   
@@ -166,15 +169,20 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
   setTaskMangrWindowToFocus(pid: number):void {
     this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
-    this.showHeaderList? this.showHeaderList = !this.showHeaderList : this.showHeaderList;
+    this.hideContextMenu();
   }
 
   closeHeaderList():void{
-    this.showHeaderList? this.showHeaderList = !this.showHeaderList : this.showHeaderList;
+    this.hideContextMenu();
   }
 
   updateRunningProcess():void{
     this.processes = this._runningProcessService.getProcesses();
+
+    setTimeout(()=>{
+      this.applyDefaultColumnStyle();
+    }, 10);
+ 
   }
 
   refreshRate(refreshRate:number):void{
@@ -308,15 +316,35 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     this.showDDList = ! this.showDDList;
   }
 
-  showTableHeaderList(evt:MouseEvent):void{
+
+
+  showContextMenu(evt:MouseEvent):void{
+
+    const rect =  this.tskMgrTable.nativeElement.getBoundingClientRect();
+    const x = evt.clientX - rect.left;
+    const y = evt.clientY - rect.top;
+
+    this.cntxtMenuStyle = {
+      'width': '180px', 
+      'transform':`translate(${x}px, ${y - 65}px)`,
+      'z-index': 2,
+      'opacity':1
+    }
+
     this._runningProcessService.responseToEventCount++;
-
-    const evtRespCount = this._runningProcessService.responseToEventCount;
-
-    console.log('evtRespCount-tskMgr:',evtRespCount);
-
-    this.showHeaderList = !this.showHeaderList;
+    // const evtRespCount = this._runningProcessService.responseToEventCount;
+    // console.log('evtRespCount-tskMgr:',evtRespCount);
     evt.preventDefault();
+  }
+
+  hideContextMenu():void{
+    this.cntxtMenuStyle = {
+      'width': '0px', 
+      'height': '0px', 
+      'transform': 'translate(-100000px, 100000px)',
+      'z-index': -1,
+      'opacity':0
+    }
   }
 
   generateLies():void{
@@ -395,8 +423,8 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   }
 
   getRandomFloatingNums(min:number, max:number):number{
-    min = Math.ceil(min);
-    max = Math.floor(max);
+    min = Math.floor(min);
+    max = Math.ceil(max);
     return Math.floor(Math.random() * (max - min) + 10) / 10;
   }
 
@@ -460,13 +488,13 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   }
 
   onProcessSelected(rowIndex:number, processId:number):void{
-   this.selectedRow = rowIndex;
-   this.processIdToClose = processId;
-   
-   if(this.selectedRow != -1){
-    this.isActive = true;
-    this.isFocus = true;
-   }
+    this.selectedRow = rowIndex;
+    this.processIdToClose = processId;
+    
+    if(this.selectedRow != -1){
+      this.isActive = true;
+      this.isFocus = true;
+    }
   }
 
   toggleColumnVisibility(column: string) {
@@ -492,7 +520,6 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       this.powerColumnVisible = !this.powerColumnVisible;
     }
  
-    this.showHeaderList = !this.showHeaderList;
     this.applyColumnStyles(column);
   }
 
@@ -506,7 +533,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   }
 
   applyColumnStyles(column: string) {
-    const table = this.tableId.nativeElement;
+    const table = this.tskMgrTable.nativeElement;
     const tableColumns: string[] = [TableColumns.NAME,TableColumns.TYPE,TableColumns.STATUS,TableColumns.PID,TableColumns.PROCESS_NAME,
                                     TableColumns.CPU,TableColumns.MEMORY,TableColumns.DISK,TableColumns.NETWORK,TableColumns.GPU,TableColumns.POWER_USAGE];
     

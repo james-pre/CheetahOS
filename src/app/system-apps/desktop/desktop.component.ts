@@ -134,7 +134,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     /**
      * There is a doubling of responses to certain events that exist on the 
      * desktop compoonent and any other component running at the time the event was triggered.
-     * The desktop will always repond to the event, but other components will only respond when they are in focus.
+     * The desktop will always respond to the event, but other components will only respond when they are in focus.
      * If there is a count of 2 or more(highly unlikely) reponses for a given event, then, ignore the desktop's response
      */
     // if(evtRespCount > this._runningProcessService.MAX_RESPONSE_TO_EVENT){
