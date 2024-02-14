@@ -996,6 +996,7 @@ ul, #myUL {
 
 .span-content-view{
     display: flex;
+    padding: 2px 2px;
 }
 
 .figure-content-view{
@@ -1014,7 +1015,7 @@ ul, #myUL {
 .figcaption-content-view{
     display: flex;
     position: relative;
-    width: 100%;
+    width: 75%;
     align-items: center;
     text-align: left;
     color: white;
@@ -1024,6 +1025,21 @@ ul, #myUL {
     top: -8px;
     line-height: 13px;
     text-overflow: ellipsis;
+}
+
+.div-extra-info-cntnr{
+    position: relative;
+    width: 25%;
+    right: 0px;
+}
+
+.div-extra-info-content{
+    width: 220px;
+    text-align: left;
+    color: white;
+    font-size: 11px;
+    font-weight:200;
+    text-overflow: clip;
 }
 
 .button-content-view{

@@ -62,14 +62,11 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   directory ='/osdrive/';
   displayName = 'File Explorer';
   
-
   files:FileInfo[] = [];
   prevPathEntries:string[] = [];
   nextPathEntries:string[] = [];
   recentPathEntries:string[] = [];
   upPathEntries:string[] = ['/osdrive/Desktop'];
-
-
 
   isPrevBtnActive = false;
   isNextBtnActive = false;
@@ -204,7 +201,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     const cssLayoutOptions:string[] = ['icon-view','list-view', 'details-view', 'tiles-view','content-view']
     const layoutIdx = layoutOptions.indexOf(iconSize)
 
-    if(layoutIdx > 0 && layoutIdx <= 3){
+    if(layoutIdx <= 3){
       this.olClassName = 'ol-icon-size-view';
     }
     else if (layoutIdx >= 4){

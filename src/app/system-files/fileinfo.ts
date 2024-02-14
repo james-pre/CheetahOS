@@ -69,6 +69,10 @@ export class FileInfo{
     get getDateModified(){
         return this._dateModified;
     }
+
+    get getDateModifiedUS(){
+        return this._dateModified.toLocaleString("en-US");
+    }
     set setDateModified(dateModified:any){
 
         if(typeof dateModified === "string")
