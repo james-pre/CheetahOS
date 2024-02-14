@@ -36,7 +36,7 @@
     background-color: #080404;
 }
 
-.tab {
+.fileexp-tab {
     /* flex: 1; */
     width: 40px;
     padding: 4px 8px;
@@ -50,13 +50,13 @@
     transition: background-color 0.3s;
 }
 
-.tab.highlight-default {
+.fileexp-tab.highlight-default {
     margin: 0px 0px;
     background-color: #0464ac;
     color: white;
 }
 
-.tab.active {
+.fileexp-tab.active {
     border:0.3px solid #2d2d2d;
     border-bottom: none;
     background-color: #202020;
@@ -69,11 +69,11 @@
     /* border-bottom: 0.3px solid #9d9d9d; */
 }
 
-.tab-pane {
+.fileexp-tab-pane {
     display: none;
 }
 
-.tab-pane.active {
+.fileexp-tab-pane.active {
     display: flex;
 }
   
