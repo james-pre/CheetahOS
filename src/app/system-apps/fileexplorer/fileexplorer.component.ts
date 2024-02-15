@@ -618,6 +618,10 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     // evt.preventDefault();
   }
 
+  setFileExplorerWindowToFocus(pid: number):void {
+      this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
+  }
+
   onHideIconContextMenu():void{
     this.fxIconCntxtMenuStyle = {
       'width': '0px', 
