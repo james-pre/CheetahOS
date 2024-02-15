@@ -12,12 +12,36 @@
         </div> 
     </div>
     <div class="tskmgr-nav-btn">
-      
       <span class="tskmgr-btn-span">Options</span>
     </div>
+
     <div class="tskmgr-nav-btn">
-      
       <span class="tskmgr-btn-span">View</span>
+        <div class="tskmgr-nav-menu-cntnr1">
+            <div class="tskmgr-nav-menu-item">
+              <span class="tskmgr-item-span" (click)="generateLies()">Refresh now</span>
+            </div>
+            <div class="tskmgr-nav-menu-item" (click)="onExitBtnClick()">
+              <span class="tskmgr-item-span">Update speed</span>
+              <div class="tskmgr-nav-div" >
+                <figure class="tskmgr-nav-figure"><img class="tskmgr-nav-img" [src]="'osdrive/icons/arrow_next.png'"/></figure>
+              </div>
+              <div class="tskmgr-nav-sub-menu-cntnr">
+                <div class="tskmgr-nav-menu-item">
+                  <span class="tskmgr-item-span">High</span>
+                </div>
+                <div class="tskmgr-nav-menu-item">
+                  <span class="tskmgr-item-span">Normal</span>
+                </div>
+                <div class="tskmgr-nav-menu-item">
+                  <span class="tskmgr-item-span">Low</span>
+                </div>
+                <div class="tskmgr-nav-menu-item">
+                  <span class="tskmgr-item-span">Paused</span>
+                </div>
+              </div>
+            </div>
+        </div> 
     </div>
   </div>
 
@@ -204,7 +228,7 @@
                   </thead>
                   <tbody>
                     <tr *ngFor='let process of processes; let i = index'(click)="onProcessSelected(i,process.getProcessId)" [class.active]="i === selectedRow"  id="trElmnt-{{this.processId}}-{{i}}">
-                        <td style="width:35%; padding-left:16px;"  >
+                        <td style="width:35%; padding-left:16px;" >
                             <figure> 
                                 <img [src]="process.getIcon">
                                 <figcaption>{{ process.getProcessName}}</figcaption>
@@ -212,8 +236,8 @@
                         </td>
                         <td >{{ process.getType}}</td>
                         <td>
-                            <figure  *ngIf = 'process.getProcessStatus === "Suspended"' > 
-                                <figcaption>{{ process.getProcessStatus}}</figcaption>
+                            <figure  *ngIf = 'process.getProcessStatus === "Suspended"' style="top: -1px; position: relative;"> 
+                                <figcaption style="font-size:12px; ">{{ process.getProcessStatus}}</figcaption>
                                 <img [src]="'osdrive/icons/econo.png'">
                             </figure>
                         </td>

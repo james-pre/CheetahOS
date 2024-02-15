@@ -178,6 +178,10 @@ tbody{
 .table tr:hover {
   background-color: #e8f4fc;
 }
+
+.table tr.active td {
+  background-color:#d0ecfc !important;
+}
   
 figure{
   align-items: center;
@@ -321,6 +325,8 @@ img{
 }
 
 
+/*-------------------------------------Navigation Menu Start-----------------------------------*/
+
 .tskmgr-nav-btn-cntnr {
   background-color: #ffffff;
   display:flex; 
@@ -334,30 +340,36 @@ img{
   height: 20px;
 }
 
+.tskmgr-btn-span{
+  position: relative;
+  font-size: 12px;
+  font-weight: normal;
+  text-align: left;
+  top: 14%;
+}
+
 .tskmgr-nav-btn:hover{
   background-color: #98ccf4;
   border-color:#8cc8f6 ;
 }
 
-.tskmgr-nav-btn:hover .tskmgr-nav-menu-cntnr{
-  display: block;
-}
 
-.tskmgr-btn-span{
-  position: relative;
-  font-size: 13px;
-  font-weight: normal;
-  text-align: left;
-  top: 10%;
-}
-
-.tskmgr-nav-menu-cntnr{
+.tskmgr-nav-menu-cntnr, .tskmgr-nav-menu-cntnr1{
   display:none; 
   position:absolute;
   background-color: #ffffff;
   padding: 3px;
   box-shadow: 2px 2px rgba(0,0,0,0.3);
+}
+
+.tskmgr-nav-btn:hover .tskmgr-nav-menu-cntnr{
+  display: block;
   left: 2px;
+  top: 20px;
+}
+.tskmgr-nav-btn:hover .tskmgr-nav-menu-cntnr1{
+  display: block;
+  left: 85px;
   top: 20px;
 }
 
@@ -370,25 +382,87 @@ img{
   padding: 4px 0;
 }
 
+.tskmgr-nav-sub-menu-cntnr{
+  display:none; 
+  position:absolute;
+  background-color: #ffffff;
+  padding: 3px;
+  box-shadow: 2px 2px rgba(0,0,0,0.3);
+  left: 95%;
+  top: -2px;
+}
+
 .tskmgr-nav-menu-item:hover{
   background-color: #8cc8f6;
+}
+
+.tskmgr-nav-menu-item:hover .tskmgr-nav-sub-menu-cntnr{
+  display: block;
 }
 
 .tskmgr-item-span{
   position: relative;
   padding-left: 20px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: normal;
   text-align: left;
   top: 10%;
 }
 
-
-
-.table tr.active td {
-  background-color:#d0ecfc !important;
+.tskmgr-nav-span{
+  display: block;
 }
 
+.tskmgr-nav-span.head{
+  max-width: 25%;
+  padding-left: 4px;
+}
+
+.tskmgr-nav-span.head.active{
+  max-width: 25%;
+  padding-left: 4px;
+  background-color: #98ccf4;
+}
+
+.tskmgr-nav-span.mid{
+  min-width: 70%;
+  padding: 0 4px;
+  color: black; /* Black text color */
+  text-align: left;
+  font-size: 12px;
+  font-weight: normal;
+}
+
+.tskmgr-nav-span.tail{
+  padding-left: 22px;
+}
+
+.tskmgr-nav-div{
+  padding-left: 22px;
+  height: 14px;
+}
+
+.tskmgr-nav-figure{
+  position: relative;
+  align-items: center;
+  place-content: center;
+  display: inline-flex;
+  width: 12px;
+  height: 12px;
+  top: -2px;
+}
+
+.tskmgr-nav-img{
+  height: 12px;
+  width: 12px;
+  image-rendering:optimizeQuality;
+  position: relative;
+}
+
+/*-------------------------------------Navigation Menu End-----------------------------------*/
+
+
+/*-------------------------------------Column Header Context Menu Start-----------------------------------*/
 .tskmgr-vertical-menu {
   position: absolute;
   width: 180px;
@@ -403,14 +477,12 @@ img{
   display: inline-flex;
   width: 100%;
   z-index: 2;
- /*  transition: background-color 0.3s ease; Add a transition for background-color */
 }
 
 .tskmgr-vertical-menu-item:hover {
-  background-color: #98ccf4; /* Dark grey background on mouse-over */
-  text-decoration: none; /* Remove underline from links */
+  background-color: #98ccf4; 
+  text-decoration: none;
 }
-
 
 .tskmgr-span{
   display: block;
@@ -457,3 +529,5 @@ img{
   top: 0;
   left: 15%;
 }
+
+/*-------------------------------------Column Header Context Menu End-----------------------------------*/
