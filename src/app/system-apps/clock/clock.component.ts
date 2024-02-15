@@ -16,10 +16,11 @@ export class ClockComponent implements AfterViewInit,OnDestroy {
   private _processIdService;
   private _runningProcessService;
   private _taskBarClock:Clock;
-  private _currrentDate!:string;
   private _timerSubscription!:Subscription;
+  private _dateSubscription!:Subscription;
   
-  subscribeClock!:string;
+  subscribeTime!:string;
+  subscribeDate!:string;
 
   hasWindow = false;
   hover = false;
@@ -37,23 +38,31 @@ export class ClockComponent implements AfterViewInit,OnDestroy {
 
     const dateTime = new Date();
     this._taskBarClock = new Clock(dateTime.getSeconds(),dateTime.getMinutes(),dateTime.getHours());
-    this._currrentDate = `${dateTime.getMonth()}/${this.padSingleDigits(dateTime.getDay())}/${dateTime.getFullYear()}`;
   }
 
 
   ngAfterViewInit():void {
     this.oberserableTimer();
+    this.oberserableDate();
   }
 
   ngOnDestroy():void {
     this._timerSubscription?.unsubscribe();
+    this._dateSubscription?.unsubscribe();
   }
 
   private oberserableTimer():void{
-    this._timerSubscription = timer(1000, 1000).subscribe(() => {
-    
-      this._taskBarClock.tick()
-      this.subscribeClock = `${this._taskBarClock.getHourStyle('12hr')}:${this.padSingleDigits(this._taskBarClock.getMinutes)} ${this._taskBarClock.getMeridian}`
+    this._timerSubscription = timer(50, 1000).subscribe(() => {
+          this._taskBarClock.tick()
+      this.subscribeTime = `${this._taskBarClock.getHourStyle('12hr')}:${this.padSingleDigits(this._taskBarClock.getMinutes)} ${this._taskBarClock.getMeridian}`;
+    });
+  }
+
+  private oberserableDate():void{
+    this._dateSubscription = timer(50, 36000).subscribe(() => {
+       console.log('you seeing this shit?!')
+      const dateTime = new Date();  
+      this.subscribeDate = `${dateTime.getMonth()}/${this.padSingleDigits(dateTime.getDay())}/${dateTime.getFullYear()}`;
     });
   }
 

@@ -392,26 +392,6 @@ li:hover {
   background-color:#d0ecfc !important;
 }
 
-
-.vertical-menu {
-  width:25%;
-  position: absolute;
-  z-index:2;
-  box-shadow: 2px 2px rgba(0,0,0,0.3);
-  left:60px;
-  top: 124px;
-}
-
-.vertical-menu a {
-  background-color: #f2f2f2; /* Grey background color */
-  color: #000; /* Black text color */
-  display: block; /* Make the links appear below each other */
-  padding: 6px; /* Add some padding */
-  text-decoration: none; /* Remove underline from links */
-  z-index:2;
-}
-
-
 .tskmgr-vertical-menu {
   position: absolute;
   width: 180px;
@@ -479,30 +459,4 @@ li:hover {
   min-width: 18px;
   top: 0;
   left: 15%;
-}
-
-
-.vertical-menu a:hover {
-  background-color: #98ccf4; /* Dark grey background on mouse-over */
-  text-decoration: none; /* Remove underline from links */
-}
-
-.vertical-menu a.active {
-  background-color: #e8f4fc; /* Add a green color to the "active/current" link */
-  color: #000;
-}
-
-input[type=checkbox] {
-  visibility: hidden;
-}
-
-.checkBox {
-  width: 19px;
-  height: 19px;
-}
-
-.checkBox.active {
-  width: 19px;
-  height: 19px;
-  background-color: #98ccf4;
 }
