@@ -272,7 +272,8 @@ img{
 }
 
 .basediv{
-  display:block;
+  display:flex;
+  height: 56px;
   font-size: small;
   font-weight: lighter;
   border-top: 1px solid #ccc; /* Cell border */
