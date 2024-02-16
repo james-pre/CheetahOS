@@ -137,12 +137,14 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
      * The desktop will always respond to the event, but other components will only respond when they are in focus.
      * If there is a count of 2 or more(highly unlikely) reponses for a given event, then, ignore the desktop's response
      */
+
     // if(evtRespCount > this._runningProcessService.MAX_RESPONSE_TO_EVENT){
     //   this._runningProcessService.responseToEventCount = 0
     //   return;
     // }
 
     // this.cntxtMenuStyle = {
+    //   'display': 'block', 
     //   'width': '225px', 
     //   'transform':`translate(${String(evt.clientX + 2)}px, ${String(evt.clientY)}px)`,
     //   'z-index': 2,
@@ -154,13 +156,8 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
   hideContextMenu():void{
-    
     this.cntxtMenuStyle = {
-      'width': '0px', 
-      'height': '0px', 
-      'transform': 'translate(-100000px, 100000px)',
-      'z-index': -1,
-      'opacity':0
+      'display': 'none', 
     }
   }
 

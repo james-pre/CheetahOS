@@ -609,6 +609,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     // this.isHighlighIconDueToPriorActionActive = false;
 
     // this.fxIconCntxtMenuStyle = {
+    //   'display': 'block', 
     //   'width': '205px', 
     //   'transform':`translate(${String(x)}px, ${String(y)}px)`,
     //   'z-index': 2,
@@ -624,11 +625,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
   onHideIconContextMenu():void{
     this.fxIconCntxtMenuStyle = {
-      'width': '0px', 
-      'height': '0px', 
-      'transform': 'translate(-100000px, 100000px)',
-      'z-index': -1,
-      'opacity':0,
+      'display': 'none', 
     }
 
     this.hideCntxtMenuEvtCnt++;
