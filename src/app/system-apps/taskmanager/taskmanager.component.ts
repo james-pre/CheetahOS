@@ -8,7 +8,7 @@ import { Process } from 'src/app/system-files/process';
 import { SortingInterface } from './sorting.interface';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 import { FileInfo } from 'src/app/system-files/fileinfo';
-import { RefreshRates, RefreshRatesIntervals, TableColumns } from './taskmanager.enum';
+import { RefreshRates, RefreshRatesIntervals, TableColumns,DisplayViews } from './taskmanager.enum';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 // import { ResizableTableColumns } from '@validide/resizable-table-columns';
 // import { IStore } from 'resizable-options';
@@ -87,9 +87,8 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   selectedRow = -1;
   showBtnNavMenu = false;
 
-  detailedView = 'Detailed View';
-  minView = 'Mini View';
-  viewOptions = this.detailedView;
+  detailedView = DisplayViews.DETAILED_VIEW;
+  viewOptions = '';
 
   cpuUtil = 0;
   memUtil = 0;
@@ -116,7 +115,8 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     this._chnageTaskmgrRefreshIntervalSub = new Subject<number>();
 
     this.refreshRateInterval = RefreshRatesIntervals.NOMRAL;
-    this.selectedRefreshRate = RefreshRates.NORMAL;     
+    this.selectedRefreshRate = RefreshRates.NORMAL;
+    this.viewOptions = this.detailedView; 
   }
 
 
@@ -254,7 +254,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       }
     }else if(column == TableColumns.PID){
       this.thStyle2 = {
-        'background-color': 'rgb(224, 224, 139)'
+        'background-color': '#d0ecfc'
       }
       if(this._currentSortingOrder == 'asc'){
         this.processes = this.processes.sort((objA, objB) => objB.getProcessId - objA.getProcessId);
@@ -263,7 +263,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       }
     }else if(column == TableColumns.NAME){
       this.thStyle = {
-        'background-color': 'rgb(224, 224, 139)'
+        'background-color': '#d0ecfc'
       }
       if(this._currentSortingOrder == 'asc'){
         this.processes = this.processes.sort((objA, objB) => {
@@ -276,7 +276,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       }
     }else if(column == TableColumns.PROCESS_NAME){
       this.thStyle3 = {
-        'background-color': 'rgb(224, 224, 139)'
+        'background-color': '#d0ecfc'
       }
       if(this._currentSortingOrder == 'asc'){
         this.processes = this.processes.sort((objA, objB) => {
@@ -289,7 +289,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       }
     }else if(column == TableColumns.POWER_USAGE){
       this.thStyle4 = {
-        'background-color': 'rgb(224, 224, 139)'
+        'background-color': '#d0ecfc'
       }
       if(this._currentSortingOrder == 'asc'){
         this.processes = this.processes.sort((objA, objB) => {
@@ -302,7 +302,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       }
     }else if(column == TableColumns.TYPE){
       this.thStyle1 = {
-        'background-color': 'rgb(224, 224, 139)'
+        'background-color': '#d0ecfc'
       }
       if(this._currentSortingOrder == 'asc'){
         this.processes = this.processes.sort((objA, objB) => {
@@ -530,11 +530,11 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
     // this._runningProcessService.closeProcessNotify.next(processToClose);
 
-    this.viewOptions = this.minView;
+    this.viewOptions = DisplayViews.MINI_VIEW;
   }
 
   onMoreDetailsBtnClick():void{
-    this.viewOptions = this.detailedView;
+    this.viewOptions = DisplayViews.DETAILED_VIEW;
   }
 
   onExitBtnClick():void{
@@ -725,183 +725,171 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     return {};
   }
 
-  setUtilHeaderSpan2section1Colors(cellValue:number, cellName:string){
-    let baseStyle:Record<string, unknown> = {};
+  setThHeaderContainerColor(cellValue:number, cellName:string){
+    //let baseStyle:Record<string, unknown> = {};
+
     const sortColoumn = this._sorting.column;
-
-      //acceess before it exists. So Angular is angry      
-      // this.cpuId.nativeElement.style.border = (cellValue >= 50)? '1px solid  ##fcc4ac': '';
-      // this.memroyId.nativeElement.style.border = (cellValue >= 50)? '1px solid  ##fcc4ac': '';
-      // this.diskId.nativeElement.style.border = (cellValue >= 50)? '1px solid  ##fcc4ac': '';
-      // this.networkId.nativeElement.style.border = (cellValue >= 50)? '1px solid  ##fcc4ac': '';
-
-      if(cellName == sortColoumn){
-        if(cellValue < 10){
-          return baseStyle= {
-             'height':'50%',
-             'background-color':'rgb(224, 224, 139)'
-           };
-         }else if(cellValue >= 10){
-           return baseStyle = {
-             'height':'50%',
-             'background-color': (cellValue >= 90)?  '##fcc4ac' : 'rgb(224, 224, 139)',
-             'border-left':(cellValue >= 90)? ' ##fcc4ac': '',
-             'border-right':(cellValue >= 90)?' ##fcc4ac': ''
-           };
-         }
-
-      }else{
-        if(cellValue < 10){
-          return baseStyle= {
-             'height':'50%',
-           };
-         }else if(cellValue >= 10){
-           return baseStyle = {
-             'height':'50%',
-             'background-color': (cellValue >= 90)?  '##fcc4ac' : '#ffffff',
-             'border-left':(cellValue >= 90)? ' ##fcc4ac': '',
-             'border-right':(cellValue >= 90)?' ##fcc4ac': ''
-           };
-         }
+    if(cellName == sortColoumn){
+      const thColElmnt =  document.getElementById(`${cellName.toLowerCase()}Div-${this.processId}`) as HTMLElement;  
+      if(cellValue < 10){
+        thColElmnt.style.backgroundColor = '#d0ecfc'
+      }else if(cellValue >= 10){
+        thColElmnt.style.backgroundColor = (cellValue >= 90)?  '#fcc4ac' : '#d0ecfc';
+        thColElmnt.style.borderLeft = (cellValue >= 90)? '#fcc4ac': '';
+        thColElmnt.style.borderRight = (cellValue >= 90)? '#fcc4ac': '';
       }
-    return {};
-  }
+    } 
+    else{
+      const thColElmnt =  document.getElementById(`${cellName.toLowerCase()}Div-${this.processId}`) as HTMLElement;  
 
-  setUtilHeaderSpan2section2Colors(cellValue:number){
-    let baseStyle:Record<string, unknown> = {}
-
-    if(cellValue < 10){
-     return baseStyle= {
-        'padding-left':'22%',
-        'display':'inline-block',
-        'height':'50%',
-        'font-size':'large',
-        'width':'65%'
-      };
-    }else if(cellValue >= 10){
-      return baseStyle = {
-        'padding-left':'9%',
-        'display':'inline-block',
-        'height':'50%',
-        'font-size':'large',
-        'width':'65%'
-      };
+      if(thColElmnt){      
+        if(cellValue >= 10){
+          thColElmnt.style.backgroundColor = (cellValue >= 90)?  '#fcc4ac' : '#ffffff';
+          thColElmnt.style.borderLeft = (cellValue >= 90)? '#fcc4ac': '';
+          thColElmnt.style.borderRight = (cellValue >= 90)? '#fcc4ac': '';
+        }
+      }
     }
-    return {};
+
   }
+
+  // setUtilHeaderSpan2section2Colors(cellValue:number){
+  //   let baseStyle:Record<string, unknown> = {}
+
+  //   const thColElmnt =  document.getElementById(`tskmgr-nav-file-menu-${this.processId}`) as HTMLElement;  
+
+  //   if(cellValue < 10){
+  //    return baseStyle= {
+  //       // 'padding-left':'22%',
+  //       // 'display':'inline-block',
+  //       // 'height':'50%',
+  //       // 'font-size':'large',
+  //       // 'width':'65%'
+  //     };
+  //   }else if(cellValue >= 10){
+  //     return baseStyle = {
+  //       // 'padding-left':'9%',
+  //       // 'display':'inline-block',
+  //       // 'height':'50%',
+  //       // 'font-size':'large',
+  //       // 'width':'65%'
+  //     };
+  //   }
+  //   return {};
+  //}
 
   setUtilHeaderSpan3Colors(cellValue:number, cellName:string){
     
-    const baseStyle:Record<string, unknown> =  {
-        'padding-left':'55%',
-        'height':'50%',
-        'padding-top':'5px',
-        'font-size':'14px',
-        'padding-right':'5px'
-     };
+    // const baseStyle:Record<string, unknown> =  {
+    //     'padding-left':'55%',
+    //     'height':'50%',
+    //     'padding-top':'5px',
+    //     'font-size':'14px',
+    //     'padding-right':'5px'
+    //  };
 
      const sortColoumn = this._sorting.column;
 
-    if (cellName == 'CPU'){
-      if(cellValue < 10){
-        if(sortColoumn == cellName){
-          baseStyle['background-color'] = 'rgb(224, 224, 139)';
-        }
-        return baseStyle;
-       }else if(cellValue >= 10){
-        baseStyle['background-color'] =  (cellValue >= 90) ? '##fcc4ac' : '#ffffff';
-        if(sortColoumn == cellName){
-          if (cellValue >= 90)
-            baseStyle['background-color'] = '##fcc4ac';
-          else if (cellValue < 90 )
-            baseStyle['background-color'] = 'rgb(224, 224, 139)';
-        }
-        baseStyle['border'] =  (cellValue >= 90) ? '##fcc4ac' : '';
-        return baseStyle;
-       }
-    }
+    // if (cellName == 'CPU'){
+    //   if(cellValue < 10){
+    //     if(sortColoumn == cellName){
+    //       baseStyle['background-color'] = '#d0ecfc';
+    //     }
+    //     return baseStyle;
+    //    }else if(cellValue >= 10){
+    //     baseStyle['background-color'] =  (cellValue >= 90) ? '##fcc4ac' : '#ffffff';
+    //     if(sortColoumn == cellName){
+    //       if (cellValue >= 90)
+    //         baseStyle['background-color'] = '##fcc4ac';
+    //       else if (cellValue < 90 )
+    //         baseStyle['background-color'] = '#d0ecfc';
+    //     }
+    //     baseStyle['border'] =  (cellValue >= 90) ? '##fcc4ac' : '';
+    //     return baseStyle;
+    //    }
+    // }
 
-    if (cellName == 'Memory'){
-      if(cellValue < 10){
-        baseStyle['padding-left'] = '25%';
-        if(sortColoumn == cellName){
-          baseStyle['background-color'] = 'rgb(224, 224, 139)';
-        }
-        return baseStyle;
-       }else if(cellValue >= 10){
+    // if (cellName == 'Memory'){
+    //   if(cellValue < 10){
+    //     baseStyle['padding-left'] = '25%';
+    //     if(sortColoumn == cellName){
+    //       baseStyle['background-color'] = '#d0ecfc';
+    //     }
+    //     return baseStyle;
+    //    }else if(cellValue >= 10){
 
-        baseStyle['padding-left'] = '25%';
-        baseStyle['background-color'] =  (cellValue >= 90) ? '##fcc4ac' : '#ffffff';
-        if(sortColoumn == cellName){
-          if (cellValue >= 90)
-            baseStyle['background-color'] = '##fcc4ac';
-          else if (cellValue < 90 )
-            baseStyle['background-color'] = 'rgb(224, 224, 139)';
-        }
-        baseStyle['border'] =  (cellValue >= 90) ? '##fcc4ac' : '';
-        return baseStyle;
-       }
-    }
+    //     baseStyle['padding-left'] = '25%';
+    //     baseStyle['background-color'] =  (cellValue >= 90) ? '##fcc4ac' : '#ffffff';
+    //     if(sortColoumn == cellName){
+    //       if (cellValue >= 90)
+    //         baseStyle['background-color'] = '##fcc4ac';
+    //       else if (cellValue < 90 )
+    //         baseStyle['background-color'] = '#d0ecfc';
+    //     }
+    //     baseStyle['border'] =  (cellValue >= 90) ? '##fcc4ac' : '';
+    //     return baseStyle;
+    //    }
+    // }
 
-    if (cellName == 'Disk'){
-      if(cellValue < 10){
-        if(sortColoumn == cellName){
-          baseStyle['background-color'] = 'rgb(224, 224, 139)';
-        }
-        return baseStyle;
-       }else if(cellValue >= 10){
-        baseStyle['background-color'] =  (cellValue >= 90) ? '##fcc4ac' : '#ffffff';
-        if(sortColoumn == cellName){
-          if (cellValue >= 90)
-            baseStyle['background-color'] = '##fcc4ac';
-          else if (cellValue < 90 )
-            baseStyle['background-color'] = 'rgb(224, 224, 139)';
-        }
-        baseStyle['border'] =  (cellValue >= 90) ? '##fcc4ac' : '';
-        return baseStyle;
-       }
-    }
+    // if (cellName == 'Disk'){
+    //   if(cellValue < 10){
+    //     if(sortColoumn == cellName){
+    //       baseStyle['background-color'] = '#d0ecfc';
+    //     }
+    //     return baseStyle;
+    //    }else if(cellValue >= 10){
+    //     baseStyle['background-color'] =  (cellValue >= 90) ? '##fcc4ac' : '#ffffff';
+    //     if(sortColoumn == cellName){
+    //       if (cellValue >= 90)
+    //         baseStyle['background-color'] = '##fcc4ac';
+    //       else if (cellValue < 90 )
+    //         baseStyle['background-color'] = '#d0ecfc';
+    //     }
+    //     baseStyle['border'] =  (cellValue >= 90) ? '##fcc4ac' : '';
+    //     return baseStyle;
+    //    }
+    // }
 
-    if (cellName == 'Network'){
-      if(cellValue < 10){
-        baseStyle['padding-left'] = '24%';
-        if(sortColoumn == cellName){
-          baseStyle['background-color'] = 'rgb(224, 224, 139)';
-        }
-        return baseStyle;
-       }else if(cellValue >= 10){
+    // if (cellName == 'Network'){
+    //   if(cellValue < 10){
+    //     baseStyle['padding-left'] = '24%';
+    //     if(sortColoumn == cellName){
+    //       baseStyle['background-color'] = '#d0ecfc';
+    //     }
+    //     return baseStyle;
+    //    }else if(cellValue >= 10){
 
-        baseStyle['padding-left'] = '24%';
-        baseStyle['background-color'] =  (cellValue >= 90) ? '##fcc4ac' : '#ffffff';
-        if(sortColoumn == cellName){
-          if (cellValue >= 90)
-            baseStyle['background-color'] = '##fcc4ac';
-          else if (cellValue < 90 )
-            baseStyle['background-color'] = 'rgb(224, 224, 139)';
-        }
-        baseStyle['border'] =  (cellValue >= 90) ? '##fcc4ac' : '';
-        return baseStyle;
-       }
-    }
+    //     baseStyle['padding-left'] = '24%';
+    //     baseStyle['background-color'] =  (cellValue >= 90) ? '##fcc4ac' : '#ffffff';
+    //     if(sortColoumn == cellName){
+    //       if (cellValue >= 90)
+    //         baseStyle['background-color'] = '##fcc4ac';
+    //       else if (cellValue < 90 )
+    //         baseStyle['background-color'] = '#d0ecfc';
+    //     }
+    //     baseStyle['border'] =  (cellValue >= 90) ? '##fcc4ac' : '';
+    //     return baseStyle;
+    //    }
+    // }
 
-    if (cellName == 'GPU'){
-      if(cellValue < 10){
-        if(sortColoumn == cellName){
-          baseStyle['background-color'] = 'rgb(224, 224, 139)';
-        }
-        return baseStyle;
-       }else if(cellValue >= 10){
-        baseStyle['background-color'] =  (cellValue >= 90) ? '##fcc4ac' : '#ffffff';
-        if(sortColoumn == cellName){
-          if (cellValue >= 90)
-            baseStyle['background-color'] = '##fcc4ac';
-          else if (cellValue < 90 )
-            baseStyle['background-color'] = 'rgb(224, 224, 139)';
-        }
-        baseStyle['border'] =  (cellValue >= 90) ? '##fcc4ac' : '';
-        return baseStyle;
-       }
-    }
+    // if (cellName == 'GPU'){
+    //   if(cellValue < 10){
+    //     if(sortColoumn == cellName){
+    //       baseStyle['background-color'] = '#d0ecfc';
+    //     }
+    //     return baseStyle;
+    //    }else if(cellValue >= 10){
+    //     baseStyle['background-color'] =  (cellValue >= 90) ? '##fcc4ac' : '#ffffff';
+    //     if(sortColoumn == cellName){
+    //       if (cellValue >= 90)
+    //         baseStyle['background-color'] = '##fcc4ac';
+    //       else if (cellValue < 90 )
+    //         baseStyle['background-color'] = '#d0ecfc';
+    //     }
+    //     baseStyle['border'] =  (cellValue >= 90) ? '##fcc4ac' : '';
+    //     return baseStyle;
+    //    }
+    // }
 
     return {};
   }

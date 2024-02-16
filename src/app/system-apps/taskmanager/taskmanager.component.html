@@ -81,58 +81,171 @@
                     " -->
                   <table class='table' *ngIf = 'processes.length > 0' #tskMgrTable>
                     <thead>
-                      <span style="height:10px; border-top: none;"></span>
+                      <div style="height:10px; border-top: none;"></div>
                       <tr (contextmenu)="showContextMenu($event)" (click)="hideContextMenu()">             
                         <th [style]="thStyle" (click)="sortTable('Name', true)">
-                          <span style="margin-left:50%; height:50%">
-                            <span *ngIf="isDescSorting('Name')">v</span>
-                            <span *ngIf="isAscSorting('Name')">ᴧ</span>
-                          </span>
-                          <span style="padding-left:5px; height:50%; padding-top:5px; font-size:14px;">
-                            <span style="width:75%;">  Name </span>
-                          </span>
+                          <div  class="tskmgr-sort-icon-cntnr-basic">
+                            <span class="tskmgr-sort-icon"  *ngIf="isDescSorting('Name')">v</span>
+                            <span class="tskmgr-sort-icon"  *ngIf="isAscSorting('Name')">ᴧ</span>
+                          </div>
+                          <div class="tskmgr-th-div-name-cntnr-l">
+                            <span class="tskmgr-th-span-name"> Name </span>
+                          </div>
                         </th>
                         <th [style]="thStyle1" (click)="sortTable('Type', true)">               
-                          <span style="margin-left:50%; height:50%">
+                          <div  class="tskmgr-sort-icon-cntnr-basic">
                             <span *ngIf="isDescSorting('Type')">v</span>
                             <span *ngIf="isAscSorting('Type')">ᴧ</span>
-                          </span>
-                          <span style="padding-left:5%; height:50%; padding-top:5px; font-size:14px;">Type</span>
+                          </div>
+                          <div class="tskmgr-th-div-name-cntnr-l">
+                            <span class="tskmgr-th-span-name"> Type </span>
+                          </div>
                         </th>
                         <th>
-                          <span style="margin-left:50%; height:50%">
+                          <div class="tskmgr-sort-icon-cntnr-basic">
                             <span *ngIf="isDescSorting('Status')">v</span>
                             <span *ngIf="isAscSorting('Status')">ᴧ</span>
-                          </span>
-                          <span style="padding-left:5px; height:50%; padding-top:5px; font-size:14px;">Status</span>
+                          </div>
+                          <div class="tskmgr-th-div-name-cntnr-l">
+                            <span class="tskmgr-th-span-name"> Status </span>
+                          </div>
                         </th>
                         <th [style]="thStyle2" (click)="sortTable('PID', true)">               
-                          <span style="margin-left:50%; height:50%">
+                          <div class ="tskmgr-sort-icon-cntnr-basic">
                             <span *ngIf="isDescSorting('PID')">v</span>
                             <span *ngIf="isAscSorting('PID')">ᴧ</span>
-                          </span>
-                          <span style="padding-left:55%; height:50%; padding-top:5px; font-size:14px; padding-right:5px;">PID</span>
+                          </div>
+                          <div class="tskmgr-th-div-name-cntnr-r">
+                            <span class="tskmgr-th-span-name"> PID </span>
+                          </div>
                         </th>
                         <th [style]="thStyle3" (click)="sortTable('Process name', true)">               
-                          <span style="margin-left:50%; height:50%">
+                          <div class ="tskmgr-sort-icon-cntnr-basic">
                             <span *ngIf="isDescSorting('Process name')">v</span>
                             <span *ngIf="isAscSorting('Process name')">ᴧ</span>
-                          </span>
-                          <span style="height:50%; padding-top:5px; font-size:14px; padding-right:5px; text-overflow: ellipsis;">Process name</span>
+                          </div>
+                          <div class="tskmgr-th-div-name-cntnr-r">
+                            <span class="tskmgr-th-span-name"> Process name </span>
+                          </div>
                         </th>
-                        <th (click)="sortTable('CPU', true)" #cpuId>
-                          <span [style]="setUtilHeaderSpan2section1Colors(cpuUtil,'CPU')">
-                            <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
-                              <span *ngIf="isDescSorting('CPU')">v</span>
-                              <span *ngIf="isAscSorting('CPU')">ᴧ</span>
-                            </span>
-                            <span [style]="setUtilHeaderSpan2section2Colors(cpuUtil)">{{cpuUtil}}%</span>
-                          </span>
-                          <span [style]="setUtilHeaderSpan3Colors(cpuUtil,'CPU')">CPU</span>
+
+
+
+
+
+
+
+                        <th (click)="sortTable('CPU', true)"  id="cpuTh-{{this.processId}}">
+                          <div  class="tskmgr-numeric-th-div-cntnr" [style]="setThHeaderContainerColor(cpuUtil,'CPU')" id="cpuDiv-{{this.processId}}">
+
+                            <div class="tskmgr-sort-icon-cntnr" id="cpuDiv-{{this.processId}}">
+                              <span class="tskmgr-sort-icon1"  *ngIf="isDescSorting('CPU')">v</span>
+                              <span class="tskmgr-sort-icon1" *ngIf="isAscSorting('CPU')">ᴧ</span>
+                            </div>
+                            
+                            <div class="tskmgr-th-div-number-cntnr" id="cpuDiv-{{this.processId}}">
+                              <div class="tskmgr-th-div-number" id="cpuDiv-{{this.processId}}"> {{cpuUtil}}</div>
+                              <div class="tskmgr-th-div-symbol" id="cpuDiv-{{this.processId}}"> %</div>
+                            </div>
+                          </div>
+
+
+                          <div class="tskmgr-numeric-th-name-cntnr" [style]="setUtilHeaderSpan3Colors(cpuUtil,'CPU')">
+                            <span class="tskmgr-th-span-name1"> CPU</span>
+                          </div>
                         </th>
-                        <th (click)="sortTable('Memory', true)"  #memoryId>
+
+
+                        <th (click)="sortTable('Memory', true)"  id="memoryTh-{{this.processId}}">
+                          <div  class="tskmgr-numeric-th-div-cntnr" [style]="setThHeaderContainerColor(memUtil,'Memory')" id="memoryDiv-{{this.processId}}">
+
+                            <div class="tskmgr-sort-icon-cntnr" id="memoryDiv-{{this.processId}}">
+                              <span class="tskmgr-sort-icon1"  *ngIf="isDescSorting('Memory')">v</span>
+                              <span class="tskmgr-sort-icon1" *ngIf="isAscSorting('Memory')">ᴧ</span>
+                            </div>
+                            
+                            <div class="tskmgr-th-div-number-cntnr" id="memoryDiv-{{this.processId}}">
+                              <div class="tskmgr-th-div-number" id="memoryDiv-{{this.processId}}"> {{memUtil}}</div>
+                              <div class="tskmgr-th-div-symbol" id="memoryDiv-{{this.processId}}"> %</div>
+                            </div>
+                          </div>
+
+
+                          <div class="tskmgr-numeric-th-name-cntnr" [style]="setUtilHeaderSpan3Colors(memUtil,'Memory')">
+                            <span class="tskmgr-th-span-name1"> Memory</span>
+                          </div>
+                        </th>
+
+
+                        <th (click)="sortTable('Disk', true)"  id="diskTh-{{this.processId}}">
+                          <div  class="tskmgr-numeric-th-div-cntnr" [style]="setThHeaderContainerColor(diskUtil,'Disk')" id="diskDiv-{{this.processId}}">
+
+                            <div class="tskmgr-sort-icon-cntnr" id="diskDiv-{{this.processId}}">
+                              <span class="tskmgr-sort-icon1"  *ngIf="isDescSorting('Disk')">v</span>
+                              <span class="tskmgr-sort-icon1" *ngIf="isAscSorting('Disk')">ᴧ</span>
+                            </div>
+                            
+                            <div class="tskmgr-th-div-number-cntnr" id="diskDiv-{{this.processId}}">
+                              <div class="tskmgr-th-div-number" id="diskDiv-{{this.processId}}"> {{diskUtil}}</div>
+                              <div class="tskmgr-th-div-symbol" id="diskDiv-{{this.processId}}"> %</div>
+                            </div>
+                          </div>
+
+
+                          <div class="tskmgr-numeric-th-name-cntnr" [style]="setUtilHeaderSpan3Colors(diskUtil,'Disk')">
+                            <span class="tskmgr-th-span-name1"> Disk</span>
+                          </div>
+                        </th>
+
+
+                        <th (click)="sortTable('GPU', true)"  id="gpuTh-{{this.processId}}">
+                          <div  class="tskmgr-numeric-th-div-cntnr" [style]="setThHeaderContainerColor(gpuUtil,'GPU')" id="gpuDiv-{{this.processId}}">
+
+                            <div class="tskmgr-sort-icon-cntnr" id="gpuDiv-{{this.processId}}">
+                              <span class="tskmgr-sort-icon1"  *ngIf="isDescSorting('GPU')">v</span>
+                              <span class="tskmgr-sort-icon1" *ngIf="isAscSorting('GPU')">ᴧ</span>
+                            </div>
+                            
+                            <div class="tskmgr-th-div-number-cntnr" id="gpuDiv-{{this.processId}}">
+                              <div class="tskmgr-th-div-number" id="gpuDiv-{{this.processId}}"> {{gpuUtil}}</div>
+                              <div class="tskmgr-th-div-symbol" id="gpuDiv-{{this.processId}}"> %</div>
+                            </div>
+                          </div>
+
+
+                          <div class="tskmgr-numeric-th-name-cntnr" [style]="setUtilHeaderSpan3Colors(gpuUtil,'GPU')">
+                            <span class="tskmgr-th-span-name1"> GPU</span>
+                          </div>
+                        </th>
+
+
+                        <th (click)="sortTable('Network', true)"  id="gpuTh-{{this.processId}}">
+                          <div  class="tskmgr-numeric-th-div-cntnr" [style]="setThHeaderContainerColor(networkUtil,'Network')" id="networkDiv-{{this.processId}}">
+
+                            <div class="tskmgr-sort-icon-cntnr" id="networkDiv-{{this.processId}}">
+                              <span class="tskmgr-sort-icon1"  *ngIf="isDescSorting('Network')">v</span>
+                              <span class="tskmgr-sort-icon1" *ngIf="isAscSorting('Network')">ᴧ</span>
+                            </div>
+                            
+                            <div class="tskmgr-th-div-number-cntnr" id="networkDiv-{{this.processId}}">
+                              <div class="tskmgr-th-div-number" id="networkDiv-{{this.processId}}"> {{networkUtil}}</div>
+                              <div class="tskmgr-th-div-symbol" id="networkDiv-{{this.processId}}"> %</div>
+                            </div>
+                          </div>
+
+
+                          <div class="tskmgr-numeric-th-name-cntnr" [style]="setUtilHeaderSpan3Colors(networkUtil,'Network')">
+                            <span class="tskmgr-th-span-name1"> Network</span>
+                          </div>
+                        </th>
+
+
+
+
+<!-- 
+                        <th (click)="sortTable('Memory', true)"   id="memoryTh-{{this.processId}}">
                           <span [style]="setUtilHeaderSpan2section1Colors(memUtil,'Memory')">
-                            <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
+                            <span class="tskmgr-sort-icon-cntnr">
                               <span *ngIf="isDescSorting('Memory')">v</span>
                               <span *ngIf="isAscSorting('Memory')">ᴧ</span>
                             </span>
@@ -140,9 +253,9 @@
                           </span>
                           <span [style]="setUtilHeaderSpan3Colors(memUtil,'Memory')">Memory</span>
                         </th>
-                        <th (click)="sortTable('Disk', true)" #diskId>                             
+                        <th (click)="sortTable('Disk', true)"  id="diskTh-{{this.processId}}">                             
                           <span [style]="setUtilHeaderSpan2section1Colors(diskUtil,'Disk')">
-                            <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
+                            <span class="tskmgr-sort-icon-cntnr">
                               <span *ngIf="isDescSorting('Disk')">v</span>
                               <span *ngIf="isAscSorting('Disk')">ᴧ</span>
                             </span>
@@ -151,9 +264,9 @@
                           </span>
                           <span [style]="setUtilHeaderSpan3Colors(diskUtil,'Disk')">Disk</span>
                         </th>
-                        <th (click)="sortTable('Network', true)" #networkId>                                                
+                        <th (click)="sortTable('Network', true)"  id="networkTh-{{this.processId}}">                                                
                           <span [style]="setUtilHeaderSpan2section1Colors(networkUtil,'Network')">
-                            <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
+                            <span class="tskmgr-sort-icon-cntnr">
                               <span *ngIf="isDescSorting('Network')">v</span>
                               <span *ngIf="isAscSorting('Network')">ᴧ</span>
                             </span>
@@ -161,22 +274,26 @@
                           </span>
                           <span [style]="setUtilHeaderSpan3Colors(networkUtil,'Network')">Network</span>
                         </th>
-                        <th (click)="sortTable('GPU', true)" #gpuId>                                                
+                        <th (click)="sortTable('GPU', true)"  id="gpuTh-{{this.processId}}">                                                
                           <span [style]="setUtilHeaderSpan2section1Colors(networkUtil,'Network')">
-                            <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
+                            <span class="tskmgr-sort-icon-cntnr">
                               <span *ngIf="isDescSorting('GPU')">v</span>
                               <span *ngIf="isAscSorting('GPU')">ᴧ</span>
                             </span>
                             <span [style]="setUtilHeaderSpan2section2Colors(gpuUtil)">{{gpuUtil}}%</span>
                           </span>
                           <span [style]="setUtilHeaderSpan3Colors(gpuUtil,'GPU')">GPU</span>
-                        </th>
+                        </th> -->
+
+
                         <th [style]="thStyle4" (click)="sortTable('Power usage', true)">               
-                          <span style="margin-left:50%; height:50%">
+                          <div class ="tskmgr-sort-icon-cntnr-basic">
                             <span *ngIf="isDescSorting('Power usage')">v</span>
                             <span *ngIf="isAscSorting('Power usage')">ᴧ</span>
-                          </span>
-                          <span style="padding-left:5px; height:50%; padding-top:5px; font-size:14px; padding-right:5px; text-overflow: ellipsis;">Power usage</span>
+                          </div>
+                          <div class="tskmgr-th-div-name-cntnr-l">
+                            <span class="tskmgr-th-span-name"> Power usage</span>
+                          </div>
                         </th>
                       </tr>
   
@@ -254,7 +371,7 @@
                           <td >{{ process.getType}}</td>
                           <td>
                               <figure  *ngIf = 'process.getProcessStatus === "Suspended"' style="top: -1px; position: relative;"> 
-                                  <figcaption style="font-size:12px; ">{{ process.getProcessStatus}}</figcaption>
+                                  <!-- <figcaption style="font-size:12px; ">{{ process.getProcessStatus}}</figcaption> -->
                                   <img [src]="'osdrive/icons/econo.png'">
                               </figure>
                           </td>

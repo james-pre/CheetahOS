@@ -25,3 +25,9 @@ export enum RefreshRatesIntervals {
     PROCESS_NAME = 'Process name',
     TYPE = 'Type'
  }
+
+
+ export enum DisplayViews { 
+    DETAILED_VIEW = 'Detailed View',
+    MINI_VIEW = 'Mini View'
+ }
