@@ -1,299 +1,341 @@
 <cos-window [runningProcessID]="this.processId" [processAppIcon]="this.icon" [processAppName]="this.name" (click)="setTaskMangrWindowToFocus(this.processId)" (focusout)="hideShowNavMenu('')"> 
-  <div class="tskmgr-nav-btn-cntnr">
-    <div class="tskmgr-nav-btn" (click)="hideShowNavMenu('tskmgr-nav-file-menu')" (mouseenter)="hideShowNavMenu1('tskmgr-nav-file-menu','enter')">
-       <span class="tskmgr-btn-span">File</span>
-        <div class="tskmgr-nav-menu-cntnr" id="tskmgr-nav-file-menu-{{this.processId}}">
-            <div class="tskmgr-nav-menu-item">
-              <span class="tskmgr-item-span">Run new task</span>
-            </div>
-            <div class="tskmgr-nav-menu-item" (click)="onExitBtnClick()">
-              <span class="tskmgr-item-span">Exit</span>
-            </div>
-        </div> 
-    </div>
-    <div class="tskmgr-nav-btn">
-      <span class="tskmgr-btn-span">Options</span>
-    </div>
 
-    <div class="tskmgr-nav-btn" (click)="hideShowNavMenu('tskmgr-nav-view-menu')" (mouseenter)="hideShowNavMenu1('tskmgr-nav-view-menu','enter')">
-      <span class="tskmgr-btn-span">View</span>
-        <div class="tskmgr-nav-menu-cntnr1" id="tskmgr-nav-view-menu-{{this.processId}}">
-            <div class="tskmgr-nav-menu-item">
-              <span class="tskmgr-item-span" (click)="generateLies()">Refresh now</span>
-            </div>
-            <div class="tskmgr-nav-menu-item">
-              <span class="tskmgr-item-span">Update speed</span>
-              <div class="tskmgr-nav-div" >
-                <figure class="tskmgr-nav-figure"><img class="tskmgr-nav-img" [src]="'osdrive/icons/arrow_next.png'"/></figure>
+
+  <ng-container [ngTemplateOutlet]="viewOptions === detailedView ? detailedView0 : miniView0 ">
+  </ng-container>
+
+  <ng-template #detailedView0>
+    <div class="tskmgr-nav-btn-cntnr">
+      <div class="tskmgr-nav-btn" (click)="hideShowNavMenu('tskmgr-nav-file-menu')" (mouseenter)="hideShowNavMenu1('tskmgr-nav-file-menu','enter')">
+         <span class="tskmgr-btn-span">File</span>
+          <div class="tskmgr-nav-menu-cntnr" id="tskmgr-nav-file-menu-{{this.processId}}">
+              <div class="tskmgr-nav-menu-item">
+                <span class="tskmgr-item-span">Run new task</span>
               </div>
-              <div class="tskmgr-nav-sub-menu-cntnr">
-                <div class="tskmgr-nav-menu-item" (click)="refreshRate(3)">
-                  <div class="tskmgr-nav-sub-menu-div head" [class.active]="selectedRefreshRate === 3">
-                    <figure class="tskmgr-nav-sub-menu-figure"><img *ngIf="selectedRefreshRate === 3" class="tskmgr-nav-img" [src]="'osdrive/icons/circle.png'"/></figure>
-                  </div>
-                  <span class="tskmgr-item-span">High</span>
+              <div class="tskmgr-nav-menu-item" (click)="onExitBtnClick()">
+                <span class="tskmgr-item-span">Exit</span>
+              </div>
+          </div> 
+      </div>
+      <div class="tskmgr-nav-btn">
+        <span class="tskmgr-btn-span">Options</span>
+      </div>
+  
+      <div class="tskmgr-nav-btn" (click)="hideShowNavMenu('tskmgr-nav-view-menu')" (mouseenter)="hideShowNavMenu1('tskmgr-nav-view-menu','enter')">
+        <span class="tskmgr-btn-span">View</span>
+          <div class="tskmgr-nav-menu-cntnr1" id="tskmgr-nav-view-menu-{{this.processId}}">
+              <div class="tskmgr-nav-menu-item">
+                <span class="tskmgr-item-span" (click)="generateLies()">Refresh now</span>
+              </div>
+              <div class="tskmgr-nav-menu-item">
+                <span class="tskmgr-item-span">Update speed</span>
+                <div class="tskmgr-nav-div" >
+                  <figure class="tskmgr-nav-figure"><img class="tskmgr-nav-img" [src]="'osdrive/icons/arrow_next.png'"/></figure>
                 </div>
-                <div class="tskmgr-nav-menu-item" (click)="refreshRate(2)">
-                  <div class="tskmgr-nav-sub-menu-div head" [class.active]="selectedRefreshRate === 2">
-                    <figure class="tskmgr-nav-sub-menu-figure"><img *ngIf="selectedRefreshRate === 2" class="tskmgr-nav-sub-menu-img" [src]="'osdrive/icons/circle.png'"/></figure>
+                <div class="tskmgr-nav-sub-menu-cntnr">
+                  <div class="tskmgr-nav-menu-item" (click)="refreshRate(3)">
+                    <div class="tskmgr-nav-sub-menu-div head" [class.active]="selectedRefreshRate === 3">
+                      <figure class="tskmgr-nav-sub-menu-figure"><img *ngIf="selectedRefreshRate === 3" class="tskmgr-nav-img" [src]="'osdrive/icons/circle.png'"/></figure>
+                    </div>
+                    <span class="tskmgr-item-span">High</span>
                   </div>
-                  <span class="tskmgr-item-span">Normal</span>
-                </div>
-                <div class="tskmgr-nav-menu-item" (click)="refreshRate(1)">
-                  <div class="tskmgr-nav-sub-menu-div head" [class.active]="selectedRefreshRate === 1">
-                    <figure class="tskmgr-nav-sub-menu-figure"><img *ngIf="selectedRefreshRate === 1" class="tskmgr-nav-img" [src]="'osdrive/icons/circle.png'"/></figure>
+                  <div class="tskmgr-nav-menu-item" (click)="refreshRate(2)">
+                    <div class="tskmgr-nav-sub-menu-div head" [class.active]="selectedRefreshRate === 2">
+                      <figure class="tskmgr-nav-sub-menu-figure"><img *ngIf="selectedRefreshRate === 2" class="tskmgr-nav-sub-menu-img" [src]="'osdrive/icons/circle.png'"/></figure>
+                    </div>
+                    <span class="tskmgr-item-span">Normal</span>
                   </div>
-                  <span class="tskmgr-item-span">Low</span>
-                </div>
-                <div class="tskmgr-nav-menu-item" (click)="refreshRate(0)">
-                  <div class="tskmgr-nav-sub-menu-div head" [class.active]="selectedRefreshRate === 0">
-                    <figure class="tskmgr-nav-sub-menu-figure"><img *ngIf="selectedRefreshRate === 0" class="tskmgr-nav-img" [src]="'osdrive/icons/circle.png'"/></figure>
+                  <div class="tskmgr-nav-menu-item" (click)="refreshRate(1)">
+                    <div class="tskmgr-nav-sub-menu-div head" [class.active]="selectedRefreshRate === 1">
+                      <figure class="tskmgr-nav-sub-menu-figure"><img *ngIf="selectedRefreshRate === 1" class="tskmgr-nav-img" [src]="'osdrive/icons/circle.png'"/></figure>
+                    </div>
+                    <span class="tskmgr-item-span">Low</span>
                   </div>
-                  <span class="tskmgr-item-span">Paused</span>
+                  <div class="tskmgr-nav-menu-item" (click)="refreshRate(0)">
+                    <div class="tskmgr-nav-sub-menu-div head" [class.active]="selectedRefreshRate === 0">
+                      <figure class="tskmgr-nav-sub-menu-figure"><img *ngIf="selectedRefreshRate === 0" class="tskmgr-nav-img" [src]="'osdrive/icons/circle.png'"/></figure>
+                    </div>
+                    <span class="tskmgr-item-span">Paused</span>
+                  </div>
                 </div>
               </div>
-            </div>
-        </div> 
+          </div> 
+      </div>
     </div>
-  </div>
-
-  <div class="tskmgr-tabbed-window" (click)="hideShowNavMenu('')">
-    <span style="height:3px; background-color: #ffffff;  border-top: none; "></span>
-    <div class="tskmgr-tabs">
-      <div class="tskmgr-tab active">Processes</div>
-      <div class="tskmgr-tab">Performance</div>
-      <div class="tskmgr-tab">App history</div>
-      <div class="tskmgr-tab">Services</div>
-    </div>
-    <div class="tskmgr-tab-content">
-      <div class="tskmgr-tab-pane active">
-        <div class='card'>
-            <div class='card-body'>
-              <div class='table-responsive'>
-
-                <!-- add  class="data" data-rtc-resizable-table="table.one" to  the first <table> to activate resize.[ngClass]="
-                     add data-rtc-resizable=columnName to the first <th> of each column were resize is desired
-                  " -->
-                <table class='table' *ngIf = 'processes.length > 0' #tskMgrTable>
-                  <thead>
-                    <span style="height:10px; border-top: none;"></span>
-                    <tr (contextmenu)="showContextMenu($event)" (click)="hideContextMenu()">             
-                      <th [style]="thStyle" (click)="sortTable('Name', true)">
-                        <span style="margin-left:50%; height:50%">
-                          <span *ngIf="isDescSorting('Name')">v</span>
-                          <span *ngIf="isAscSorting('Name')">ᴧ</span>
-                        </span>
-                        <span style="padding-left:5px; height:50%; padding-top:5px; font-size:14px;">
-                          <span style="width:75%;">  Name </span>
-                        </span>
-                      </th>
-                      <th [style]="thStyle1" (click)="sortTable('Type', true)">               
-                        <span style="margin-left:50%; height:50%">
-                          <span *ngIf="isDescSorting('Type')">v</span>
-                          <span *ngIf="isAscSorting('Type')">ᴧ</span>
-                        </span>
-                        <span style="padding-left:5%; height:50%; padding-top:5px; font-size:14px;">Type</span>
-                      </th>
-                      <th>
-                        <span style="margin-left:50%; height:50%">
-                          <span *ngIf="isDescSorting('Status')">v</span>
-                          <span *ngIf="isAscSorting('Status')">ᴧ</span>
-                        </span>
-                        <span style="padding-left:5px; height:50%; padding-top:5px; font-size:14px;">Status</span>
-                      </th>
-                      <th [style]="thStyle2" (click)="sortTable('PID', true)">               
-                        <span style="margin-left:50%; height:50%">
-                          <span *ngIf="isDescSorting('PID')">v</span>
-                          <span *ngIf="isAscSorting('PID')">ᴧ</span>
-                        </span>
-                        <span style="padding-left:55%; height:50%; padding-top:5px; font-size:14px; padding-right:5px;">PID</span>
-                      </th>
-                      <th [style]="thStyle3" (click)="sortTable('Process name', true)">               
-                        <span style="margin-left:50%; height:50%">
-                          <span *ngIf="isDescSorting('Process name')">v</span>
-                          <span *ngIf="isAscSorting('Process name')">ᴧ</span>
-                        </span>
-                        <span style="height:50%; padding-top:5px; font-size:14px; padding-right:5px; text-overflow: ellipsis;">Process name</span>
-                      </th>
-                      <th (click)="sortTable('CPU', true)" #cpuId>
-                        <span [style]="setUtilHeaderSpan2section1Colors(cpuUtil,'CPU')">
-                          <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
-                            <span *ngIf="isDescSorting('CPU')">v</span>
-                            <span *ngIf="isAscSorting('CPU')">ᴧ</span>
+  
+    <div class="tskmgr-tabbed-window" (click)="hideShowNavMenu('')">
+      <span style="height:3px; background-color: #ffffff;  border-top: none; "></span>
+      <div class="tskmgr-tabs">
+        <div class="tskmgr-tab active">Processes</div>
+        <div class="tskmgr-tab">Performance</div>
+        <div class="tskmgr-tab">App history</div>
+        <div class="tskmgr-tab">Services</div>
+      </div>
+      <div class="tskmgr-tab-content">
+        <div class="tskmgr-tab-pane active">
+          <div class='card'>
+              <div class='card-body'>
+                <div class='table-responsive'>
+  
+                  <!-- add  class="data" data-rtc-resizable-table="table.one" to  the first <table> to activate resize.[ngClass]="
+                       add data-rtc-resizable=columnName to the first <th> of each column were resize is desired
+                    " -->
+                  <table class='table' *ngIf = 'processes.length > 0' #tskMgrTable>
+                    <thead>
+                      <span style="height:10px; border-top: none;"></span>
+                      <tr (contextmenu)="showContextMenu($event)" (click)="hideContextMenu()">             
+                        <th [style]="thStyle" (click)="sortTable('Name', true)">
+                          <span style="margin-left:50%; height:50%">
+                            <span *ngIf="isDescSorting('Name')">v</span>
+                            <span *ngIf="isAscSorting('Name')">ᴧ</span>
                           </span>
-                          <span [style]="setUtilHeaderSpan2section2Colors(cpuUtil)">{{cpuUtil}}%</span>
-                        </span>
-                        <span [style]="setUtilHeaderSpan3Colors(cpuUtil,'CPU')">CPU</span>
-                      </th>
-                      <th (click)="sortTable('Memory', true)"  #memoryId>
-                        <span [style]="setUtilHeaderSpan2section1Colors(memUtil,'Memory')">
-                          <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
-                            <span *ngIf="isDescSorting('Memory')">v</span>
-                            <span *ngIf="isAscSorting('Memory')">ᴧ</span>
+                          <span style="padding-left:5px; height:50%; padding-top:5px; font-size:14px;">
+                            <span style="width:75%;">  Name </span>
                           </span>
-                          <span [style]="setUtilHeaderSpan2section2Colors(memUtil)">{{memUtil}}%</span>
-                        </span>
-                        <span [style]="setUtilHeaderSpan3Colors(memUtil,'Memory')">Memory</span>
-                      </th>
-                      <th (click)="sortTable('Disk', true)" #diskId>                             
-                        <span [style]="setUtilHeaderSpan2section1Colors(diskUtil,'Disk')">
-                          <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
-                            <span *ngIf="isDescSorting('Disk')">v</span>
-                            <span *ngIf="isAscSorting('Disk')">ᴧ</span>
+                        </th>
+                        <th [style]="thStyle1" (click)="sortTable('Type', true)">               
+                          <span style="margin-left:50%; height:50%">
+                            <span *ngIf="isDescSorting('Type')">v</span>
+                            <span *ngIf="isAscSorting('Type')">ᴧ</span>
                           </span>
-
-                          <span [style]="setUtilHeaderSpan2section2Colors(diskUtil)">{{diskUtil}}%</span>
-                        </span>
-                        <span [style]="setUtilHeaderSpan3Colors(diskUtil,'Disk')">Disk</span>
-                      </th>
-                      <th (click)="sortTable('Network', true)" #networkId>                                                
-                        <span [style]="setUtilHeaderSpan2section1Colors(networkUtil,'Network')">
-                          <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
-                            <span *ngIf="isDescSorting('Network')">v</span>
-                            <span *ngIf="isAscSorting('Network')">ᴧ</span>
+                          <span style="padding-left:5%; height:50%; padding-top:5px; font-size:14px;">Type</span>
+                        </th>
+                        <th>
+                          <span style="margin-left:50%; height:50%">
+                            <span *ngIf="isDescSorting('Status')">v</span>
+                            <span *ngIf="isAscSorting('Status')">ᴧ</span>
                           </span>
-                          <span [style]="setUtilHeaderSpan2section2Colors(networkUtil)">{{networkUtil}}%</span>
-                        </span>
-                        <span [style]="setUtilHeaderSpan3Colors(networkUtil,'Network')">Network</span>
-                      </th>
-                      <th (click)="sortTable('GPU', true)" #gpuId>                                                
-                        <span [style]="setUtilHeaderSpan2section1Colors(networkUtil,'Network')">
-                          <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
-                            <span *ngIf="isDescSorting('GPU')">v</span>
-                            <span *ngIf="isAscSorting('GPU')">ᴧ</span>
+                          <span style="padding-left:5px; height:50%; padding-top:5px; font-size:14px;">Status</span>
+                        </th>
+                        <th [style]="thStyle2" (click)="sortTable('PID', true)">               
+                          <span style="margin-left:50%; height:50%">
+                            <span *ngIf="isDescSorting('PID')">v</span>
+                            <span *ngIf="isAscSorting('PID')">ᴧ</span>
                           </span>
-                          <span [style]="setUtilHeaderSpan2section2Colors(gpuUtil)">{{gpuUtil}}%</span>
-                        </span>
-                        <span [style]="setUtilHeaderSpan3Colors(gpuUtil,'GPU')">GPU</span>
-                      </th>
-                      <th [style]="thStyle4" (click)="sortTable('Power usage', true)">               
-                        <span style="margin-left:50%; height:50%">
-                          <span *ngIf="isDescSorting('Power usage')">v</span>
-                          <span *ngIf="isAscSorting('Power usage')">ᴧ</span>
-                        </span>
-                        <span style="padding-left:5px; height:50%; padding-top:5px; font-size:14px; padding-right:5px; text-overflow: ellipsis;">Power usage</span>
-                      </th>
-                    </tr>
-
-                    <!--Context Menu-->
-                    <div class="tskmgr-vertical-menu" [style]="cntxtMenuStyle" #tsmgrCntxtMenu>
-                      <div class="tskmgr-vertical-menu-item" (click)="toggleColumnVisibility('Type')">
-                          <span class="tskmgr-span head" [class.active]="typeColumnVisible"><figure class="tskmgr-figure"><img *ngIf="typeColumnVisible" class="tskmgr-img" [src]="'osdrive/icons/chkmark32.png'"/></figure></span>
-                          <span class="tskmgr-span mid">Type</span>
+                          <span style="padding-left:55%; height:50%; padding-top:5px; font-size:14px; padding-right:5px;">PID</span>
+                        </th>
+                        <th [style]="thStyle3" (click)="sortTable('Process name', true)">               
+                          <span style="margin-left:50%; height:50%">
+                            <span *ngIf="isDescSorting('Process name')">v</span>
+                            <span *ngIf="isAscSorting('Process name')">ᴧ</span>
+                          </span>
+                          <span style="height:50%; padding-top:5px; font-size:14px; padding-right:5px; text-overflow: ellipsis;">Process name</span>
+                        </th>
+                        <th (click)="sortTable('CPU', true)" #cpuId>
+                          <span [style]="setUtilHeaderSpan2section1Colors(cpuUtil,'CPU')">
+                            <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
+                              <span *ngIf="isDescSorting('CPU')">v</span>
+                              <span *ngIf="isAscSorting('CPU')">ᴧ</span>
+                            </span>
+                            <span [style]="setUtilHeaderSpan2section2Colors(cpuUtil)">{{cpuUtil}}%</span>
+                          </span>
+                          <span [style]="setUtilHeaderSpan3Colors(cpuUtil,'CPU')">CPU</span>
+                        </th>
+                        <th (click)="sortTable('Memory', true)"  #memoryId>
+                          <span [style]="setUtilHeaderSpan2section1Colors(memUtil,'Memory')">
+                            <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
+                              <span *ngIf="isDescSorting('Memory')">v</span>
+                              <span *ngIf="isAscSorting('Memory')">ᴧ</span>
+                            </span>
+                            <span [style]="setUtilHeaderSpan2section2Colors(memUtil)">{{memUtil}}%</span>
+                          </span>
+                          <span [style]="setUtilHeaderSpan3Colors(memUtil,'Memory')">Memory</span>
+                        </th>
+                        <th (click)="sortTable('Disk', true)" #diskId>                             
+                          <span [style]="setUtilHeaderSpan2section1Colors(diskUtil,'Disk')">
+                            <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
+                              <span *ngIf="isDescSorting('Disk')">v</span>
+                              <span *ngIf="isAscSorting('Disk')">ᴧ</span>
+                            </span>
+  
+                            <span [style]="setUtilHeaderSpan2section2Colors(diskUtil)">{{diskUtil}}%</span>
+                          </span>
+                          <span [style]="setUtilHeaderSpan3Colors(diskUtil,'Disk')">Disk</span>
+                        </th>
+                        <th (click)="sortTable('Network', true)" #networkId>                                                
+                          <span [style]="setUtilHeaderSpan2section1Colors(networkUtil,'Network')">
+                            <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
+                              <span *ngIf="isDescSorting('Network')">v</span>
+                              <span *ngIf="isAscSorting('Network')">ᴧ</span>
+                            </span>
+                            <span [style]="setUtilHeaderSpan2section2Colors(networkUtil)">{{networkUtil}}%</span>
+                          </span>
+                          <span [style]="setUtilHeaderSpan3Colors(networkUtil,'Network')">Network</span>
+                        </th>
+                        <th (click)="sortTable('GPU', true)" #gpuId>                                                
+                          <span [style]="setUtilHeaderSpan2section1Colors(networkUtil,'Network')">
+                            <span style="font-size:13px; padding-left:4px; vertical-align:top; width:35%; display:inline-block;">
+                              <span *ngIf="isDescSorting('GPU')">v</span>
+                              <span *ngIf="isAscSorting('GPU')">ᴧ</span>
+                            </span>
+                            <span [style]="setUtilHeaderSpan2section2Colors(gpuUtil)">{{gpuUtil}}%</span>
+                          </span>
+                          <span [style]="setUtilHeaderSpan3Colors(gpuUtil,'GPU')">GPU</span>
+                        </th>
+                        <th [style]="thStyle4" (click)="sortTable('Power usage', true)">               
+                          <span style="margin-left:50%; height:50%">
+                            <span *ngIf="isDescSorting('Power usage')">v</span>
+                            <span *ngIf="isAscSorting('Power usage')">ᴧ</span>
+                          </span>
+                          <span style="padding-left:5px; height:50%; padding-top:5px; font-size:14px; padding-right:5px; text-overflow: ellipsis;">Power usage</span>
+                        </th>
+                      </tr>
+  
+                      <!--Context Menu-->
+                      <div class="tskmgr-vertical-menu" [style]="cntxtMenuStyle" #tsmgrCntxtMenu>
+                        <div class="tskmgr-vertical-menu-item" (click)="toggleColumnVisibility('Type')">
+                            <span class="tskmgr-span head" [class.active]="typeColumnVisible"><figure class="tskmgr-figure"><img *ngIf="typeColumnVisible" class="tskmgr-img" [src]="'osdrive/icons/chkmark32.png'"/></figure></span>
+                            <span class="tskmgr-span mid">Type</span>
+                            <span class="tskmgr-span tail"><figure></figure></span>
+                        </div>
+  
+                        <div class="tskmgr-vertical-menu-item" (click)="toggleColumnVisibility('Status')">
+                          <span class="tskmgr-span head" [class.active]="statusColumnVisible"><figure class="tskmgr-figure"><img *ngIf="statusColumnVisible" class="tskmgr-img" [src]="'osdrive/icons/chkmark32.png'"/></figure></span>
+                          <span class="tskmgr-span mid">Status</span>
                           <span class="tskmgr-span tail"><figure></figure></span>
-                      </div>
-
-                      <div class="tskmgr-vertical-menu-item" (click)="toggleColumnVisibility('Status')">
-                        <span class="tskmgr-span head" [class.active]="statusColumnVisible"><figure class="tskmgr-figure"><img *ngIf="statusColumnVisible" class="tskmgr-img" [src]="'osdrive/icons/chkmark32.png'"/></figure></span>
-                        <span class="tskmgr-span mid">Status</span>
-                        <span class="tskmgr-span tail"><figure></figure></span>
-                      </div>
-
-                      <div class="tskmgr-vertical-menu-item" (click)="toggleColumnVisibility('PID')">
-                        <span class="tskmgr-span head" [class.active]="pidColumnVisible"><figure class="tskmgr-figure"><img *ngIf="pidColumnVisible" class="tskmgr-img" [src]="'osdrive/icons/chkmark32.png'"/></figure></span>
-                        <span class="tskmgr-span mid">PID</span>
-                        <span class="tskmgr-span tail"><figure></figure></span>
-                      </div>
-
-                      <div class="tskmgr-vertical-menu-item" (click)="toggleColumnVisibility('Process name')">
-                        <span class="tskmgr-span head" [class.active]="processNameColumnVisible"><figure class="tskmgr-figure"><img *ngIf="processNameColumnVisible" class="tskmgr-img" [src]="'osdrive/icons/chkmark32.png'"/></figure></span>
-                        <span class="tskmgr-span mid">Process name</span>
-                        <span class="tskmgr-span tail"><figure></figure></span>
-                      </div>
-
-                      <div class="tskmgr-vertical-menu-item" (click)="toggleColumnVisibility('CPU')">
-                        <span class="tskmgr-span head" [class.active]="cpuColumnVisible"><figure class="tskmgr-figure"><img *ngIf="cpuColumnVisible" class="tskmgr-img" [src]="'osdrive/icons/chkmark32.png'"/></figure></span>
-                        <span class="tskmgr-span mid">CPU</span>
-                        <span class="tskmgr-span tail"><figure></figure></span>
-                      </div>
-
-                      <div class="tskmgr-vertical-menu-item" (click)="toggleColumnVisibility('Memory')">
-                        <span class="tskmgr-span head" [class.active]="memoryColumnVisible"><figure class="tskmgr-figure"><img *ngIf="memoryColumnVisible" class="tskmgr-img" [src]="'osdrive/icons/chkmark32.png'"/></figure></span>
-                        <span class="tskmgr-span mid">Memory</span>
-                        <span class="tskmgr-span tail"><figure></figure></span>
-                      </div>
-
-                      <div class="tskmgr-vertical-menu-item" (click)="toggleColumnVisibility('Disk')">
-                        <span class="tskmgr-span head" [class.active]="diskColumnVisible"><figure class="tskmgr-figure"><img *ngIf="diskColumnVisible" class="tskmgr-img" [src]="'osdrive/icons/chkmark32.png'"/></figure></span>
-                        <span class="tskmgr-span mid">Disk</span>
-                        <span class="tskmgr-span tail"><figure></figure></span>
-                      </div>
-
-                      <div class="tskmgr-vertical-menu-item" (click)="toggleColumnVisibility('Network')">
-                        <span class="tskmgr-span head" [class.active]="networkColumnVisible"><figure class="tskmgr-figure"><img *ngIf="networkColumnVisible" class="tskmgr-img" [src]="'osdrive/icons/chkmark32.png'"/></figure></span>
-                        <span class="tskmgr-span mid">Network</span>
-                        <span class="tskmgr-span tail"><figure></figure></span>
-                      </div>
-
-                      <div class="tskmgr-vertical-menu-item" (click)="toggleColumnVisibility('GPU')">
-                        <span class="tskmgr-span head" [class.active]="gpuColumnVisible"><figure class="tskmgr-figure"><img *ngIf="gpuColumnVisible" class="tskmgr-img" [src]="'osdrive/icons/chkmark32.png'"/></figure></span>
-                        <span class="tskmgr-span mid">GPU</span>
-                        <span class="tskmgr-span tail"><figure></figure></span>
-                      </div>
-
-                      <div class="tskmgr-vertical-menu-item" (click)="toggleColumnVisibility('Power usage')">
-                        <span class="tskmgr-span head" [class.active]="powerColumnVisible"><figure class="tskmgr-figure"><img *ngIf="powerColumnVisible" class="tskmgr-img" [src]="'osdrive/icons/chkmark32.png'"/></figure></span>
-                        <span class="tskmgr-span mid">Power usage</span>
-                        <span class="tskmgr-span tail"><figure></figure></span>
-                      </div>
-                   </div>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor='let process of processes; let i = index'(click)="onProcessSelected(i,process.getProcessId)" [class.active]="i === selectedRow"  id="trElmnt-{{this.processId}}-{{i}}">
-                        <td style="width:35%; padding-left:16px;" >
-                            <figure> 
-                                <img [src]="process.getIcon">
-                                <figcaption>{{ process.getProcessName}}</figcaption>
-                            </figure>
-                        </td>
-                        <td >{{ process.getType}}</td>
-                        <td>
-                            <figure  *ngIf = 'process.getProcessStatus === "Suspended"' style="top: -1px; position: relative;"> 
-                                <figcaption style="font-size:12px; ">{{ process.getProcessStatus}}</figcaption>
-                                <img [src]="'osdrive/icons/econo.png'">
-                            </figure>
-                        </td>
-                        <td style="text-align:right">{{ process.getProcessId}}</td>
-                        <td >{{ process.getProcessName}}</td>
-                        <td [style]="setUtilColoumnColors(process.getCpuUsage)" id="tdCpuElmnt-{{this.processId}}-{{i}}">{{ process.getCpuUsage}}%</td>
-                        <td [style]="setUtilColoumnColors(process.getMemoryUsage)" #memoryId>{{ process.getMemoryUsage}} MB</td>
-                        <td [style]="setUtilColoumnColors(process.getDiskUsage)" #diskId>{{ process.getDiskUsage}} MB/s</td>
-                        <td [style]="setUtilColoumnColors(process.getNetworkUsage)" #networkId>{{ process.getNetworkUsage}} Mbps</td>
-                        <td [style]="setUtilColoumnColors(process.getGpuUsage)" #gpuId>{{ process.getGpuUsage}}%</td>
-                        <td [style]="setUtilColoumnColors(process.getPowerUsage)" #pwruseId> {{ process.getPowerUsage}}</td>
-                    </tr>
-                  </tbody>
-                </table>
+                        </div>
+  
+                        <div class="tskmgr-vertical-menu-item" (click)="toggleColumnVisibility('PID')">
+                          <span class="tskmgr-span head" [class.active]="pidColumnVisible"><figure class="tskmgr-figure"><img *ngIf="pidColumnVisible" class="tskmgr-img" [src]="'osdrive/icons/chkmark32.png'"/></figure></span>
+                          <span class="tskmgr-span mid">PID</span>
+                          <span class="tskmgr-span tail"><figure></figure></span>
+                        </div>
+  
+                        <div class="tskmgr-vertical-menu-item" (click)="toggleColumnVisibility('Process name')">
+                          <span class="tskmgr-span head" [class.active]="processNameColumnVisible"><figure class="tskmgr-figure"><img *ngIf="processNameColumnVisible" class="tskmgr-img" [src]="'osdrive/icons/chkmark32.png'"/></figure></span>
+                          <span class="tskmgr-span mid">Process name</span>
+                          <span class="tskmgr-span tail"><figure></figure></span>
+                        </div>
+  
+                        <div class="tskmgr-vertical-menu-item" (click)="toggleColumnVisibility('CPU')">
+                          <span class="tskmgr-span head" [class.active]="cpuColumnVisible"><figure class="tskmgr-figure"><img *ngIf="cpuColumnVisible" class="tskmgr-img" [src]="'osdrive/icons/chkmark32.png'"/></figure></span>
+                          <span class="tskmgr-span mid">CPU</span>
+                          <span class="tskmgr-span tail"><figure></figure></span>
+                        </div>
+  
+                        <div class="tskmgr-vertical-menu-item" (click)="toggleColumnVisibility('Memory')">
+                          <span class="tskmgr-span head" [class.active]="memoryColumnVisible"><figure class="tskmgr-figure"><img *ngIf="memoryColumnVisible" class="tskmgr-img" [src]="'osdrive/icons/chkmark32.png'"/></figure></span>
+                          <span class="tskmgr-span mid">Memory</span>
+                          <span class="tskmgr-span tail"><figure></figure></span>
+                        </div>
+  
+                        <div class="tskmgr-vertical-menu-item" (click)="toggleColumnVisibility('Disk')">
+                          <span class="tskmgr-span head" [class.active]="diskColumnVisible"><figure class="tskmgr-figure"><img *ngIf="diskColumnVisible" class="tskmgr-img" [src]="'osdrive/icons/chkmark32.png'"/></figure></span>
+                          <span class="tskmgr-span mid">Disk</span>
+                          <span class="tskmgr-span tail"><figure></figure></span>
+                        </div>
+  
+                        <div class="tskmgr-vertical-menu-item" (click)="toggleColumnVisibility('Network')">
+                          <span class="tskmgr-span head" [class.active]="networkColumnVisible"><figure class="tskmgr-figure"><img *ngIf="networkColumnVisible" class="tskmgr-img" [src]="'osdrive/icons/chkmark32.png'"/></figure></span>
+                          <span class="tskmgr-span mid">Network</span>
+                          <span class="tskmgr-span tail"><figure></figure></span>
+                        </div>
+  
+                        <div class="tskmgr-vertical-menu-item" (click)="toggleColumnVisibility('GPU')">
+                          <span class="tskmgr-span head" [class.active]="gpuColumnVisible"><figure class="tskmgr-figure"><img *ngIf="gpuColumnVisible" class="tskmgr-img" [src]="'osdrive/icons/chkmark32.png'"/></figure></span>
+                          <span class="tskmgr-span mid">GPU</span>
+                          <span class="tskmgr-span tail"><figure></figure></span>
+                        </div>
+  
+                        <div class="tskmgr-vertical-menu-item" (click)="toggleColumnVisibility('Power usage')">
+                          <span class="tskmgr-span head" [class.active]="powerColumnVisible"><figure class="tskmgr-figure"><img *ngIf="powerColumnVisible" class="tskmgr-img" [src]="'osdrive/icons/chkmark32.png'"/></figure></span>
+                          <span class="tskmgr-span mid">Power usage</span>
+                          <span class="tskmgr-span tail"><figure></figure></span>
+                        </div>
+                     </div>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor='let process of processes; let i = index'(click)="onProcessSelected(i,process.getProcessId)" [class.active]="i === selectedRow"  id="trElmnt-{{this.processId}}-{{i}}">
+                          <td style="width:35%; padding-left:16px;" >
+                              <figure> 
+                                  <img [src]="process.getIcon">
+                                  <figcaption>{{ process.getProcessName}}</figcaption>
+                              </figure>
+                          </td>
+                          <td >{{ process.getType}}</td>
+                          <td>
+                              <figure  *ngIf = 'process.getProcessStatus === "Suspended"' style="top: -1px; position: relative;"> 
+                                  <figcaption style="font-size:12px; ">{{ process.getProcessStatus}}</figcaption>
+                                  <img [src]="'osdrive/icons/econo.png'">
+                              </figure>
+                          </td>
+                          <td style="text-align:right">{{ process.getProcessId}}</td>
+                          <td >{{ process.getProcessName}}</td>
+                          <td [style]="setUtilColoumnColors(process.getCpuUsage)" id="tdCpuElmnt-{{this.processId}}-{{i}}">{{ process.getCpuUsage}}%</td>
+                          <td [style]="setUtilColoumnColors(process.getMemoryUsage)" #memoryId>{{ process.getMemoryUsage}} MB</td>
+                          <td [style]="setUtilColoumnColors(process.getDiskUsage)" #diskId>{{ process.getDiskUsage}} MB/s</td>
+                          <td [style]="setUtilColoumnColors(process.getNetworkUsage)" #networkId>{{ process.getNetworkUsage}} Mbps</td>
+                          <td [style]="setUtilColoumnColors(process.getGpuUsage)" #gpuId>{{ process.getGpuUsage}}%</td>
+                          <td [style]="setUtilColoumnColors(process.getPowerUsage)" #pwruseId> {{ process.getPowerUsage}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
-            <span class="basediv">
-              <span style="display: inline-block; width: 50%; 
-                        padding-top:15px;  height:40px; margin-left: 0;">
-                  <figure (click)="onFewerDetailsBtnClick()"  style="padding-right: 72%;"> 
-                    <img [src]="'osdrive/icons/arrow_up.png'">
-                    <figcaption class="just-for-one-span">Fewer details</figcaption>
-                  </figure>
-              </span>
-              <span style="display: inline-block; height:40px; margin-top:10px; width:50%; margin-right: 0;">
-                  <button (click)="onEndTaskBtnClick()" class="btn btn-primary" style="margin-left: 72%;" [ngClass]="activeFocus()">
-                    End task
-                  </button>
-              </span>
-          </span>
+              <span class="basediv">
+                <span style="display: inline-block; width: 50%; 
+                          padding-top:15px;  height:40px; margin-left: 0;">
+                    <figure (click)="onFewerDetailsBtnClick()"  style="padding-right: 72%;"> 
+                      <img [src]="'osdrive/icons/arrow_up.png'">
+                      <figcaption class="just-for-one-span">Fewer details</figcaption>
+                    </figure>
+                </span>
+                <span style="display: inline-block; height:40px; margin-top:10px; width:50%; margin-right: 0;">
+                    <button (click)="onEndTaskBtnClick()" class="btn btn-primary" style="margin-left: 72%;" [ngClass]="activeFocus()">
+                      End task
+                    </button>
+                </span>
+            </span>
+          </div>
+        </div>
+        <div class="tskmgr-tab-pane">
+          <!-- Content for Tab 2 -->
+          <p> Somethings is coming</p>
+        </div>
+        <div class="tskmgr-tab-pane">
+          <!-- Content for Tab 3 -->
+          <p> Somethings is coming</p>
+        </div>
+        <div class="tskmgr-tab-pane">
+          <!-- Content for Tab 4 -->
+          <p> Somethings is coming</p>
         </div>
       </div>
-      <div class="tskmgr-tab-pane">
-        <!-- Content for Tab 2 -->
-        <p> Somethings is coming</p>
+    </div>   
+  </ng-template>
+
+  <ng-template #miniView0>
+    <div class='card'>
+      <div class='card-body'>
+        <div class='table-responsive'>
+          <table class='table mini' *ngIf = 'processes.length > 0' >
+            <tbody>
+              <tr *ngFor='let process of processes'>
+                  <td style="width: 55%;">
+                      <figure> 
+                          <img [src]="process.getIcon">
+                          <figcaption>{{ process.getProcessName}}</figcaption>
+                      </figure>
+                  </td>
+                </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-      <div class="tskmgr-tab-pane">
-        <!-- Content for Tab 3 -->
-        <p> Somethings is coming</p>
-      </div>
-      <div class="tskmgr-tab-pane">
-        <!-- Content for Tab 4 -->
-        <p> Somethings is coming</p>
-      </div>
-    </div>
-  </div>   
+      <span class="basediv">
+          <span style="display: inline-block; width: 40%; 
+                  padding-top:15px;  height:50px; margin-left: 0;">
+            <figure (click)="onMoreDetailsBtnClick()" style="padding-right: 15%;"> 
+              <img [src]="'osdrive/icons/arrow_down.png'">
+              <figcaption>More details</figcaption>
+            </figure>
+        </span>
+        <span style="display: inline-block; height:50px; margin-top:10px; width: 60%;  margin-right: 0;">
+            <button class="btn btn-primary" style="margin-left: 30%;" >
+              End task
+            </button>
+        </span>
+    </span>
+  </div>
+  </ng-template>
 </cos-window>

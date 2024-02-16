@@ -87,6 +87,9 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   selectedRow = -1;
   showBtnNavMenu = false;
 
+  detailedView = 'Detailed View';
+  minView = 'Mini View';
+  viewOptions = this.detailedView;
 
   cpuUtil = 0;
   memUtil = 0;
@@ -314,7 +317,6 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   }
 
   showContextMenu(evt:MouseEvent):void{
-
     // const rect =  this.tskMgrTable.nativeElement.getBoundingClientRect();
     // const x = evt.clientX - rect.left;
     // const y = evt.clientY - rect.top;
@@ -517,16 +519,22 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   }
 
   onFewerDetailsBtnClick():void{
-    const file:FileInfo = new FileInfo();
-    file.setIconPath = '/osdrive/icons/taskmanger.png';
-    file.setOpensWith = 'taskmanagermini';
-    file.setFileType ='.png';
+    // const file:FileInfo = new FileInfo();
+    // file.setIconPath = '/osdrive/icons/taskmanger.png';
+    // file.setOpensWith = 'taskmanagermini';
+    // file.setFileType ='.png';
 
-    const processToClose = this._runningProcessService.getProcess(this.processId);
-    this._stateManagmentService.removeState(this.processId);
-    this._triggerProcessService.startApplication(file);
+    // const processToClose = this._runningProcessService.getProcess(this.processId);
+    // this._stateManagmentService.removeState(this.processId);
+    // this._triggerProcessService.startApplication(file);
 
-    this._runningProcessService.closeProcessNotify.next(processToClose);
+    // this._runningProcessService.closeProcessNotify.next(processToClose);
+
+    this.viewOptions = this.minView;
+  }
+
+  onMoreDetailsBtnClick():void{
+    this.viewOptions = this.detailedView;
   }
 
   onExitBtnClick():void{
