@@ -85,7 +85,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   isFocus = false;
 
   selectedRow = -1;
-  showDDList = false;
+
 
   cpuUtil = 0;
   memUtil = 0;
@@ -311,12 +311,6 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       }
     }
   }
-
-  showDropDownList():void{
-    this.showDDList = ! this.showDDList;
-  }
-
-
 
   showContextMenu(evt:MouseEvent):void{
 

@@ -2,7 +2,7 @@
   <div class="tskmgr-nav-btn-cntnr">
     <div class="tskmgr-nav-btn">
        <span class="tskmgr-btn-span">File</span>
-        <div class="tskmgr-nav-menu-cntnr">
+        <div class="tskmgr-nav-menu-cntnr" id="tskmgr-nav-file-menu-{{this.processId}}">
             <div class="tskmgr-nav-menu-item">
               <span class="tskmgr-item-span">Run new task</span>
             </div>
@@ -17,11 +17,11 @@
 
     <div class="tskmgr-nav-btn">
       <span class="tskmgr-btn-span">View</span>
-        <div class="tskmgr-nav-menu-cntnr1">
+        <div class="tskmgr-nav-menu-cntnr1" id="tskmgr-nav-view-menu-{{this.processId}}">
             <div class="tskmgr-nav-menu-item">
               <span class="tskmgr-item-span" (click)="generateLies()">Refresh now</span>
             </div>
-            <div class="tskmgr-nav-menu-item" (click)="onExitBtnClick()">
+            <div class="tskmgr-nav-menu-item">
               <span class="tskmgr-item-span">Update speed</span>
               <div class="tskmgr-nav-div" >
                 <figure class="tskmgr-nav-figure"><img class="tskmgr-nav-img" [src]="'osdrive/icons/arrow_next.png'"/></figure>
