@@ -85,6 +85,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   isFocus = false;
 
   selectedRow = -1;
+  showBtnNavMenu = false;
 
 
   cpuUtil = 0;
@@ -340,6 +341,71 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       'opacity':0
     }
   }
+
+  hideShowNavMenu(menuName:string):void{
+    let menuElmt:HTMLElement;
+    this.showBtnNavMenu = !this.showBtnNavMenu;
+
+    if(menuName == ''){
+      menuElmt =  document.getElementById(`tskmgr-nav-file-menu-${this.processId}`) as HTMLElement;
+      if(menuElmt)
+        menuElmt.style.display ='none';
+
+      menuElmt =  document.getElementById(`tskmgr-nav-view-menu-${this.processId}`) as HTMLElement;
+      if(menuElmt)
+        menuElmt.style.display ='none';
+    }
+    else if(menuName != ''){
+      if(menuName == 'tskmgr-nav-file-menu' && this.showBtnNavMenu){
+        menuElmt =  document.getElementById(`tskmgr-nav-file-menu-${this.processId}`) as HTMLElement;  
+        menuElmt.style.display ='block';
+        menuElmt.style.left = '2px';
+        menuElmt.style.top = '20px';
+      }
+      else if(menuName == 'tskmgr-nav-file-menu' && !this.showBtnNavMenu){
+        menuElmt =  document.getElementById(`tskmgr-nav-file-menu-${this.processId}`) as HTMLElement;  
+        menuElmt.style.display ='none';
+      }
+
+      if(menuName == 'tskmgr-nav-view-menu' && this.showBtnNavMenu){
+        menuElmt =  document.getElementById(`tskmgr-nav-view-menu-${this.processId}`) as HTMLElement;  
+        menuElmt.style.display ='block';
+        menuElmt.style.left = '85px';
+        menuElmt.style.top = '20px';
+      }
+      else if(menuName == 'tskmgr-nav-view-menu' && !this.showBtnNavMenu){
+        menuElmt =  document.getElementById(`tskmgr-nav-view-menu-${this.processId}`) as HTMLElement;  
+        menuElmt.style.display ='none';
+      }
+    }
+  }
+
+  hideShowNavMenu1(menuName:string, evtName:string):void{
+    let menuElmt:HTMLElement;
+  
+    if(evtName === 'enter'){
+      if(menuName == 'tskmgr-nav-file-menu' && this.showBtnNavMenu){
+        menuElmt =  document.getElementById(`tskmgr-nav-file-menu-${this.processId}`) as HTMLElement;  
+        menuElmt.style.display ='block';
+        menuElmt.style.left = '2px';
+        menuElmt.style.top = '20px';
+
+        menuElmt =  document.getElementById(`tskmgr-nav-view-menu-${this.processId}`) as HTMLElement;  
+        menuElmt.style.display ='none';
+      }
+
+      if(menuName == 'tskmgr-nav-view-menu' && this.showBtnNavMenu){
+        menuElmt =  document.getElementById(`tskmgr-nav-view-menu-${this.processId}`) as HTMLElement;  
+        menuElmt.style.display ='block';
+        menuElmt.style.left = '85px';
+        menuElmt.style.top = '20px';
+
+        menuElmt =  document.getElementById(`tskmgr-nav-file-menu-${this.processId}`) as HTMLElement;  
+        menuElmt.style.display ='none';
+      }
+    }
+  }
+
 
   generateLies():void{
     const processes:Process[] = this._runningProcessService.getProcesses();
