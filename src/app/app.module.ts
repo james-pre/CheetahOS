@@ -27,7 +27,7 @@ import { SafeUrlPipe } from './shared/system-pipes/safe.resource.url.pipe';
 import { HighlightDirective } from './system-apps/window/window.btn.highlight.directives';
 import { TaskBarEntryHighlightDirective } from './system-apps/taskbarentries/taskbar.entry.highlight.directives';
 import { LongPressDirective } from './system-apps/audioplayer/long.press.directive';
-
+import { ResizableModule } from './system-apps/taskmanager/resizable/resizable.module';
 
 
 
@@ -60,7 +60,8 @@ import { LongPressDirective } from './system-apps/audioplayer/long.press.directi
     BrowserModule,
     AngularDraggableModule,
     BrowserAnimationsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ResizableModule
   ],
   providers: [],
   bootstrap: [AppComponent]

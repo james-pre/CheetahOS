@@ -1,1 +1,0 @@
-declare module '@validide/resizable-table-columns';
