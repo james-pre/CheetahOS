@@ -273,19 +273,21 @@ tbody{
   background-color:#d0ecfc !important;
 }
   
-figure{
+.tskmgr-figure0{
   align-items: center;
   display:inline-flex;
-  min-width: 1px;
+  width: fit-content;
 }
 
-figcaption{
+.tskmgr-figcaption0{
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-size: 12px;
+  font-weight: normal;
 }
 
-img{
+.tskmgr-img0{
     height: 18px;
     width: 18px;
     image-rendering:optimizeQuality;
@@ -355,54 +357,79 @@ img{
 .just-for-one-span{
   color: #000; 
   font-weight: normal;
+  padding-left: 2px;
 }
 
 .just-for-one-span::first-letter{
   text-decoration: underline;
 }
 
-.basediv{
+.tsksmgr-footer-div-cntnr{
   display:flex;
-  height: 56px;
+  position: relative;
+  height: 45px;
   font-size: small;
   font-weight: lighter;
   border-top: 1px solid #ccc; /* Cell border */
   background-color: #ffffff;
 }
 
-.btn.btn-primary.head {
-  background-color: #ffffff; /* Primary button background color */
-  color: #333; /* Text color for the primary button */
-  border: 1px solid #ffffff; /* Border color for the primary button */
-  /* border-radius: 1px;  Rounded corners for the primary button */
-  padding: 1px 10px; /* Padding for the primary button (adjust as needed) */
-  font-size: 13px; /* Font size for the text */
+.tsksmgr-footer-div-cntnt{
+  display: flex;
+  position: relative;
+  width: 50%;
+  left: 0%
+}
+
+.tsksmgr-footer-div-cntnt1{
+  display: flex;
+  position: relative;
+  padding-left: 5%;
+  width: 50%;
+  right: 0%
 }
 
   /* Custom styles for .btn.btn-primary */
 .btn.btn-primary {
+  position: relative;
   background-color: #d0cccc; /* Primary button background color */
   color: #75787c; /* Text color for the primary button */
   border: 1px solid #bcbcbc; /* Border color for the primary button */
-  /* border-radius: 1px; Rounded corners for the primary button */
-  padding: 5px 25px; /* Padding for the primary button (adjust as needed) */
+  padding: 2px 20px; /* Padding for the primary button (adjust as needed) */
   font-size: 12px; /* Font size for the text */
   font-weight: normal;
+  height: 22px;
+  right: -68%;
+  top: 25%;
 }
 
-.btn.btn-primary::first-letter{
+  /* Custom styles for .btn.btn-primary */
+.btn.btn-primary-b {
+    position: relative;
+    background-color: #d0cccc; /* Primary button background color */
+    color: #75787c; /* Text color for the primary button */
+    border: 1px solid #bcbcbc; /* Border color for the primary button */
+    padding: 2px 20px; /* Padding for the primary button (adjust as needed) */
+    font-size: 12px; /* Font size for the text */
+    font-weight: normal;
+    height: 22px;
+    right: -25%;
+    top: 25%;
+  }
+
+.btn.btn-primary::first-letter .btn.btn-primary-b::first-letter{
   text-decoration: underline;
 }
 
 /* Hover state for the primary button */
-.btn.btn-primary:hover {
+.btn.btn-primary:hover .btn.btn-primary-b:hover {
   background-color: #84b3e4; /* Background color when hovered */
   border: 1px solid #0056b3; /* Border color when hovered */
   color: #000; /* Text color when hovered */
 }
 
 /* Active (clicked) state for the primary button */
-.btn.btn-primary.active, .btn.btn-primary.focus {
+.btn.btn-primary.active, .btn.btn-primary.focus  .btn.btn-primary-b.active, .btn.btn-primary-b.focus {
   background-color: #e4e4e1; /* Background color when active or focused */
   border: 1px solid #ccc; /* Border color when active or focused */
   color: #000; /* Text color when active or focused */

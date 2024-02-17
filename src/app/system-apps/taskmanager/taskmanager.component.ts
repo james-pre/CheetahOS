@@ -733,7 +733,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       const divElmnt1 =  document.getElementById(`${cellName.toLowerCase()}Div1-${this.processId}`) as HTMLElement; 
       const utilDivElmnt =  document.getElementById(`${cellName.toLowerCase()}UtilDiv-${this.processId}`) as HTMLElement; 
 
-      if(cellValue < 0){
+      if(cellValue < 10){
         divElmnt.style.backgroundColor = '#d0ecfc';
         divElmnt1.style.backgroundColor = '#d0ecfc';
         utilDivElmnt.style.right = '-40%';
@@ -755,7 +755,6 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
       if(divElmnt && divElmnt1 && utilDivElmnt){      
         if(cellValue < 10){
-          // thColElmnt.style.backgroundColor = '#d0ecfc';
           utilDivElmnt.style.right = '-40%';
         }else if(cellValue >= 10){
           divElmnt.style.backgroundColor = (cellValue >= 90)?  '#fcc4ac' : '#ffffff';

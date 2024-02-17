@@ -128,13 +128,6 @@
                             <span class="tskmgr-th-span-name"> Process name </span>
                           </div>
                         </th>
-
-
-
-
-
-
-
                         <th (click)="sortTable('CPU', true)" [style]="setThHeaderContainerColor(cpuUtil,'CPU')"  id="cpuTh-{{this.processId}}" >
                           <div  class="tskmgr-numeric-th-div-cntnr"  id="cpuDiv-{{this.processId}}">
                             <div class="tskmgr-sort-icon-cntnr">
@@ -146,21 +139,17 @@
                               <div class="tskmgr-th-div-symbol"> %</div>
                             </div>
                           </div>
-
                           <div class="tskmgr-numeric-th-name-cntnr" id="cpuDiv1-{{this.processId}}">
                             <span class="tskmgr-th-span-name1" id="cpuDiv1-{{this.processId}}"> CPU</span>
                           </div>
                         </th>
-
-
                         <th (click)="sortTable('Memory', true)" [style]="setThHeaderContainerColor(memUtil,'Memory')"  id="memoryTh-{{this.processId}}">
                           <div  class="tskmgr-numeric-th-div-cntnr"  id="memoryDiv-{{this.processId}}">
-
                             <div class="tskmgr-sort-icon-cntnr">
                               <span class="tskmgr-sort-icon1"  *ngIf="isDescSorting('Memory')">v</span>
                               <span class="tskmgr-sort-icon1" *ngIf="isAscSorting('Memory')">ᴧ</span>
                             </div>
-                            
+
                             <div class="tskmgr-th-div-number-cntnr" id="memoryDiv-{{this.processId}}">
                               <div class="tskmgr-th-div-number" id="memoryUtilDiv-{{this.processId}}"> {{memUtil}}</div>
                               <div class="tskmgr-th-div-symbol"> %</div>
@@ -170,37 +159,27 @@
                             <span class="tskmgr-th-span-name1"> Memory</span>
                           </div>
                         </th>
-
-
                         <th (click)="sortTable('Disk', true)" [style]="setThHeaderContainerColor(diskUtil,'Disk')" id="diskTh-{{this.processId}}">
                           <div  class="tskmgr-numeric-th-div-cntnr"  id="diskDiv-{{this.processId}}">
-
                             <div class="tskmgr-sort-icon-cntnr">
                               <span class="tskmgr-sort-icon1"  *ngIf="isDescSorting('Disk')">v</span>
                               <span class="tskmgr-sort-icon1" *ngIf="isAscSorting('Disk')">ᴧ</span>
                             </div>
-                            
                             <div class="tskmgr-th-div-number-cntnr">
                               <div class="tskmgr-th-div-number" id="diskUtilDiv-{{this.processId}}"> {{diskUtil}}</div>
                               <div class="tskmgr-th-div-symbol"> %</div>
                             </div>
                           </div>
-
-
                           <div class="tskmgr-numeric-th-name-cntnr" id="diskDiv1-{{this.processId}}">
                             <span class="tskmgr-th-span-name1"> Disk</span>
                           </div>
                         </th>
-
-
                         <th (click)="sortTable('Network', true)" [style]="setThHeaderContainerColor(networkUtil,'Network')" id="networkTh-{{this.processId}}">
                           <div  class="tskmgr-numeric-th-div-cntnr"  id="networkDiv-{{this.processId}}">
-
                             <div class="tskmgr-sort-icon-cntnr">
                               <span class="tskmgr-sort-icon1"  *ngIf="isDescSorting('Network')">v</span>
                               <span class="tskmgr-sort-icon1" *ngIf="isAscSorting('Network')">ᴧ</span>
                             </div>
-                            
                             <div class="tskmgr-th-div-number-cntnr">
                               <div class="tskmgr-th-div-number" id="networkUtilDiv-{{this.processId}}"> {{networkUtil}}</div>
                               <div class="tskmgr-th-div-symbol"> %</div>
@@ -210,28 +189,21 @@
                             <span class="tskmgr-th-span-name1"> Network</span>
                           </div>
                         </th>
-
-
-
                         <th (click)="sortTable('GPU', true)" [style]="setThHeaderContainerColor(gpuUtil,'GPU')"  id="gpuTh-{{this.processId}}">
                           <div  class="tskmgr-numeric-th-div-cntnr"  id="gpuDiv-{{this.processId}}">
-
                             <div class="tskmgr-sort-icon-cntnr">
                               <span class="tskmgr-sort-icon1"  *ngIf="isDescSorting('GPU')">v</span>
                               <span class="tskmgr-sort-icon1" *ngIf="isAscSorting('GPU')">ᴧ</span>
                             </div>
-                            
                             <div class="tskmgr-th-div-number-cntnr">
                               <div class="tskmgr-th-div-number" id="gpuUtilDiv-{{this.processId}}"> {{gpuUtil}}</div>
                               <div class="tskmgr-th-div-symbol"> %</div>
                             </div>
                           </div>
-
                           <div class="tskmgr-numeric-th-name-cntnr" id="gpuDiv1-{{this.processId}}">
                             <span class="tskmgr-th-span-name1" > GPU</span>
                           </div>
                         </th>
-
 
                         <th [style]="thStyle4" (click)="sortTable('Power usage', true)">               
                           <div class ="tskmgr-sort-icon-cntnr-basic">
@@ -309,17 +281,17 @@
                     </thead>
                     <tbody>
                       <tr *ngFor='let process of processes; let i = index'(click)="onProcessSelected(i,process.getProcessId)" [class.active]="i === selectedRow"  id="trElmnt-{{this.processId}}-{{i}}">
-                          <td style="width:35%; padding-left:16px;" >
-                              <figure> 
-                                  <img [src]="process.getIcon">
-                                  <figcaption>{{ process.getProcessName}}</figcaption>
+                          <td style="min-width:20%; padding-left:16px;" >
+                              <figure class="tskmgr-figure0"> 
+                                  <img class="tskmgr-img0" [src]="process.getIcon">
+                                  <figcaption class="tskmgr-figcaption0">{{ process.getProcessName}}</figcaption>
                               </figure>
                           </td>
                           <td >{{ process.getType}}</td>
                           <td>
-                              <figure  *ngIf = 'process.getProcessStatus === "Suspended"' style="top: -1px; position: relative;"> 
+                              <figure class="tskmgr-figcaption0" *ngIf = 'process.getProcessStatus === "Suspended"' style="top: 1px; position: relative; right: -75% ;"> 
                                   <!-- <figcaption style="font-size:12px; ">{{ process.getProcessStatus}}</figcaption> -->
-                                  <img [src]="'osdrive/icons/econo.png'">
+                                  <img class="tskmgr-img0" style="height: 14px; width: 14px;" [src]="'osdrive/icons/econo.png'">
                               </figure>
                           </td>
                           <td style="text-align:right">{{ process.getProcessId}}</td>
@@ -335,19 +307,18 @@
                   </table>
                 </div>
               </div>
-              <div class="basediv">
-                <span style="display: inline-block; width: 50%; 
-                          padding-top:15px;  height:40px; margin-left: 0;">
-                    <figure (click)="onFewerDetailsBtnClick()"  style="padding-right: 72%;"> 
-                      <img [src]="'osdrive/icons/arrow_up.png'">
-                      <figcaption class="just-for-one-span">Fewer details</figcaption>
+              <div class="tsksmgr-footer-div-cntnr">
+                <div class="tsksmgr-footer-div-cntnt">
+                    <figure class="tskmgr-figure0" (click)="onFewerDetailsBtnClick()" style="position: relative; left: 5px;"> 
+                      <img class="tskmgr-img0" [src]="'osdrive/icons/arrow_up.png'">
+                      <figcaption class="tskmgr-figcaption0 just-for-one-span">Fewer details</figcaption>
                     </figure>
-                </span>
-                <span style="display: inline-block; height:40px; margin-top:10px; width:50%; margin-right: 0;">
-                    <button (click)="onEndTaskBtnClick()" class="btn btn-primary" style="margin-left: 72%;" [ngClass]="activeFocus()">
+                </div>
+                <div class="tsksmgr-footer-div-cntnt1">
+                    <button (click)="onEndTaskBtnClick()" class="btn btn-primary" [ngClass]="activeFocus()">
                       End task
                     </button>
-                </span>
+                </div>
               </div>
           </div>
         </div>
@@ -375,9 +346,9 @@
             <tbody>
               <tr *ngFor='let process of processes; let i = index'(click)="onProcessSelected(i,process.getProcessId)" [class.active]="i === selectedRow"  id="trElmnt-{{this.processId}}-{{i}}">
                   <td style="width: 55%;">
-                      <figure> 
-                          <img [src]="process.getIcon">
-                          <figcaption>{{ process.getProcessName}}</figcaption>
+                      <figure class="tskmgr-figure0"> 
+                          <img class="tskmgr-img0" [src]="process.getIcon">
+                          <figcaption class="tskmgr-figcaption0">{{ process.getProcessName}}</figcaption>
                       </figure>
                   </td>
                 </tr>
@@ -385,19 +356,18 @@
           </table>
         </div>
       </div>
-      <div class="basediv">
-        <span style="display: inline-block; width: 40%; 
-                  padding-top:15px;  height:50px; margin-left: 0;">
-            <figure (click)="onMoreDetailsBtnClick()" style="padding-right: 15%;"> 
-              <img [src]="'osdrive/icons/arrow_down.png'">
-              <figcaption class="just-for-one-span">More details</figcaption>
+      <div class="tsksmgr-footer-div-cntnr">
+        <div class="tsksmgr-footer-div-cntnt">
+            <figure class="tskmgr-figure0" (click)="onMoreDetailsBtnClick()"  style="position: relative; left: 5px;"> 
+              <img class="tskmgr-img0" [src]="'osdrive/icons/arrow_down.png'">
+              <figcaption class="tskmgr-figcaption0 just-for-one-span">More details</figcaption>
             </figure>
-        </span>
-        <span style="display: inline-block; height:50px; margin-top:10px; width: 60%;  margin-right: 0;">
-            <button (click)="onEndTaskBtnClick()"  class="btn btn-primary" style="margin-left: 30%;" [ngClass]="activeFocus()">
+        </div>
+        <div class="tsksmgr-footer-div-cntnt1">
+            <button (click)="onEndTaskBtnClick()"  class="btn btn-primary-b"  [ngClass]="activeFocus()">
               End task
             </button>
-        </span>
+        </div>
       </div>
   </div>
   </ng-template>
