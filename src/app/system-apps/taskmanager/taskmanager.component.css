@@ -149,11 +149,11 @@ tbody{
 /* Custom styles for table cells */
 .taskmgr-table td {
   padding: 3px 5px; /* Cell padding */
-  font-weight:lighter; 
-  min-width: 75px;
+  min-width: 80px;
   margin-left: 5px;
   margin-right: 5px;
-  font-size: 13px;
+  font-size: 12px;
+  font-weight:lighter; 
   text-align: left; /* Header text alignment */
   border: 1px solid #ccc; /* Cell border  #1a127b*/
   border-top:none; border-bottom:none;
