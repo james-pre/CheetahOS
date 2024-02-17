@@ -186,44 +186,22 @@
   width:60%;
 }
 
-.tskmgr-th-span-number{
-  font-size:large;
-  position: relative;
-  font-weight: normal;
-  right: -16%;
-  padding-right: 5px;
-  top:0%;
-}
-
-.tskmgr-th-span-symbol{
-  font-size:large;
-  position: relative;
-  font-weight: normal;
-  right: -16%;
-  padding-right: 5px;
-  top:0%;
-}
-
-
 .tskmgr-th-div-number{
-  font-size:large;
+  font-size:medium;
   position: relative;
   font-weight: normal;
   width: 58%;
-  right: -16%;
-
+  /* right: 0%; */
   top:0%;
 }
 
 .tskmgr-th-div-symbol{
-  font-size:large;
+  font-size:medium;
   position: relative;
   font-weight: normal;
   width: 42%;
-  /* right: -16%; */
   top:0%;
 }
-
 
 
 .tskmgr-numeric-th-name-cntnr{

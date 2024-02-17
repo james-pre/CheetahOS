@@ -726,173 +726,52 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   }
 
   setThHeaderContainerColor(cellValue:number, cellName:string){
-    //let baseStyle:Record<string, unknown> = {};
 
     const sortColoumn = this._sorting.column;
     if(cellName == sortColoumn){
-      const thColElmnt =  document.getElementById(`${cellName.toLowerCase()}Div-${this.processId}`) as HTMLElement;  
-      if(cellValue < 10){
-        thColElmnt.style.backgroundColor = '#d0ecfc'
+      const divElmnt =  document.getElementById(`${cellName.toLowerCase()}Div-${this.processId}`) as HTMLElement;  
+      const divElmnt1 =  document.getElementById(`${cellName.toLowerCase()}Div1-${this.processId}`) as HTMLElement; 
+      const utilDivElmnt =  document.getElementById(`${cellName.toLowerCase()}UtilDiv-${this.processId}`) as HTMLElement; 
+
+      if(cellValue < 0){
+        divElmnt.style.backgroundColor = '#d0ecfc';
+        divElmnt1.style.backgroundColor = '#d0ecfc';
+        utilDivElmnt.style.right = '-40%';
       }else if(cellValue >= 10){
-        thColElmnt.style.backgroundColor = (cellValue >= 90)?  '#fcc4ac' : '#d0ecfc';
-        thColElmnt.style.borderLeft = (cellValue >= 90)? '#fcc4ac': '';
-        thColElmnt.style.borderRight = (cellValue >= 90)? '#fcc4ac': '';
+        divElmnt.style.backgroundColor = (cellValue >= 90)?  '#fcc4ac' : '#d0ecfc';
+        divElmnt1.style.backgroundColor = (cellValue >= 90)?  '#fcc4ac' : '#d0ecfc';
+        
+        divElmnt.style.borderLeft = (cellValue >= 90)? '#fcc4ac': '';
+        divElmnt1.style.borderLeft = (cellValue >= 90)? '#fcc4ac': '';
+        divElmnt.style.borderRight = (cellValue >= 90)? '#fcc4ac': '';
+        divElmnt1.style.borderRight = (cellValue >= 90)? '#fcc4ac': '';
+        utilDivElmnt.style.right = (cellValue >= 100)? '-5%': '-20%';
       }
     } 
     else{
-      const thColElmnt =  document.getElementById(`${cellName.toLowerCase()}Div-${this.processId}`) as HTMLElement;  
+      const divElmnt =  document.getElementById(`${cellName.toLowerCase()}Div-${this.processId}`) as HTMLElement;  
+      const divElmnt1 =  document.getElementById(`${cellName.toLowerCase()}Div1-${this.processId}`) as HTMLElement;  
+      const utilDivElmnt =  document.getElementById(`${cellName.toLowerCase()}UtilDiv-${this.processId}`) as HTMLElement; 
 
-      if(thColElmnt){      
-        if(cellValue >= 10){
-          thColElmnt.style.backgroundColor = (cellValue >= 90)?  '#fcc4ac' : '#ffffff';
-          thColElmnt.style.borderLeft = (cellValue >= 90)? '#fcc4ac': '';
-          thColElmnt.style.borderRight = (cellValue >= 90)? '#fcc4ac': '';
+      if(divElmnt && divElmnt1 && utilDivElmnt){      
+        if(cellValue < 10){
+          // thColElmnt.style.backgroundColor = '#d0ecfc';
+          utilDivElmnt.style.right = '-40%';
+        }else if(cellValue >= 10){
+          divElmnt.style.backgroundColor = (cellValue >= 90)?  '#fcc4ac' : '#ffffff';
+          divElmnt1.style.backgroundColor = (cellValue >= 90)?  '#fcc4ac' : '#ffffff';
+          
+          divElmnt.style.borderLeft = (cellValue >= 90)? '#fcc4ac': '';
+          divElmnt1.style.borderLeft = (cellValue >= 90)? '#fcc4ac': '';
+          divElmnt.style.borderRight = (cellValue >= 90)? '#fcc4ac': '';
+          divElmnt1.style.borderRight = (cellValue >= 90)? '#fcc4ac': '';
+          utilDivElmnt.style.right = (cellValue >= 100)? '-5%': '-20%';
         }
       }
     }
-
   }
 
-  // setUtilHeaderSpan2section2Colors(cellValue:number){
-  //   let baseStyle:Record<string, unknown> = {}
-
-  //   const thColElmnt =  document.getElementById(`tskmgr-nav-file-menu-${this.processId}`) as HTMLElement;  
-
-  //   if(cellValue < 10){
-  //    return baseStyle= {
-  //       // 'padding-left':'22%',
-  //       // 'display':'inline-block',
-  //       // 'height':'50%',
-  //       // 'font-size':'large',
-  //       // 'width':'65%'
-  //     };
-  //   }else if(cellValue >= 10){
-  //     return baseStyle = {
-  //       // 'padding-left':'9%',
-  //       // 'display':'inline-block',
-  //       // 'height':'50%',
-  //       // 'font-size':'large',
-  //       // 'width':'65%'
-  //     };
-  //   }
-  //   return {};
-  //}
-
-  setUtilHeaderSpan3Colors(cellValue:number, cellName:string){
-    
-    // const baseStyle:Record<string, unknown> =  {
-    //     'padding-left':'55%',
-    //     'height':'50%',
-    //     'padding-top':'5px',
-    //     'font-size':'14px',
-    //     'padding-right':'5px'
-    //  };
-
-     const sortColoumn = this._sorting.column;
-
-    // if (cellName == 'CPU'){
-    //   if(cellValue < 10){
-    //     if(sortColoumn == cellName){
-    //       baseStyle['background-color'] = '#d0ecfc';
-    //     }
-    //     return baseStyle;
-    //    }else if(cellValue >= 10){
-    //     baseStyle['background-color'] =  (cellValue >= 90) ? '##fcc4ac' : '#ffffff';
-    //     if(sortColoumn == cellName){
-    //       if (cellValue >= 90)
-    //         baseStyle['background-color'] = '##fcc4ac';
-    //       else if (cellValue < 90 )
-    //         baseStyle['background-color'] = '#d0ecfc';
-    //     }
-    //     baseStyle['border'] =  (cellValue >= 90) ? '##fcc4ac' : '';
-    //     return baseStyle;
-    //    }
-    // }
-
-    // if (cellName == 'Memory'){
-    //   if(cellValue < 10){
-    //     baseStyle['padding-left'] = '25%';
-    //     if(sortColoumn == cellName){
-    //       baseStyle['background-color'] = '#d0ecfc';
-    //     }
-    //     return baseStyle;
-    //    }else if(cellValue >= 10){
-
-    //     baseStyle['padding-left'] = '25%';
-    //     baseStyle['background-color'] =  (cellValue >= 90) ? '##fcc4ac' : '#ffffff';
-    //     if(sortColoumn == cellName){
-    //       if (cellValue >= 90)
-    //         baseStyle['background-color'] = '##fcc4ac';
-    //       else if (cellValue < 90 )
-    //         baseStyle['background-color'] = '#d0ecfc';
-    //     }
-    //     baseStyle['border'] =  (cellValue >= 90) ? '##fcc4ac' : '';
-    //     return baseStyle;
-    //    }
-    // }
-
-    // if (cellName == 'Disk'){
-    //   if(cellValue < 10){
-    //     if(sortColoumn == cellName){
-    //       baseStyle['background-color'] = '#d0ecfc';
-    //     }
-    //     return baseStyle;
-    //    }else if(cellValue >= 10){
-    //     baseStyle['background-color'] =  (cellValue >= 90) ? '##fcc4ac' : '#ffffff';
-    //     if(sortColoumn == cellName){
-    //       if (cellValue >= 90)
-    //         baseStyle['background-color'] = '##fcc4ac';
-    //       else if (cellValue < 90 )
-    //         baseStyle['background-color'] = '#d0ecfc';
-    //     }
-    //     baseStyle['border'] =  (cellValue >= 90) ? '##fcc4ac' : '';
-    //     return baseStyle;
-    //    }
-    // }
-
-    // if (cellName == 'Network'){
-    //   if(cellValue < 10){
-    //     baseStyle['padding-left'] = '24%';
-    //     if(sortColoumn == cellName){
-    //       baseStyle['background-color'] = '#d0ecfc';
-    //     }
-    //     return baseStyle;
-    //    }else if(cellValue >= 10){
-
-    //     baseStyle['padding-left'] = '24%';
-    //     baseStyle['background-color'] =  (cellValue >= 90) ? '##fcc4ac' : '#ffffff';
-    //     if(sortColoumn == cellName){
-    //       if (cellValue >= 90)
-    //         baseStyle['background-color'] = '##fcc4ac';
-    //       else if (cellValue < 90 )
-    //         baseStyle['background-color'] = '#d0ecfc';
-    //     }
-    //     baseStyle['border'] =  (cellValue >= 90) ? '##fcc4ac' : '';
-    //     return baseStyle;
-    //    }
-    // }
-
-    // if (cellName == 'GPU'){
-    //   if(cellValue < 10){
-    //     if(sortColoumn == cellName){
-    //       baseStyle['background-color'] = '#d0ecfc';
-    //     }
-    //     return baseStyle;
-    //    }else if(cellValue >= 10){
-    //     baseStyle['background-color'] =  (cellValue >= 90) ? '##fcc4ac' : '#ffffff';
-    //     if(sortColoumn == cellName){
-    //       if (cellValue >= 90)
-    //         baseStyle['background-color'] = '##fcc4ac';
-    //       else if (cellValue < 90 )
-    //         baseStyle['background-color'] = '#d0ecfc';
-    //     }
-    //     baseStyle['border'] =  (cellValue >= 90) ? '##fcc4ac' : '';
-    //     return baseStyle;
-    //    }
-    // }
-
-    return {};
-  }
+  
 
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type)
