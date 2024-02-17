@@ -324,7 +324,7 @@ tbody{
   cursor: pointer;
   transition: background-color 0.3s;
   font-weight: normal;
-  font-size: 13px;
+  font-size: 12px;
   border-left: 1px solid #ccc;
   border-right: 1px solid #ccc;
   border-top: 1px solid #ccc;
