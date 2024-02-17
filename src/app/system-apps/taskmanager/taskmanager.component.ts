@@ -317,20 +317,20 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   }
 
   showContextMenu(evt:MouseEvent):void{
-    // const rect =  this.tskMgrTable.nativeElement.getBoundingClientRect();
-    // const x = evt.clientX - rect.left;
-    // const y = evt.clientY - rect.top;
+    const rect =  this.tskMgrTable.nativeElement.getBoundingClientRect();
+    const x = evt.clientX - rect.left;
+    const y = evt.clientY - rect.top;
 
-    // this.cntxtMenuStyle = {
-    //   'display': 'block', 
-    //   'width': '180px', 
-    //   'transform':`translate(${x}px, ${y - 65}px)`,
-    //   'z-index': 2,
-    //   'opacity':1
-    // }
+    this.cntxtMenuStyle = {
+      'display': 'block', 
+      'width': '180px', 
+      'transform':`translate(${x}px, ${y - 65}px)`,
+      'z-index': 2,
+      'opacity':1
+    }
 
-    // this._runningProcessService.responseToEventCount++;
-    // evt.preventDefault();
+    this._runningProcessService.responseToEventCount++;
+    evt.preventDefault();
   }
 
   hideContextMenu():void{

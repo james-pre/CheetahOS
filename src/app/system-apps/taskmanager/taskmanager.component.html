@@ -74,12 +74,12 @@
         <div class="tskmgr-tab-pane active">
           <div class='card'>
               <div class='card-body'>
-                <div class='table-responsive'>
+                <div class='taskmgr-table-cntnr'>
   
                   <!-- add  class="data" data-rtc-resizable-table="table.one" to  the first <table> to activate resize.[ngClass]="
                        add data-rtc-resizable=columnName to the first <th> of each column were resize is desired
                     " -->
-                  <table class='table' *ngIf = 'processes.length > 0' #tskMgrTable>
+                  <table class='taskmgr-table' *ngIf = 'processes.length > 0' #tskMgrTable>
                     <thead>
                       <div style="height:10px; border-top: none;"></div>
                       <tr (contextmenu)="showContextMenu($event)" (click)="hideContextMenu()">             
@@ -115,7 +115,7 @@
                             <span *ngIf="isDescSorting('PID')">v</span>
                             <span *ngIf="isAscSorting('PID')">ᴧ</span>
                           </div>
-                          <div class="tskmgr-th-div-name-cntnr-r">
+                          <div class="tskmgr-th-div-name-cntnr-l">
                             <span class="tskmgr-th-span-name"> PID </span>
                           </div>
                         </th>
@@ -341,8 +341,8 @@
   <ng-template #miniView0>
     <div class='card'>
       <div class='card-body'>
-        <div class='table-responsive'>
-          <table class='table mini' *ngIf = 'processes.length > 0' >
+        <div class='taskmgr-table-cntnr'>
+          <table class='taskmgr-table mini' *ngIf = 'processes.length > 0' >
             <tbody>
               <tr *ngFor='let process of processes; let i = index'(click)="onProcessSelected(i,process.getProcessId)" [class.active]="i === selectedRow"  id="trElmnt-{{this.processId}}-{{i}}">
                   <td style="width: 55%;">

@@ -90,16 +90,17 @@
   /* max-width: 300px; */
 }
 
-
+/*----------------------------------------Table CSS START --------------------------*/
 /* Custom styles for .table-responsive (Optional) */
-.table-responsive {
-  width: 100%; /* Set a maximum width for the responsive container */
-  overflow: auto; /* Enable horizontal scrolling when needed */
+.taskmgr-table-cntnr {
+  width: 680px;
+  overflow: scroll; /* Enable horizontal scrolling when needed */
   border-top:  none;
 }
 
 /* Custom styles for the table */
-.table {
+.taskmgr-table {
+  /*overflow: scroll; */   /* Enable horizontal scrolling when needed */
   border-collapse: collapse; /* Remove spacing between table cells */
   min-width: 40%; /* Set the table width to 100% of its container */
   margin: 1px 0; /* Add margin above and below the table */
@@ -108,7 +109,7 @@
 }
 
 /* Custom styles for the table */
-.table.mini {
+.taskmgr-table.mini {
   border-collapse: collapse; /* Remove spacing between table cells */
   min-width: 100%; /* Set the table width to 100% of its container */
   margin: 1px 0; /* Add margin above and below the table */
@@ -116,9 +117,8 @@
   table-layout: auto;
 }
 
-
-  /* Custom styles for table headers */
-.table th {
+/* Custom styles for table headers */
+.taskmgr-table th {
   background-color: #ffffff; /* Header background color */
   color: #333; /* Header text color */
   padding: 0; /* Header cell padding */
@@ -129,6 +129,55 @@
   border: 1px solid #ccc;   /* Cell border */
   border-top: none;
   vertical-align: middle;
+}
+
+tbody{
+  border-left: 0;
+  border-right: 0;
+}
+  
+/* Custom styles for table rows */
+.taskmgr-table tr {
+  background-color: #ffffff; /* Row background color */
+}
+  
+/* Alternate row background color (zebra-striping) */
+.taskmgr-table tr:nth-child(even) {
+  background-color: #ffffff; 
+}
+  
+/* Custom styles for table cells */
+.taskmgr-table td {
+  padding: 3px 5px; /* Cell padding */
+  font-weight:lighter; 
+  min-width: 75px;
+  margin-left: 5px;
+  margin-right: 5px;
+  font-size: 13px;
+  text-align: left; /* Header text alignment */
+  border: 1px solid #ccc; /* Cell border  #1a127b*/
+  border-top:none; border-bottom:none;
+}
+
+.taskmgr-table td:first-child td:last-child{
+  border-left: 0;
+  border-right: 0;
+}
+
+/* Add hover effect to table rows (optional) */
+.taskmgr-table tr:hover {
+  background-color: #e8f4fc;
+}
+
+.taskmgr-table tr.active td {
+  background-color:#d0ecfc !important;
+}
+
+
+/*----------------------------------------Table CSS END --------------------------*/
+
+span {
+  display: block; /* Ensures each span is on a new line */
 }
 
 .tskmgr-th-div-name-cntnr-l{
@@ -222,55 +271,9 @@
   top:18%
 }
 
-.table th:first-child th:last-child{
+.taskmgr-table th:first-child th:last-child{
   border-left: 0;
   border-right: 0;
-}
-
-span {
-  display: block; /* Ensures each span is on a new line */
-}
-
-tbody{
-  border-left: 0;
-  border-right: 0;
-}
-  
-/* Custom styles for table rows */
-.table tr {
-  background-color: #ffffff; /* Row background color */
-}
-  
-/* Alternate row background color (zebra-striping) */
-.table tr:nth-child(even) {
-  background-color: #ffffff; 
-}
-  
-/* Custom styles for table cells */
-.table td {
-  padding: 3px 5px; /* Cell padding */
-  font-weight:lighter; 
-  min-width: 75px;
-  margin-left: 5px;
-  margin-right: 5px;
-  font-size: 13px;
-  text-align: left; /* Header text alignment */
-  border: 1px solid #ccc; /* Cell border  #1a127b*/
-  border-top:none; border-bottom:none;
-}
-
-.table td:first-child td:last-child{
-  border-left: 0;
-  border-right: 0;
-}
-
-/* Add hover effect to table rows (optional) */
-.table tr:hover {
-  background-color: #e8f4fc;
-}
-
-.table tr.active td {
-  background-color:#d0ecfc !important;
 }
   
 .tskmgr-figure0{
