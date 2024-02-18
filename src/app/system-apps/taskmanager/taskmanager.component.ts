@@ -1,4 +1,4 @@
-import { Component, OnInit,OnDestroy, AfterViewInit, ViewChild, ElementRef, Renderer2} from '@angular/core';
+import { Component, OnInit,OnDestroy, AfterViewInit, ViewChild, ElementRef, Renderer2, Input} from '@angular/core';
 import { Subject, Subscription, interval, switchMap } from 'rxjs';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
@@ -148,6 +148,8 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       this.generateLies();
       this.sortTable(this._sorting.column, false);
     });
+
+ 
 
     this._chnageTaskmgrRefreshIntervalSub.pipe(
       switchMap( newRefreshRate => {
@@ -770,7 +772,6 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     }
   }
 
-  
 
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type)

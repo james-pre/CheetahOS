@@ -21,18 +21,13 @@ export class ResizableDirective {
   ).pipe(
     tap(e => e.preventDefault()),
     switchMap(() => {
-        
-     // const { width, right } = this.elementRef.nativeElement.closest("th").getBoundingClientRect();
-        let width =  0;
-        let right = 0;
-
-      if(this.elementRef.nativeElement){
-        const ntvElmnt = this.elementRef.nativeElement;
-        if(ntvElmnt){
-            const ntvElmnt1 = ntvElmnt.closest("th")?.getBoundingClientRect();
-             width =  ntvElmnt1?.width || 0;
-             right = ntvElmnt1?.right || 0;
-        }
+      let width =  0;
+      let right = 0;
+      
+      if(this.elementRef.nativeElement.closest("th")){
+        const ntvElmnt = this.elementRef.nativeElement.closest("th")?.getBoundingClientRect();
+        width =  ntvElmnt?.width || 0;
+        right = ntvElmnt?.right || 0;
       }
 
       return fromEvent<MouseEvent>(this.documentRef, "mousemove").pipe(

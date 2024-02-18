@@ -94,18 +94,19 @@
 /* Custom styles for .table-responsive (Optional) */
 .taskmgr-table-cntnr {
   width: 680px;
-  overflow: scroll; /* Enable horizontal scrolling when needed */
+  height: 269px;
+  overflow: auto; /* Enable horizontal scrolling when needed */
   border-top:  none;
 }
 
 /* Custom styles for the table */
 .taskmgr-table {
-  /*overflow: scroll; */   /* Enable horizontal scrolling when needed */
-  border-collapse: collapse; /* Remove spacing between table cells */
-  min-width: 40%; /* Set the table width to 100% of its container */
-  margin: 1px 0; /* Add margin above and below the table */
-  font-family: Arial, sans-serif; /* Set the font family for the table */
-  table-layout: auto;
+    /*overflow: scroll; */   /* Enable horizontal scrolling when needed */
+    border-collapse: collapse; /* Remove spacing between table cells */
+    width: 100%; /* Set the table width to 100% of its container */
+    margin: 1px 0; /* Add margin above and below the table */
+    font-family: Arial, sans-serif; /* Set the font family for the table */
+    table-layout: auto;
 }
 
 /* Custom styles for the table */
@@ -173,6 +174,22 @@ tbody{
   background-color:#d0ecfc !important;
 }
 
+
+/* Add this to your component's CSS or global styles */
+th[columnResize], td[columnResize] {
+  position: relative;
+}
+
+th[columnResize]::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1px; /* Adjust the handle width */
+  height: 100%;
+  cursor: col-resize;
+  background-color: #f0f0f0; /* Handle background color */
+}
 
 /*----------------------------------------Table CSS END --------------------------*/
 
@@ -481,6 +498,7 @@ span {
   background-color: #ffffff;
   padding: 3px;
   box-shadow: 2px 2px rgba(0,0,0,0.3);
+  z-index: 1;
 }
 
 /* .tskmgr-nav-btn:hover .tskmgr-nav-menu-cntnr{
