@@ -27,7 +27,6 @@ import { SafeUrlPipe } from './shared/system-pipes/safe.resource.url.pipe';
 import { HighlightDirective } from './system-apps/window/window.btn.highlight.directives';
 import { TaskBarEntryHighlightDirective } from './system-apps/taskbarentries/taskbar.entry.highlight.directives';
 import { LongPressDirective } from './system-apps/audioplayer/long.press.directive';
-// import { ResizableModule } from './system-apps/taskmanager/resizable/resizable.module';
 import { ColumnResizeDirective } from './system-apps/taskmanager/taskmanager.column-resize.directive';
 
 
@@ -63,7 +62,6 @@ import { ColumnResizeDirective } from './system-apps/taskmanager/taskmanager.col
     AngularDraggableModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
-    // ResizableModule
   ],
   providers: [],
   bootstrap: [AppComponent]

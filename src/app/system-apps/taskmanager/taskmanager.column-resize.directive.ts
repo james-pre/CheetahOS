@@ -36,7 +36,7 @@ export class ColumnResizeDirective {
       const columns = this.table.querySelectorAll('th');
 
       const onMouseMove = (moveEvent: MouseEvent) => {
-        if (this.isResizing) {
+        if(this.isResizing) {
           const deltaX = moveEvent.pageX - this.startX;
           const newWidth = this.initialWidth + deltaX;
 
@@ -44,12 +44,15 @@ export class ColumnResizeDirective {
           this.renderer.setStyle(this.el.nativeElement, 'width', newWidth + 'px');
 
           // Update the width of the corresponding header and cell in each row
-          columns[this.columnIndex].style.width = newWidth + 'px';
+          columns[this.columnIndex].style.width = `${newWidth}px`;
+
           const rows = this.table?.querySelectorAll('tr');
+          console.log("row count:", rows);
+
           rows?.forEach((row) => {
             const cells = row.querySelectorAll('td');
             if (cells[this.columnIndex]) {
-              cells[this.columnIndex].style.width = newWidth + 'px';
+              cells[this.columnIndex].style.width = `${newWidth}px`;
             }
           });
 
@@ -63,32 +66,35 @@ export class ColumnResizeDirective {
 
 
 
-      const onMouseMove1 = (moveEvent: MouseEvent) => {
-        if (this.isResizing) {
+      // const onMouseMove1 = (moveEvent: MouseEvent) => {
+      //   if (this.isResizing) {
   
-        const deltaX = moveEvent.pageX - this.startX;
-        const newWidth = this.initialWidth + deltaX;
+      //   const deltaX = moveEvent.pageX - this.startX;
+      //   const newWidth = this.initialWidth + deltaX;
 
-          let width =  0;
-          let right = 0;
-           const thElmnt = this.el.nativeElement.closest("th")?.getBoundingClientRect();
-           width = thElmnt.width;
-           right = thElmnt.right;
+      //     let width =  0;
+      //     let right = 0;
+      //      const thElmnt = this.el.nativeElement.closest("th")?.getBoundingClientRect();
+      //      width = thElmnt.width;
+      //      right = thElmnt.right;
 
-           const newWidth1 = width + moveEvent.clientX - right;
-           this.renderer.setStyle(this.el.nativeElement, 'width', `${newWidth}px`);
-        }
-      };
+      //      const newWidth1 = width + moveEvent.clientX - right;
+      //      const tableWidth = this.table?.offsetWidth || 0;
+      //      console.log('table width:',tableWidth);
+      //     //  this.renderer.setStyle(this.table, 'width', tableWidth + deltaX + 'px');
+      //      this.renderer.setStyle(this.el.nativeElement, 'width', `${newWidth}px`);
+      //   }
+      // };
 
       const onMouseUp = () => {
         this.isResizing = false;
         this.renderer.removeClass(this.el.nativeElement, 'resizing');
         this.renderer.removeClass(document.body, 'resizing');
-        document.removeEventListener('mousemove', onMouseMove1);
+        document.removeEventListener('mousemove', onMouseMove);
         document.removeEventListener('mouseup', onMouseUp);
       };
 
-      document.addEventListener('mousemove', onMouseMove1);
+      document.addEventListener('mousemove', onMouseMove);
       document.addEventListener('mouseup', onMouseUp);
     }
   }
