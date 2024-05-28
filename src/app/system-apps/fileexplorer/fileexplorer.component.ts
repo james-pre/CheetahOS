@@ -135,9 +135,11 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
     this.setNavButtonsColor();
     this.onHideIconContextMenu();
+  
   }
 
   async ngAfterViewInit():Promise<void>{
+    this.hidePathTextBoxOnload();
     await this.loadFilesInfoAsync();
   }
   
@@ -846,8 +848,13 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   }
 
   showPathTextBox():void{
+    const pathTxtBoxCntrElement = document.getElementById(`pathTxtBoxCntr-${this.processId}`) as HTMLElement;
     const pathTxtBoxElement = document.getElementById(`pathTxtBox-${this.processId}`) as HTMLInputElement;
     const pathIconBoxElement = document.getElementById(`pathIconBox-${this.processId}`) as HTMLElement;
+
+    if(pathTxtBoxCntrElement){
+      pathTxtBoxCntrElement.style.display = 'flex';
+    }
 
     if(pathTxtBoxElement){
       pathTxtBoxElement.style.display = 'block';
@@ -873,6 +880,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   }
 
   hidePathTextBox():void{
+    const pathTxtBoxCntrElement = document.getElementById(`pathTxtBoxCntr-${this.processId}`) as HTMLElement;
     const pathTxtBoxElement = document.getElementById(`pathTxtBox-${this.processId}`) as HTMLElement;
     const pathIconBoxElement = document.getElementById(`pathIconBox-${this.processId}`) as HTMLElement;
 
@@ -880,8 +888,25 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
       pathTxtBoxElement.style.display = 'none';
     }
 
+    if(pathTxtBoxCntrElement){
+      pathTxtBoxCntrElement.style.display = 'none';
+    }
+
     if(pathIconBoxElement){
       pathIconBoxElement.style.display = 'flex';
+    }
+  }
+
+  hidePathTextBoxOnload():void{
+    const pathTxtBoxCntrElement = document.getElementById(`pathTxtBoxCntr-${this.processId}`) as HTMLElement;
+    const pathTxtBoxElement = document.getElementById(`pathTxtBox-${this.processId}`) as HTMLElement;  
+
+    if(pathTxtBoxElement){
+      pathTxtBoxElement.style.display = 'none';
+    }
+
+    if(pathTxtBoxCntrElement){
+      pathTxtBoxCntrElement.style.display = 'none';
     }
   }
 
