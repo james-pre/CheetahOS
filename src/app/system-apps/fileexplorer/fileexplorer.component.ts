@@ -86,8 +86,10 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   hideCntxtMenuEvtCnt = 0; // this is a dirty solution
   renameFileTriggerCnt = 0; // this is a dirty solution
 
-  viewOptions = ViewOptions.MEDIUM_ICON_VIEW;
-  selectedViewOptions = ''
+  defaultviewOption = ViewOptions.MEDIUM_ICON_VIEW;
+  currentViewOption = ViewOptions.MEDIUM_ICON_VIEW;
+  currentViewOptionId = 3;
+  //selectedViewOption!:any;
 
   readonly smallIconsView = ViewOptions.SMALL_ICON_VIEW;
   readonly mediumIconsView = ViewOptions.MEDIUM_ICON_VIEW;
@@ -139,15 +141,18 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   }
 
   async ngAfterViewInit():Promise<void>{
+
     this.hidePathTextBoxOnload();
+    this.changeFileExplorerLayoutCSS(this.currentViewOption);
+    this.changeTabLayoutIconCntnrCSS(this.currentViewOptionId,false);
+  
     await this.loadFilesInfoAsync();
   }
   
 
-
   colorTabLayoutContainer():void{
     this.tabLayoutCntnrStyle ={
-      'background-color': '#777777'
+      'background-color': '#403c3c'
     }
   }
 
@@ -158,43 +163,73 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   }
 
   onMouseEnterTabLayoutBtn(iconView:string, id:number):void{
-    const btnElement = document.getElementById(`tabLayoutIconCntnr-${this.processId}-${id}`) as HTMLElement;
-    if(btnElement){
-      // btnElement.style.backgroundColor = '#777777';
-      // btnElement.style.border = '1px solid #3c3c3c';
-      btnElement.style.backgroundColor = 'transparent';
-      // btnElement.style.border = '0.5px solid #fff'; this color should be for selected icon view
-      btnElement.style.border = '0.5px solid #ccc';
-      btnElement.style.margin = '-0.5px';
-    }
-
-    if(iconView == this.smallIconsView || iconView == this.mediumIconsView ||iconView == this.largeIconsView || iconView == this.extraLargeIconsView){
-      this.viewOptions = iconView;
-      this.changeLayoutCss(this.viewOptions);
-      this.changeOrderedlistStyle(iconView);
-      this.changeButtonAndImageSize(iconView);
-    }
-
-    if(iconView == this.listView || iconView == this.detailsView || iconView == this.tilesView || iconView == this.contentView){
-      this.viewOptions = iconView;
-      this.changeLayoutCss(this.viewOptions);
-      this.changeOrderedlistStyle(iconView);
-    }
+    this.changeTabLayoutIconCntnrCSS(id,true);
+    this.changeFileExplorerLayoutCSS(iconView);
   }
 
   onMouseLeaveTabLayoutBtn(id:number):void{
-    const btnElement = document.getElementById(`tabLayoutIconCntnr-${this.processId}-${id}`) as HTMLElement;
-    if(btnElement){
-      btnElement.style.backgroundColor = '';
-      btnElement.style.border = '';
-      btnElement.style.margin = '0';
-    }
+    this.changeTabLayoutIconCntnrCSS(id,false);
+    this.changeFileExplorerLayoutCSS(this.defaultviewOption);
+  }
 
-    if(this.selectedViewOptions == ''){
-      //this.changeLayoutCss(this.viewOptions);
+  onClickTabLayoutBtn(iconView:any, id:number):void{
+    this.currentViewOptionId = id;
+    this.currentViewOption = iconView;
+    this.defaultviewOption = iconView;
+
+    this.changeTabLayoutIconCntnrCSS(id,true);
+
+    for(let i = 1; i<=8; i++){
+      if(i != id){
+        this.changeTabLayoutIconCntnrCSS(i,false);
+      }
     }
   }
 
+  changeFileExplorerLayoutCSS(inputViewOption:any){
+    if(inputViewOption == this.smallIconsView || inputViewOption == this.mediumIconsView ||inputViewOption == this.largeIconsView || inputViewOption== this.extraLargeIconsView){
+      this.currentViewOption = inputViewOption;
+      this.changeLayoutCss(inputViewOption);
+      this.changeOrderedlistStyle(inputViewOption);
+      this.changeButtonAndImageSize(inputViewOption);
+    }
+
+    if(inputViewOption == this.listView || inputViewOption == this.detailsView || inputViewOption == this.tilesView || inputViewOption == this.contentView){
+      this.currentViewOption = inputViewOption;
+      this.changeLayoutCss(inputViewOption);
+      this.changeOrderedlistStyle(inputViewOption);
+    }
+  }
+
+  changeTabLayoutIconCntnrCSS(id:number, isMouseHover:boolean){
+    const btnElement = document.getElementById(`tabLayoutIconCntnr-${this.processId}-${id}`) as HTMLElement;
+    if(this.currentViewOptionId == id){
+      if(btnElement){
+        btnElement.style.border = '0.5px solid #ccc';
+        btnElement.style.margin = '-0.5px';
+
+        if(isMouseHover){
+          btnElement.style.backgroundColor = '#807c7c';
+        }else{
+          btnElement.style.backgroundColor = '#605c5c';
+        }
+      }
+    }
+
+    if(this.currentViewOptionId != id){
+      if(btnElement){
+        if(isMouseHover){
+          btnElement.style.backgroundColor = '#403c3c';
+          btnElement.style.border = '0.5px solid #ccc';
+          btnElement.style.margin = '-0.5px';
+        }else{
+          btnElement.style.backgroundColor = '';
+          btnElement.style.border = '';
+          btnElement.style.margin = '0';
+        }
+      }    
+    }
+  }
 
   changeLayoutCss(iconSize:string):void{
 

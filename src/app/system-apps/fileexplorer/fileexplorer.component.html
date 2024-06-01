@@ -58,21 +58,21 @@
                 <div class="view-tab-layout-top-cntnr">
                     <div class="view-tab-layout-top1" (mouseenter)="colorTabLayoutContainer()" (mouseleave)="unColorTabLayoutContainer()" [style]="tabLayoutCntnrStyle">
                         <div class="view-tab-layout-content">
-                            <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.extraLargeIconsView, 1)" (mouseleave)="onMouseLeaveTabLayoutBtn(1)"     id="tabLayoutIconCntnr-{{this.processId}}-1">
+                            <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.extraLargeIconsView, 1)" (mouseleave)="onMouseLeaveTabLayoutBtn(1)" (click)="onClickTabLayoutBtn(this.extraLargeIconsView, 1)"     id="tabLayoutIconCntnr-{{this.processId}}-1">
                                 <figure class="figure-tab-view-layout">
                                     <img class="img-tab-view-layout" [src]="'osdrive/icons/extral_large_image.ico' | safeResourceUrl"/>
                                 </figure>
                                 <div class="div-tab-view-layout">Extra large icons</div>
                             </span>
 
-                            <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.largeIconsView, 2)" (mouseleave)="onMouseLeaveTabLayoutBtn(2)" id="tabLayoutIconCntnr-{{this.processId}}-2">
+                            <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.largeIconsView, 2)" (mouseleave)="onMouseLeaveTabLayoutBtn(2)" (click)="onClickTabLayoutBtn(this.largeIconsView, 2)" id="tabLayoutIconCntnr-{{this.processId}}-2">
                                 <figure class="figure-tab-view-layout">
                                     <img class="img-tab-view-layout" [src]="'osdrive/icons/large_image.ico' | safeResourceUrl"/>
                                 </figure>
                                 <div class="div-tab-view-layout">Large icons</div>
                             </span>
 
-                            <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.mediumIconsView, 3)" (mouseleave)="onMouseLeaveTabLayoutBtn(3)" id="tabLayoutIconCntnr-{{this.processId}}-3">
+                            <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.mediumIconsView, 3)" (mouseleave)="onMouseLeaveTabLayoutBtn(3)" (click)="onClickTabLayoutBtn(this.mediumIconsView, 3)" id="tabLayoutIconCntnr-{{this.processId}}-3">
                                 <figure class="figure-tab-view-layout">
                                     <img class="img-tab-view-layout" [src]="'osdrive/icons/medium_icons_view.ico' | safeResourceUrl"/>
                                 </figure>
@@ -80,21 +80,21 @@
                             </span>
                         </div>
                         <div class="view-tab-layout-content">
-                            <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.smallIconsView, 4)" (mouseleave)="onMouseLeaveTabLayoutBtn(4)"  id="tabLayoutIconCntnr-{{this.processId}}-4">
+                            <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.smallIconsView, 4)" (mouseleave)="onMouseLeaveTabLayoutBtn(4)" (click)="onClickTabLayoutBtn(this.smallIconsView, 4)"  id="tabLayoutIconCntnr-{{this.processId}}-4">
                                 <figure class="figure-tab-view-layout">
                                     <img class="img-tab-view-layout" [src]="'osdrive/icons/small_icons_view.ico' | safeResourceUrl"/>
                                 </figure>
                                 <div class="div-tab-view-layout">Small icons</div>
                             </span>
 
-                            <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.listView, 5)" (mouseleave)="onMouseLeaveTabLayoutBtn(5)" id="tabLayoutIconCntnr-{{this.processId}}-5">
+                            <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.listView, 5)" (mouseleave)="onMouseLeaveTabLayoutBtn(5)" (click)="onClickTabLayoutBtn(this.listView, 5)" id="tabLayoutIconCntnr-{{this.processId}}-5">
                                 <figure class="figure-tab-view-layout">
                                     <img class="img-tab-view-layout" [src]="'osdrive/icons/list_of_thumbnails_view.ico' | safeResourceUrl"/>
                                 </figure>
                                 <div class="div-tab-view-layout">List</div>
                             </span>
 
-                            <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.detailsView, 6)" (mouseleave)="onMouseLeaveTabLayoutBtn(6)" id="tabLayoutIconCntnr-{{this.processId}}-6">
+                            <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.detailsView, 6)" (mouseleave)="onMouseLeaveTabLayoutBtn(6)" (click)="onClickTabLayoutBtn(this.detailsView, 6)" id="tabLayoutIconCntnr-{{this.processId}}-6">
                                 <figure class="figure-tab-view-layout">
                                     <img class="img-tab-view-layout" [src]="'osdrive/icons/details_view.ico' | safeResourceUrl"/>
                                 </figure>
@@ -102,14 +102,14 @@
                             </span>
                         </div>
                         <div class="view-tab-layout-content">
-                            <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.tilesView, 7)" (mouseleave)="onMouseLeaveTabLayoutBtn(7)" id="tabLayoutIconCntnr-{{this.processId}}-7">
+                            <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.tilesView, 7)" (mouseleave)="onMouseLeaveTabLayoutBtn(7)" (click)="onClickTabLayoutBtn(this.tilesView, 7)" id="tabLayoutIconCntnr-{{this.processId}}-7">
                                 <figure class="figure-tab-view-layout">
                                     <img class="img-tab-view-layout" [src]="'osdrive/icons/tiles_view.ico' | safeResourceUrl"/>
                                 </figure>
                                 <div class="div-tab-view-layout">Tiles</div>
                             </span>
 
-                            <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.contentView, 8)" (mouseleave)="onMouseLeaveTabLayoutBtn(8)" id="tabLayoutIconCntnr-{{this.processId}}-8">
+                            <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.contentView, 8)" (mouseleave)="onMouseLeaveTabLayoutBtn(8)" (click)="onClickTabLayoutBtn(this.contentView, 8)" id="tabLayoutIconCntnr-{{this.processId}}-8">
                                 <figure class="figure-tab-view-layout">
                                     <img class="img-tab-view-layout" [src]="'osdrive/icons/content_view.ico' | safeResourceUrl"/>
                                 </figure>
@@ -255,13 +255,13 @@
                 (stopped)="onDragEnd($event)" (started)="onDragStart($event)" -->
             
                 <ol [ngClass]="olClassName" (dragover)="onDragOver($event)"  (drop)="onDrop($event)" (click)="onHideIconContextMenu()" id="olElmnt-{{this.processId}}"> 
-                    <ng-container [ngTemplateOutlet]="viewOptions === smallIconsView ? iconsView :
-                                                      viewOptions === mediumIconsView ? iconsView :
-                                                      viewOptions === largeIconsView ? iconsView : 
-                                                      viewOptions === extraLargeIconsView ? iconsView : 
-                                                      viewOptions === listView ? listView0 :
-                                                      viewOptions === detailsView ? detailsView0 :
-                                                      viewOptions === contentView ? contentView0 : tilesView0 ">
+                    <ng-container [ngTemplateOutlet]="currentViewOption === smallIconsView ? iconsView :
+                                                      currentViewOption === mediumIconsView ? iconsView :
+                                                      currentViewOption === largeIconsView ? iconsView : 
+                                                      currentViewOption === extraLargeIconsView ? iconsView : 
+                                                      currentViewOption === listView ? listView0 :
+                                                      currentViewOption === detailsView ? detailsView0 :
+                                                      currentViewOption === contentView ? contentView0 : tilesView0 ">
                     </ng-container>
     
                     <ng-template #iconsView>
