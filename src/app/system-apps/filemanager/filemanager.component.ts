@@ -54,7 +54,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
 
   isFormSubmitted = false;
   isRenameActive = false;
-  isHighlighIconDueToPriorActionActive = false;
+  isHighlightIconDueToPriorActionActive = false;
   private selectedFile!:FileInfo;
   renameForm!: FormGroup;
   selectedElementId = -1;
@@ -153,7 +153,9 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   onBtnClick(id:number):void{
     this.prevSelectedElementId = this.selectedElementId 
     this.selectedElementId = id;
-    this.removeIconWasInfocusStyle(this.prevSelectedElementId);
+    
+    this.setBtnStyle(id,true);
+    this.clearBtnStyle(this.prevSelectedElementId);
   }
 
   onTriggerRunProcess():void{
@@ -161,10 +163,14 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   }
 
   onShowIconContextMenu(evt:MouseEvent, file:FileInfo, id:number):void{
+    // show IconContexMenu is still a btn click, just a different type
+    this.prevSelectedElementId = this.selectedElementId 
     this.selectedElementId = id;
     this._runningProcessService.responseToEventCount++;
     this.selectedFile = file;
-    this.isHighlighIconDueToPriorActionActive = false;
+    this.isHighlightIconDueToPriorActionActive = false;
+
+    this.clearBtnStyle(this.prevSelectedElementId);
 
     this.iconCntxtMenuStyle = {
       'display': 'block', 
@@ -187,8 +193,8 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     if(this.isRenameActive){
       this.isFormDirty();
     }
-    if(this.isHighlighIconDueToPriorActionActive){
-      this.iconWasInfocus();
+    if(this.isHighlightIconDueToPriorActionActive){
+      this.setBtnStyle(this.selectedElementId,false);
     }
   }
 
@@ -219,41 +225,38 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   }
 
   onMouseEnter(id:number):void{
-    console.log('mouseEnter');
+    this.setBtnStyle(id,true);
+  }
+
+  onMouseLeave(id:number):void{
+    if(id != this.selectedElementId){
+      this.clearBtnStyle(id);
+    }else if((id == this.selectedElementId) && this.isHighlightIconDueToPriorActionActive){
+      this.setBtnStyle(id,false);
+    }else if((id == this.selectedElementId) && !this.isHighlightIconDueToPriorActionActive){
+      this.setBtnStyle(id,false);
+    }
+  }
+
+  clearBtnStyle(id:number){
+    const btnElement = document.getElementById(`iconBtn${id}`) as HTMLElement;
+    if(btnElement){
+      btnElement.style.backgroundColor = 'transparent';
+      btnElement.style.border = 'none'
+    }
+  }
+
+  setBtnStyle(id:number, isMouseHover:boolean){
     const btnElement = document.getElementById(`iconBtn${id}`) as HTMLElement;
     if(btnElement){
       btnElement.style.backgroundColor = 'hsl(206deg 77% 70%/20%)';
       btnElement.style.border = '2px solid hsla(0,0%,50%,25%)'
-    }
-  }
 
-  onMouseLeave(id:number):void{
-    const btnElement = document.getElementById(`iconBtn${id}`) as HTMLElement;
-    if(id != this.selectedElementId){
-      if(btnElement){
-        btnElement.style.backgroundColor = 'transparent';
-        btnElement.style.border = 'none'
-      }
-    }else if((id == this.selectedElementId) && this.isHighlighIconDueToPriorActionActive){
-      this.iconWasInfocus();
-    }
-  }
-
-  removeIconWasInfocusStyle(id:number):void{
-    const btnElement = document.getElementById(`iconBtn${id}`) as HTMLElement;
-    if((this.isHighlighIconDueToPriorActionActive) && (id != this.selectedElementId )){
-      if(btnElement){
-        btnElement.style.backgroundColor = 'transparent';
-        btnElement.style.border = 'none'
-      }
-      this.isHighlighIconDueToPriorActionActive = false;
-    }else if((!this.isHighlighIconDueToPriorActionActive) && (id != this.selectedElementId )){
-      if(btnElement){
-        btnElement.style.backgroundColor = 'transparent';
-        btnElement.style.border = 'none'
+      if(this.selectedElementId == id){
+        (isMouseHover)? btnElement.style.backgroundColor ='#607c9c' : 
+          btnElement.style.backgroundColor = 'hsl(206deg 77% 70%/20%)';
       }
     }
-    this.prevSelectedElementId = -1;
   }
 
   sortIcons(sortBy:string): void {
@@ -329,7 +332,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   }
 
   async refreshIcons():Promise<void>{
-    this.isHighlighIconDueToPriorActionActive = false;
+    this.isHighlightIconDueToPriorActionActive = false;
     await this.loadFilesInfoAsync();
   }
 
@@ -404,7 +407,8 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     const figCapElement= document.getElementById(`figCap${this.selectedElementId}`) as HTMLElement;
     const renameContainerElement= document.getElementById(`renameContainer${this.selectedElementId}`) as HTMLElement;
     const renameTxtBoxElement= document.getElementById(`renameTxtBox${this.selectedElementId}`) as HTMLInputElement;
-
+    this.clearBtnStyle(this.selectedElementId);
+    
     if(figCapElement){
       figCapElement.style.display = 'none';
     }
@@ -424,10 +428,8 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   onTriggerRenameFileStep2():void{
     this.isRenameActive = !this.isRenameActive;
 
-    const btnElement = document.getElementById(`iconBtn${this.selectedElementId}`) as HTMLElement;
     const figCapElement= document.getElementById(`figCap${this.selectedElementId}`) as HTMLElement;
     const renameContainerElement= document.getElementById(`renameContainer${this.selectedElementId}`) as HTMLElement;
-
     const renameText = this.renameForm.value.renameInput as string;
 
     if(renameText !== '' || renameText.length !== 0){
@@ -440,11 +442,8 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
       this.files[fileIdx] = this.selectedFile;
     }
 
-    if(btnElement){
-      btnElement.style.backgroundColor = 'hsl(206deg 77% 70%/20%)';
-      btnElement.style.border = '2px solid hsla(0,0%,50%,25%)'
-      this.isHighlighIconDueToPriorActionActive = true;
-    }
+    this.setBtnStyle(this.selectedElementId, false)
+    this.isHighlightIconDueToPriorActionActive = true;
 
     if(figCapElement){
       figCapElement.style.display = 'block';
@@ -458,7 +457,6 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   untriggerRenameFile():void{
     this.isRenameActive = !this.isRenameActive;
 
-    const btnElement = document.getElementById(`iconBtn${this.selectedElementId}`) as HTMLElement;
     const figCapElement= document.getElementById(`figCap${this.selectedElementId}`) as HTMLElement;
     const renameContainerElement= document.getElementById(`renameContainer${this.selectedElementId}`) as HTMLElement;
 
@@ -468,24 +466,10 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     if(renameContainerElement){
       renameContainerElement.style.display = 'none';
     }
-    if(btnElement){
-      btnElement.style.backgroundColor = 'hsl(206deg 77% 70%/20%)';
-      btnElement.style.border = '2px solid hsla(0,0%,50%,25%)'
-      this.isHighlighIconDueToPriorActionActive = true;
-    }
+
+    this.setBtnStyle(this.selectedElementId, false)
+    this.isHighlightIconDueToPriorActionActive = true;
   }
-
-  iconWasInfocus():void{
-    const btnElement = document.getElementById(`iconBtn${this.selectedElementId}`) as HTMLElement;
-
-    if(this.hideCntxtMenuEvtCnt >= 0){
-      if(btnElement){
-        btnElement.style.backgroundColor = 'transparent';
-        btnElement.style.border = '1px dotted white'
-      }
-    }
-  }
-
 
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type);
