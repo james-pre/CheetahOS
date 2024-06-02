@@ -48,6 +48,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   files:FileInfo[] = [];
 
   gridSize = 90; //column size of grid = 90px
+  SECONDS_DELAY = 6000;
   private autoAlign = true;
   private autoArrange = false;
   private showDesktopIcon = true;
@@ -154,8 +155,9 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     this.prevSelectedElementId = this.selectedElementId 
     this.selectedElementId = id;
     
+    console.log('onBtnClick:',this.selectedElementId);
     this.setBtnStyle(id,true);
-    this.clearBtnStyle(this.prevSelectedElementId);
+    this.removeIconIsInfocusStyle(this.prevSelectedElementId);
   }
 
   onTriggerRunProcess():void{
@@ -170,7 +172,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     this.selectedFile = file;
     this.isHighlightIconDueToPriorActionActive = false;
 
-    this.clearBtnStyle(this.prevSelectedElementId);
+    this.removeIconIsInfocusStyle(this.prevSelectedElementId);
 
     this.iconCntxtMenuStyle = {
       'display': 'block', 
@@ -225,7 +227,13 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   }
 
   onMouseEnter(id:number):void{
+    console.log('mouseEnter');
     this.setBtnStyle(id,true);
+    // const btnElement = document.getElementById(`iconBtn${id}`) as HTMLElement;
+    // if(btnElement){
+    //   (this.selectedElementId == id)? btnElement.style.backgroundColor ='#607c9c' : btnElement.style.backgroundColor = 'hsl(206deg 77% 70%/20%)';
+    //   btnElement.style.border = '2px solid hsla(0,0%,50%,25%)'
+    // }
   }
 
   onMouseLeave(id:number):void{
@@ -235,6 +243,15 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
       this.setBtnStyle(id,false);
     }else if((id == this.selectedElementId) && !this.isHighlightIconDueToPriorActionActive){
       this.setBtnStyle(id,false);
+    }
+  }
+
+  removeIconIsInfocusStyle(id:number):void{
+    if((this.isHighlightIconDueToPriorActionActive) && (id != this.selectedElementId )){
+      this.clearBtnStyle(id);
+      this.isHighlightIconDueToPriorActionActive = false;
+    }else if((!this.isHighlightIconDueToPriorActionActive) && (id != this.selectedElementId )){
+      this.clearBtnStyle(id);
     }
   }
 
@@ -351,7 +368,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
 
       setTimeout(()=>{ // hide after 6 secs
         this.hideInvalidCharsToolTip();
-      },6000) 
+      },this.SECONDS_DELAY) 
 
       return res;
     }
