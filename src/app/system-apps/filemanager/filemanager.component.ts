@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit, OnDestroy, EventEmitter, Output, ViewChild, ElementRef} from '@angular/core';
+import { AfterViewInit, Component, OnInit, OnDestroy, ViewChild, ElementRef} from '@angular/core';
 import { FileService } from 'src/app/shared/system-service/file.service';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
@@ -155,9 +155,10 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     this.prevSelectedElementId = this.selectedElementId 
     this.selectedElementId = id;
     
-    console.log('onBtnClick:',this.selectedElementId);
-    this.setBtnStyle(id,true);
-    this.removeIconIsInfocusStyle(this.prevSelectedElementId);
+    this.setBtnStyle(this.selectedElementId, true);
+
+    if(this.prevSelectedElementId != id)
+      this.removeIconIsInfocusStyle(this.prevSelectedElementId);
   }
 
   onTriggerRunProcess():void{
@@ -165,14 +166,16 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   }
 
   onShowIconContextMenu(evt:MouseEvent, file:FileInfo, id:number):void{
-    // show IconContexMenu is still a btn click, just a different type
-    this.prevSelectedElementId = this.selectedElementId 
-    this.selectedElementId = id;
     this._runningProcessService.responseToEventCount++;
     this.selectedFile = file;
     this.isHighlightIconDueToPriorActionActive = false;
 
-    this.removeIconIsInfocusStyle(this.prevSelectedElementId);
+    // show IconContexMenu is still a btn click, just a different type
+    this.prevSelectedElementId = this.selectedElementId 
+    this.selectedElementId = id;
+
+    if(this.prevSelectedElementId != id)
+      this.removeIconIsInfocusStyle(this.prevSelectedElementId);
 
     this.iconCntxtMenuStyle = {
       'display': 'block', 
@@ -196,7 +199,8 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
       this.isFormDirty();
     }
     if(this.isHighlightIconDueToPriorActionActive){
-      this.setBtnStyle(this.selectedElementId,false);
+      if(this.hideCntxtMenuEvtCnt >= 0)
+        this.setBtnStyle(this.selectedElementId,false);
     }
   }
 
@@ -227,13 +231,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   }
 
   onMouseEnter(id:number):void{
-    console.log('mouseEnter');
-    this.setBtnStyle(id,true);
-    // const btnElement = document.getElementById(`iconBtn${id}`) as HTMLElement;
-    // if(btnElement){
-    //   (this.selectedElementId == id)? btnElement.style.backgroundColor ='#607c9c' : btnElement.style.backgroundColor = 'hsl(206deg 77% 70%/20%)';
-    //   btnElement.style.border = '2px solid hsla(0,0%,50%,25%)'
-    // }
+    this.setBtnStyle(id, true);
   }
 
   onMouseLeave(id:number):void{
@@ -408,10 +406,9 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
         this.hideCntxtMenuEvtCnt = 0;
     }else if(this.renameForm.dirty == false){
       this.renameFileTriggerCnt ++;
-
+      
       if(this.renameFileTriggerCnt > 1){
         this.untriggerRenameFile();
-
         this.renameFileTriggerCnt = 0;
         this.hideCntxtMenuEvtCnt = 0;
       }
