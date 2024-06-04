@@ -496,9 +496,8 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
       this.selectedFile.setDateModified = Date.now();
       this.files[fileIdx] = this.selectedFile;
 
-      // this.renameForm.controls['renameInput'].setValue('');
-      // this.renameForm.reset;
-      // await this.loadFilesInfoAsync();
+      this.renameForm.reset();
+      await this.loadFilesInfoAsync();
     }
 
     this.setBtnStyle(this.selectedElementId, false);
