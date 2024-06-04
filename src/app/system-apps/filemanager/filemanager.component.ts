@@ -158,9 +158,6 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   onBtnClick(id:number):void{
     this.doBtnClickThings(id);
     this.setBtnStyle(id, true);
-
-    console.log('onBtnClick-btnClickCnt:', this.btnClickCnt);
-    console.log('onBtnClick-hideCntxtMenuEvtCnt:', this.hideCntxtMenuEvtCnt);
   }
 
   onTriggerRunProcess():void{
@@ -204,17 +201,14 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
       'display': 'none', 
     }
   }
+
   onHideIconContextMenu():void{
     this.iconCntxtMenuStyle = {
       'display': 'none', 
     }
 
     //First case - I'm clicking only on the desktop icons
-    if((this.isbtnClickEvt && this.btnClickCnt >= 1) && (!this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt == 0)){
-
-      console.log('1st-onHideIconContextMenu-btnClickCnt:', this.btnClickCnt);
-      console.log('1st-onHideIconContextMenu-hideCntxtMenuEvtCnt:', this.hideCntxtMenuEvtCnt);
-  
+    if((this.isbtnClickEvt && this.btnClickCnt >= 1) && (!this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt == 0)){  
       if(this.isRenameActive){
         this.isFormDirty();
       }
@@ -228,24 +222,18 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
         this.isbtnClickEvt = false;
         this.btnClickCnt = 0;
       }
-
     }else{
         this.hideCntxtMenuEvtCnt++;
         this.isHideCntxtMenuEvt = true;
         //Second case - I was only clicking on the desktop
-        if((this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt >= 1) && (!this.isbtnClickEvt && this.btnClickCnt == 0)){
-          console.log('2nd-onHideIconContextMenu-btnClickCnt:', this.btnClickCnt);
-          console.log('2nd-onHideIconContextMenu-hideCntxtMenuEvtCnt:', this.hideCntxtMenuEvtCnt);
+        if((this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt >= 1) && (!this.isbtnClickEvt && this.btnClickCnt == 0))
           this.btnStyleAndValuesReset();
-        }
-
+        
         //Third case - I was clicking on the desktop icons, then i click on the desktop.
         //clicking on the desktop triggers a hideContextMenuEvt
-        if((this.isbtnClickEvt && this.btnClickCnt >= 1) && (this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt > 1)){
-          console.log('3rd-onHideIconContextMenu-btnClickCnt:', this.btnClickCnt);
-          console.log('3rd-onHideIconContextMenu-hideCntxtMenuEvtCnt:', this.hideCntxtMenuEvtCnt);
+        if((this.isbtnClickEvt && this.btnClickCnt >= 1) && (this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt > 1))
           this.btnStyleAndValuesReset();
-        }
+        
     }
   }
 
@@ -447,18 +435,18 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   }
 
   isFormDirty():void{
-    if (this.renameForm.dirty == true){
-        this.onTriggerRenameFileStep2();
-    }else if(this.renameForm.dirty == false){
+    if (this.renameForm.dirty){
+        this.onRenameFileTxtBoxDataSave();
+    }else if(!this.renameForm.dirty){
       this.renameFileTriggerCnt ++;
       if(this.renameFileTriggerCnt > 1){
-        this.untriggerRenameFile();
+        this.onRenameFileTxtBoxHide();
         this.renameFileTriggerCnt = 0;
       }
     }
   }
 
-  onTriggerRenameFileStep1():void{
+  onRenameFileTxtBoxShow():void{
     this.isRenameActive = !this.isRenameActive;
 
     const figCapElement= document.getElementById(`figCap${this.selectedElementId}`) as HTMLElement;
@@ -480,7 +468,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  async onTriggerRenameFileStep2():Promise<void>{
+  async onRenameFileTxtBoxDataSave():Promise<void>{
     this.isRenameActive = !this.isRenameActive;
 
     const figCapElement= document.getElementById(`figCap${this.selectedElementId}`) as HTMLElement;
@@ -501,6 +489,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     }
 
     this.setBtnStyle(this.selectedElementId, false);
+    this.renameFileTriggerCnt = 0;
    
     if(figCapElement){
       figCapElement.style.display = 'block';
@@ -511,7 +500,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  untriggerRenameFile():void{
+  onRenameFileTxtBoxHide():void{
     this.isRenameActive = !this.isRenameActive;
 
     const figCapElement= document.getElementById(`figCap${this.selectedElementId}`) as HTMLElement;
@@ -520,6 +509,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     if(figCapElement){
       figCapElement.style.display = 'block';
     }
+
     if(renameContainerElement){
       renameContainerElement.style.display = 'none';
     }
