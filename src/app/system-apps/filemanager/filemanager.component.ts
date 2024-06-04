@@ -299,7 +299,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     this.isIconInFocusDueToPriorAction = false;
   }
 
-  removeBtnStyle(id:number){
+  removeBtnStyle(id:number):void{
     const btnElement = document.getElementById(`iconBtn${id}`) as HTMLElement;
     if(btnElement){
       btnElement.style.backgroundColor = 'transparent';
@@ -307,7 +307,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  setBtnStyle(id:number, isMouseHover:boolean){
+  setBtnStyle(id:number, isMouseHover:boolean):void{
     const btnElement = document.getElementById(`iconBtn${id}`) as HTMLElement;
     if(btnElement){
       btnElement.style.backgroundColor = 'hsl(206deg 77% 70%/20%)';
@@ -320,7 +320,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  sortIcons(sortBy:string): void {
+  sortIcons(sortBy:string):void {
     if(sortBy === "Size"){
       this.files = this.files.sort((objA, objB) => objB.getSize - objA.getSize);
     }else if(sortBy === "Date Modified"){
@@ -446,7 +446,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  isFormDirty(): void {
+  isFormDirty():void{
     if (this.renameForm.dirty == true){
         this.onTriggerRenameFileStep2();
     }else if(this.renameForm.dirty == false){
@@ -480,7 +480,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  onTriggerRenameFileStep2():void{
+  async onTriggerRenameFileStep2():Promise<void>{
     this.isRenameActive = !this.isRenameActive;
 
     const figCapElement= document.getElementById(`figCap${this.selectedElementId}`) as HTMLElement;
@@ -488,13 +488,17 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     const renameText = this.renameForm.value.renameInput as string;
 
     if(renameText !== '' || renameText.length !== 0){
-      this._fileService.renameFileAsync(this.selectedFile.getCurrentPath, renameText);
+      await this._fileService.renameFileAsync(this.selectedFile.getCurrentPath, renameText);
 
       // renamFileAsync, doesn't trigger a reload of the file directory, so to give the user the impression that the file has been updated, the code below
       const fileIdx = this.files.findIndex(f => (f.getCurrentPath == this.selectedFile.getContentPath) && (f.getFileName == this.selectedFile.getFileName));
       this.selectedFile.setFileName = renameText;
       this.selectedFile.setDateModified = Date.now();
       this.files[fileIdx] = this.selectedFile;
+
+      // this.renameForm.controls['renameInput'].setValue('');
+      // this.renameForm.reset;
+      // await this.loadFilesInfoAsync();
     }
 
     this.setBtnStyle(this.selectedElementId, false);
