@@ -55,7 +55,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
 
   isFormSubmitted = false;
   isRenameActive = false;
-  isHighlightIconDueToPriorActionActive = false;
+  isIconInFocusDueToPriorAction = false;
   private selectedFile!:FileInfo;
   renameForm!: FormGroup;
   selectedElementId = -1;
@@ -63,6 +63,10 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
 
   hideCntxtMenuEvtCnt = 0; // this is a dirty solution
   renameFileTriggerCnt = 0; // this is a dirty solution
+  btnClickCnt = 0; // this is a dirty solution
+
+  isbtnClickEvt= false;
+  isHideCntxtMenuEvt= false;
 
 
   constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, triggerProcessService:TriggerProcessService, fileManagerService:FileManagerService, formBuilder: FormBuilder,) { 
@@ -89,7 +93,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
       renameInput: '',
     });
 
-    this.onHideIconContextMenu();
+    this.hideIconContextMenu();
   }
 
   async ngAfterViewInit():Promise<void>{
@@ -155,10 +159,23 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     this.prevSelectedElementId = this.selectedElementId 
     this.selectedElementId = id;
     
+    this.isbtnClickEvt = true;
+    this.btnClickCnt++;
+    this.isHideCntxtMenuEvt = false;
+    this.hideCntxtMenuEvtCnt = 0;
+
     this.setBtnStyle(this.selectedElementId, true);
 
-    if(this.prevSelectedElementId != id)
+    console.log('onBtnClick-btnClickCnt:', this.btnClickCnt);
+    console.log('onBtnClick-hideCntxtMenuEvtCnt:', this.hideCntxtMenuEvtCnt);
+
+    if(this.prevSelectedElementId != id){
       this.removeIconIsInfocusStyle(this.prevSelectedElementId);
+    }
+    else if(this.prevSelectedElementId === id){
+      // an action is an event like a rename
+      this.isIconInFocusDueToPriorAction = false;
+    }
   }
 
   onTriggerRunProcess():void{
@@ -168,14 +185,23 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   onShowIconContextMenu(evt:MouseEvent, file:FileInfo, id:number):void{
     this._runningProcessService.responseToEventCount++;
     this.selectedFile = file;
-    this.isHighlightIconDueToPriorActionActive = false;
+    this.isIconInFocusDueToPriorAction = false;
 
     // show IconContexMenu is still a btn click, just a different type
     this.prevSelectedElementId = this.selectedElementId 
     this.selectedElementId = id;
 
-    if(this.prevSelectedElementId != id)
+    this.isbtnClickEvt = true;
+    this.btnClickCnt++;
+    this.isHideCntxtMenuEvt = false;
+    this.hideCntxtMenuEvtCnt = 0;
+
+    if(this.prevSelectedElementId != id){
       this.removeIconIsInfocusStyle(this.prevSelectedElementId);
+    }else if(this.prevSelectedElementId === id){
+      // an action is an event like a rename
+      this.isIconInFocusDueToPriorAction = false;
+    }
 
     this.iconCntxtMenuStyle = {
       'display': 'block', 
@@ -188,19 +214,68 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     evt.preventDefault();
   }
 
+  hideIconContextMenu():void{
+    this.iconCntxtMenuStyle = {
+      'display': 'none', 
+    }
+  }
   onHideIconContextMenu():void{
+
     this.iconCntxtMenuStyle = {
       'display': 'none', 
     }
 
-    this.hideCntxtMenuEvtCnt++;
 
-    if(this.isRenameActive){
-      this.isFormDirty();
-    }
-    if(this.isHighlightIconDueToPriorActionActive){
-      if(this.hideCntxtMenuEvtCnt >= 0)
-        this.setBtnStyle(this.selectedElementId,false);
+    //First case - I'm clicking only on the desktop icons
+    if((this.isbtnClickEvt && this.btnClickCnt >= 1) && (!this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt == 0)){
+
+      console.log('1st-onHideIconContextMenu-btnClickCnt:', this.btnClickCnt);
+      console.log('1st-onHideIconContextMenu-hideCntxtMenuEvtCnt:', this.hideCntxtMenuEvtCnt);
+  
+      if(this.isRenameActive){
+        this.isFormDirty();
+      }
+      if(this.isIconInFocusDueToPriorAction){
+        if(this.hideCntxtMenuEvtCnt >= 0)
+          this.setBtnStyle(this.selectedElementId,false);
+      }
+      if(!this.isRenameActive){
+        this.isbtnClickEvt = false;
+        this.btnClickCnt = 0;
+      }
+
+    }else{
+        this.hideCntxtMenuEvtCnt++;
+        this.isHideCntxtMenuEvt = true;
+        //Second case - I was only clicking on the desktop
+        if((this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt >= 1) && (!this.isbtnClickEvt && this.btnClickCnt == 0)){
+          console.log('2nd-onHideIconContextMenu-btnClickCnt:', this.btnClickCnt);
+          console.log('2nd-onHideIconContextMenu-hideCntxtMenuEvtCnt:', this.hideCntxtMenuEvtCnt);
+          this.isbtnClickEvt = false;
+          this.btnClickCnt = 0;
+          this.removeBtnStyle(this.selectedElementId);
+          this.removeBtnStyle(this.prevSelectedElementId);
+          this.selectedElementId = -1;
+          this.prevSelectedElementId = -1;
+          this.btnClickCnt = 0;
+          this.isIconInFocusDueToPriorAction = false;
+
+        }
+
+        //Third case - I was clicking on the desktop icons, then i click on the desktop.
+        //clicking on the desktop triggers a hideContextMenuEvt
+        if((this.isbtnClickEvt && this.btnClickCnt >= 1) && (this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt > 1)){
+          console.log('3rd-onHideIconContextMenu-btnClickCnt:', this.btnClickCnt);
+          console.log('3rd-onHideIconContextMenu-hideCntxtMenuEvtCnt:', this.hideCntxtMenuEvtCnt);
+          this.isbtnClickEvt = false;
+          this.btnClickCnt = 0;
+          this.removeBtnStyle(this.selectedElementId);
+          this.removeBtnStyle(this.prevSelectedElementId);
+          this.selectedElementId = -1;
+          this.prevSelectedElementId = -1;
+          this.btnClickCnt = 0;
+          this.isIconInFocusDueToPriorAction = false;
+        }
     }
   }
 
@@ -236,24 +311,24 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
 
   onMouseLeave(id:number):void{
     if(id != this.selectedElementId){
-      this.clearBtnStyle(id);
-    }else if((id == this.selectedElementId) && this.isHighlightIconDueToPriorActionActive){
+      this.removeBtnStyle(id);
+    }else if((id == this.selectedElementId) && this.isIconInFocusDueToPriorAction){
       this.setBtnStyle(id,false);
-    }else if((id == this.selectedElementId) && !this.isHighlightIconDueToPriorActionActive){
+    }else if((id == this.selectedElementId) && !this.isIconInFocusDueToPriorAction){
       this.setBtnStyle(id,false);
     }
   }
 
   removeIconIsInfocusStyle(id:number):void{
-    if((this.isHighlightIconDueToPriorActionActive) && (id != this.selectedElementId )){
-      this.clearBtnStyle(id);
-      this.isHighlightIconDueToPriorActionActive = false;
-    }else if((!this.isHighlightIconDueToPriorActionActive) && (id != this.selectedElementId )){
-      this.clearBtnStyle(id);
+    if((this.isIconInFocusDueToPriorAction) && (id != this.selectedElementId )){
+      this.removeBtnStyle(id);
+      this.isIconInFocusDueToPriorAction = false;
+    }else if((!this.isIconInFocusDueToPriorAction) && (id != this.selectedElementId )){
+      this.removeBtnStyle(id);
     }
   }
 
-  clearBtnStyle(id:number){
+  removeBtnStyle(id:number){
     const btnElement = document.getElementById(`iconBtn${id}`) as HTMLElement;
     if(btnElement){
       btnElement.style.backgroundColor = 'transparent';
@@ -347,7 +422,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   }
 
   async refreshIcons():Promise<void>{
-    this.isHighlightIconDueToPriorActionActive = false;
+    this.isIconInFocusDueToPriorAction = false;
     await this.loadFilesInfoAsync();
   }
 
@@ -403,14 +478,11 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   isFormDirty(): void {
     if (this.renameForm.dirty == true){
         this.onTriggerRenameFileStep2();
-        this.hideCntxtMenuEvtCnt = 0;
     }else if(this.renameForm.dirty == false){
       this.renameFileTriggerCnt ++;
-      
       if(this.renameFileTriggerCnt > 1){
         this.untriggerRenameFile();
         this.renameFileTriggerCnt = 0;
-        this.hideCntxtMenuEvtCnt = 0;
       }
     }
   }
@@ -421,7 +493,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     const figCapElement= document.getElementById(`figCap${this.selectedElementId}`) as HTMLElement;
     const renameContainerElement= document.getElementById(`renameContainer${this.selectedElementId}`) as HTMLElement;
     const renameTxtBoxElement= document.getElementById(`renameTxtBox${this.selectedElementId}`) as HTMLInputElement;
-    this.clearBtnStyle(this.selectedElementId);
+    this.removeBtnStyle(this.selectedElementId);
     
     if(figCapElement){
       figCapElement.style.display = 'none';
@@ -456,8 +528,8 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
       this.files[fileIdx] = this.selectedFile;
     }
 
-    this.setBtnStyle(this.selectedElementId, false)
-    this.isHighlightIconDueToPriorActionActive = true;
+    this.setBtnStyle(this.selectedElementId, false);
+    this.isIconInFocusDueToPriorAction = true;
 
     if(figCapElement){
       figCapElement.style.display = 'block';
@@ -481,8 +553,8 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
       renameContainerElement.style.display = 'none';
     }
 
-    this.setBtnStyle(this.selectedElementId, false)
-    this.isHighlightIconDueToPriorActionActive = true;
+    //this.setBtnStyle(this.selectedElementId, false);
+    this.isIconInFocusDueToPriorAction = true;
   }
 
   private getComponentDetail():Process{
