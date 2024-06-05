@@ -34,9 +34,30 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   private _showDesktopIconNotifySub!:Subscription;
   private _dirFilesUpdatedSub!: Subscription;
 
+  private autoAlign = true;
+  private autoArrange = false;
+  private currentIconName = '';
+  private showDesktopIcon = true;
+
+  private isRenameActive = false;
+  private isIconInFocusDueToPriorAction = false;
+  private isBtnClickEvt= false;
+  private isHideCntxtMenuEvt= false;
+
+  private selectedFile!:FileInfo;
+  private selectedElementId = -1;
+  private prevSelectedElementId = -1; 
+  private hideCntxtMenuEvtCnt = 0;
+  private btnClickCnt = 0;
+  private renameFileTriggerCnt = 0; 
+
   iconCntxtMenuStyle:Record<string, unknown> = {};
   iconSizeStyle:Record<string, unknown> = {};
   btnStyle:Record<string, unknown> = {};
+
+  gridSize = 90; //column size of grid = 90px
+  SECONDS_DELAY = 6000;
+  renameForm!: FormGroup;
 
   hasWindow = false;
   icon = 'osdrive/icons/generic-program.ico';
@@ -46,28 +67,6 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   displayName = '';
   directory ='/osdrive/Desktop';
   files:FileInfo[] = [];
-
-  gridSize = 90; //column size of grid = 90px
-  SECONDS_DELAY = 6000;
-  private autoAlign = true;
-  private autoArrange = false;
-  private showDesktopIcon = true;
-
-  isFormSubmitted = false;
-  isRenameActive = false;
-  isIconInFocusDueToPriorAction = false;
-  private selectedFile!:FileInfo;
-  renameForm!: FormGroup;
-  selectedElementId = -1;
-  prevSelectedElementId = -1;
-
-  hideCntxtMenuEvtCnt = 0; // this is a dirty solution
-  renameFileTriggerCnt = 0; // this is a dirty solution
-  btnClickCnt = 0; // this is a dirty solution
-
-  isbtnClickEvt= false;
-  isHideCntxtMenuEvt= false;
-
 
   constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, triggerProcessService:TriggerProcessService, fileManagerService:FileManagerService, formBuilder: FormBuilder,) { 
     this._processIdService = processIdService;
@@ -186,7 +185,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
       this.prevSelectedElementId = this.selectedElementId 
       this.selectedElementId = id;
   
-      this.isbtnClickEvt = true;
+      this.isBtnClickEvt = true;
       this.btnClickCnt++;
       this.isHideCntxtMenuEvt = false;
       this.hideCntxtMenuEvtCnt = 0;
@@ -208,7 +207,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     }
 
     //First case - I'm clicking only on the desktop icons
-    if((this.isbtnClickEvt && this.btnClickCnt >= 1) && (!this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt == 0)){  
+    if((this.isBtnClickEvt && this.btnClickCnt >= 1) && (!this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt == 0)){  
       if(this.isRenameActive){
         this.isFormDirty();
       }
@@ -219,48 +218,40 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
         this.isIconInFocusDueToPriorAction = false;
       }
       if(!this.isRenameActive){
-        this.isbtnClickEvt = false;
+        this.isBtnClickEvt = false;
         this.btnClickCnt = 0;
       }
     }else{
         this.hideCntxtMenuEvtCnt++;
         this.isHideCntxtMenuEvt = true;
         //Second case - I was only clicking on the desktop
-        if((this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt >= 1) && (!this.isbtnClickEvt && this.btnClickCnt == 0))
+        if((this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt >= 1) && (!this.isBtnClickEvt && this.btnClickCnt == 0))
           this.btnStyleAndValuesReset();
         
         //Third case - I was clicking on the desktop icons, then i click on the desktop.
         //clicking on the desktop triggers a hideContextMenuEvt
-        if((this.isbtnClickEvt && this.btnClickCnt >= 1) && (this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt > 1))
+        if((this.isBtnClickEvt && this.btnClickCnt >= 1) && (this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt > 1))
           this.btnStyleAndValuesReset();
         
     }
   }
 
-  onDragStart(evt:any):void{
-    // const rect =  this.myBounds.nativeElement.getBoundingClientRect(); 
-    // console.log('start:',evt.id )
-
-
-    // const btnTransform = window.getComputedStyle(evt)
-    // const matrix = new DOMMatrixReadOnly(btnTransform.transform)
-
-    // const transform = {
-    //   translateX: matrix.m41,
-    //   translateY: matrix.m42
-    // }
-
-    // // const transX = matrix.m41;
-    // // const transY = matrix.m42;
-
-
-    // console.log('start-transform:', transform)
-    // console.log('rect:',rect )
-  }
-
   onDragEnd(evt:any):void{
+    //console.log('event type:',evt.type);
+    // const rect =  this.myBounds.nativeElement.getBoundingClientRect(); 
 
-1
+    const btnTransform = window.getComputedStyle(evt);
+    const matrix = new DOMMatrixReadOnly(btnTransform.transform);
+    
+    const transform = {
+      translateX: matrix.m41,
+      translateY: matrix.m42
+    }
+
+    // const transX = matrix.m41;
+    // const transY = matrix.m42;
+
+    console.log('TODO:FilemanagerComponent, Ugrade the basic state tracking/management logic:',transform);
   }
 
   onMouseEnter(id:number):void{
@@ -277,7 +268,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   }
 
   btnStyleAndValuesReset():void{
-    this.isbtnClickEvt = false;
+    this.isBtnClickEvt = false;
     this.btnClickCnt = 0;
     this.removeBtnStyle(this.selectedElementId);
     this.removeBtnStyle(this.prevSelectedElementId);
@@ -389,7 +380,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     this._fileService.deleteFileAsync(this.selectedFile.getCurrentPath)
   }
 
-  onInputChange(evt:any):boolean{
+  onInputChange(evt:KeyboardEvent):boolean{
     const regexStr = '^[a-zA-Z0-9_.]+$';
     const res = new RegExp(regexStr).test(evt.key)
     if(res){
@@ -460,8 +451,9 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
 
     if(renameContainerElement){
       renameContainerElement.style.display = 'block';
+      this.currentIconName = this.selectedFile.getFileName;
       this.renameForm.setValue({
-        renameInput:this.selectedFile.getFileName
+        renameInput:this.currentIconName
       })
       renameTxtBoxElement?.focus();
       renameTxtBoxElement?.select();
@@ -475,7 +467,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     const renameContainerElement= document.getElementById(`renameContainer${this.selectedElementId}`) as HTMLElement;
     const renameText = this.renameForm.value.renameInput as string;
 
-    if(renameText !== '' || renameText.length !== 0){
+    if(renameText !== '' && renameText.length !== 0 && renameText !== this.currentIconName ){
       await this._fileService.renameFileAsync(this.selectedFile.getCurrentPath, renameText);
 
       // renamFileAsync, doesn't trigger a reload of the file directory, so to give the user the impression that the file has been updated, the code below
@@ -486,6 +478,8 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
 
       this.renameForm.reset();
       await this.loadFilesInfoAsync();
+    }else{
+      this.renameForm.reset();
     }
 
     this.setBtnStyle(this.selectedElementId, false);
