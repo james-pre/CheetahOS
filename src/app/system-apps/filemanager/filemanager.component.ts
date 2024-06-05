@@ -252,7 +252,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
     // const transX = matrix.m41;
     // const transY = matrix.m42;
 
-    console.log('TODO:FilemanagerComponent, Ugrade the basic state tracking/management logic:',transform);
+    console.log('TODO:FilemanagerComponent, Upgrade the basic state tracking/management logic:',transform);
   }
 
   onMouseEnter(id:number):void{

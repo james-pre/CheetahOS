@@ -27,6 +27,15 @@ export class Constants{
         '.mp3',
         '.flac',
         '.aac',
-        '.dolby'
+        '.dolby',
+        '.mpeg',
+        '.opus',
+        '.m4a',
+        '.ogg',
+        '.oga',
+        '.wav',
+        '.caf',
+        '.weba',
+        '.webm'
     ]
 }

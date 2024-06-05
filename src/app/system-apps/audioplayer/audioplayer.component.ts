@@ -7,6 +7,7 @@ import { Process } from 'src/app/system-files/process';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 import { FileInfo } from 'src/app/system-files/fileinfo';
+import { Constants } from "src/app/system-files/constants";
 // eslint-disable-next-line no-var
 declare var Howl:any;
 declare let SiriWave:any;
@@ -40,6 +41,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   private _runningProcessService:RunningProcessService;
   private _triggerProcessService:TriggerProcessService;
   private _fileInfo!:FileInfo;
+  private _consts:Constants = new Constants();
 
   private audioPlayer: any;
   private siriWave: any;
@@ -100,8 +102,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   }
 
   ngAfterViewInit():void{  
-    const audioSrc  = '/' +this._fileInfo.getContentPath
-
+    const audioSrc  = this.getAudioSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
     if(audioSrc  === '/' && this.playList.length == 0){
       this.audioPlayer = new Howl({
         src: '',
@@ -372,6 +373,30 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
         }
       });
     });
+  }
+
+  getAudioSrc(pathOne:string, pathTwo:string):string{
+    let audioSrc = '';
+
+    if(this.checkForExt(pathOne,pathTwo)){
+      audioSrc = '/' + this._fileInfo.getContentPath;
+    }else{
+      audioSrc =  this._fileInfo.getCurrentPath;
+    }
+    return audioSrc;
+  }
+
+  checkForExt(contentPath:string, currentPath:string):boolean{
+    const contentExt = extname(contentPath);
+    const currentPathExt = extname(currentPath);
+    let res = false;
+
+    if(this._consts.AUDIO_FILE_EXTENSIONS.includes(contentExt)){
+      res = true;
+    }else if(this._consts.AUDIO_FILE_EXTENSIONS.includes(currentPathExt)){
+      res = false;
+    }
+    return res;
   }
 
   private getComponentDetail():Process{
