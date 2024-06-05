@@ -151,6 +151,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
         await this.loadFilesInfoAsync();
     }else{
         this._triggerProcessService.startApplication(file);
+        this.btnStyleAndValuesReset();
     }
   }
 
@@ -182,17 +183,17 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
   }
 
   doBtnClickThings(id:number):void{
-      this.prevSelectedElementId = this.selectedElementId 
-      this.selectedElementId = id;
-  
-      this.isBtnClickEvt = true;
-      this.btnClickCnt++;
-      this.isHideCntxtMenuEvt = false;
-      this.hideCntxtMenuEvtCnt = 0;
-  
-      if(this.prevSelectedElementId != id){
-        this.removeBtnStyle(this.prevSelectedElementId);
-      }
+    this.prevSelectedElementId = this.selectedElementId 
+    this.selectedElementId = id;
+
+    this.isBtnClickEvt = true;
+    this.btnClickCnt++;
+    this.isHideCntxtMenuEvt = false;
+    this.hideCntxtMenuEvtCnt = 0;
+
+    if(this.prevSelectedElementId != id){
+      this.removeBtnStyle(this.prevSelectedElementId);
+    }
   }
 
   hideIconContextMenu():void{
@@ -222,17 +223,16 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
         this.btnClickCnt = 0;
       }
     }else{
-        this.hideCntxtMenuEvtCnt++;
-        this.isHideCntxtMenuEvt = true;
-        //Second case - I was only clicking on the desktop
-        if((this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt >= 1) && (!this.isBtnClickEvt && this.btnClickCnt == 0))
-          this.btnStyleAndValuesReset();
-        
-        //Third case - I was clicking on the desktop icons, then i click on the desktop.
-        //clicking on the desktop triggers a hideContextMenuEvt
-        if((this.isBtnClickEvt && this.btnClickCnt >= 1) && (this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt > 1))
-          this.btnStyleAndValuesReset();
-        
+      this.hideCntxtMenuEvtCnt++;
+      this.isHideCntxtMenuEvt = true;
+      //Second case - I was only clicking on the desktop
+      if((this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt >= 1) && (!this.isBtnClickEvt && this.btnClickCnt == 0))
+        this.btnStyleAndValuesReset();
+      
+      //Third case - I was clicking on the desktop icons, then i click on the desktop.
+      //clicking on the desktop triggers a hideContextMenuEvt
+      if((this.isBtnClickEvt && this.btnClickCnt >= 1) && (this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt > 1))
+        this.btnStyleAndValuesReset();
     }
   }
 

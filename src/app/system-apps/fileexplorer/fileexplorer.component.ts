@@ -23,7 +23,6 @@ import {basename} from 'path';
 export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fileExplorerContainer', {static: true}) fileExplorerContainer!: ElementRef;
  
-  
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _fileService:FileService;
@@ -38,9 +37,28 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   private _autoAlignIconsNotifyBySub!:Subscription;
   private _dirFilesUpdatedSub!: Subscription;
 
+  private isPrevBtnActive = false;
+  private isNextBtnActive = false;
+  private isUpBtnActive = true;
+  private isNavigatedBefore = false;
+  private isRenameActive = false;
+  private isIconInFocusDueToPriorAction = false;
+  private isBtnClickEvt= false;
+  private isHideCntxtMenuEvt= false;
 
-  public _directoryHops:string[] = ['osdrive'];
+  private selectedFile!:FileInfo;
+  private selectedElementId = -1;
+  private prevSelectedElementId = -1; 
+  private hideCntxtMenuEvtCnt = 0;
+  private btnClickCnt = 0;
+  private renameFileTriggerCnt = 0; 
+  private currentIconName = '';
 
+  isSearchBoxNotEmpty = false;
+  showPathHistory = false;
+  onClearSearchIconHover = false;
+  onSearchIconHover = false;
+ 
   fxIconCntxtMenuStyle:Record<string, unknown> = {};
   clearSearchStyle:Record<string, unknown> = {};
   searchStyle:Record<string, unknown> = {};
@@ -50,47 +68,20 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   upNavBtnStyle:Record<string, unknown> = {};
   upNavBtnCntnrStyle:Record<string, unknown> = {};
   tabLayoutCntnrStyle:Record<string, unknown> = {};
-
   olClassName = 'ol-icon-size-view';
 
-  hasWindow = true;
-  icon = 'osdrive/icons/file_explorer.ico';
-  navPathIcon = 'osdrive/icons/my_computer.ico'
-  name = 'fileexplorer';
-  processId = 0;
-  type = ComponentType.systemComponent;
-  directory ='/osdrive/';
-  displayName = 'File Explorer';
-  
   files:FileInfo[] = [];
   prevPathEntries:string[] = [];
   nextPathEntries:string[] = [];
   recentPathEntries:string[] = [];
   upPathEntries:string[] = ['/osdrive/Desktop'];
-
-  isPrevBtnActive = false;
-  isNextBtnActive = false;
-  isUpBtnActive = true;
-  isNavigatedBefore = false;
-  isFormSubmitted = false;
-  isRenameActive = false;
-  isSearchBoxNotEmpty = false;
-  showPathHistory = false;
-  onClearSearchIconHover = false;
-  onSearchIconHover = false;
-  isHighlighIconDueToPriorActionActive = false;
-  private selectedFile!:FileInfo;
-  selectedElementId = -1;
-  prevSelectedElementId = -1;
-
-  hideCntxtMenuEvtCnt = 0; // this is a dirty solution
-  renameFileTriggerCnt = 0; // this is a dirty solution
-
+  _directoryHops:string[] = ['osdrive'];
+  SECONDS_DELAY = 6000;
+  
   defaultviewOption = ViewOptions.MEDIUM_ICON_VIEW;
   currentViewOption = ViewOptions.MEDIUM_ICON_VIEW;
   currentViewOptionId = 3;
-  //selectedViewOption!:any;
-
+  
   readonly smallIconsView = ViewOptions.SMALL_ICON_VIEW;
   readonly mediumIconsView = ViewOptions.MEDIUM_ICON_VIEW;
   readonly largeIconsView = ViewOptions.LARGE_ICON_VIEW;
@@ -106,6 +97,15 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
   searchHistory =['Java','ProgramFile', 'Perenne'];
   pathHistory =['/osdrive/icons','/osdrive/Games', '/osdrive/Videos'];
+
+  hasWindow = true;
+  icon = 'osdrive/icons/file_explorer.ico';
+  navPathIcon = 'osdrive/icons/my_computer.ico'
+  name = 'fileexplorer';
+  processId = 0;
+  type = ComponentType.systemComponent;
+  directory ='/osdrive/';
+  displayName = 'File Explorer';
 
 
   constructor(processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, triggerProcessService:TriggerProcessService, fileManagerService:FileManagerService, formBuilder: FormBuilder) { 
@@ -136,8 +136,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     });
 
     this.setNavButtonsColor();
-    this.onHideIconContextMenu();
-  
+    this.hideIconContextMenu();
   }
 
   async ngAfterViewInit():Promise<void>{
@@ -616,62 +615,151 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     }
   }
 
-  onBtnFocus(id:number):void{
-    this.prevSelectedElementId = this.selectedElementId 
-    this.selectedElementId = id;
-    this.removeIconWasInfocusStyle(this.prevSelectedElementId);
-    this.setBtnToFocus(id);
-  }
-
-  onBtnFocusOut(id:number):void{
-    this.prevSelectedElementId = this.selectedElementId 
-    this.selectedElementId = id;
-    this.removeIconWasInfocusStyle(this.prevSelectedElementId);
-    this.setBtnToFocuOut(id);
-  }
-
   onTriggerRunProcess():void{
     this.runProcess(this.selectedFile);
   }
 
+  onBtnClick(id:number):void{
+    this.doBtnClickThings(id);
+    this.setBtnStyle(id, true);
+  }
+
   onShowIconContextMenu(evt:MouseEvent, file:FileInfo, id:number):void{
-
-    // const rect =  this.fileExplorerContainer.nativeElement.getBoundingClientRect();
-    // const x = evt.clientX - rect.left;
-    // const y = evt.clientY - rect.top;
+    const rect =  this.fileExplorerContainer.nativeElement.getBoundingClientRect();
+    const x = evt.clientX - rect.left;
+    const y = evt.clientY - rect.top;
     
-    // this.selectedElementId = id;
-    // this._runningProcessService.responseToEventCount++;
-    // this.selectedFile = file;
-    // this.isHighlighIconDueToPriorActionActive = false;
+    this._runningProcessService.responseToEventCount++;
+    this.selectedFile = file;
+    this.isIconInFocusDueToPriorAction = false;
 
-    // this.fxIconCntxtMenuStyle = {
-    //   'display': 'block', 
-    //   'width': '205px', 
-    //   'transform':`translate(${String(x)}px, ${String(y)}px)`,
-    //   'z-index': 2,
-    //   'opacity':1
-    // }
+    // show IconContexMenu is still a btn click, just a different type
+    this.doBtnClickThings(id);
 
-    // evt.preventDefault();
+    this.fxIconCntxtMenuStyle = {
+      'display': 'block', 
+      'width': '205px', 
+      'transform':`translate(${String(x)}px, ${String(y)}px)`,
+      'z-index': 2,
+      'opacity':1
+    }
+
+    evt.preventDefault();
   }
 
-  setFileExplorerWindowToFocus(pid: number):void {
-      this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
+  doBtnClickThings(id:number):void{
+    this.prevSelectedElementId = this.selectedElementId 
+    this.selectedElementId = id;
+
+    this.isBtnClickEvt = true;
+    this.btnClickCnt++;
+    this.isHideCntxtMenuEvt = false;
+    this.hideCntxtMenuEvtCnt = 0;
+
+    if(this.prevSelectedElementId != id){
+      this.removeBtnStyle(this.prevSelectedElementId);
+    }
   }
 
+  onMouseEnter(id:number):void{
+    this.setBtnStyle(id, true);
+  }
+
+  onMouseLeave(id:number):void{
+    if(id != this.selectedElementId){
+      this.removeBtnStyle(id);
+    }
+    else if((id == this.selectedElementId) && !this.isIconInFocusDueToPriorAction){
+      this.setBtnStyle(id,false);
+    }
+  }
+
+
+  setBtnStyle(id:number, isMouseHover:boolean):void{
+    const btnElement = document.getElementById(`btnElmnt-${this.processId}-${id}`) as HTMLElement;
+    if(btnElement){
+      btnElement.style.backgroundColor = '#4c4c4c';
+      btnElement.style.border = '1px solid #3c3c3c';
+
+      if(this.selectedElementId == id){
+        (isMouseHover)? btnElement.style.backgroundColor ='#777777' : 
+          btnElement.style.backgroundColor = 'hsl(206deg 77% 70%/20%)';
+      }
+    }
+  }
+
+  btnStyleAndValuesReset():void{
+    this.isBtnClickEvt = false;
+    this.btnClickCnt = 0;
+    this.removeBtnStyle(this.selectedElementId);
+    this.removeBtnStyle(this.prevSelectedElementId);
+    this.selectedElementId = -1;
+    this.prevSelectedElementId = -1;
+    this.btnClickCnt = 0;
+    this.isIconInFocusDueToPriorAction = false;
+  }
+  
+  removeBtnStyle(id:number):void{
+    const btnElement = document.getElementById(`btnElmnt-${this.processId}-${id}`) as HTMLElement;
+    if(btnElement){
+      btnElement.style.backgroundColor = 'transparent';
+      btnElement.style.border = 'none'
+    }
+  }
+
+  // setBtnToFocus(id:number):void{
+  //   const btnElement = document.getElementById(`btnElmnt-${this.processId}-${id}`) as HTMLElement;
+  //   if(btnElement){
+  //     btnElement.style.backgroundColor = '#777777';
+  //     btnElement.style.border = '1px solid #3c3c3c';
+  //   }
+  // }
+
+  // setBtnToFocuOut(id:number):void{
+  //   const btnElement = document.getElementById(`btnElmnt-${this.processId}-${id}`) as HTMLElement;
+  //   if(btnElement){
+  //     btnElement.style.backgroundColor = 'transparent';
+  //     btnElement.style.border = '0.5px solid white'
+  //   }
+  // }
+
+  hideIconContextMenu():void{
+    this.fxIconCntxtMenuStyle = {
+      'display': 'none', 
+    }
+  }
+  
   onHideIconContextMenu():void{
     this.fxIconCntxtMenuStyle = {
       'display': 'none', 
     }
 
-    this.hideCntxtMenuEvtCnt++;
+    //First case - I'm clicking only on the desktop icons
+    if((this.isBtnClickEvt && this.btnClickCnt >= 1) && (!this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt == 0)){  
+      if(this.isRenameActive){
+        this.isFormDirty();
+      }
+      if(this.isIconInFocusDueToPriorAction){
+        if(this.hideCntxtMenuEvtCnt >= 0)
+          this.setBtnStyle(this.selectedElementId,false);
 
-    if(this.isRenameActive){
-      this.isFormDirty();
-    }
-    if(this.isHighlighIconDueToPriorActionActive){
-      this.iconWasInfocus();
+        this.isIconInFocusDueToPriorAction = false;
+      }
+      if(!this.isRenameActive){
+        this.isBtnClickEvt = false;
+        this.btnClickCnt = 0;
+      }
+    }else{
+      this.hideCntxtMenuEvtCnt++;
+      this.isHideCntxtMenuEvt = true;
+      //Second case - I was only clicking on the desktop
+      if((this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt >= 1) && (!this.isBtnClickEvt && this.btnClickCnt == 0))
+        this.btnStyleAndValuesReset();
+      
+      //Third case - I was clicking on the desktop icons, then i click on the desktop.
+      //clicking on the desktop triggers a hideContextMenuEvt
+      if((this.isBtnClickEvt && this.btnClickCnt >= 1) && (this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt > 1))
+        this.btnStyleAndValuesReset();
     }
   }
 
@@ -701,58 +789,10 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 1
   }
 
-  onMouseEnter(id:number):void{
-    const btnElement = document.getElementById(`btnElmnt-${this.processId}-${id}`) as HTMLElement;
-    if(btnElement){
-      btnElement.style.backgroundColor = '#4c4c4c';
-      btnElement.style.border = '1px solid #3c3c3c';
-    }
+  setFileExplorerWindowToFocus(pid: number):void {
+    this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
   }
 
-  setBtnToFocus(id:number):void{
-    const btnElement = document.getElementById(`btnElmnt-${this.processId}-${id}`) as HTMLElement;
-    if(btnElement){
-      btnElement.style.backgroundColor = '#777777';
-      btnElement.style.border = '1px solid #3c3c3c';
-    }
-  }
-
-  setBtnToFocuOut(id:number):void{
-    const btnElement = document.getElementById(`btnElmnt-${this.processId}-${id}`) as HTMLElement;
-    if(btnElement){
-      btnElement.style.backgroundColor = 'transparent';
-      btnElement.style.border = '0.5px solid white'
-    }
-  }
-
-  onMouseLeave(id:number):void{
-    const btnElement = document.getElementById(`btnElmnt-${this.processId}-${id}`) as HTMLElement;
-    if(id != this.selectedElementId){
-      if(btnElement){
-        btnElement.style.backgroundColor = 'transparent';
-        btnElement.style.border = 'none'
-      }
-    }else if((id == this.selectedElementId) && this.isHighlighIconDueToPriorActionActive){
-      this.iconWasInfocus();
-    }
-  }
-
-  removeIconWasInfocusStyle(id:number):void{
-    const btnElement = document.getElementById(`olElmnt-${this.processId}-${id}`) as HTMLElement;
-    if((this.isHighlighIconDueToPriorActionActive) && (id != this.selectedElementId )){
-      if(btnElement){
-        btnElement.style.backgroundColor = 'transparent';
-        btnElement.style.border = 'none'
-      }
-      this.isHighlighIconDueToPriorActionActive = false;
-    }else if((!this.isHighlighIconDueToPriorActionActive) && (id != this.selectedElementId )){
-      if(btnElement){
-        btnElement.style.backgroundColor = 'transparent';
-        btnElement.style.border = 'none'
-      }
-    }
-    this.prevSelectedElementId = -1;
-  }
 
   sortIcons(sortBy:string): void {
     if(sortBy === "Size"){
@@ -771,7 +811,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   }
 
   async refreshIcons():Promise<void>{
-    this.isHighlighIconDueToPriorActionActive = false;
+    this.isIconInFocusDueToPriorAction = false;
     await this.loadFilesInfoAsync();
   }
 
@@ -779,7 +819,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     this._fileService.deleteFileAsync(this.selectedFile.getCurrentPath)
   }
 
-  onKeyPress(evt:any):boolean{
+  onKeyPress(evt:KeyboardEvent):boolean{
     const regexStr = '^[a-zA-Z0-9_]+$';
     const res = new RegExp(regexStr).test(evt.key)
 
@@ -791,7 +831,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
       setTimeout(()=>{ // hide after 6 secs
         this.hideInvalidCharsToolTip();
-      },6000) 
+      },this.SECONDS_DELAY) 
 
       return res;
     }
@@ -984,26 +1024,26 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
   isFormDirty(): void {
     if (this.renameForm.dirty == true){
-        this.onTriggerRenameFileStep2();
-        this.hideCntxtMenuEvtCnt = 0;
+        this.onRenameFileTxtBoxDataSave();
+  
     }else if(this.renameForm.dirty == false){
       this.renameFileTriggerCnt ++;
-
       if(this.renameFileTriggerCnt > 1){
-        this.untriggerRenameFile();
-
+        this.onRenameFileTxtBoxHide();
         this.renameFileTriggerCnt = 0;
-        this.hideCntxtMenuEvtCnt = 0;
       }
     }
   }
 
-  onTriggerRenameFileStep1():void{
+  onRenameFileTxtBoxShow():void{
     this.isRenameActive = !this.isRenameActive;
 
     const figCapElement= document.getElementById(`figCapElmnt-${this.processId}-${this.selectedElementId}`) as HTMLElement;
     const renameContainerElement= document.getElementById(`renameContainer-${this.processId}-${this.selectedElementId}`) as HTMLElement;
     const renameTxtBoxElement= document.getElementById(`renameTxtBox-${this.processId}-${this.selectedElementId}`) as HTMLInputElement;
+
+    //TODO: fileexplorer behaves differently from the desktop
+    //this.removeBtnStyle(this.selectedElementId);
 
     if(figCapElement){
       figCapElement.style.display = 'none';
@@ -1011,9 +1051,9 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
     if(renameContainerElement){
       renameContainerElement.style.display = 'block';
-
+      this.currentIconName = this.selectedFile.getFileName;
       this.renameForm.setValue({
-        renameInput:this.selectedFile.getFileName
+        renameInput:this.currentIconName
       })
 
       renameTxtBoxElement?.focus();
@@ -1021,30 +1061,30 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     }
   }
 
-  onTriggerRenameFileStep2():void{
+  async onRenameFileTxtBoxDataSave():Promise<void>{
     this.isRenameActive = !this.isRenameActive;
 
-    const btnElement = document.getElementById(`olElmnt-${this.processId}-${this.selectedElementId}`) as HTMLElement;
     const figCapElement= document.getElementById(`figCapElmnt-${this.processId}-${this.selectedElementId}`) as HTMLElement;
     const renameContainerElement= document.getElementById(`renameContainer-${this.processId}-${this.selectedElementId}`) as HTMLElement;
-
     const renameText = this.renameForm.value.renameInput as string;
 
-    if(renameText !== '' || renameText.length !== 0){
-      this._fileService.renameFileAsync(this.selectedFile.getCurrentPath, renameText);
+    if(renameText !== '' && renameText.length !== 0 && renameText !== this.currentIconName){
+      await this._fileService.renameFileAsync(this.selectedFile.getCurrentPath, renameText);
 
       // renamFileAsync, doesn't trigger a reload of the file directory, so to give the user the impression that the file has been updated, the code below
       const fileIdx = this.files.findIndex(f => (f.getCurrentPath == this.selectedFile.getContentPath) && (f.getFileName == this.selectedFile.getFileName));
       this.selectedFile.setFileName = renameText;
       this.selectedFile.setDateModified = Date.now();
       this.files[fileIdx] = this.selectedFile;
+
+      this.renameForm.reset();
+      await this.loadFilesInfoAsync();
+    }else{
+      this.renameForm.reset();
     }
 
-    if(btnElement){
-      btnElement.style.backgroundColor = '#4c4c4c';
-      btnElement.style.border = '1px solid #3c3c3c';
-      this.isHighlighIconDueToPriorActionActive = true;
-    }
+    this.setBtnStyle(this.selectedElementId, false);
+    this.renameFileTriggerCnt = 0;
 
     if(figCapElement){
       figCapElement.style.display = 'block';
@@ -1055,10 +1095,9 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     }
   }
 
-  untriggerRenameFile():void{
+  onRenameFileTxtBoxHide():void{
     this.isRenameActive = !this.isRenameActive;
 
-    const btnElement = document.getElementById(`olElmnt-${this.processId}-${this.selectedElementId}`) as HTMLElement;
     const figCapElement= document.getElementById(`figCapElmnt-${this.processId}-${this.selectedElementId}`) as HTMLElement;
     const renameContainerElement= document.getElementById(`renameContainer-${this.processId}-${this.selectedElementId}`) as HTMLElement;
 
@@ -1068,27 +1107,12 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     if(renameContainerElement){
       renameContainerElement.style.display = 'none';
     }
-    if(btnElement){
-      btnElement.style.backgroundColor = '#4c4c4c';
-      btnElement.style.border = '1px solid #3c3c3c';
-      this.isHighlighIconDueToPriorActionActive = true;
-    }
-  }
 
-  iconWasInfocus():void{
-    const btnElement = document.getElementById(`olElmnt-${this.processId}-${this.selectedElementId}`) as HTMLElement;
-
-    if(this.hideCntxtMenuEvtCnt >= 0){
-      if(btnElement){
-        btnElement.style.backgroundColor = 'transparent';
-        btnElement.style.border = '0.5px solid white'
-      }
-    }
+    this.isIconInFocusDueToPriorAction = true;
   }
 
   showSearchHistory():void{
     const searchHistoryElement = document.getElementById(`searchHistory-${this.processId}`) as HTMLElement;
-
     if(searchHistoryElement){
       if(this.searchHistory.length > 0){
         searchHistoryElement.style.display = 'block';
@@ -1101,7 +1125,6 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     const searchHistoryElement = document.getElementById(`searchHistory-${this.processId}`) as HTMLElement;
     searchHistoryElement.style.display = 'none';
   }
-
 
   hideshowPathHistory():void{
     const pathHistoryElement = document.getElementById(`pathHistory-${this.processId}`) as HTMLElement;
