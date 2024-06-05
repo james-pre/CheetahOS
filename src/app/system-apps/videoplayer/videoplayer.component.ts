@@ -1,11 +1,14 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { ComponentType } from 'src/app/system-files/component.types';
+import {extname} from 'path';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { Process } from 'src/app/system-files/process';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 import { FileInfo } from 'src/app/system-files/fileinfo';
+import { Constants } from "src/app/system-files/constants";
+
 // eslint-disable-next-line no-var
 declare var videojs: (arg0: any, arg1: object, arg2: () => void) => any;
 
@@ -24,6 +27,7 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   private _triggerProcessService:TriggerProcessService;
   private _fileInfo!:FileInfo;
   private player: any;
+  private _consts:Constants = new Constants();
 
   recents:string[] = [];
 
@@ -67,7 +71,7 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   ngAfterViewInit() {
     const fileType = 'video/' + this._fileInfo.getFileType.replace('.','');
-    const videoSrc = '/' +this._fileInfo.getContentPath;
+    const videoSrc = this.getVideoSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
 
     const options = {
       fluid: true,
@@ -102,6 +106,30 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   setVideoWindowToFocus(pid:number):void{
     this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
+  }
+
+  getVideoSrc(pathOne:string, pathTwo:string):string{
+    let videoSrc = '';
+
+    if(this.checkForExt(pathOne,pathTwo)){
+      videoSrc = '/' + this._fileInfo.getContentPath;
+    }else{
+      videoSrc =  this._fileInfo.getCurrentPath;
+    }
+    return videoSrc;
+  }
+
+  checkForExt(contentPath:string, currentPath:string):boolean{
+    const contentExt = extname(contentPath);
+    const currentPathExt = extname(currentPath);
+    let res = false;
+
+    if(this._consts.VIDEO_FILE_EXTENSIONS.includes(contentExt)){
+      res = true;
+    }else if(this._consts.VIDEO_FILE_EXTENSIONS.includes(currentPathExt)){
+      res = false;
+    }
+    return res;
   }
 
   private getComponentDetail():Process{
