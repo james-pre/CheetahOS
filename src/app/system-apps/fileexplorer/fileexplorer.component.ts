@@ -42,6 +42,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   private isUpBtnActive = true;
   private isNavigatedBefore = false;
   private isRenameActive = false;
+  private isIconInFocusDueToCurrentAction = false;
   private isIconInFocusDueToPriorAction = false;
   private isBtnClickEvt= false;
   private isHideCntxtMenuEvt= false;
@@ -635,6 +636,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
     // show IconContexMenu is still a btn click, just a different type
     this.doBtnClickThings(id);
+    this.setBtnStyle(id, true);
 
     this.fxIconCntxtMenuStyle = {
       'display': 'block', 
@@ -648,6 +650,11 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   }
 
   doBtnClickThings(id:number):void{
+
+    console.log('do btn click things');
+
+    this.isIconInFocusDueToCurrentAction = true;
+    this.isIconInFocusDueToPriorAction = false;
     this.prevSelectedElementId = this.selectedElementId 
     this.selectedElementId = id;
 
@@ -655,7 +662,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     this.btnClickCnt++;
     this.isHideCntxtMenuEvt = false;
     this.hideCntxtMenuEvtCnt = 0;
-
+   
     if(this.prevSelectedElementId != id){
       this.removeBtnStyle(this.prevSelectedElementId);
     }
@@ -669,7 +676,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     if(id != this.selectedElementId){
       this.removeBtnStyle(id);
     }
-    else if((id == this.selectedElementId) && !this.isIconInFocusDueToPriorAction){
+    else if((id == this.selectedElementId) && this.isIconInFocusDueToPriorAction){
       this.setBtnStyle(id,false);
     }
   }
@@ -682,8 +689,23 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
       btnElement.style.border = '1px solid #3c3c3c';
 
       if(this.selectedElementId == id){
-        (isMouseHover)? btnElement.style.backgroundColor ='#777777' : 
-          btnElement.style.backgroundColor = 'hsl(206deg 77% 70%/20%)';
+
+        if(isMouseHover && this.isIconInFocusDueToCurrentAction){
+          btnElement.style.backgroundColor ='#787474'
+        }
+
+        if(!isMouseHover && this.isIconInFocusDueToCurrentAction){
+          btnElement.style.backgroundColor ='#787474'
+        }
+
+        if(isMouseHover && this.isIconInFocusDueToPriorAction){
+          btnElement.style.backgroundColor = '#4c4c4c';
+        }
+
+        if(!isMouseHover && this.isIconInFocusDueToPriorAction){
+          btnElement.style.backgroundColor = 'transparent';
+          btnElement.style.border = '0.5px solid white'
+        }
       }
     }
   }
@@ -698,6 +720,16 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     this.btnClickCnt = 0;
     this.isIconInFocusDueToPriorAction = false;
   }
+
+  btnStyleAndValuesChange():void{
+    this.isBtnClickEvt = false;
+    this.btnClickCnt = 0;
+    this.prevSelectedElementId = this.selectedElementId;
+    this.isIconInFocusDueToPriorAction = true;
+    this.isIconInFocusDueToCurrentAction = false;
+    this.setBtnStyle(this.selectedElementId, false);
+    //this.removeBtnStyle(this.prevSelectedElementId);
+  }
   
   removeBtnStyle(id:number):void{
     const btnElement = document.getElementById(`btnElmnt-${this.processId}-${id}`) as HTMLElement;
@@ -706,22 +738,6 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
       btnElement.style.border = 'none'
     }
   }
-
-  // setBtnToFocus(id:number):void{
-  //   const btnElement = document.getElementById(`btnElmnt-${this.processId}-${id}`) as HTMLElement;
-  //   if(btnElement){
-  //     btnElement.style.backgroundColor = '#777777';
-  //     btnElement.style.border = '1px solid #3c3c3c';
-  //   }
-  // }
-
-  // setBtnToFocuOut(id:number):void{
-  //   const btnElement = document.getElementById(`btnElmnt-${this.processId}-${id}`) as HTMLElement;
-  //   if(btnElement){
-  //     btnElement.style.backgroundColor = 'transparent';
-  //     btnElement.style.border = '0.5px solid white'
-  //   }
-  // }
 
   hideIconContextMenu():void{
     this.fxIconCntxtMenuStyle = {
@@ -736,14 +752,13 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
     //First case - I'm clicking only on the desktop icons
     if((this.isBtnClickEvt && this.btnClickCnt >= 1) && (!this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt == 0)){  
+      
       if(this.isRenameActive){
         this.isFormDirty();
       }
       if(this.isIconInFocusDueToPriorAction){
         if(this.hideCntxtMenuEvtCnt >= 0)
           this.setBtnStyle(this.selectedElementId,false);
-
-        this.isIconInFocusDueToPriorAction = false;
       }
       if(!this.isRenameActive){
         this.isBtnClickEvt = false;
@@ -753,13 +768,18 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
       this.hideCntxtMenuEvtCnt++;
       this.isHideCntxtMenuEvt = true;
       //Second case - I was only clicking on the desktop
-      if((this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt >= 1) && (!this.isBtnClickEvt && this.btnClickCnt == 0))
-        this.btnStyleAndValuesReset();
+      if((this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt >= 1) && (!this.isBtnClickEvt && this.btnClickCnt == 0)){
+        this.isIconInFocusDueToCurrentAction = false;
+        this.btnStyleAndValuesChange();
+      }
       
-      //Third case - I was clicking on the desktop icons, then i click on the desktop.
-      //clicking on the desktop triggers a hideContextMenuEvt
-      if((this.isBtnClickEvt && this.btnClickCnt >= 1) && (this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt > 1))
-        this.btnStyleAndValuesReset();
+      // //Third case - I was clicking on the desktop icons, then i click on the desktop.
+      // //clicking on the desktop triggers a hideContextMenuEvt
+      // if((this.isBtnClickEvt && this.btnClickCnt >= 1) && (this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt > 1)){
+      //   this.isIconInFocusDueToCurrentAction = false;
+      //   console.log('3rd----this.isIconInFocusDueToCurrentAction:', this.isIconInFocusDueToCurrentAction );
+      //   this.btnStyleAndValuesReset();
+      // }
     }
   }
 
@@ -1109,6 +1129,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
     }
 
     this.isIconInFocusDueToPriorAction = true;
+    this.isIconInFocusDueToCurrentAction = false;
   }
 
   showSearchHistory():void{

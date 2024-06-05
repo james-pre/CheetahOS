@@ -170,6 +170,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
 
     // show IconContexMenu is still a btn click, just a different type
     this.doBtnClickThings(id);
+    
 
     this.iconCntxtMenuStyle = {
       'display': 'block', 
