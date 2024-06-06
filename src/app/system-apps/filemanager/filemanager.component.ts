@@ -144,7 +144,7 @@ export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
 
   async runProcess(file:FileInfo):Promise<void>{
 
-    console.log('runProcess:',file)
+    console.log('filemanager-runProcess:',file)
     // console.log('what was clicked:',file.getFileName +'-----' + file.getOpensWith +'---'+ file.getCurrentPath +'----'+ file.getIcon) TBD
     if((file.getOpensWith === 'fileexplorer' && file.getFileName !== 'fileexplorer') && file.getFileType ==='folder'){
         this.directory = file.getCurrentPath;

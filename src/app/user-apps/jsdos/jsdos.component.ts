@@ -1,7 +1,8 @@
 import { Component, ElementRef, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
 import {DosPlayerFactoryType } from "js-dos";
-import {DosPlayerOptions} from './js.dos'
-import {CommandInterface, Emulators} from "emulators"
+import {DosPlayerOptions} from './js.dos';
+import {CommandInterface, Emulators} from "emulators";
+import {extname} from 'path';
 import { FileService } from 'src/app/shared/system-service/file.service';
 import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { ComponentType } from 'src/app/system-files/component.types';
@@ -73,19 +74,43 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
       //console.log('fileInfo in Js-DOS:',this._fileInfo) //TBD 
       //let data = await this._fileService.getFileAsync('/osdrive/games/data/3d_duke.jsdos');
    
-      if(this._fileInfo.getContentPath != ''){
-
-        const data = await this._fileService.getFileAsync(this._fileInfo.getContentPath);
+      if(this._fileInfo.getContentPath != '' || this._fileInfo.getCurrentPath != ''){
+        const data = await this._fileService.getFileAsync(this.getGamesSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath));
         this._ci = await  Dos(this.dosWindow.nativeElement, this.dosOptions).run(data);
         URL.revokeObjectURL(this._fileInfo.getContentPath);
       }else{
-        alert(`JS-Dos could not started. Sorry :()`)
+        alert(`JS-Dos could not started. Sorry :(`);
       }
     }, 1500);
   }
 
   setJSDosWindowToFocus(pid:number):void{
     this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
+  }
+
+  getGamesSrc(pathOne:string, pathTwo:string):string{
+    let gameSrc = '';
+
+    if(this.checkForExt(pathOne,pathTwo)){
+      gameSrc = '/' + this._fileInfo.getContentPath;
+    }else{
+      gameSrc =  this._fileInfo.getCurrentPath;
+    }
+    return gameSrc;
+  }
+
+  checkForExt(contentPath:string, currentPath:string):boolean{
+    const contentExt = extname(contentPath);
+    const currentPathExt = extname(currentPath);
+    const ext = ".jsdos";
+    let res = false;
+
+    if(contentExt != '' && contentExt == ext){
+      res = true;
+    }else if( currentPathExt == ext){
+      res = false;
+    }
+    return res;
   }
 
   private getComponentDetail():Process{

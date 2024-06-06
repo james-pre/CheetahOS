@@ -557,7 +557,7 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
 
   async runProcess(file:FileInfo):Promise<void>{
 
-    console.log('runProcess:',file)
+    console.log('fileexplorer-runProcess:',file)
     // console.log('what was clicked:',file.getFileName +'-----' + file.getOpensWith +'---'+ file.getCurrentPath +'----'+ file.getIcon) TBD
     if((file.getOpensWith === 'fileexplorer' && file.getFileName !== 'fileexplorer') && file.getFileType ==='folder'){
 
@@ -650,8 +650,6 @@ export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy 
   }
 
   doBtnClickThings(id:number):void{
-
-    console.log('do btn click things');
 
     this.isIconInFocusDueToCurrentAction = true;
     this.isIconInFocusDueToPriorAction = false;
