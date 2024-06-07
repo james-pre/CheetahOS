@@ -210,6 +210,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   changeVolume(val:number):void{
     const rect =  this.audioContainer.nativeElement.getBoundingClientRect();
+    this.audioPlayer.volume(val);
     const barWidth = (val * 90) / 100;
     this.barFull.nativeElement.style.width = (barWidth * 100) + '%';
     this.sliderBtn.nativeElement.style.left = (rect.width * barWidth + rect.width * 0.05 - 25) + 'px';
