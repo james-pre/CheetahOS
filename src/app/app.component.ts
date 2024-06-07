@@ -11,12 +11,12 @@ import { TitleComponent } from './user-apps/title/title.component';
 import { GreetingComponent } from './user-apps/greeting/greeting.component';
 import { FileexplorerComponent } from './system-apps/fileexplorer/fileexplorer.component';
 import { TaskmanagerComponent } from './system-apps/taskmanager/taskmanager.component';
-import { TaskmanagerMiniComponent } from './system-apps/taskmanager/taskmanager.mini.component';
 import { SessionManagmentService } from './shared/system-service/session.management.service';
 import { AppDirectory } from './system-files/app.directory';
 import { JsdosComponent } from './user-apps/jsdos/jsdos.component';
 import { VideoPlayerComponent } from './system-apps/videoplayer/videoplayer.component';
 import { AudioPlayerComponent } from './system-apps/audioplayer/audioplayer.component';
+import { TerminalComponent } from './system-apps/terminal/terminal.component';
 
 @Component({
   selector: 'cos-root',
@@ -58,11 +58,12 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   //:TODO when you have more apps with a UI worth looking at, add a way to select the right component for the give
   //appname
   private apps: {type: Type<BaseComponent>}[] =[
+    {type: AudioPlayerComponent},
     {type: FileexplorerComponent},
     {type: TaskmanagerComponent},
-    {type: TaskmanagerMiniComponent},
+    {type: TerminalComponent},
+    // {type: TaskmanagerMiniComponent},
     {type: VideoPlayerComponent},
-    {type: AudioPlayerComponent},
     {type: TitleComponent},
     {type: GreetingComponent},
     {type: JsdosComponent}

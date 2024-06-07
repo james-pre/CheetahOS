@@ -20,7 +20,7 @@ export class TerminalComponent implements BaseComponent, OnDestroy {
   private _maximizeWindowSub!: Subscription;
 
   hasWindow = true;
-  icon = '/osdrive/icons/terminal_48.png';
+  icon = '/osdrive/icons/terminal-2_48.png';
   name = 'terminal';
   processId = 0;
   type = ComponentType.systemComponent;
