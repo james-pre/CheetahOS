@@ -6,6 +6,7 @@ import { ComponentType } from 'src/app/system-files/component.types';
 import { Process } from 'src/app/system-files/process';
 import { FileEntry } from 'src/app/system-files/fileentry';
 import { FileInfo } from 'src/app/system-files/fileinfo';
+import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { Subscription } from 'rxjs';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 import { FileManagerService } from 'src/app/shared/system-service/file.manager.services';
@@ -20,7 +21,7 @@ import {basename} from 'path';
   encapsulation: ViewEncapsulation.None,
 })
 
-export class FileexplorerComponent implements  OnInit, AfterViewInit, OnDestroy {
+export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fileExplorerContainer', {static: true}) fileExplorerContainer!: ElementRef;
  
   private _processIdService:ProcessIDService;

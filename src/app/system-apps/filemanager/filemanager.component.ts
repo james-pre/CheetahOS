@@ -3,6 +3,7 @@ import { FileService } from 'src/app/shared/system-service/file.service';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { ComponentType } from 'src/app/system-files/component.types';
+import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { Process } from 'src/app/system-files/process';
 import { FileEntry } from 'src/app/system-files/fileentry';
 import { FileInfo } from 'src/app/system-files/fileinfo';
@@ -16,7 +17,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
   templateUrl: './filemanager.component.html',
   styleUrls: ['./filemanager.component.css']
 })
-export class FilemanagerComponent implements  OnInit, AfterViewInit, OnDestroy {
+export class FilemanagerComponent implements BaseComponent, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('myBounds', {static: true}) myBounds!: ElementRef;
   
   private _processIdService:ProcessIDService;
