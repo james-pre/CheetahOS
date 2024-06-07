@@ -28,6 +28,7 @@ import { HighlightDirective } from './system-apps/window/window.btn.highlight.di
 import { TaskBarEntryHighlightDirective } from './system-apps/taskbarentries/taskbar.entry.highlight.directives';
 import { LongPressDirective } from './system-apps/audioplayer/long.press.directive';
 import { ColumnResizeDirective } from './system-apps/taskmanager/taskmanager.column-resize.directive';
+import { TerminalComponent } from './system-apps/terminal/terminal.component';
 
 
 
@@ -56,6 +57,7 @@ import { ColumnResizeDirective } from './system-apps/taskmanager/taskmanager.col
     TaskBarEntryHighlightDirective,
     LongPressDirective,
     ColumnResizeDirective,
+    TerminalComponent,
   ],
   imports: [
     BrowserModule,

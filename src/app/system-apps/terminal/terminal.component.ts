@@ -7,25 +7,24 @@ import { ComponentType } from 'src/app/system-files/component.types';
 import { Process } from 'src/app/system-files/process';
 
 @Component({
-  selector:'cos-title',
-  templateUrl: './title.component.html',
-  styleUrls: ["./title.component.css"]
+  selector: 'cos-terminal',
+  templateUrl: './terminal.component.html',
+  styleUrls: ['./terminal.component.css']
 })
+export class TerminalComponent implements BaseComponent, OnDestroy {
 
-export class TitleComponent implements BaseComponent, OnDestroy{
-
-  @ViewChild('ptag', {static: true}) ptag!: ElementRef;
+  @ViewChild('ttag', {static: true}) ttag!: ElementRef;
 
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _maximizeWindowSub!: Subscription;
 
   hasWindow = true;
-  icon = 'osdrive/Pictures/favicon_nice.png';
-  name = 'hello';
+  icon = '/osdrive/icons/terminal_48.png';
+  name = 'terminal';
   processId = 0;
-  type = ComponentType.userComponent;
-  displayName = 'Hello';
+  type = ComponentType.systemComponent;
+  displayName = 'Terminal';
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService) { 
     this._processIdService = processIdService;
@@ -33,7 +32,6 @@ export class TitleComponent implements BaseComponent, OnDestroy{
 
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail()); 
-
     this._maximizeWindowSub = this._runningProcessService.maximizeWindowNotify.subscribe(() =>{this.maximizeWindow();})
   }
 
@@ -43,15 +41,14 @@ export class TitleComponent implements BaseComponent, OnDestroy{
 
   maximizeWindow():void{
     console.log('maximize');
-    this.ptag.nativeElement.style.height = '1000px';
+    this.ttag.nativeElement.style.height = '1000px';
   }
 
-  setTitleWindowToFocus(pid:number):void{
+  setTerminalWindowToFocus(pid:number):void{
     this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
   }
 
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type)
   }
-
 }
