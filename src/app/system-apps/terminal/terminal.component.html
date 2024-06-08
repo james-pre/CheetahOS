@@ -1,4 +1,27 @@
 <cos-window [runningProcessID]="this.processId" [processAppIcon]="this.icon" [processAppName]="this.name" (click)="setTerminalWindowToFocus(this.processId)">
-    <p #ttag>terminal works!</p>
+    <div class="terminal-container" tabIndex="-1" onKeyDown=" " #terminalCntnr>
+        <div class="terminal-banner-container"  #bannerCntnr>
+            <div class="terminal-banner-content">
+                {{banner}}
+            </div>
+        </div>
+        <div class="terminal-welcome-message-container">
+            <div class="terminal-welcome-message-content">
+                    {{welcomeMessage}}
+            </div>
+        </div>
+        <div className="terminal-input-area">
+            <form [formGroup]="terminalForm"  class="terminal-form">
+                <span class="terminal-prompt">{{terminalPrompt}}</span>
+                <input
+                class="terminal-input"
+                formControlName="terminalCmd"
+                (keydown)="onkeyDown($event)"
+                autofocus ="false" 
+                spellcheck="false"
+                autocapitalize="off"
+                />
+            </form>
+        </div>
+    </div>
 </cos-window>
-
