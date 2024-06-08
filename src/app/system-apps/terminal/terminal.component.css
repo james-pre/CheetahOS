@@ -55,8 +55,19 @@
     text-align: left;
     white-space: pre;
   }
+
+  .terminal-command-output-container-main{
+    display: flex;
+    min-height: 250px;
+    width: 100%;
+  }
+
+  .terminal-command-output-container{
+    display: flex;
+  }
   
-  @media only screen and (max-width: 400px) {
+  
+  /* @media only screen and (max-width: 400px) {
     .terminal-banner {
       font-size: 8px;
     }
@@ -67,11 +78,20 @@
       font-size: 6px;
     }
   }
-  
+   */
 
   .terminal-command-output {
-    padding: 10px;
-    max-width: 800px;
+    padding: 8px 4px 8px 4px;
+    min-width: 600px;
+    color: white;
+    line-height: normal;
+    font-weight: normal;
+    font-family: monospace;
+    font-size: 12px;
+    /* margin-bottom:10px;
+    margin-top:4px ; */
+    text-align: left;
+    white-space: pre;
   }
   
   .terminal-command-output dt {
@@ -110,7 +130,18 @@
   }
   
   .terminal-prompt {
+    position: relative;
     width: 24px;
+    color: #ccc;
+    font-family: monospace;
+    font-weight: bold;
+    display: flex;
+    top: -2px;
+    left: 1.5%;
+  }
+
+  .terminal-prompt2 {
+    width: 20px;
     color: #ccc;
     font-family: monospace;
     font-weight: bold;
@@ -130,6 +161,7 @@
     border: 0px;
     outline: none; /* no highlight on focus */
     width: 100%;
+    margin-bottom: 4px;
   }
 
   .terminal-error-group {
