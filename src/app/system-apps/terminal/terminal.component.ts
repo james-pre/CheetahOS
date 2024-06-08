@@ -22,9 +22,8 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   private _maximizeWindowSub!: Subscription;
   private _formBuilder;
   private msg_pos_counter = 0;
-  private ptr_tail = 0;
-  private ptr_head = 0;
-  private down_arr_press_counter = 0;
+  private prev_ptr_index = 0;
+  
 
   private Success = 1;
   private Fail = 2;
@@ -36,7 +35,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
 
   banner = '';
   welcomeMessage = '';
-  terminalPrompt = ' >';
+  terminalPrompt = ">";
   commandHistory:TerminalCommand[] = [];
   echoCommands:string[] = ["help", "about", "projects", "contacts", "awards", "repo"];
   utilityCommands:string[] = ["clear", "all", "dir"];
@@ -115,12 +114,9 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
 
       this.msg_pos_counter++;
     },125, msgArr);
-
   }
 
-
   onKeyDownOnWindow(evt:KeyboardEvent):void{
-  
     const cmdTxtBoxElm= document.getElementById('cmdTxtBox') as HTMLInputElement;
     if(cmdTxtBoxElm){
       cmdTxtBoxElm?.focus();
@@ -132,7 +128,8 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       evt.preventDefault();
     }
   }
-  onkeyDownInInputBox(evt:KeyboardEvent):void{
+
+  onKeyDownInInputBox(evt:KeyboardEvent):void{
    
     if(evt.key == "Enter"){
       const cmdInput = this.terminalForm.value.terminalCmd as string;
@@ -142,12 +139,10 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       console.log('cmdInput:', cmdInput);
 
       if(cmdInput !== ''){
-
-        this.ptr_head = this.commandHistory.length - 1;
-        this.ptr_tail = 0;
-
+    
         this.processCommand(terminalCommand);
         this.commandHistory.push(terminalCommand);
+        this.prev_ptr_index = this.commandHistory.length;
         this.terminalForm.reset();
       }
 
@@ -155,89 +150,12 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
     }
 
     if(evt.key == "ArrowUp"){
-
-      if(this.commandHistory.length > 0){
-        //Both ptrs are at the end
-        if(this.ptr_tail == this.commandHistory.length - 1 && this.ptr_head == this.commandHistory.length - 1) {
-          this.terminalForm.setValue({terminalCmd: this.commandHistory[this.ptr_tail].getCommand});
-          this.down_arr_press_counter = 0;
-        }
-
-        //Both ptrs are at the begining
-        if(this.ptr_tail == 0 && this.ptr_head == 0){
-          this.terminalForm.setValue({terminalCmd: this.commandHistory[this.ptr_head].getCommand});
-          return;
-        }
-          
-        // mid-point
-        if(this.ptr_tail > 0 && this.ptr_head == this.commandHistory.length - 1){
-          this.ptr_head = this.ptr_tail - 1;
-          this.terminalForm.setValue({terminalCmd: this.commandHistory[this.ptr_head].getCommand});
-          this.ptr_tail = 0;
-          return;
-        }
-
-        while(this.ptr_head >= this.ptr_tail){  
-
-          this.terminalForm.setValue({terminalCmd: this.commandHistory[this.ptr_head].getCommand});
-
-          this.ptr_head --;
-
-          if(this.ptr_head < this.ptr_tail)
-            this.ptr_head = this.ptr_tail
-        
-          break;
-        }
-      }
-
+      this.getCommandHistory("backward");
       evt.preventDefault();
     }
 
     if(evt.key == "ArrowDown"){
-
-      if(this.commandHistory.length > 0){
-        // const terminalCmd = this.terminalForm.value.terminalCmd as string;
-        // console.log('inputKey:', inputKey);
-        // console.log('terminalCmd:', terminalCmd);
-      
-        //Both ptrs are at the end
-        if(this.ptr_tail == this.commandHistory.length - 1 && this.ptr_head == this.commandHistory.length - 1) {
-          this.terminalForm.setValue({terminalCmd: this.commandHistory[this.ptr_tail].getCommand});
-          if(this.down_arr_press_counter >= 1){
-            this.terminalForm.setValue({terminalCmd:''});
-            return;
-          }
-          this.down_arr_press_counter++;
-          return;
-        }
-  
-        //Both ptrs are at the begining
-        if(this.ptr_tail == 0 && this.ptr_head == 0) {
-          this.ptr_head = this.commandHistory.length - 1;
-          this.ptr_tail = this.ptr_tail + 1;
-          this.terminalForm.setValue({terminalCmd: this.commandHistory[this.ptr_tail].getCommand});
-          return;
-        }
-  
-        //mid point
-        if(this.ptr_tail == 0 && this.ptr_head < this.commandHistory.length - 1){
-          this.ptr_tail = this.ptr_head + 1;
-          this.ptr_head =  this.commandHistory.length - 1;
-          this.terminalForm.setValue({terminalCmd: this.commandHistory[this.ptr_tail].getCommand});
-          return;
-        }
-  
-        while(this.ptr_tail  <= this.ptr_head){  
-          this.ptr_tail++;
-  
-          if(this.ptr_tail > this.ptr_head)
-            this.ptr_tail = this.ptr_head
-  
-          this.terminalForm.setValue({terminalCmd: this.commandHistory[this.ptr_tail].getCommand});
-          break;
-        }
-      }
-
+      this.getCommandHistory("forward")
       evt.preventDefault();
     }
 
@@ -252,6 +170,26 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
     }
 
   }
+
+  getCommandHistory(direction:string):void{
+
+    let curr_ptr_index = 0;
+    if(this.commandHistory.length > 0){
+      if(direction === "backward"){
+        curr_ptr_index = (this.prev_ptr_index === 0)? 0 : this.prev_ptr_index - 1;
+      }else if(direction === "forward"){
+        curr_ptr_index = (this.prev_ptr_index === this.commandHistory.length)? 
+          this.commandHistory.length : this.prev_ptr_index + 1
+      }
+
+      this.prev_ptr_index = curr_ptr_index;
+      (curr_ptr_index === this.commandHistory.length) ? 
+        this.terminalForm.setValue({terminalCmd:''}) : 
+        this.terminalForm.setValue({terminalCmd: this.commandHistory[curr_ptr_index].getCommand});
+    }
+  }
+
+  
 
   isEchoCommand(arg: string): boolean {
     if(this.echoCommands.includes(arg))

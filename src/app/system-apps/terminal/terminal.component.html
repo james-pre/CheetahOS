@@ -15,7 +15,7 @@
         <div class="terminal-command-output-container-main">
             <div class="terminal-command-output-container" *ngFor="let cmdHistory of commandHistory">
                 <div class="terminal-command-output">
-                    <span class="terminal-prompt2">{{terminalPrompt}} </span>
+                    <span class="terminal-prompt2">{{terminalPrompt}}</span>
                     {{cmdHistory.getCommandOutput.trim()}}
                 </div>
             </div>
@@ -27,7 +27,7 @@
                 <input
                 class="terminal-input"
                 formControlName="terminalCmd"
-                (keydown)="onkeyDownInInputBox($event)"
+                (keydown)="onKeyDownInInputBox($event)"
                 autofocus ="false" 
                 spellcheck="false"
                 autocomplete="off"

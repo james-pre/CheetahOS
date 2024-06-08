@@ -57,8 +57,7 @@
   }
 
   .terminal-command-output-container-main{
-    display: flex;
-    min-height: 250px;
+    height: 250px;
     width: 100%;
   }
 
@@ -81,7 +80,7 @@
    */
 
   .terminal-command-output {
-    padding: 8px 4px 8px 4px;
+    padding: 8px 4px 8px 8px;
     min-width: 600px;
     color: white;
     line-height: normal;
@@ -141,6 +140,7 @@
   }
 
   .terminal-prompt2 {
+    position: relative;
     width: 20px;
     color: #ccc;
     font-family: monospace;
