@@ -20,11 +20,18 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   private _runningProcessService:RunningProcessService;
   private _maximizeWindowSub!: Subscription;
   private _formBuilder;
+  private msg_pos_counter = 0;
+  private ptr_tail = 0;
+  private ptr_head = 0;
+  private down_arr_press_counter = 0;
+  private state = '';
+
 
   banner = '';
   welcomeMessage = '';
   terminalPrompt = ' >';
-  private msg_pos_counter = 0;
+  commandHistory:string[] = [];
+  
 
   terminalForm!: FormGroup;
 
@@ -75,7 +82,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
     //                                                                                                                 \u00A9 ${this.getYear()}
     // `
 
-    const banner = `Simple Terminal, CheetahOS [Version 0.1.1] \u00A9 ${this.getYear()}`
+    const banner = `Simple Terminal, CheetahOS [Version 0.0.1] \u00A9 ${this.getYear()}`
     return banner;
   }
 
@@ -103,25 +110,110 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
 
   onkeyDown(evt:KeyboardEvent):void{
     const inputKey = evt.key;
+    // console.log('inputKey--:', inputKey);
 
     if(inputKey == "Enter"){
-      evt.preventDefault();
       const terminalCmd = this.terminalForm.value.terminalCmd as string;
+      console.log('inputKey:', inputKey);
+      console.log('terminalCmd:', terminalCmd);
+
+      this.commandHistory.push(terminalCmd);
+      this.ptr_head = this.commandHistory.length - 1;
+      this.ptr_tail = 0;
+
+      this.terminalForm.reset();
+
+      evt.preventDefault();
     }
 
     if(inputKey == "ArrowUp"){
+
+      //Both ptrs are at the end
+      if(this.ptr_tail == this.commandHistory.length - 1 && this.ptr_head == this.commandHistory.length - 1) {
+        this.terminalForm.setValue({terminalCmd: this.commandHistory[this.ptr_tail]});
+        this.down_arr_press_counter = 0;
+      }
+
+      //Both ptrs are at the begining
+      if(this.ptr_tail == 0 && this.ptr_head == 0){
+        this.terminalForm.setValue({terminalCmd: this.commandHistory[this.ptr_head]});
+        return;
+      }
+         
+      // mid-point
+      if(this.ptr_tail > 0 && this.ptr_head == this.commandHistory.length - 1){
+        this.ptr_head = this.ptr_tail - 1;
+        this.terminalForm.setValue({terminalCmd: this.commandHistory[this.ptr_head]});
+        this.ptr_tail = 0;
+        return;
+      }
+
+      while(this.ptr_head >= this.ptr_tail){  
+
+        this.terminalForm.setValue({terminalCmd: this.commandHistory[this.ptr_head]});
+
+        this.ptr_head --;
+
+        if(this.ptr_head < this.ptr_tail)
+          this.ptr_head = this.ptr_tail
+       
+        break;
+      }
+
       evt.preventDefault();
-      const terminalCmd = this.terminalForm.value.terminalCmd as string;
     }
 
     if(inputKey == "ArrowDown"){
-      evt.preventDefault();
       const terminalCmd = this.terminalForm.value.terminalCmd as string;
+      console.log('inputKey:', inputKey);
+      console.log('terminalCmd:', terminalCmd);
+    
+      //Both ptrs are at the end
+      if(this.ptr_tail == this.commandHistory.length - 1 && this.ptr_head == this.commandHistory.length - 1) {
+        this.terminalForm.setValue({terminalCmd: this.commandHistory[this.ptr_tail]});
+        if(this.down_arr_press_counter >= 1){
+          this.terminalForm.setValue({terminalCmd:''});
+          return;
+        }
+        this.down_arr_press_counter++;
+        return;
+      }
+
+      //Both ptrs are at the begining
+      if(this.ptr_tail == 0 && this.ptr_head == 0) {
+        this.ptr_head = this.commandHistory.length - 1;
+        this.ptr_tail = this.ptr_tail + 1;
+        this.terminalForm.setValue({terminalCmd: this.commandHistory[this.ptr_tail]});
+        return;
+      }
+
+      //mid point
+      if(this.ptr_tail == 0 && this.ptr_head < this.commandHistory.length - 1){
+        this.ptr_tail = this.ptr_head + 1;
+        this.ptr_head =  this.commandHistory.length - 1;
+        this.terminalForm.setValue({terminalCmd: this.commandHistory[this.ptr_tail]});
+        return;
+      }
+
+      while(this.ptr_tail  <= this.ptr_head){  
+        this.ptr_tail++;
+
+        if(this.ptr_tail > this.ptr_head)
+          this.ptr_tail = this.ptr_head
+
+        this.terminalForm.setValue({terminalCmd: this.commandHistory[this.ptr_tail]});
+        break;
+      }
+
+      evt.preventDefault();
     }
 
     if(inputKey == "Tab"){
-      evt.preventDefault();
       const terminalCmd = this.terminalForm.value.terminalCmd as string;
+      console.log('inputKey:', inputKey);
+      console.log('terminalCmd:', terminalCmd);
+
+      evt.preventDefault();
     }
 
   }

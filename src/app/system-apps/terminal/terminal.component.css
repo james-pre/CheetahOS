@@ -110,8 +110,8 @@
   }
   
   .terminal-prompt {
-    width: 25px;
-    color: white;
+    width: 24px;
+    color: #ccc;
     font-family: monospace;
     font-weight: bold;
   }
@@ -122,10 +122,10 @@
   }
   
   .terminal-input {
-    font-family: inherit;
-    font-size: inherit;
-    font-size: inherit;
-    color: rgb(240, 191, 129);
+    font-family: monospace;
+    font-weight: normal;
+    font-size: normal;
+    color: #ccc;
     background: transparent;
     border: 0px;
     outline: none; /* no highlight on focus */
