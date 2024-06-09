@@ -7,9 +7,11 @@ import { Injectable } from "@angular/core";
 export class ProcessIDService{
 
     private _activeProcessIds: number[];
+    static instance: ProcessIDService;
 
     constructor(){
-        this._activeProcessIds = []
+        this._activeProcessIds = [];
+        ProcessIDService.instance = this; //I added this to access the service from a class, not component
      }
 
     public getNewProcessId(): number{

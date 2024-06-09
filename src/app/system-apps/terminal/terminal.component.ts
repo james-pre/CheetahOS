@@ -39,7 +39,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   welcomeMessage = '';
   terminalPrompt = ">";
   commandHistory:TerminalCommand[] = [];
-  echoCommands:string[] = ["close ", "curl", "help","hostname", "list", "open", "version ", "whoami", "weather"];
+  echoCommands:string[] = ["close", "curl","date", "help","hostname", "list", "open", "version", "whoami", "weather"];
   utilityCommands:string[] = ["clear", "all", "dir", "cd", "download" ];
   allCommands:string[] = [];
   
@@ -210,8 +210,20 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
         terminalCmd.setResponseCode = this.Success;
       } 
 
+      if(inputCmd == "close"){
+        const result = this._terminaCommandsImpl.close(cmd_split[1], cmd_split[2]);
+        terminalCmd.setResponseCode = this.Success;
+        terminalCmd.setCommandOutput = result;
+      } 
+
       if(inputCmd == "help"){
         const result = this._terminaCommandsImpl.help(this.echoCommands, this.utilityCommands, cmd_split[1]);
+        terminalCmd.setResponseCode = this.Success;
+        terminalCmd.setCommandOutput = result;
+      } 
+
+      if(inputCmd == "open"){
+        const result = this._terminaCommandsImpl.open(cmd_split[1], cmd_split[2]);
         terminalCmd.setResponseCode = this.Success;
         terminalCmd.setCommandOutput = result;
       } 
@@ -229,7 +241,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       } 
 
       if(inputCmd == "list"){
-        const result = this._terminaCommandsImpl.list(this._runningProcessService.getProcesses(), cmd_split[1], cmd_split[2]);
+        const result = this._terminaCommandsImpl.list(cmd_split[1], cmd_split[2]);
         terminalCmd.setResponseCode = this.Success;
         terminalCmd.setCommandOutput = result;
       } 

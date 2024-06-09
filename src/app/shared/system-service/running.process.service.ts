@@ -9,6 +9,7 @@ import { Process } from "src/app/system-files/process";
 
 export class RunningProcessService{
 
+    static instance: RunningProcessService;
     responseToEventCount = 0;
     readonly MAX_RESPONSE_TO_EVENT = 1;
 
@@ -22,7 +23,8 @@ export class RunningProcessService{
     maximizeWindowNotify: Subject<void> = new Subject<void>();
 
     constructor(){
-        this._runningProcesses = []
+        this._runningProcesses = [];
+        RunningProcessService.instance = this; //I added this to access the service from a class, not component
     }
 
     addProcess(proccessToAdd:Process):void{

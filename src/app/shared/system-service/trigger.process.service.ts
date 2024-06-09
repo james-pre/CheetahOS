@@ -13,6 +13,7 @@ export class TriggerProcessService{
     private _runningProcessService:RunningProcessService;
     private _appDirectory:AppDirectory;
     private _TriggerList:FileInfo[];
+    static instance: TriggerProcessService;
 
     startProcessNotify: Subject<string> = new Subject<string>();
     appNotFoundNotify: Subject<string> = new Subject<string>();
@@ -22,6 +23,7 @@ export class TriggerProcessService{
         this._runningProcessService = runningProcessService;
         this._appDirectory = new AppDirectory();
         this._TriggerList = [];
+        TriggerProcessService.instance = this; //I added this to access the service from a class, not component
     }
 
     startApplication(file:FileInfo):void{

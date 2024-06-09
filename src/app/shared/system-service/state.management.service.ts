@@ -6,10 +6,12 @@ import {Injectable } from "@angular/core";
 
 export class StateManagmentService{
 
+    static instance: StateManagmentService;
     private _sessionStateManagmentService:Map<number, unknown>; 
     
     constructor(){
         this._sessionStateManagmentService = new Map<number, unknown>();
+        StateManagmentService.instance = this; //I added this to access the service from a class, not component
     }
 
     addState(id:number, stateData:unknown): void{
