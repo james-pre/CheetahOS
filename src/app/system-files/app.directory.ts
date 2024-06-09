@@ -26,17 +26,15 @@ export class AppDirectory {
     }
 
     private createAppsList(): void{
-        for (let i = 0; i < this._systemProcessList.length; i++) {
-            this._processList.push(this._systemProcessList[i]);
-        }
-
-        for (let i = 0; i < this._userProcessList.length; i++) {
-            this._processList.push(this._userProcessList[i]);
-        }
+        this._processList =[...this._systemProcessList, ...this._userProcessList];
     }
 
     public getAppPosition(appName:string):number{
         const appPosition = this._processList.indexOf(appName)
         return appPosition
+    }
+
+    public getAppList():string[]{
+        return this._processList;
     }
 } 

@@ -138,17 +138,12 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       const cmdInput = this.terminalForm.value.terminalCmd as string;
       const terminalCommand = new TerminalCommand(cmdInput, 0, '');
 
-      console.log('inputKey:', evt.key);
-      console.log('cmdInput:', cmdInput);
-
       if(cmdInput !== ''){
-    
         this.processCommand(terminalCommand);
         this.commandHistory.push(terminalCommand);
         this.prev_ptr_index = this.commandHistory.length;
         this.terminalForm.reset();
       }
-
       evt.preventDefault();
     }
 
@@ -164,14 +159,9 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
 
     if(evt.key == "Tab"){
       const terminalCmd = this.terminalForm.value.terminalCmd as string;
-      console.log('inputKey:', evt.key);
-      console.log('terminalCmd:', terminalCmd);
-
-
       this.terminalForm.setValue({terminalCmd: this.getAutoCompelete(terminalCmd)});
       evt.preventDefault();
     }
-
   }
 
   getCommandHistory(direction:string):void{
@@ -214,6 +204,12 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
     const cmd_split = terminalCmd.getCommand.split(" ");
     const inputCmd = cmd_split[0].toLowerCase();
     if(this.isValidCommand(inputCmd)){
+
+      if(inputCmd == "clear"){
+        this._terminaCommandsImpl.clear(this.commandHistory);
+        terminalCmd.setResponseCode = this.Success;
+      } 
+
       if(inputCmd == "help"){
         const result = this._terminaCommandsImpl.help(this.echoCommands, this.utilityCommands, cmd_split[1]);
         terminalCmd.setResponseCode = this.Success;
@@ -232,8 +228,8 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
         terminalCmd.setCommandOutput = await result;
       } 
 
-      if(inputCmd == "hostname"){
-        const result = this._terminaCommandsImpl.hostname();
+      if(inputCmd == "list"){
+        const result = this._terminaCommandsImpl.list(this._runningProcessService.getProcesses(), cmd_split[1], cmd_split[2]);
         terminalCmd.setResponseCode = this.Success;
         terminalCmd.setCommandOutput = result;
       } 
