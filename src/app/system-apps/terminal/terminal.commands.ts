@@ -84,23 +84,16 @@ export class TerminalCommands{
             return `Installed Apps: ${appDir.getAppList().join(', ')}`;
         }
 
-        if(arg2 == "-i"){ // list install apps
-            const appDir = new AppDirectory();
-            return `Installed Apps: ${appDir.getAppList().join(', ')}`;
-        }
-
         if(arg2 == "-a"){ // list install apps
             const result:string[] = [];
-            const tmpHead = `
-    .
+            const tmpHead = `.
     +---------------------------+---------------------------+---------------------------+
     |        Process Name       |        Process Type       |        Process Type       |
     +---------------------------+---------------------------+---------------------------+
     `
             result.push(tmpHead)
             const tmpBottom = `
-    +---------------------------+---------------------------+---------------------------+
-    `
+    +---------------------------+---------------------------+---------------------------+`
             for(let i = 0; i <= arg.length - 1; i++){
                 const process = arg[i];
                 const tmpMid = `
@@ -110,7 +103,7 @@ export class TerminalCommands{
             }
 
             result.push(tmpBottom);
-            return result.toString();
+            return result.join(''); // Join with empty string to avoid commas
         }
         return '';
     }
