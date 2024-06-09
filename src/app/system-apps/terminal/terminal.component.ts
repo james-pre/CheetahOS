@@ -7,6 +7,7 @@ import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { Process } from 'src/app/system-files/process';
 import { TerminalCommand } from './model/terminal.command';
+import { TerminalCommands } from './terminal.commands';
 
 @Component({
   selector: 'cos-terminal',
@@ -21,14 +22,15 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   private _runningProcessService:RunningProcessService;
   private _maximizeWindowSub!: Subscription;
   private _formBuilder;
+  private _terminaCommandsImpl!:TerminalCommands;
   private msg_pos_counter = 0;
   private prev_ptr_index = 0;
+  private versionNum = '0.0.1';
   
-
-  private Success = 1;
-  private Fail = 2;
-  private Warning = 3;
-  private Options = 4;
+  Success = 1;
+  Fail = 2;
+  Warning = 3;
+  Options = 4;
 
   isBannerVisible = true;
   isWelcomeVisible = true;
@@ -37,8 +39,8 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   welcomeMessage = '';
   terminalPrompt = ">";
   commandHistory:TerminalCommand[] = [];
-  echoCommands:string[] = ["help", "about", "projects", "contacts", "awards", "repo"];
-  utilityCommands:string[] = ["clear", "all", "dir"];
+  echoCommands:string[] = ["close ", "curl", "help","hostname", "list", "open", "version ", "whoami", "weather"];
+  utilityCommands:string[] = ["clear", "all", "dir", "cd", "download" ];
   allCommands:string[] = [];
   
 
@@ -55,6 +57,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this._formBuilder = formBuilder;
+    this._terminaCommandsImpl = new TerminalCommands();
 
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail()); 
@@ -67,7 +70,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
     });
 
     this.banner = this.getTerminalBanner();
-    this.allCommands = [...this.echoCommands, ...this.utilityCommands]
+    this.allCommands = [...this.echoCommands, ...this.utilityCommands];
   }
 
   ngAfterViewInit():void{
@@ -92,12 +95,12 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
     //                                                                                                                 \u00A9 ${this.getYear()}
     // `
 
-    const banner = `Simple Terminal, CheetahOS [Version 0.0.1] \u00A9 ${this.getYear()}`
+    const banner = `Simple Terminal, CheetahOS [Version ${this.versionNum}] \u00A9 ${this.getYear()}`
     return banner;
   }
 
   populateWelecomeMessageField():void{
-    const welcomeMessage = "Type 'help' to view a list of available commands.";
+    const welcomeMessage = "Type 'help, help -verbose' to view a list of available commands.";
     const msgArr :string[] = welcomeMessage.split(" ");
 
     const interval =  setInterval((msg) => {
@@ -189,8 +192,6 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
     }
   }
 
-  
-
   isEchoCommand(arg: string): boolean {
     if(this.echoCommands.includes(arg))
       return true;
@@ -209,15 +210,36 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
     return this.isEchoCommand(arg) || this.isUtilityCommand(arg);
   }
 
-  processCommand(terminalCmd:TerminalCommand):void{
-    const cmd = terminalCmd.getCommand;
-    const inputCmd = cmd.toLowerCase();
+  async processCommand(terminalCmd:TerminalCommand):Promise<void>{
+    const cmd_split = terminalCmd.getCommand.split(" ");
+    const inputCmd = cmd_split[0].toLowerCase();
     if(this.isValidCommand(inputCmd)){
-      terminalCmd.setResponseCode = this.Success;
-      terminalCmd.setCommandOutput = 'Hello Hello Hello'
+      if(inputCmd == "help"){
+        const result = this._terminaCommandsImpl.help(this.echoCommands, this.utilityCommands, cmd_split[1]);
+        terminalCmd.setResponseCode = this.Success;
+        terminalCmd.setCommandOutput = result;
+      } 
+
+      if(inputCmd == "whoami"){
+        const result = this._terminaCommandsImpl.whoami();
+        terminalCmd.setResponseCode = this.Success;
+        terminalCmd.setCommandOutput = result;
+      } 
+
+      if(inputCmd == "weather"){
+        const result = this._terminaCommandsImpl.weather(cmd_split[1]);
+        terminalCmd.setResponseCode = this.Success;
+        terminalCmd.setCommandOutput = await result;
+      } 
+
+      if(inputCmd == "hostname"){
+        const result = this._terminaCommandsImpl.hostname();
+        terminalCmd.setResponseCode = this.Success;
+        terminalCmd.setCommandOutput = result;
+      } 
     }else{
       terminalCmd.setResponseCode = this.Fail;
-      terminalCmd.setCommandOutput = `${terminalCmd.getCommand}: command not found. Type 'help' for the available commands.`;
+      terminalCmd.setCommandOutput = `${terminalCmd.getCommand}: command not found. Type 'help, help -verbose' to view a list of available commands.`;
     }
   }
 
@@ -229,7 +251,6 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       return  matchingCommand.join(" ");
     }
   }
-
 
   maximizeWindow():void{
     console.log('maximize');

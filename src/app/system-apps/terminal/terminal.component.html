@@ -1,40 +1,53 @@
 <cos-window [runningProcessID]="this.processId" [processAppIcon]="this.icon" [processAppName]="this.name" (click)="setTerminalWindowToFocus(this.processId)">
     <div class="terminal-container" tabIndex="-1" (keydown)="onKeyDownOnWindow($event)" #terminalCntnr>
-        <div class="terminal-banner-container"  *ngIf="isBannerVisible">
-            <div class="terminal-banner-content">
-                {{banner}}
+        <div class="terminal-output-section">
+            <div class="terminal-banner-container"  *ngIf="isBannerVisible">
+                <div class="terminal-banner-content">
+                    {{banner}}
+                </div>
             </div>
-        </div>
-
-        <div class="terminal-welcome-message-container" *ngIf="isWelcomeVisible">
-            <div class="terminal-welcome-message-content">
-                    {{welcomeMessage}}
+    
+            <div class="terminal-welcome-message-container" *ngIf="isWelcomeVisible">
+                <div class="terminal-welcome-message-content">
+                        {{welcomeMessage}}
+                </div>
             </div>
-        </div>
-
-        <div class="terminal-command-output-container-main">
-            <div class="terminal-command-output-container" *ngFor="let cmdHistory of commandHistory">
-                <div class="terminal-command-output">
-                    <span class="terminal-prompt2">{{terminalPrompt}}</span>
-                    {{cmdHistory.getCommandOutput.trim()}}
+    
+            <div class="terminal-command-output-container-main">
+                <div class="terminal-command-output-container" *ngFor="let cmdHistory of commandHistory">
+                    <div class="terminal-command-output" *ngIf="cmdHistory.getResponseCode === this.Success || cmdHistory.getResponseCode === this.Options">
+                        <span class="terminal-prompt2">{{terminalPrompt}}</span>
+                        {{cmdHistory.getCommandOutput.trim()}}
+                    </div>
+    
+                    <div class="terminal-command-output terminal-error" *ngIf="cmdHistory.getResponseCode === this.Fail">
+                        <span class="terminal-prompt2">{{terminalPrompt}}</span>
+                        {{cmdHistory.getCommandOutput.trim()}}
+                    </div>
+    
+                    <div class="terminal-command-output terminal-warning" *ngIf="cmdHistory.getResponseCode === this.Warning">
+                        <span class="terminal-prompt2">{{terminalPrompt}}</span>
+                        {{cmdHistory.getCommandOutput.trim()}}
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div className="terminal-input-area">
-            <form [formGroup]="terminalForm"  class="terminal-form">
-                <span class="terminal-prompt">{{terminalPrompt}}</span>
-                <input
-                class="terminal-input"
-                formControlName="terminalCmd"
-                (keydown)="onKeyDownInInputBox($event)"
-                autofocus ="false" 
-                spellcheck="false"
-                autocomplete="off"
-                autocapitalize="off"
-                id="cmdTxtBox"
-                />
-            </form>
+        <div class="terminal-input-section">
+            <div class="terminal-input-area">
+                <form [formGroup]="terminalForm"  class="terminal-form">
+                    <span class="terminal-prompt">{{terminalPrompt}}</span>
+                    <input
+                    class="terminal-input"
+                    formControlName="terminalCmd"
+                    (keydown)="onKeyDownInInputBox($event)"
+                    autofocus ="false" 
+                    spellcheck="false"
+                    autocomplete="off"
+                    autocapitalize="off"
+                    id="cmdTxtBox"
+                    />
+                </form>
+            </div>
         </div>
     </div>
 </cos-window>
