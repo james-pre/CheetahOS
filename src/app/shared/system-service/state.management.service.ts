@@ -24,12 +24,12 @@ export class StateManagmentService{
     }
 
     hasState(id:number):boolean{
-
         return this._sessionStateManagmentService.has(id) ? true : false;
     }
 
     removeState(id:number ): void{
-        this._sessionStateManagmentService.delete(id)
+       if(this._sessionStateManagmentService.has(id))
+            this._sessionStateManagmentService.delete(id)
     }
 
     getKeys():number[]{

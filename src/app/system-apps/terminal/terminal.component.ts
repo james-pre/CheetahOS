@@ -23,9 +23,10 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   private _maximizeWindowSub!: Subscription;
   private _formBuilder;
   private _terminaCommandsImpl!:TerminalCommands;
-  private msg_pos_counter = 0;
-  private prev_ptr_index = 0;
-  private versionNum = '0.0.1';
+  private msgPosCounter = 0;
+  private prevPtrIndex = 0;
+  private versionNum = '1.0.0';
+  private SECONDS_DELAY = 120;
   
   Success = 1;
   Fail = 2;
@@ -100,35 +101,37 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   }
 
   populateWelecomeMessageField():void{
-    const welcomeMessage = "Type 'help, help -verbose' to view a list of available commands.";
+    const welcomeMessage = "Type 'help', or 'help -verbose' to view a list of available commands.";
     const msgArr :string[] = welcomeMessage.split(" ");
 
     const interval =  setInterval((msg) => {
       let tmpCounter = 0;
       for(let i = 0; i < msg.length; i++){
         if (tmpCounter < 1){
-          this.welcomeMessage +=(this.msg_pos_counter == 0)? msg[this.msg_pos_counter]:  " " + msg[this.msg_pos_counter];
+          this.welcomeMessage +=(this.msgPosCounter == 0)? msg[this.msgPosCounter]:  " " + msg[this.msgPosCounter];
           tmpCounter++;
         }
       }
 
-      if(this.msg_pos_counter == msg.length - 1)
+      if(this.msgPosCounter == msg.length - 1)
         clearInterval(interval);
 
-      this.msg_pos_counter++;
-    },125, msgArr);
+      this.msgPosCounter++;
+    },this.SECONDS_DELAY, msgArr);
   }
 
   onKeyDownOnWindow(evt:KeyboardEvent):void{
-    const cmdTxtBoxElm= document.getElementById('cmdTxtBox') as HTMLInputElement;
-    if(cmdTxtBoxElm){
-      cmdTxtBoxElm?.focus();
-      //cmdTxtBoxElm?.select();
-    }
-
+    this.focusOnInput();
     if (evt.key === "Tab") {
       // Prevent tab from moving focus
       evt.preventDefault();
+    }
+  }
+
+  focusOnInput():void{
+    const cmdTxtBoxElm= document.getElementById('cmdTxtBox') as HTMLInputElement;
+    if(cmdTxtBoxElm){
+      cmdTxtBoxElm?.focus();
     }
   }
 
@@ -141,7 +144,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       if(cmdInput !== ''){
         this.processCommand(terminalCommand);
         this.commandHistory.push(terminalCommand);
-        this.prev_ptr_index = this.commandHistory.length;
+        this.prevPtrIndex = this.commandHistory.length;
         this.terminalForm.reset();
       }
       evt.preventDefault();
@@ -166,19 +169,19 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
 
   getCommandHistory(direction:string):void{
 
-    let curr_ptr_index = 0;
+    let currPtrIndex = 0;
     if(this.commandHistory.length > 0){
       if(direction === "backward"){
-        curr_ptr_index = (this.prev_ptr_index === 0)? 0 : this.prev_ptr_index - 1;
+        currPtrIndex = (this.prevPtrIndex === 0)? 0 : this.prevPtrIndex - 1;
       }else if(direction === "forward"){
-        curr_ptr_index = (this.prev_ptr_index === this.commandHistory.length)? 
-          this.commandHistory.length : this.prev_ptr_index + 1
+        currPtrIndex = (this.prevPtrIndex === this.commandHistory.length)? 
+          this.commandHistory.length : this.prevPtrIndex + 1
       }
 
-      this.prev_ptr_index = curr_ptr_index;
-      (curr_ptr_index === this.commandHistory.length) ? 
+      this.prevPtrIndex = currPtrIndex;
+      (currPtrIndex === this.commandHistory.length) ? 
         this.terminalForm.setValue({terminalCmd:''}) : 
-        this.terminalForm.setValue({terminalCmd: this.commandHistory[curr_ptr_index].getCommand});
+        this.terminalForm.setValue({terminalCmd: this.commandHistory[currPtrIndex].getCommand});
     }
   }
 
@@ -206,8 +209,15 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
     if(this.isValidCommand(inputCmd)){
 
       if(inputCmd == "clear"){
-        this._terminaCommandsImpl.clear(this.commandHistory);
+        //this._terminaCommandsImpl.clear(this.commandHistory);
+        this.commandHistory = [];
         terminalCmd.setResponseCode = this.Success;
+      } 
+
+      if(inputCmd == "curl"){
+        const result = this._terminaCommandsImpl.curl(cmd_split);
+        terminalCmd.setResponseCode = this.Success;
+        terminalCmd.setCommandOutput = await result;
       } 
 
       if(inputCmd == "close"){
@@ -224,6 +234,12 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
 
       if(inputCmd == "open"){
         const result = this._terminaCommandsImpl.open(cmd_split[1], cmd_split[2]);
+        terminalCmd.setResponseCode = this.Success;
+        terminalCmd.setCommandOutput = result;
+      } 
+
+      if(inputCmd == "version"){
+        const result = this._terminaCommandsImpl.version(this.versionNum);
         terminalCmd.setResponseCode = this.Success;
         terminalCmd.setCommandOutput = result;
       } 
@@ -247,7 +263,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       } 
     }else{
       terminalCmd.setResponseCode = this.Fail;
-      terminalCmd.setCommandOutput = `${terminalCmd.getCommand}: command not found. Type 'help, help -verbose' to view a list of available commands.`;
+      terminalCmd.setCommandOutput = `${terminalCmd.getCommand}: command not found. Type 'help', or 'help -verbose' to view a list of available commands.`;
     }
   }
 

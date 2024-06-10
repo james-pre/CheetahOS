@@ -1,4 +1,3 @@
-import { Process } from "src/app/system-files/process";
 import { TerminalCommand } from "./model/terminal.command";
 import { AppDirectory } from "src/app/system-files/app.directory";
 import { TriggerProcessService } from "src/app/shared/system-service/trigger.process.service";
@@ -63,6 +62,14 @@ export class TerminalCommands{
 
     date():string{
         return new Date().toLocaleDateString();
+    }
+
+    download(uri: string, downloadName: string):void {
+        const link = document.createElement("a");
+        link.download = downloadName;
+        link.href = uri;
+        link.click();
+        link.remove();
     }
 
     hostname():string{
@@ -171,6 +178,27 @@ export class TerminalCommands{
             return `closing app, app name: ${processToClose.getProcessName}  app id: ${processToClose.getProcessId}`;
         }else{
             return `${arg1}: No active process with pid:${arg1} found.`
+        }
+    }
+
+    async curl (args: string[]):Promise<string> {
+        if (args.length === 0 || (args[1] === undefined || args[1].length === 0)){
+          return 'curl: no URL provided';
+        }
+        let url = args[1];
+
+        if(!url.includes('https://')){
+           const tmpUrl = `https://${url}`;
+           url = tmpUrl;
+        }
+
+    
+        try {
+          const response = await fetch(url);
+          const data = await response.text();
+          return data;
+        } catch (error) {
+          return `curl: could not fetch URL ${url}. Details: ${error}`;
         }
     }
 

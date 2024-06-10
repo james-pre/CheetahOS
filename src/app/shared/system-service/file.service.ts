@@ -20,6 +20,7 @@ import ini  from 'ini';
 
 export class FileService{
 
+    static instace:FileService;
     private _fileInfo!:FileInfo;
     private _consts:Constants = new Constants();
     private _fileSystem!:FSModule;
@@ -30,6 +31,7 @@ export class FileService{
 
     constructor(){ 
         this._fileExistsMap =  new Map<string, number>();
+        FileService.instace = this;
     }
 
     private async initBrowserFsAsync():Promise<void>{
