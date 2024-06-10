@@ -1,6 +1,7 @@
 import {Injectable } from "@angular/core";
 import { AppState, BaseState, WindowState } from "src/app/system-files/state/state.interface";
 import { StateType } from "src/app/system-files/state/state.type";
+import { SessionManagmentService } from "./session.management.service";
 @Injectable({
     providedIn: 'root'
 })
@@ -8,11 +9,13 @@ import { StateType } from "src/app/system-files/state/state.type";
 export class StateManagmentService{
 
     static instance: StateManagmentService;
-    private _sessionStateManagmentService:Map<number, unknown>;  
+    private _appStateManagmentService:Map<number, unknown>;  
+    private _sessionManagmentService: SessionManagmentService 
     
     constructor(){
-        this._sessionStateManagmentService = new Map<number, unknown>();
+        this._appStateManagmentService = new Map<number, unknown>();
         StateManagmentService.instance = this; //I added this to access the service from a class, not component
+        this._sessionManagmentService = SessionManagmentService.instance;
     }
 
     /**
@@ -27,13 +30,14 @@ export class StateManagmentService{
 
         console.log(`pid:${pid} type:${type}`);
         if(type !== undefined){
-            if(this._sessionStateManagmentService.has(pid)){
-                const currStateData = this._sessionStateManagmentService.get(pid) as BaseState[];
+            if(this._appStateManagmentService.has(pid)){
+                const currStateData = this._appStateManagmentService.get(pid) as BaseState[];
                 if(type == StateType.App){
                     currStateData[StateType.App] = stateData as AppState;
                 }else{
                     currStateData[StateType.Window] = stateData as WindowState;
                 }
+                this._sessionManagmentService.addSession(String(pid), currStateData);
             }else{
                 const appState:AppState={pid:0, app_data:'', app_name:'', unique_id:''}
                 const windowState:WindowState={pid:0, x_axis:0, y_axis:0, height:0, width:0, z_index:0, is_visible:true}
@@ -45,10 +49,11 @@ export class StateManagmentService{
                     state= [appState, stateData as WindowState];
                 }
     
-                this._sessionStateManagmentService.set(pid,state);
+                this._appStateManagmentService.set(pid,state);
+                this._sessionManagmentService.addSession(String(pid), state);
             }
         }else{
-            this._sessionStateManagmentService.set(pid,stateData)
+            this._appStateManagmentService.set(pid,stateData)
         }
     }
 
@@ -64,7 +69,7 @@ export class StateManagmentService{
     getState(pid:number, type?:StateType):unknown{
         
         if(type !== undefined){
-            const stateData = this._sessionStateManagmentService.get(pid) as BaseState[];
+            const stateData = this._appStateManagmentService.get(pid) as BaseState[];
 
             if(stateData){
                 if(type == StateType.App)
@@ -74,7 +79,7 @@ export class StateManagmentService{
             }
             return stateData
         }else{
-            const stateData = this._sessionStateManagmentService.get(pid);
+            const stateData = this._appStateManagmentService.get(pid);
             return stateData;
         }
     }
@@ -86,7 +91,7 @@ export class StateManagmentService{
      * return a true/false value when checking for a state
      */
     hasState(pid:number):boolean{
-        return this._sessionStateManagmentService.has(pid) ? true : false;
+        return this._appStateManagmentService.has(pid) ? true : false;
     }
 
     /**
@@ -95,14 +100,14 @@ export class StateManagmentService{
      * remove an existing state
      */
     removeState(pid:number): void{
-       if(this._sessionStateManagmentService.has(pid))
-            this._sessionStateManagmentService.delete(pid)
+       if(this._appStateManagmentService.has(pid))
+            this._appStateManagmentService.delete(pid)
     }
 
     getKeys():number[]{
         const keys:number[] = [];
 
-        for(const key of this._sessionStateManagmentService.keys()){
+        for(const key of this._appStateManagmentService.keys()){
             keys.push(key)
         }
         return keys;

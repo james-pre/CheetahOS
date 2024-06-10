@@ -8,19 +8,21 @@ export class SessionManagmentService{
 
     private sessionName = "main-session";
     private _sessionDataDict: Map<string, unknown>; 
+    static instance: SessionManagmentService;
     
     constructor(){
         if(sessionStorage.getItem(this.sessionName)){
             const sessData = sessionStorage.getItem(this.sessionName) as string;
             this._sessionDataDict = new Map(JSON.parse(sessData));
+            SessionManagmentService.instance = this;
         }
         else{
             this._sessionDataDict = new  Map<string, unknown>();
+            SessionManagmentService.instance = this;
         }
     }
 
     addSession(key:string, dataToAdd:unknown): void{
-
         this._sessionDataDict.set(key,dataToAdd)
         this.saveSession(this._sessionDataDict);
     }
