@@ -42,8 +42,9 @@ export class TitleComponent implements BaseComponent, OnDestroy{
   }
 
   maximizeWindow():void{
-    console.log('maximize');
-    this.ptag.nativeElement.style.height = '1000px';
+    const mainWindow = document.getElementById('vanta');
+    this.ptag.nativeElement.style.height = `${mainWindow?.offsetHeight || 0 - 40}px`;
+    this.ptag.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
   }
 
   setTitleWindowToFocus(pid:number):void{

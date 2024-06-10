@@ -25,7 +25,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   private _terminaCommandsImpl!:TerminalCommands;
   private msgPosCounter = 0;
   private prevPtrIndex = 0;
-  private versionNum = '1.0.0';
+  private versionNum = '1.0.2';
   private SECONDS_DELAY = 120;
   
   Success = 1;
@@ -277,8 +277,9 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   }
 
   maximizeWindow():void{
-    console.log('maximize');
-    this.terminalCntnr.nativeElement.style.height = '1000px';
+    const mainWindow = document.getElementById('vanta');
+    this.terminalCntnr.nativeElement.style.height = `${mainWindow?.offsetHeight || 0 - 40}px`;
+    this.terminalCntnr.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
   }
 
   setTerminalWindowToFocus(pid:number):void{
