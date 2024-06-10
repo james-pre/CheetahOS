@@ -9,10 +9,13 @@ import { FileInfo } from 'src/app/system-files/fileinfo';
 import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { Subscription } from 'rxjs';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
+import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 import { FileManagerService } from 'src/app/shared/system-service/file.manager.services';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ViewOptions } from './fileexplorer.enums';
 import {basename} from 'path';
+import { AppState } from 'src/app/system-files/state/state.interface';
+import { StateType } from 'src/app/system-files/state/state.type';
 
 @Component({
   selector: 'cos-fileexplorer',
@@ -29,7 +32,9 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   private _fileService:FileService;
   private _directoryFilesEntires!:FileEntry[];
   private _triggerProcessService:TriggerProcessService;
+  private _stateManagmentService: StateManagmentService;
   private _formBuilder;
+  private _appState!:AppState;
 
   private _viewByNotifySub!:Subscription;
   private _sortByNotifySub!:Subscription;
@@ -110,11 +115,13 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   displayName = 'File Explorer';
 
 
-  constructor(processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, triggerProcessService:TriggerProcessService, fileManagerService:FileManagerService, formBuilder: FormBuilder) { 
+  constructor(processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, triggerProcessService:TriggerProcessService, 
+              fileManagerService:FileManagerService, formBuilder: FormBuilder, stateManagmentService:StateManagmentService ) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this._fileService = fileInfoService;
     this._triggerProcessService = triggerProcessService;
+    this._stateManagmentService = stateManagmentService;
     this._formBuilder = formBuilder;
 
     this.processId = this._processIdService.getNewProcessId();
@@ -582,6 +589,8 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
 
       this.populateHopsList();
       this.setNavPathIcon(file.getFileName, file.getCurrentPath);
+      this.storeAppState(file.getCurrentPath);
+  
       await this.loadFilesInfoAsync();
     }else{
         this._triggerProcessService.startApplication(file);
@@ -1169,6 +1178,17 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
     const pathHistoryElement = document.getElementById(`pathHistory-${this.processId}`) as HTMLElement;
     pathHistoryElement.style.display = 'none';
     this.showPathHistory = false;
+  }
+
+  storeAppState(app_data:any):void{
+    this._appState = {
+      pid: this.processId,
+      app_data: app_data,
+      app_name: this.name,
+      unique_id: `${this.name}-${this.processId}`
+    }
+    
+    this._stateManagmentService.addState(this.processId, this._appState, StateType.App);
   }
 
   private getComponentDetail():Process{

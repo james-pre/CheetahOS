@@ -8,6 +8,9 @@ import { ComponentType } from 'src/app/system-files/component.types';
 import { Process } from 'src/app/system-files/process';
 import { TerminalCommand } from './model/terminal.command';
 import { TerminalCommands } from './terminal.commands';
+import { AppState } from 'src/app/system-files/state/state.interface';
+import { StateType } from 'src/app/system-files/state/state.type';
+import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 
 @Component({
   selector: 'cos-terminal',
@@ -24,6 +27,9 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   private _maximizeWindowSub!: Subscription;
   private _formBuilder;
   private _terminaCommandsImpl!:TerminalCommands;
+  private _stateManagmentService:StateManagmentService;
+  private _appState!:AppState;
+
   private msgPosCounter = 0;
   private scrollCounter = 0
   private prevPtrIndex = 0;
@@ -56,10 +62,11 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   type = ComponentType.systemComponent;
   displayName = 'Terminal';
 
-  constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService, formBuilder:FormBuilder) { 
+  constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService, formBuilder:FormBuilder, stateManagmentService: StateManagmentService) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this._formBuilder = formBuilder;
+    this._stateManagmentService = stateManagmentService;
     this._terminaCommandsImpl = new TerminalCommands();
 
     this.processId = this._processIdService.getNewProcessId()
@@ -300,6 +307,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
     }
 
     this.scrollToBottom();
+    this.storeAppState();
   }
 
   getAutoCompelete(arg: string): string{
@@ -319,6 +327,24 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
 
   setTerminalWindowToFocus(pid:number):void{
     this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
+  }
+
+  storeAppState():void{
+    const cmdHistory = this.commandHistory;
+    const cmdList:string[] = [];
+
+    for(let i = 0; i < cmdHistory.length; i++){
+      cmdList.push(cmdHistory[i].getCommand);
+    }
+
+    this._appState = {
+      pid: this.processId,
+      app_data: cmdList,
+      app_name: this.name,
+      unique_id: `${this.name}-${this.processId}`
+    }
+
+    this._stateManagmentService.addState(this.processId, this._appState, StateType.App);
   }
 
   private getComponentDetail():Process{

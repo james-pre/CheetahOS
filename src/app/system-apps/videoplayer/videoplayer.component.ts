@@ -8,6 +8,9 @@ import { RunningProcessService } from 'src/app/shared/system-service/running.pro
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 import { FileInfo } from 'src/app/system-files/fileinfo';
 import { Constants } from "src/app/system-files/constants";
+import { AppState } from 'src/app/system-files/state/state.interface';
+import { StateType } from 'src/app/system-files/state/state.type';
+import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 
 // eslint-disable-next-line no-var
 declare var videojs: (arg0: any, arg1: object, arg2: () => void) => any;
@@ -25,9 +28,11 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _triggerProcessService:TriggerProcessService;
+  private _stateManagmentService:StateManagmentService;
   private _fileInfo!:FileInfo;
   private player: any;
   private _consts:Constants = new Constants();
+  private _appState!:AppState;
 
   recents:string[] = [];
 
@@ -41,9 +46,11 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   showTopMenu = false;
 
 
-  constructor(processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService) { 
+  constructor(processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService,
+    stateManagmentService: StateManagmentService) { 
     this._processIdService = processIdService;
     this._triggerProcessService = triggerProcessService;
+    this._stateManagmentService = stateManagmentService;
     this.processId = this._processIdService.getNewProcessId();
     
     this._runningProcessService = runningProcessService;
@@ -73,24 +80,33 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
     const fileType = 'video/' + this._fileInfo.getFileType.replace('.','');
     const videoSrc = this.getVideoSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
 
-    const options = {
-      fluid: true,
-      responsive: true,
-      autoplay: true, 
-      controls:true,
-      aspectRatio: '16:9',
-      controlBar: {
-        skipButtons: {
-          backward: 10,
-          forward: 10
-        }
-      },
-      sources: [{ src:videoSrc, type: fileType }] 
+    if(videoSrc !== '/'){
+      const options = {
+        fluid: true,
+        responsive: true,
+        autoplay: true, 
+        controls:true,
+        aspectRatio: '16:9',
+        controlBar: {
+          skipButtons: {
+            backward: 10,
+            forward: 10
+          }
+        },
+        sources: [{ src:videoSrc, type: fileType }] 
+      }
+
+      const appData:string[] = [fileType, videoSrc];
+      this.storeAppState(appData);
+
+      this.player = videojs(this.videowindow.nativeElement, options, function onPlayerReady(){
+        console.log('onPlayerReady:', "player is read");
+      });
+
+    }else{
+1
     }
 
-    this.player = videojs(this.videowindow.nativeElement, options, function onPlayerReady(){
-            console.log('onPlayerReady:', "player is read");
-      });
   }
 
   ngOnDestroy(): void {
@@ -130,6 +146,17 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
       res = false;
     }
     return res;
+  }
+
+  storeAppState(app_data:unknown):void{
+    this._appState = {
+      pid: this.processId,
+      app_data: app_data as string,
+      app_name: this.name,
+      unique_id: `${this.name}-${this.processId}`
+    }
+
+    this._stateManagmentService.addState(this.processId, this._appState, StateType.App);
   }
 
   private getComponentDetail():Process{

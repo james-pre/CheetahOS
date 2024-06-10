@@ -4,8 +4,9 @@ import { ComponentType } from 'src/app/system-files/component.types';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { Subscription } from 'rxjs';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
-import { WindowState } from 'src/app/system-files/state/windows.state';
+import { WindowState } from 'src/app/system-files/state/state.interface';
 import {openCloseAnimation, hideShowAnimation, minimizeMaximizeAnimation} from 'src/app/system-apps/window/animation/animations';
+import { StateType } from 'src/app/system-files/state/state.type';
 
  @Component({
    selector: 'cos-window',
@@ -21,7 +22,7 @@ import {openCloseAnimation, hideShowAnimation, minimizeMaximizeAnimation} from '
    @Input() processAppName = '';  
    
    private _runningProcessService:RunningProcessService;
-   private _stateManagmentService: StateManagmentService
+   private _stateManagmentService: StateManagmentService;
    private _originalWindowsState!:WindowState;
 
    private _restoreOrMinSub!:Subscription
@@ -80,8 +81,19 @@ import {openCloseAnimation, hideShowAnimation, minimizeMaximizeAnimation} from '
       this.defaultHeightOnOpen = this.getDivWindowElement.offsetHeight;
       this.defaultWidthOnOpen  = this.getDivWindowElement.offsetWidth;
 
-      this._originalWindowsState = new WindowState(this.processId,this.defaultHeightOnOpen, this.defaultWidthOnOpen);
-      this._stateManagmentService.addState(this.processId,this._originalWindowsState)
+
+      this._originalWindowsState = {
+        pid : this.processId,
+        height:this.defaultHeightOnOpen,
+        width: this.defaultWidthOnOpen,
+        x_axis: 0,
+        y_axis: 0,
+        z_index:0,
+        is_visible:true
+      }
+      
+      //this._stateManagmentService.addState(this.processId,this._originalWindowsState);
+      this._stateManagmentService.addState(this.processId,this._originalWindowsState, StateType.Window);
       this.setWindowToFocusById(this.processId);
 
       //tell angular to run additional detection cycle after 
@@ -97,52 +109,56 @@ import {openCloseAnimation, hideShowAnimation, minimizeMaximizeAnimation} from '
     setHideAndShow():void{
       this.windowHide = !this.windowHide;
       // CSS styles: set per current state of component properties
-      const windowState = this._stateManagmentService.getState(this.processId) as WindowState;
+      // const windowState = this._stateManagmentService.getState(this.processId) as WindowState;
+        const windowState = this._stateManagmentService.getState(this.processId, StateType.Window) as WindowState;
 
       if(this.windowHide){
-        if(windowState.getPid == this.processId){
-          windowState.setIsVisible = false;
-          this._stateManagmentService.addState(this.processId,windowState);
+        if(windowState.pid == this.processId){
+          windowState.is_visible = false;
+          //this._stateManagmentService.addState(this.processId,windowState);
+          this._stateManagmentService.addState(this.processId, windowState, StateType.Window);
         }
       }
       else if(!this.windowHide){
-        if(windowState.getPid == this.processId){
+        if(windowState.pid == this.processId){
           if(this.currentWindowSizeState){ 
             // if window was in full screen when hidden, fit it properly when un-hidden
-            this.setWindowToFullScreen(this.processId, windowState.getZIndex);
+            this.setWindowToFullScreen(this.processId, windowState.z_index);
           }else{
             this.currentStyles = {
               // opacity: 1,
-              'width': `${String(windowState.getWidth)}`, 
-              'height': `${String(windowState.getHeight)}`, 
-              'transform': `translate(${String(windowState.getXAxis)}px, ${String(windowState.getYAxis)}px)`,
-               'z-index': windowState.getZIndex
+              'width': `${String(windowState.width)}`, 
+              'height': `${String(windowState.height)}`, 
+              'transform': `translate(${String(windowState.x_axis)}px, ${String(windowState.y_axis)}px)`,
+               'z-index': windowState.z_index
             };
           }
 
-          windowState.setIsVisible = true;
-          this._stateManagmentService.addState(this.processId,windowState);
+          windowState.is_visible = true;
+          //this._stateManagmentService.addState(this.processId,windowState);
+          this._stateManagmentService.addState(this.processId, windowState, StateType.Window);
         }
       }
     }
 
     setMaximizeAndUnMaximize():void{
       // CSS styles: set per current state of component properties
-      const windowState = this._stateManagmentService.getState(this.processId) as WindowState;
+      //const windowState = this._stateManagmentService.getState(this.processId) as WindowState;
+      const windowState = this._stateManagmentService.getState(this.processId, StateType.Window) as WindowState;
       this.currentWindowSizeState = this.windowMaximize;
       if(this.windowMaximize){
-        if(windowState.getPid == this.processId){
-          this.setWindowToFullScreen(this.processId, windowState.getZIndex);
+        if(windowState.pid == this.processId){
+          this.setWindowToFullScreen(this.processId, windowState.z_index);
           this._runningProcessService.maximizeWindowNotify.next();
         }
       }
       else if(!this.windowMaximize){
-        if(windowState.getPid == this.processId){
+        if(windowState.pid == this.processId){
           this.currentStyles = {
-            'width': `${String(windowState.getWidth)}px`, 
-            'height': `${String(windowState.getHeight)}px`, 
-            'transform': `translate(${String(windowState.getXAxis)}px, ${String(windowState.getYAxis)}px)`,
-            'z-index': windowState.getZIndex
+            'width': `${String(windowState.width)}px`, 
+            'height': `${String(windowState.height)}px`, 
+            'transform': `translate(${String(windowState.x_axis)}px, ${String(windowState.y_axis)}px)`,
+            'z-index': windowState.z_index
           };
         }
       }
@@ -229,10 +245,12 @@ import {openCloseAnimation, hideShowAnimation, minimizeMaximizeAnimation} from '
 
       //ignore false drag
       if( x_axis!= 0  && y_axis != 0){
-        const windowState = this._stateManagmentService.getState(this.processId) as WindowState 
-        windowState.setXAxis= x_axis;
-        windowState.setYAxis= y_axis;
-        this._stateManagmentService.addState(this.processId,windowState);
+        //const windowState = this._stateManagmentService.getState(this.processId) as WindowState 
+        const windowState = this._stateManagmentService.getState(this.processId, StateType.Window) as WindowState;
+        windowState.x_axis= x_axis;
+        windowState.y_axis= y_axis;
+        //this._stateManagmentService.addState(this.processId,windowState);
+        this._stateManagmentService.addState(this.processId, windowState, StateType.Window);
       }
     }
 
@@ -244,10 +262,12 @@ import {openCloseAnimation, hideShowAnimation, minimizeMaximizeAnimation} from '
       const height = Number(input.size.height);
       const width = Number(input.size.width);
 
-      const windowState = this._stateManagmentService.getState(this.processId) as WindowState 
-      windowState.setHeight= height;
-      windowState.setWidth= width;
-      this._stateManagmentService.addState(this.processId,windowState);
+      //const windowState = this._stateManagmentService.getState(this.processId) as WindowState 
+      const windowState = this._stateManagmentService.getState(this.processId, StateType.Window) as WindowState;
+      windowState.height= height;
+      windowState.width= width;
+      //this._stateManagmentService.addState(this.processId,windowState);
+      this._stateManagmentService.addState(this.processId, windowState, StateType.Window);
     }
 
     onCloseBtnClick():void{
@@ -282,23 +302,25 @@ import {openCloseAnimation, hideShowAnimation, minimizeMaximizeAnimation} from '
           const process = processWithWindows[i];
           const window = this._stateManagmentService.getState(process.getProcessId) as WindowState;
 
-          if(window != undefined && window.getIsVisible){
-            this.setHeaderInActive(window.getPid);
+          if(window != undefined && window.is_visible){
+            this.setHeaderInActive(window.pid);
         }
       }
     }
 
    setWindowToFocusById(pid:number):void{
       let z_index = this._stateManagmentService.getState(this.z_index) as number;
-      const windowState = this._stateManagmentService.getState(pid) as WindowState;
-    
-      if((windowState.getPid == pid) && (windowState.getZIndex != z_index)){
+      //const windowState = this._stateManagmentService.getState(pid) as WindowState;
+      const windowState = this._stateManagmentService.getState(pid,StateType.Window) as WindowState;
+
+      if((windowState.pid == pid) && (windowState.z_index != z_index)){
 
         if (!z_index ? z_index = 1 :  z_index = z_index + 1)
         this._stateManagmentService.addState(this.z_index,z_index);
-
-        windowState.setZIndex = z_index
-        this._stateManagmentService.addState(this.processId,windowState);
+      
+        windowState.z_index = z_index
+        //this._stateManagmentService.addState(this.processId,windowState);
+        this._stateManagmentService.addState(this.processId, windowState, StateType.Window);
 
         this.currentStyles = {
           'z-index':z_index
@@ -312,11 +334,12 @@ import {openCloseAnimation, hideShowAnimation, minimizeMaximizeAnimation} from '
 
       for (let i=0; i < processWithWindows.length; i++){
           const process = processWithWindows[i];
-          const window = this._stateManagmentService.getState(process.getProcessId) as WindowState;
+          //const window = this._stateManagmentService.getState(process.getProcessId) as WindowState;
+          const window = this._stateManagmentService.getState(process.getProcessId,StateType.Window) as WindowState;
           
           //console.log("setNextWindowToFocus:", window);
 
-        if(window != undefined && window.getIsVisible){
+        if(window != undefined && window.is_visible){
           //console.log('process:',process.getProcessId +'----'+process.getProcessName); //TBD
           this.setWindowToFocusById(process.getProcessId);
           break;

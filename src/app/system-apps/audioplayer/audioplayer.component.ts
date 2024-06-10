@@ -8,6 +8,9 @@ import { RunningProcessService } from 'src/app/shared/system-service/running.pro
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 import { FileInfo } from 'src/app/system-files/fileinfo';
 import { Constants } from "src/app/system-files/constants";
+import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
+import { AppState } from 'src/app/system-files/state/state.interface';
+import { StateType } from 'src/app/system-files/state/state.type';
 // eslint-disable-next-line no-var
 declare var Howl:any;
 declare let SiriWave:any;
@@ -40,8 +43,10 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _triggerProcessService:TriggerProcessService;
+  private _stateManagmentService:StateManagmentService;
   private _fileInfo!:FileInfo;
   private _consts:Constants = new Constants();
+  private _appState!:AppState;
 
   private audioPlayer: any;
   private siriWave: any;
@@ -63,9 +68,11 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   duration = '0:00' ;
 
  
-  constructor(processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService) { 
+  constructor(processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService,
+    stateManagmentService: StateManagmentService) { 
     this._processIdService = processIdService;
     this._triggerProcessService = triggerProcessService;
+    this._stateManagmentService = stateManagmentService;
     this.processId = this._processIdService.getNewProcessId();
     
     this._runningProcessService = runningProcessService;
@@ -103,14 +110,14 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   ngAfterViewInit():void{  
     const audioSrc  = this.getAudioSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
-    if(audioSrc  === '/' && this.playList.length == 0){
-      this.audioPlayer = new Howl({
-        src: '',
-        autoplay: false,
-        loop: false,
-        preload:false
-      });
-    }
+    // if(audioSrc  === '/' && this.playList.length == 0){
+    //   this.audioPlayer = new Howl({
+    //     src: '',
+    //     autoplay: false,
+    //     loop: false,
+    //     preload:false
+    //   });
+    // }
 
     if(audioSrc  !== '/' && this.playList.length == 0){
       this.loadHowlSingleTrackObjectAsync(audioSrc)
@@ -121,6 +128,9 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
       .catch(error => {
         console.error('Error loading track:', error);
       });
+
+      this.storeAppState(audioSrc);
+      //URL.revokeObjectURL(audioSrc);
     }
   
     if((audioSrc !== '/' && this.playList.length >= 1) || (audioSrc  === '/' && this.playList.length >= 1)){
@@ -398,6 +408,17 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
       res = false;
     }
     return res;
+  }
+
+  storeAppState(app_data:any):void{
+    this._appState = {
+      pid: this.processId,
+      app_data: app_data,
+      app_name: this.name,
+      unique_id: `${this.name}-${this.processId}`
+    }
+
+    this._stateManagmentService.addState(this.processId, this._appState, StateType.App);
   }
 
   private getComponentDetail():Process{

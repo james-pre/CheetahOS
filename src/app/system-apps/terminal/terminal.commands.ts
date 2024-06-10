@@ -27,23 +27,23 @@ export class TerminalCommands{
             return  'Available commands:' + cmdList.join(', ');
 
 
-        if(arg2 == "-verbose"){
+        if(arg2 == "--verbose"){
             const verbose = `
 terminal <command>
 
 Usage:
 
 help                    get a list of available commands
-help -verbose           get a detailed list of commands 
-open -app  <foo>        opens app <foo>
-close -app <pid>        closes app <pid>
+help --verbose           get a detailed list of commands 
+open --app  <foo>        opens app <foo>
+close --app <pid>        closes app <pid>
 clear                   clears the terminal output and all previous command
 curl                    query Api's, and transfer data to and from servers
 download <uri> <name>   download from the internet by providing a urls
 dir                     list files and folder in the present directory
 cd                      change directory
-list -apps -i           get a list of all installed apps
-list -apps -a           get a list of all running apps
+list --apps -i           get a list of all installed apps
+list --apps -a           get a list of all running apps
 
 All commands:
     clear, close, curl, cd, download, date, dir, list, help, version, open, weaather
@@ -100,9 +100,9 @@ All commands:
     list(arg1:string, arg2:string):string{
         const runningProccess = this._runningProcessService.getProcesses();
         if((arg1 == undefined || arg2 == undefined) || (arg1.length == 0 || arg2.length == 0))
-            return 'incomplete command, list -apps -i  or list -apps -a';
+            return 'incomplete command, list --apps -i  or list --apps -a';
 
-        if(arg1 !== "-apps")
+        if(arg1 !== "--apps")
             return `unkown command: ${arg1}`;
 
         if(arg2 == "-i"){ // list install apps
@@ -136,13 +136,13 @@ All commands:
     open(arg0:string, arg1:string):string{
 
         if((arg0 == undefined || arg0.length == 0))
-            return 'incomplete command, open -app <foo>';
+            return 'incomplete command, open --app <foo>';
 
-        if(arg0 !== "-app")
+        if(arg0 !== "--app")
             return `unkown command: ${arg0}`;
 
         if(arg1 == undefined || arg1.length == 0)
-            return `incomplete command: open -app <foo>, <foo> must be provided`;
+            return `incomplete command: open --app <foo>, <foo> must be provided`;
 
         if(this._appDirctory.appExist(arg1)){
             const file = new FileInfo()
@@ -161,13 +161,13 @@ All commands:
     close(arg0:string, arg1:string):string{
 
         if((arg0 == undefined || arg0.length == 0))
-            return 'incomplete command, close -app <pid>';
+            return 'incomplete command, close --app <pid>';
 
-        if(arg0 !== "-app")
+        if(arg0 !== "--app")
             return `unkown command: ${arg0}`;
 
         if(arg1 == undefined || arg1.length == 0)
-            return `incomplete command: close -app <pid>, <pid> must be provided`;
+            return `incomplete command: close --app <pid>, <pid> must be provided`;
 
 
         const pid = Number(arg1);
