@@ -33,17 +33,17 @@ terminal <command>
 
 Usage:
 
-help               get a list of available commands
-help -verbose      get a detailed list of commands 
-open -app  <foo>   opens app <foo>
-close -app <pid>   closes app <pid>
-clear              clears the terminal output and all previous command
-curl               query Api's, and transfer data to and from servers
-download           download from the internet by providing a urls
-dir                list files and folder in the present directory
-cd                 change directory
-list -apps -i      get a list of all installed apps
-list -apps -a      get a list of all running apps
+help                    get a list of available commands
+help -verbose           get a detailed list of commands 
+open -app  <foo>        opens app <foo>
+close -app <pid>        closes app <pid>
+clear                   clears the terminal output and all previous command
+curl                    query Api's, and transfer data to and from servers
+download <uri> <name>   download from the internet by providing a urls
+dir                     list files and folder in the present directory
+cd                      change directory
+list -apps -i           get a list of all installed apps
+list -apps -a           get a list of all running apps
 
 All commands:
     clear, close, curl, cd, download, date, dir, list, help, version, open, weaather

@@ -247,6 +247,18 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
         terminalCmd.setCommandOutput = result;
       } 
 
+      if(inputCmd == "date"){
+        const result = this._terminaCommandsImpl.date();
+        terminalCmd.setResponseCode = this.Success;
+        terminalCmd.setCommandOutput = result;
+      } 
+
+      if(inputCmd == "download"){
+        this._terminaCommandsImpl.download(cmd_split[1], cmd_split[2]);
+        terminalCmd.setResponseCode = this.Success;
+        terminalCmd.setCommandOutput = 'downloading ..';
+      } 
+
       if(inputCmd == "help"){
         const result = this._terminaCommandsImpl.help(this.echoCommands, this.utilityCommands, cmd_split[1]);
         terminalCmd.setResponseCode = this.Success;
