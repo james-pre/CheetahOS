@@ -27,7 +27,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   private msgPosCounter = 0;
   private scrollCounter = 0
   private prevPtrIndex = 0;
-  private versionNum = '1.0.2';
+  private versionNum = '1.0.3';
   private SECONDS_DELAY:number[] = [120,250];
   
   Success = 1;
@@ -35,8 +35,8 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   Warning = 3;
   Options = 4;
 
-  isBannerVisible = false;
-  isWelcomeVisible = false;
+  isBannerVisible = true;
+  isWelcomeVisible = true;
 
   banner = '';
   welcomeMessage = '';

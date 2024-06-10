@@ -29,26 +29,26 @@ export class TerminalCommands{
 
         if(arg2 == "-verbose"){
             const verbose = `
-    terminal <command>
+terminal <command>
 
-    Usage:
+Usage:
 
-    help               get a list of available commands
-    help -verbose      get a detailed list of commands 
-    open -app  <foo>   opens app <foo>
-    close -app <pid>   closes app <pid>
-    clear              clears the terminal output and all previous command
-    curl               query apis, and transfer data to and from servers
-    download           display usage info for all commands
-    dir                list files and folder in the present directory
-    cd                 change directory
-    list -apps -i      get a list of all installed apps
-    list -apps -a      get a list of all running apps
+help               get a list of available commands
+help -verbose      get a detailed list of commands 
+open -app  <foo>   opens app <foo>
+close -app <pid>   closes app <pid>
+clear              clears the terminal output and all previous command
+curl               query Api's, and transfer data to and from servers
+download           download from the internet by providing a urls
+dir                list files and folder in the present directory
+cd                 change directory
+list -apps -i      get a list of all installed apps
+list -apps -a      get a list of all running apps
 
-    All commands:
-        clear, close, curl, cd, download, date, dir, list, help, version, open, weaather
-        whoami
-            `;
+All commands:
+    clear, close, curl, cd, download, date, dir, list, help, version, open, weaather
+    whoami
+        `;
     
             return verbose;
         }
@@ -112,18 +112,18 @@ export class TerminalCommands{
         if(arg2 == "-a"){ // list install apps
             const result:string[] = [];
             const tmpHead = `
-        +-----------------------+-----------------------+-----------------------+
-  |      Process Name     |      Process Type     |      Process ID       |
-  +-----------------------+-----------------------+-----------------------+
-    `
++-----------------------+-----------------------+-----------------------+
+|      Process Name     |      Process Type     |      Process ID       |
++-----------------------+-----------------------+-----------------------+
+            `
             result.push(tmpHead)
             const tmpBottom = `
-  +-----------------------+-----------------------+-----------------------+`
++-----------------------+-----------------------+-----------------------+`
             for(let i = 0; i <= runningProccess.length - 1; i++){
                 const process = runningProccess[i];
                 const tmpMid = `
-  | ${this.addspaces(process.getProcessName)} | ${this.addspaces(process.getType)} | ${this.addspaces(process.getProcessId.toString())} |
-    `
+| ${this.addspaces(process.getProcessName)} | ${this.addspaces(process.getType)} | ${this.addspaces(process.getProcessId.toString())} |
+            `
                 result.push(tmpMid);
             }
 
@@ -191,7 +191,6 @@ export class TerminalCommands{
            const tmpUrl = `https://${url}`;
            url = tmpUrl;
         }
-
     
         try {
           const response = await fetch(url);

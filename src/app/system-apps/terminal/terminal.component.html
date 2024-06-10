@@ -16,18 +16,18 @@
             <div class="terminal-command-output-container-main">
                 <div class="terminal-command-output-container" *ngFor="let cmdHistory of commandHistory">
                     <div class="terminal-command-output" *ngIf="cmdHistory.getResponseCode === this.Success || cmdHistory.getResponseCode === this.Options">
-                        <span class="terminal-prompt2">{{terminalPrompt}}</span>
-                        {{cmdHistory.getCommandOutput.trim()}}
+                        <span class="prev-terminal-prompt terminal-prior ">{{terminalPrompt}}:{{cmdHistory.getCommand.trim()}}</span>
+                        <div class="prev-terminal-output">{{cmdHistory.getCommandOutput.trim()}}</div>
                     </div>
     
-                    <div class="terminal-command-output terminal-error" *ngIf="cmdHistory.getResponseCode === this.Fail">
-                        <span class="terminal-prompt2">{{terminalPrompt}}</span>
-                        {{cmdHistory.getCommandOutput.trim()}}
+                    <div class="terminal-command-output" *ngIf="cmdHistory.getResponseCode === this.Fail">
+                        <span class="prev-terminal-prompt terminal-prior">{{terminalPrompt}}:{{cmdHistory.getCommand.trim()}}</span>
+                        <div class="prev-terminal-output terminal-error">{{cmdHistory.getCommandOutput.trim()}}</div>
                     </div>
     
-                    <div class="terminal-command-output terminal-warning" *ngIf="cmdHistory.getResponseCode === this.Warning">
-                        <span class="terminal-prompt2">{{terminalPrompt}}</span>
-                        {{cmdHistory.getCommandOutput.trim()}}
+                    <div class="terminal-command-output" *ngIf="cmdHistory.getResponseCode === this.Warning">
+                        <span class="prev-terminal-prompt terminal-prior">{{terminalPrompt}}:{{cmdHistory.getCommand.trim()}}</span>
+                        <div class="prev-terminal-output terminal-warning">{{cmdHistory.getCommandOutput.trim()}}</div>
                     </div>
                 </div>
             </div>
