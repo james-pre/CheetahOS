@@ -17,6 +17,7 @@ import { TerminalCommands } from './terminal.commands';
 export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, OnDestroy{
 
   @ViewChild('terminalCntnr', {static: true}) terminalCntnr!: ElementRef;
+  @ViewChild('terminalOutput', {static: true}) terminalOutput!: ElementRef;
 
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
@@ -24,17 +25,18 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   private _formBuilder;
   private _terminaCommandsImpl!:TerminalCommands;
   private msgPosCounter = 0;
+  private scrollCounter = 0
   private prevPtrIndex = 0;
   private versionNum = '1.0.2';
-  private SECONDS_DELAY = 120;
+  private SECONDS_DELAY:number[] = [120,250];
   
   Success = 1;
   Fail = 2;
   Warning = 3;
   Options = 4;
 
-  isBannerVisible = true;
-  isWelcomeVisible = true;
+  isBannerVisible = false;
+  isWelcomeVisible = false;
 
   banner = '';
   welcomeMessage = '';
@@ -117,7 +119,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
         clearInterval(interval);
 
       this.msgPosCounter++;
-    },this.SECONDS_DELAY, msgArr);
+    },this.SECONDS_DELAY[0], msgArr);
   }
 
   onKeyDownOnWindow(evt:KeyboardEvent):void{
@@ -133,6 +135,27 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
     if(cmdTxtBoxElm){
       cmdTxtBoxElm?.focus();
     }
+  }
+
+  private scrollToBottom(): void {
+
+    const interval =  setInterval(() => {
+      try {
+        console.log('height:',this.terminalOutput.nativeElement.scrollHeight);
+        if(this.scrollCounter < 2){
+          this.terminalOutput.nativeElement.scrollTop = this.terminalOutput.nativeElement.scrollHeight;
+          this.scrollCounter++;
+        }
+        
+      } catch (err) {
+        console.error('Error scrolling to bottom:', err);
+      }
+      if(this.scrollCounter == 2) {
+        clearInterval(interval);
+        this.scrollCounter = 0;
+      }
+
+    },this.SECONDS_DELAY[1]);
   }
 
   onKeyDownInInputBox(evt:KeyboardEvent):void{
@@ -209,9 +232,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
     if(this.isValidCommand(inputCmd)){
 
       if(inputCmd == "clear"){
-        //this._terminaCommandsImpl.clear(this.commandHistory);
         this.commandHistory = [];
-        terminalCmd.setResponseCode = this.Success;
       } 
 
       if(inputCmd == "curl"){
@@ -265,6 +286,8 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       terminalCmd.setResponseCode = this.Fail;
       terminalCmd.setCommandOutput = `${terminalCmd.getCommand}: command not found. Type 'help', or 'help -verbose' to view a list of available commands.`;
     }
+
+    this.scrollToBottom();
   }
 
   getAutoCompelete(arg: string): string{

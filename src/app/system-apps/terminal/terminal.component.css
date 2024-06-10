@@ -1,18 +1,21 @@
-.terminal-container {
-    height: 100%;
-    width: 800px;
-    /* overflow-y: auto;
-    overflow-x:auto;
-    cursor: text;
-    background-color: #171717; */
+ .terminal-container {
+    width: 880px;
+    height: 375px;
     background-color: #171717;
   }
+
   .terminal-output-section{
     width: 100%;
-    height: calc(100% - 25px);
-    overflow-y: auto;
-    overflow-x:auto;
+    height: 350px;
+    overflow: auto;
     background-color: #171717;
+    padding: 5px;
+    font-size: 11.5px;
+    line-height: 10px;
+    white-space: pre-wrap;
+    font-family: monospace;
+    display: flex;
+    flex-direction: column;
   }
 
   .terminal-input-section{
@@ -23,17 +26,6 @@
     bottom: 0;
   }
   
-  .terminal-content {
-    padding: 20px;
-    font-size: 15px;
-    line-height: 20px;
-    white-space: pre-wrap;
-    color: #aaa;
-    font-family: monospace;
-    display: flex;
-    flex-direction: column;
-  }
-  
   .terminal-banner-container {
     display: flex;
     width: 100%;
@@ -42,7 +34,7 @@
   .terminal-banner-content {
     height: fit-content;
     width: fit-content;
-    color: white;
+    color: #ccc;
     line-height: normal;
     font-weight: bold;
     font-family: monospace;
@@ -61,7 +53,7 @@
   .terminal-welcome-message-content {
     height: fit-content;
     width: fit-content;
-    color: white;
+    color: #ccc;
     line-height: normal;
     font-weight: normal;
     font-family: monospace;
@@ -73,7 +65,7 @@
   }
 
   .terminal-command-output-container-main{
-    height: 250px;
+    height: 100%;
     width: 100%;
   }
 
@@ -81,24 +73,10 @@
     display: flex;
   }
   
-  
-  /* @media only screen and (max-width: 400px) {
-    .terminal-banner {
-      font-size: 8px;
-    }
-  }
-  
-  @media only screen and (max-width: 300px) {
-    .terminal-banner {
-      font-size: 6px;
-    }
-  }
-   */
-
   .terminal-command-output {
     padding: 8px 4px 8px 8px;
     width: 800px;
-    color: white;
+    color: #ccc;
     line-height: normal;
     font-weight: normal;
     font-family: monospace;
@@ -110,8 +88,8 @@
   }
   
   .terminal-command-output dt {
-    color: #eeeeee;
-    text-shadow: 0 0 4px #eeeeee;
+    /* color: #eeeeee;
+    text-shadow: 0 0 4px #eeeeee; */
   }
   
   .terminal-command-output dd {
@@ -211,3 +189,30 @@
     background-color: #c4a5f5;
     text-decoration: none;
   } */
+
+
+
+    /* .terminal-content {
+    padding: 20px;
+    font-size: 15px;
+    line-height: 20px;
+    white-space: pre-wrap;
+    color: #aaa;
+    font-family: monospace;
+    display: flex;
+    flex-direction: column;
+  } */
+  
+
+    /* @media only screen and (max-width: 400px) {
+    .terminal-banner {
+      font-size: 8px;
+    }
+  }
+  
+  @media only screen and (max-width: 300px) {
+    .terminal-banner {
+      font-size: 6px;
+    }
+  }
+   */
