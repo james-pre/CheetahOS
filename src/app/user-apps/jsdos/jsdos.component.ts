@@ -38,6 +38,7 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
   name= 'jsdos';
   hasWindow = true;
   icon = '/osdrive/icons/js-dos-logo.png';
+  isMaximizable = false;
   processId = 0;
   type = ComponentType.User;
   displayName = 'JS-Dos';
@@ -74,7 +75,7 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
   }
 
   async ngAfterViewInit() {
-    this.name = this._fileInfo.getFileName;
+    
     this.setJSDosWindowToFocus(this.processId); 
 
     setTimeout( async () => {
@@ -92,6 +93,7 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
 
         //look in the state managment service for information
       }
+      this.name = this._fileInfo.getFileName;
     }, 1500);
   }
 

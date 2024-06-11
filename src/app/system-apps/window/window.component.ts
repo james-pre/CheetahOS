@@ -20,6 +20,7 @@ import { StateType } from 'src/app/system-files/state/state.type';
    @Input() runningProcessID = 0;  
    @Input() processAppIcon = '';  
    @Input() processAppName = '';  
+   @Input() isMaximizable = true;  
    
    private _runningProcessService:RunningProcessService;
    private _stateManagmentService: StateManagmentService;
@@ -42,6 +43,7 @@ import { StateType } from 'src/app/system-files/state/state.type';
   windowOpen = true;
   windowHide = false;
   windowMaximize = false;
+  isWindowMaximizable = true;
   currentWindowSizeState = false;
   currentStyles: Record<string, unknown> = {};
   headerActiveStyles: Record<string, unknown> = {}; 
@@ -69,6 +71,7 @@ import { StateType } from 'src/app/system-files/state/state.type';
       this.processId = this.runningProcessID;
       this.icon = this.processAppIcon;
       this.name = this.processAppName;
+      this.isWindowMaximizable = this.isMaximizable;
     }
 
     ngOnDestroy():void{
@@ -218,8 +221,10 @@ import { StateType } from 'src/app/system-files/state/state.type';
     }
 
     onMaximizeBtnClick():void{
-      this.windowMaximize = true;
-      this.setMaximizeAndUnMaximize();
+      if(this.isWindowMaximizable){
+        this.windowMaximize = true;
+        this.setMaximizeAndUnMaximize();
+      }
     }
 
     onUnMaximizeBtnClick():void{
@@ -229,12 +234,14 @@ import { StateType } from 'src/app/system-files/state/state.type';
 
     onTitleBarDoubleClick():void{
       // if window is currently in full screen and next state(windowMaximize == false)
-      if(this.currentWindowSizeState && !this.windowMaximize){
-        this.windowMaximize = false;
-      }else{
-        this.windowMaximize = true;
+      if(this.isWindowMaximizable){
+        if(this.currentWindowSizeState && !this.windowMaximize){
+          this.windowMaximize = false;
+        }else{
+          this.windowMaximize = true;
+        }
+        this.setMaximizeAndUnMaximize()
       }
-      this.setMaximizeAndUnMaximize()
     }
 
     onDragEnd(input:HTMLElement):void{
