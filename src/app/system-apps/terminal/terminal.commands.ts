@@ -27,14 +27,14 @@ export class TerminalCommands{
             return  'Available commands:' + cmdList.join(', ');
 
 
-        if(arg2 == "--verbose"){
+        if(arg2 == "-verbose"){
             const verbose = `
 terminal <command>
 
 Usage:
 
 help                    get a list of available commands
-help --verbose           get a detailed list of commands 
+help -verbose           get a detailed list of commands 
 open --app  <foo>        opens app <foo>
 close --app <pid>        closes app <pid>
 clear                   clears the terminal output and all previous command
