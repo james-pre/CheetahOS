@@ -17,6 +17,7 @@ import { JsdosComponent } from './user-apps/jsdos/jsdos.component';
 import { VideoPlayerComponent } from './system-apps/videoplayer/videoplayer.component';
 import { AudioPlayerComponent } from './system-apps/audioplayer/audioplayer.component';
 import { TerminalComponent } from './system-apps/terminal/terminal.component';
+import { BaseState } from './system-files/state/state.interface';
 
 @Component({
   selector: 'cos-root',
@@ -99,12 +100,9 @@ export class AppComponent implements OnDestroy, AfterViewInit {
     // This quiets the - Expression has changed after it was checked. TBD
     //change detection is the better solution TBD
       setTimeout(()=> {
-        const openedAppList = this._sessionMangamentServices.getSession(this.userOpenedAppsKey) as string[];
-        if(openedAppList != null || openedAppList != undefined){
-          for(let i= 0; i < openedAppList.length; i++){
-              this.loadApps(openedAppList[i]);
-          }
-        }
+         const priorSessionInfo = this.fetchPriorSessionInfo();
+         const sessionKeys = this.getSessionKey(priorSessionInfo);
+         this.restorePriorSession(sessionKeys);
     }, 1500);
   }
 
@@ -157,6 +155,54 @@ export class AppComponent implements OnDestroy, AfterViewInit {
 
       this._sessionMangamentServices.addSession(this.userOpenedAppsKey, this.userOpenedAppsList)
   }
+
+  private fetchPriorSessionInfo():string[]{
+    const openedAppList = this._sessionMangamentServices.getSession(this.userOpenedAppsKey) as string[];
+
+    if(openedAppList != null || openedAppList != undefined)
+      return openedAppList;
+
+    return [];
+  }
+
+  private getSessionKey(priorOpendApps:string[]):string[]{
+   
+    const retreivedKeys:string[] = [];
+
+    if(priorOpendApps.length > 0){
+      const sessionKeys = this._sessionMangamentServices.getKeys();
+
+      for(let i= 0; i < priorOpendApps.length; i++){
+          //this.loadApps(openedAppList[i]);
+
+          // console.log('openedAppList[i]:',priorOpendApps[i]);
+          // console.log('sessionKeys:',sessionKeys.filter(x => x.includes(priorOpendApps[i])));
+
+          const tmpKey = sessionKeys.filter(x => x.includes(priorOpendApps[i]));
+          for(let j = 0; j < tmpKey.length; j++)
+            retreivedKeys.push(tmpKey[j])
+      }
+
+      console.log('retreivedKeys:',retreivedKeys);
+    }
+
+    return retreivedKeys;
+  }
+
+  private restorePriorSession(priorSessionData:string[]):void{
+
+    for (let i = 0; i < priorSessionData.length; i++){
+
+      const retrievedData = this._sessionMangamentServices.getSession(priorSessionData[i]) as BaseState[];
+
+
+      console.log('retrievedData:', retrievedData);
+
+    }
+
+  }
+
+
 
   private addEntryFromUserOpenedApps(proccessName:string):void{
     this.userOpenedAppsList.push(proccessName);

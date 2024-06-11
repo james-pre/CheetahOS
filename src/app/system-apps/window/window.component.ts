@@ -106,8 +106,12 @@ import { StateType } from 'src/app/system-files/state/state.type';
     }
 
     ngOnChanges(changes: SimpleChanges):void{
-      //console.log('WINDOW onCHANGES:',changes);
-      this.name = this.processAppName;
+      console.log('WINDOW onCHANGES:',changes);
+
+      if(this.name == "Window")
+          this.name = this.processAppName;
+
+      this.displayName = this.processAppName;
       this.icon = this.processAppIcon;
     }
 

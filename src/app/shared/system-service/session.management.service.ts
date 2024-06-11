@@ -32,6 +32,15 @@ export class SessionManagmentService{
         return stateData;
     }
 
+    getKeys():string[]{
+        const keys:string[] = [];
+
+        for(const key of this._sessionDataDict.keys()){
+            keys.push(key)
+        }
+        return keys;
+    }
+
     removeSession(key:string): void{
         this._sessionDataDict.delete(key)
         this.saveSession(this._sessionDataDict);
