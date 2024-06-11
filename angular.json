@@ -41,8 +41,7 @@
             "styles": [
               "src/styles.css",
               "src/css/videoplayer/video-js.min.css",
-              "node_modules/angular2-draggable/css/resizable.min.css",
-              "node_modules/@validide/resizable-table-columns/dist/css/resizable-table-columns.css"
+              "node_modules/angular2-draggable/css/resizable.min.css"
             ],
             "scripts": [
               "./src/scripts/bundle/index.js",

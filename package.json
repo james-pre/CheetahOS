@@ -36,7 +36,6 @@
     "@angular/platform-browser": "^16.2.12",
     "@angular/platform-browser-dynamic": "^16.2.12",
     "@angular/router": "^16.2.12",
-    "@validide/resizable-table-columns": "^2.1.0",
     "angular2-draggable": "^16.0.0",
     "browserfs": "^1.4.3",
     "emulators": "^0.73.7",
