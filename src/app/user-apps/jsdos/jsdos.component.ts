@@ -63,7 +63,6 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
 
   ngOnInit(): void {
     this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
-    this.name = this._fileInfo.getFileName;
   }
 
   ngOnDestroy(): void {
@@ -75,20 +74,18 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
   }
 
   async ngAfterViewInit() {
+    this.name = this._fileInfo.getFileName;
     this.setJSDosWindowToFocus(this.processId); 
+
     setTimeout( async () => {
 
       emulators.pathPrefix= '/';
-      //console.log('fileInfo in Js-DOS:',this._fileInfo) //TBD 
-      //let data = await this._fileService.getFileAsync('/osdrive/games/data/3d_duke.jsdos');
-   
-      if(this._fileInfo.getContentPath != '' || this._fileInfo.getCurrentPath != ''){
 
+      if(this._fileInfo.getContentPath != '' || this._fileInfo.getCurrentPath != ''){
         const gameSrc = this.getGamesSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath)    
         const data = await this._fileService.getFileAsync(gameSrc);
         this._ci = await  Dos(this.dosWindow.nativeElement, this.dosOptions).run(data);
         URL.revokeObjectURL(gameSrc);
-
 
       }else{
         alert(`JS-Dos could not started. Sorry :(`);
