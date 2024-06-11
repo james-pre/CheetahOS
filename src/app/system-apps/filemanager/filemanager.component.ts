@@ -64,7 +64,7 @@ export class FilemanagerComponent implements BaseComponent, OnInit, AfterViewIni
   icon = 'osdrive/icons/generic-program.ico';
   name = 'filemanager';
   processId = 0;
-  type = ComponentType.systemComponent;
+  type = ComponentType.System;
   displayName = '';
   directory ='/osdrive/Desktop';
   files:FileInfo[] = [];

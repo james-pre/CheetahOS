@@ -39,7 +39,7 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
   hasWindow = true;
   icon = '/osdrive/icons/js-dos-logo.png';
   processId = 0;
-  type = ComponentType.userComponent;
+  type = ComponentType.User;
   displayName = 'JS-Dos';
 
   dosOptions:DosPlayerOptions = {

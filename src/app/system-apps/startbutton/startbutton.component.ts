@@ -18,7 +18,7 @@ export class StartbuttonComponent implements OnInit {
   icon = 'osdrive/icons/generic-program.ico';
   name = 'startbutton';
   processId = 0;
-  type = ComponentType.systemComponent
+  type = ComponentType.System
   displayName = '';
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService) { 

@@ -110,7 +110,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   navPathIcon = 'osdrive/icons/my_computer.ico'
   name = 'fileexplorer';
   processId = 0;
-  type = ComponentType.systemComponent;
+  type = ComponentType.System;
   directory ='/osdrive/';
   displayName = 'File Explorer';
 

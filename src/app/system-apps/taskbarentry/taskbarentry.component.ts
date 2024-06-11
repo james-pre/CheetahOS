@@ -18,7 +18,7 @@ export class TaskbarentryComponent implements OnInit {
   icon = '';
   name = '';
   processId = 0;
-  type = ComponentType.systemComponent;
+  type = ComponentType.System;
   displayName = '';
 
   constructor( ){

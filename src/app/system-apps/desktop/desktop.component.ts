@@ -53,7 +53,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   icon = 'osdrive/icons/generic-program.ico';
   name = 'desktop';
   processId = 0;
-  type = ComponentType.systemComponent;
+  type = ComponentType.System;
   displayName = '';
 
   waveBkgrnd:WAVE =  {el:'#vanta'}

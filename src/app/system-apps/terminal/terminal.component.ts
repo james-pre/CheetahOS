@@ -59,7 +59,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   icon = '/osdrive/icons/terminal_48.png';
   name = 'terminal';
   processId = 0;
-  type = ComponentType.systemComponent;
+  type = ComponentType.System;
   displayName = 'Terminal';
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService, formBuilder:FormBuilder, stateManagmentService: StateManagmentService) { 

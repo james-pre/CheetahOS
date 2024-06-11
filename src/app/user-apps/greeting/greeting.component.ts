@@ -13,7 +13,7 @@ export class GreetingComponent implements OnInit, BaseComponent {
   icon = 'favicon.ico';
   name = 'greeting';
   processId = 0;
-  type = ComponentType.userComponent;
+  type = ComponentType.User;
   displayName = '';
   constructor() {
     //

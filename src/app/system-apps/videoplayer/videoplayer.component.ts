@@ -41,7 +41,7 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   hasWindow = true;
   icon = '/osdrive/icons/videoplayer.png';
   processId = 0;
-  type = ComponentType.systemComponent;
+  type = ComponentType.System;
   displayName = 'Video-js';
   showTopMenu = false;
 

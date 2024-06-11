@@ -68,7 +68,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   icon = 'osdrive/icons/taskmanger.png';
   name = 'taskmanager';
   processId = 0;
-  type = ComponentType.systemComponent
+  type = ComponentType.System;
   displayName = 'Task Manager';
 
   processes:Process[] =[];
@@ -505,17 +505,17 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     const groupedData:Record<string, Process[]> = {};
     for (const process of this.processes) {
     
-        if(process.getType == ComponentType.systemComponent){
+        if(process.getType == ComponentType.System){
 
-          if(!groupedData[ComponentType.systemComponent]){
-            groupedData[ComponentType.systemComponent] = []
+          if(!groupedData[ComponentType.System]){
+            groupedData[ComponentType.System] = []
           }
-          groupedData[ComponentType.systemComponent].push(process)
-        }else if(process.getType == ComponentType.userComponent){
-          if(!groupedData[ComponentType.userComponent]){
-            groupedData[ComponentType.userComponent] = []
+          groupedData[ComponentType.System].push(process)
+        }else if(process.getType == ComponentType.User){
+          if(!groupedData[ComponentType.User]){
+            groupedData[ComponentType.User] = []
           }
-          groupedData[ComponentType.userComponent].push(process)
+          groupedData[ComponentType.User].push(process)
         }
     }
     return groupedData;

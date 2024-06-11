@@ -24,7 +24,7 @@ export class TitleComponent implements BaseComponent, OnDestroy, AfterViewInit{
   icon = 'osdrive/Pictures/favicon_nice.png';
   name = 'hello';
   processId = 0;
-  type = ComponentType.userComponent;
+  type = ComponentType.User;
   displayName = 'Hello';
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService) { 

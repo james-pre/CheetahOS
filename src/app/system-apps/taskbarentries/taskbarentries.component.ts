@@ -23,7 +23,7 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
   icon = 'osdrive/icons/generic-program.ico';
   name = 'taskbarentry';
   processId = 0;
-  type = ComponentType.systemComponent;
+  type = ComponentType.System;
   displayName = '';
 
   constructor(processIdService:ProcessIDService,runningProcessService:RunningProcessService) { 

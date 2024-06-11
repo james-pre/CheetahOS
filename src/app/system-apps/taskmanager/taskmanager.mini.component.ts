@@ -29,7 +29,7 @@ export class TaskmanagerMiniComponent implements BaseComponent,OnInit,OnDestroy 
   icon = 'osdrive/icons/taskmanger.png';
   name = 'taskmanager';
   processId = 0;
-  type = ComponentType.systemComponent
+  type = ComponentType.System;
   displayName = 'Task Manager';
 
 

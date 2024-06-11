@@ -27,7 +27,7 @@ export class ClockComponent implements AfterViewInit,OnDestroy {
   icon = 'osdrive/icons/generic-program.ico';
   name = 'clock';
   processId = 0;
-  type = ComponentType.systemComponent
+  type = ComponentType.System
 
   constructor(processIdService:ProcessIDService,runningProcessService:RunningProcessService) { 
     this._processIdService = processIdService;

@@ -1,4 +1,4 @@
-export class ComponentType{
-    public static systemComponent = "System";
-    public static userComponent = "User";
+export enum ComponentType{
+    System = "System",
+    User = "User"
 }

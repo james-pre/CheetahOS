@@ -36,7 +36,7 @@ import { StateType } from 'src/app/system-files/state/state.type';
   name = 'Window';
   processId = 0;
   uniqueId = '';
-  type = ComponentType.systemComponent;
+  type = ComponentType.System;
   displayName = '';
 
   windowOpen = true;

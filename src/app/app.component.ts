@@ -52,7 +52,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   icon = 'osdrive/icons/generic-program.ico';
   name = 'system';
   processId = 0;
-  type = ComponentType.systemComponent;
+  type = ComponentType.System;
   displayName = '';
 
   //:TODO when you have more apps with a UI worth looking at, add a way to select the right component for the give
