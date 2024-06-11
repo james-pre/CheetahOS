@@ -173,7 +173,7 @@ All commands:
         const pid = Number(arg1);
         const processToClose = this._runningProcessService.getProcess(pid);
         if(processToClose){
-            this._stateManagmentService.removeState(processToClose.getProcessId);
+            this._stateManagmentService.removeState(`${processToClose.getProcessId}-${processToClose.getProcessId}`);
             this._runningProcessService.closeProcessNotify.next(processToClose);
             return `closing app, app name: ${processToClose.getProcessName}  app id: ${processToClose.getProcessId}`;
         }else{

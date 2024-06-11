@@ -109,6 +109,8 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   }
 
   ngAfterViewInit():void{  
+
+    this.setAudioWindowToFocus(this.processId); 
     const audioSrc  = this.getAudioSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
     // if(audioSrc  === '/' && this.playList.length == 0){
     //   this.audioPlayer = new Howl({
@@ -418,7 +420,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
       unique_id: `${this.name}-${this.processId}`
     }
 
-    this._stateManagmentService.addState(this.processId, this._appState, StateType.App);
+    this._stateManagmentService.addState(`${this.name}-${this.processId}`, this._appState, StateType.App);
   }
 
   private getComponentDetail():Process{

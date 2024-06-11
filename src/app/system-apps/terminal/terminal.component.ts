@@ -84,6 +84,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   }
 
   ngAfterViewInit():void{
+    this.setTerminalWindowToFocus(this.processId); 
     this.populateWelecomeMessageField();
   }
   
@@ -344,7 +345,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       unique_id: `${this.name}-${this.processId}`
     }
 
-    this._stateManagmentService.addState(this.processId, this._appState, StateType.App);
+    this._stateManagmentService.addState(`${this.name}-${this.processId}`, this._appState, StateType.App);
   }
 
   private getComponentDetail():Process{

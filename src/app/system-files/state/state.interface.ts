@@ -1,6 +1,7 @@
 
 export interface BaseState{
-    pid: number
+    pid: number,
+    app_name:string
 }
 
 
@@ -15,7 +16,6 @@ export interface WindowState extends BaseState{
 
 
 export interface AppState extends BaseState{
-    app_data:unknown
-    app_name:string
+    app_data:unknown,
     unique_id:string
 }

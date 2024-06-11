@@ -9,38 +9,40 @@ import { SessionManagmentService } from "./session.management.service";
 export class StateManagmentService{
 
     static instance: StateManagmentService;
-    private _appStateManagmentService:Map<number, unknown>;  
+    private _appStateManagmentService:Map<string, unknown>;  
     private _sessionManagmentService: SessionManagmentService 
     
     constructor(){
-        this._appStateManagmentService = new Map<number, unknown>();
+        this._appStateManagmentService = new Map<string, unknown>();
         StateManagmentService.instance = this; //I added this to access the service from a class, not component
         this._sessionManagmentService = SessionManagmentService.instance;
     }
 
     /**
      * 
-     * @param pid 
+     * @param uid 
      * @param stateData 
      * @param type 
      * 
      * addState perform the dual role of adding a new entry or updating an existing entry
      */
-    addState(pid:number, stateData:unknown, type?:StateType):void{
+    addState(uid:string, stateData:unknown, type?:StateType):void{
 
-        console.log(`pid:${pid} type:${type}`);
+        console.log(`uid:${uid} type:${type}`);
+
         if(type !== undefined){
-            if(this._appStateManagmentService.has(pid)){
-                const currStateData = this._appStateManagmentService.get(pid) as BaseState[];
+            
+            if(this._appStateManagmentService.has(uid)){
+                const currStateData = this._appStateManagmentService.get(uid) as BaseState[];
                 if(type == StateType.App){
                     currStateData[StateType.App] = stateData as AppState;
                 }else{
                     currStateData[StateType.Window] = stateData as WindowState;
                 }
-                this._sessionManagmentService.addSession(String(pid), currStateData);
+                this._sessionManagmentService.addSession(uid, currStateData);
             }else{
                 const appState:AppState={pid:0, app_data:'', app_name:'', unique_id:''}
-                const windowState:WindowState={pid:0, x_axis:0, y_axis:0, height:0, width:0, z_index:0, is_visible:true}
+                const windowState:WindowState={app_name:'', pid:0, x_axis:0, y_axis:0, height:0, width:0, z_index:0, is_visible:true}
                 let state:BaseState[] = [];
     
                 if(type == StateType.App){
@@ -49,29 +51,29 @@ export class StateManagmentService{
                     state= [appState, stateData as WindowState];
                 }
     
-                this._appStateManagmentService.set(pid,state);
-                this._sessionManagmentService.addSession(String(pid), state);
+                this._appStateManagmentService.set(uid,state);
+                this._sessionManagmentService.addSession(uid, state);
             }
         }else{
-            this._appStateManagmentService.set(pid,stateData)
+            this._appStateManagmentService.set(uid,stateData)
         }
     }
 
     /**
      * 
-     * @param pid 
+     * @param uid 
      * @param type 
      * @returns 
      * 
      * returns exisiting state data.
      * if a type value is passed, the it will return either a Window or App State
      */
-    getState(pid:number, type?:StateType):unknown{
+    getState(uid:string, type?:StateType):unknown{
         
         if(type !== undefined){
-            const stateData = this._appStateManagmentService.get(pid) as BaseState[];
+            const stateData = this._appStateManagmentService.get(uid) as BaseState[];
 
-            if(stateData){
+            if(stateData !== undefined){
                 if(type == StateType.App)
                     return stateData[StateType.App];
                 else
@@ -79,33 +81,33 @@ export class StateManagmentService{
             }
             return stateData
         }else{
-            const stateData = this._appStateManagmentService.get(pid);
+            const stateData = this._appStateManagmentService.get(uid);
             return stateData;
         }
     }
 
     /**
      * 
-     * @param pid 
+     * @param uid 
      * @returns 
      * return a true/false value when checking for a state
      */
-    hasState(pid:number):boolean{
-        return this._appStateManagmentService.has(pid) ? true : false;
+    hasState(uid:string):boolean{
+        return this._appStateManagmentService.has(uid) ? true : false;
     }
 
     /**
      * 
-     * @param pid 
+     * @param uid 
      * remove an existing state
      */
-    removeState(pid:number): void{
-       if(this._appStateManagmentService.has(pid))
-            this._appStateManagmentService.delete(pid)
+    removeState(uid:string): void{
+       if(this._appStateManagmentService.has(uid))
+            this._appStateManagmentService.delete(uid)
     }
 
-    getKeys():number[]{
-        const keys:number[] = [];
+    getKeys():string[]{
+        const keys:string[] = [];
 
         for(const key of this._appStateManagmentService.keys()){
             keys.push(key)

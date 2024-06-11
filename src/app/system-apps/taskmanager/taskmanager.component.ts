@@ -137,6 +137,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
   ngAfterViewInit(): void {
 
+    this.setTaskMangrWindowToFocus(this.processId); 
     this.hideContextMenu();
 
     // const table = this.tskMgrTable.nativeElement as HTMLCollection;
@@ -541,13 +542,13 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
   onExitBtnClick():void{
     const processToClose = this._runningProcessService.getProcess(this.processId);
-    this._stateManagmentService.removeState(this.processId);
+    this._stateManagmentService.removeState(`${this.name}-${this.processId}`);
     this._runningProcessService.closeProcessNotify.next(processToClose);
   }
 
   onEndTaskBtnClick():void{
     const processToClose = this._runningProcessService.getProcess(this.processIdToClose);
-    this._stateManagmentService.removeState(this.processId);
+    this._stateManagmentService.removeState(`${this.name}-${this.processId}`);
     this._runningProcessService.closeProcessNotify.next(processToClose);
   }
 

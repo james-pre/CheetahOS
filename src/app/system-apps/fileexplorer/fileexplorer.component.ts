@@ -150,6 +150,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
 
   async ngAfterViewInit():Promise<void>{
 
+    this.setFileExplorerWindowToFocus(this.processId); 
     this.hidePathTextBoxOnload();
     this.changeFileExplorerLayoutCSS(this.currentViewOption);
     this.changeTabLayoutIconCntnrCSS(this.currentViewOptionId,false);
@@ -1188,7 +1189,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
       unique_id: `${this.name}-${this.processId}`
     }
     
-    this._stateManagmentService.addState(this.processId, this._appState, StateType.App);
+    this._stateManagmentService.addState(`${this.name}-${this.processId}`, this._appState, StateType.App);
   }
 
   private getComponentDetail():Process{

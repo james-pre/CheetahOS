@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, OnDestroy } from '@angular/core';
+import { Component, ElementRef, ViewChild, OnDestroy, AfterViewInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
@@ -12,7 +12,7 @@ import { Process } from 'src/app/system-files/process';
   styleUrls: ["./title.component.css"]
 })
 
-export class TitleComponent implements BaseComponent, OnDestroy{
+export class TitleComponent implements BaseComponent, OnDestroy, AfterViewInit{
 
   @ViewChild('ptag', {static: true}) ptag!: ElementRef;
 
@@ -35,6 +35,11 @@ export class TitleComponent implements BaseComponent, OnDestroy{
     this._runningProcessService.addProcess(this.getComponentDetail()); 
 
     this._maximizeWindowSub = this._runningProcessService.maximizeWindowNotify.subscribe(() =>{this.maximizeWindow();})
+  }
+
+
+  ngAfterViewInit(): void {
+    this.setTitleWindowToFocus(this.processId); 
   }
 
   ngOnDestroy():void{

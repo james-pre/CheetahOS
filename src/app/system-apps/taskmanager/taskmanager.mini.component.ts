@@ -60,7 +60,7 @@ export class TaskmanagerMiniComponent implements BaseComponent,OnInit,OnDestroy 
     file.setFileType ='.png';
 
     const processToClose = this._runningProcessService.getProcess(this.processId);
-    this._stateManagmentService.removeState(this.processId);
+    this._stateManagmentService.removeState(`${this.name}-${this.processId}`);
     this._triggerProcessService.startApplication(file);
 
     this._runningProcessService.closeProcessNotify.next(processToClose);

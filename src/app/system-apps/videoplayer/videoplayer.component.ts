@@ -77,6 +77,8 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   }
 
   ngAfterViewInit() {
+
+    this.setVideoWindowToFocus(this.processId); 
     const fileType = 'video/' + this._fileInfo.getFileType.replace('.','');
     const videoSrc = this.getVideoSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
 
@@ -156,7 +158,7 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
       unique_id: `${this.name}-${this.processId}`
     }
 
-    this._stateManagmentService.addState(this.processId, this._appState, StateType.App);
+    this._stateManagmentService.addState(`${this.name}-${this.processId}`, this._appState, StateType.App);
   }
 
   private getComponentDetail():Process{
