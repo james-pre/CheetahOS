@@ -4,9 +4,10 @@ import { ComponentType } from 'src/app/system-files/component.types';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { Subscription } from 'rxjs';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
-import { WindowState } from 'src/app/system-files/state/state.interface';
+import { BaseState, WindowState } from 'src/app/system-files/state/state.interface';
 import {openCloseAnimation, hideShowAnimation, minimizeMaximizeAnimation} from 'src/app/system-apps/window/animation/animations';
 import { StateType } from 'src/app/system-files/state/state.type';
+import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
 
  @Component({
    selector: 'cos-window',
@@ -24,6 +25,7 @@ import { StateType } from 'src/app/system-files/state/state.type';
    
    private _runningProcessService:RunningProcessService;
    private _stateManagmentService: StateManagmentService;
+   private _sessionManagmentService: SessionManagmentService;
    private _originalWindowsState!:WindowState;
 
    private _restoreOrMinSub!:Subscription
@@ -53,10 +55,15 @@ import { StateType } from 'src/app/system-files/state/state.type';
   private readonly z_index = '25914523'; // this number = zindex
   
 
-    constructor(runningProcessService:RunningProcessService, private changeDetectorRef: ChangeDetectorRef, stateManagmentService: StateManagmentService){
+    constructor(runningProcessService:RunningProcessService, private changeDetectorRef: ChangeDetectorRef, 
+                stateManagmentService: StateManagmentService, sessionManagmentService: SessionManagmentService){
       this._runningProcessService = runningProcessService;
       this._stateManagmentService = stateManagmentService;
+      this._sessionManagmentService = sessionManagmentService;
  
+      this.retrievePastSessionData();
+      console.log('helloooo this is window')
+
       this._restoreOrMinSub = this._runningProcessService.restoreOrMinimizeWindowNotify.subscribe((p) => {this.restoreHiddenWindow(p)});
       this._focusOnNextProcessSub = this._runningProcessService.focusOnNextProcessNotify.subscribe(() => {this.setNextWindowToFocus()});
       this._focusOnCurrentProcessSub = this._runningProcessService.focusOnCurrentProcessNotify.subscribe((p) => {this.setFocusOnWindow(p)});
@@ -113,6 +120,34 @@ import { StateType } from 'src/app/system-files/state/state.type';
 
       this.displayName = this.processAppName;
       this.icon = this.processAppIcon;
+    }
+
+    retrievePastSessionData():void{
+      const pickUpKey = this._sessionManagmentService._pickUpKey;
+      if(this._sessionManagmentService.hasTempSession(pickUpKey)){
+        const tmpSessKey = this._sessionManagmentService.getTempSession(pickUpKey) || ''; 
+        console.log('tmpSessKey:', tmpSessKey);
+  
+        const retrievedSessionData = this._sessionManagmentService.getSession(tmpSessKey) as BaseState[];
+        const windowSessionData = retrievedSessionData[1] as WindowState;
+        console.log('windowSessionData:', retrievedSessionData);
+  
+        if(windowSessionData !== undefined ){
+          
+          // this.currentStyles = {
+          //   'transform': 'translate(0,0)',
+          //   'width': '100%',
+          //   'height': 'calc(100% - 40px)', //This accounts for the taskbar height
+          //   'top': '0',
+          //   'left': '0',
+          //   'right': '0',
+          //   'bottom': '0', 
+          //   'z-index': z_index
+          // };
+        }
+
+        this._sessionManagmentService.removeSession(tmpSessKey);
+      }
     }
 
     setHideAndShow():void{

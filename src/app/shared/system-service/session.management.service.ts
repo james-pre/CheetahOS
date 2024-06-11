@@ -6,13 +6,15 @@ import {Injectable } from "@angular/core";
 
 export class SessionManagmentService{
 
-    private sessionName = "main-session";
+    private _sessionName = "main-session";
     private _sessionDataDict: Map<string, unknown>; 
     static instance: SessionManagmentService;
+    private _sessionRetrievalCounter = 0;
+    public  readonly _pickUpKey = "temp-session-retrieval-key";
     
     constructor(){
-        if(sessionStorage.getItem(this.sessionName)){
-            const sessData = sessionStorage.getItem(this.sessionName) as string;
+        if(sessionStorage.getItem(this._sessionName)){
+            const sessData = sessionStorage.getItem(this._sessionName) as string;
             this._sessionDataDict = new Map(JSON.parse(sessData));
             SessionManagmentService.instance = this;
         }
@@ -23,14 +25,37 @@ export class SessionManagmentService{
     }
 
     addSession(key:string, dataToAdd:unknown): void{
-        this._sessionDataDict.set(key,dataToAdd)
-        this.saveSession(this._sessionDataDict);
+
+        if(key === this._pickUpKey){
+            this.addTempSession(dataToAdd);
+        }else{
+            this._sessionDataDict.set(key,dataToAdd)
+            this.saveSession(this._sessionDataDict);
+        }
     }
 
     getSession(key:string):unknown{
         const stateData = this._sessionDataDict.get(key);
         return stateData;
     }
+
+    getTempSession(key:string):string{
+        let result= '';
+        if(this._sessionRetrievalCounter <= 1){
+            console.log(`counter:${this._sessionRetrievalCounter} -----  retrievedSess:${this._sessionRetrievalCounter}`);
+
+            result = sessionStorage.getItem(key) || '';
+            if(this._sessionRetrievalCounter === 1){
+                sessionStorage.removeItem(key);
+                this._sessionRetrievalCounter = 0;
+                return  result;
+            }
+            this._sessionRetrievalCounter++;
+            return  result;
+        }
+        return result;
+    }
+       
 
     getKeys():string[]{
         const keys:string[] = [];
@@ -41,10 +66,18 @@ export class SessionManagmentService{
         return keys;
     }
 
+    hasTempSession(key:string):boolean{
+        return (sessionStorage.getItem(key) !==null) ? true : false;
+    }
+
     removeSession(key:string): void{
         this._sessionDataDict.delete(key)
         this.saveSession(this._sessionDataDict);
     }
+
+    // removeTempSession(key:string): void{
+    //     sessionStorage.removeItem(key);
+    // }
 
     resetSession(): void{
         this._sessionDataDict = new Map<string, unknown>;
@@ -53,6 +86,10 @@ export class SessionManagmentService{
 
     private saveSession(sessionData:Map<string, unknown>){
         const data =  JSON.stringify(Array.from(sessionData.entries()));
-        sessionStorage.setItem(this.sessionName, data);
+        sessionStorage.setItem(this._sessionName, data);
+    }
+
+    private addTempSession(sessionData:unknown){
+        sessionStorage.setItem(this._pickUpKey, sessionData as string);
     }
 }

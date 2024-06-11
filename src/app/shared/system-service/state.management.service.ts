@@ -28,7 +28,7 @@ export class StateManagmentService{
      */
     addState(uid:string, stateData:unknown, type?:StateType):void{
 
-        console.log(`uid:${uid} type:${type}`);
+        //console.log(`uid:${uid} type:${type}`);
 
         if(type !== undefined){
             

@@ -46,9 +46,12 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   private _appNotFoundSub!:Subscription;
   private _appIsRunningSub!:Subscription;  
 
-  private userOpenedAppsList: string[] = [];
-  private readonly userOpenedAppsKey = "openedApps";
-
+  private userOpenedAppsList:string[] = [];
+  private retreivedKeys:string[] = [];
+  private userOpenedAppsKey = "openedApps";
+  private reOpendAppsCounter = 0;
+  private SECONDS_DELAY:number[] =[1500, 100];
+ 
   hasWindow = false;
   icon = 'osdrive/icons/generic-program.ico';
   name = 'system';
@@ -97,13 +100,13 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit():void{
-    // This quiets the - Expression has changed after it was checked. TBD
-    //change detection is the better solution TBD
+    // This quiets the - Expression has changed after it was checked.
+    //TODO: change detection is the better solution TBD
       setTimeout(()=> {
          const priorSessionInfo = this.fetchPriorSessionInfo();
          const sessionKeys = this.getSessionKey(priorSessionInfo);
          this.restorePriorSession(sessionKeys);
-    }, 1500);
+    }, this.SECONDS_DELAY[0]);
   }
 
   async loadApps(appName:string):Promise<void>{
@@ -167,8 +170,6 @@ export class AppComponent implements OnDestroy, AfterViewInit {
 
   private getSessionKey(priorOpendApps:string[]):string[]{
    
-    const retreivedKeys:string[] = [];
-
     if(priorOpendApps.length > 0){
       const sessionKeys = this._sessionMangamentServices.getKeys();
 
@@ -180,25 +181,36 @@ export class AppComponent implements OnDestroy, AfterViewInit {
 
           const tmpKey = sessionKeys.filter(x => x.includes(priorOpendApps[i]));
           for(let j = 0; j < tmpKey.length; j++)
-            retreivedKeys.push(tmpKey[j])
+            this.retreivedKeys.push(tmpKey[j])
       }
 
-      console.log('retreivedKeys:',retreivedKeys);
+      console.log('retreivedKeys:',this.retreivedKeys);
     }
 
-    return retreivedKeys;
+    return this.retreivedKeys;
   }
 
   private restorePriorSession(priorSessionData:string[]):void{
+    const pickUpKey = this._sessionMangamentServices._pickUpKey;
 
-    for (let i = 0; i < priorSessionData.length; i++){
+    const interval =  setInterval((pSessionData) => {
+      let tmpCounter = 0;
+      for(let i = 0; i < pSessionData.length; i++){
+        if (tmpCounter < 1){
+          const appName = priorSessionData[i].split('-')[0];
+          console.log('appName:', appName);
+          this._sessionMangamentServices.addSession(pickUpKey, priorSessionData[i]);
+          this.loadApps(appName);
 
-      const retrievedData = this._sessionMangamentServices.getSession(priorSessionData[i]) as BaseState[];
+          tmpCounter++;
+        }
+      }
 
+      if(this.reOpendAppsCounter == pSessionData.length - 1)
+        clearInterval(interval);
 
-      console.log('retrievedData:', retrievedData);
-
-    }
+      this.reOpendAppsCounter++;
+    },this.SECONDS_DELAY[1], priorSessionData);
 
   }
 

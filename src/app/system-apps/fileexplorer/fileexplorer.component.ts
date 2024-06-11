@@ -14,8 +14,9 @@ import { FileManagerService } from 'src/app/shared/system-service/file.manager.s
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ViewOptions } from './fileexplorer.enums';
 import {basename} from 'path';
-import { AppState } from 'src/app/system-files/state/state.interface';
+import { AppState, BaseState } from 'src/app/system-files/state/state.interface';
 import { StateType } from 'src/app/system-files/state/state.type';
+import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
 
 @Component({
   selector: 'cos-fileexplorer',
@@ -33,6 +34,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   private _directoryFilesEntires!:FileEntry[];
   private _triggerProcessService:TriggerProcessService;
   private _stateManagmentService: StateManagmentService;
+  private _sessionManagmentService: SessionManagmentService;
   private _formBuilder;
   private _appState!:AppState;
 
@@ -112,20 +114,24 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   processId = 0;
   type = ComponentType.System;
   directory ='/osdrive/';
-  displayName = 'File Explorer';
+  displayName = 'fileexplorer';
 
 
   constructor(processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, triggerProcessService:TriggerProcessService, 
-              fileManagerService:FileManagerService, formBuilder: FormBuilder, stateManagmentService:StateManagmentService ) { 
+              fileManagerService:FileManagerService, formBuilder: FormBuilder, stateManagmentService:StateManagmentService, sessionManagmentService:SessionManagmentService ) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this._fileService = fileInfoService;
     this._triggerProcessService = triggerProcessService;
     this._stateManagmentService = stateManagmentService;
+    this._sessionManagmentService = sessionManagmentService;
     this._formBuilder = formBuilder;
 
     this.processId = this._processIdService.getNewProcessId();
     this._runningProcessService.addProcess(this.getComponentDetail());
+    this.retrievePastSessionData();
+
+    console.log('helloooo this is fileexplorer');
 
     this._dirFilesUpdatedSub = this._fileService.dirFilesUpdateNotify.subscribe(() =>{this.loadFilesInfoAsync()});
     this._sortByNotifySub = fileManagerService.sortByNotify.subscribe((p)=>{this.sortIcons(p)});
@@ -156,6 +162,22 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
     this.changeTabLayoutIconCntnrCSS(this.currentViewOptionId,false);
   
     await this.loadFilesInfoAsync();
+  }
+
+  retrievePastSessionData():void{
+    const pickUpKey = this._sessionManagmentService._pickUpKey;
+    if(this._sessionManagmentService.hasTempSession(pickUpKey)){
+      const tmpSessKey = this._sessionManagmentService.getTempSession(pickUpKey) || ''; 
+      console.log('tmpSessKey:', tmpSessKey);
+
+      const retrievedSessionData = this._sessionManagmentService.getSession(tmpSessKey) as BaseState[];
+      const appSessionData = retrievedSessionData[0] as AppState;
+      console.log('retrievedSessionData:', retrievedSessionData);
+
+      if(appSessionData !== undefined  && appSessionData.app_data != ''){
+        this.directory = appSessionData.app_data as string;
+      }
+    }
   }
   
 
@@ -578,7 +600,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
 
       this.isPrevBtnActive = true;
       this.directory = file.getCurrentPath;
-      this.name = file.getFileName;
+      this.displayName = file.getFileName;
       this.icon = file.getIconPath;
 
       this.prevPathEntries.push(this.directory);
