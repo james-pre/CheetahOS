@@ -39,6 +39,7 @@ export class StateManagmentService{
                 }else{
                     currStateData[StateType.Window] = stateData as WindowState;
                 }
+                this._appStateManagmentService.set(uid,currStateData);
                 this._sessionManagmentService.addSession(uid, currStateData);
             }else{
                 const appState:AppState={pid:0, app_data:'', app_name:'', unique_id:''}

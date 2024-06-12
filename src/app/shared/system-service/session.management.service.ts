@@ -7,11 +7,11 @@ import {Injectable } from "@angular/core";
 export class SessionManagmentService{
 
     private _sessionName = "main-session";
+    public readonly _pickUpKey = "temp-session-retrieval-key";
     private _sessionDataDict: Map<string, unknown>; 
     static instance: SessionManagmentService;
     private _sessionRetrievalCounter = 0;
-    public  readonly _pickUpKey = "temp-session-retrieval-key";
-    
+
     constructor(){
         if(sessionStorage.getItem(this._sessionName)){
             const sessData = sessionStorage.getItem(this._sessionName) as string;
@@ -42,7 +42,7 @@ export class SessionManagmentService{
     getTempSession(key:string):string{
         let result= '';
         if(this._sessionRetrievalCounter <= 1){
-            console.log(`counter:${this._sessionRetrievalCounter} -----  retrievedSess:${this._sessionRetrievalCounter}`);
+            // console.log(`counter:${this._sessionRetrievalCounter} -----  retrievedSess:${this._sessionRetrievalCounter}`);
 
             result = sessionStorage.getItem(key) || '';
             if(this._sessionRetrievalCounter === 1){
@@ -74,10 +74,6 @@ export class SessionManagmentService{
         this._sessionDataDict.delete(key)
         this.saveSession(this._sessionDataDict);
     }
-
-    // removeTempSession(key:string): void{
-    //     sessionStorage.removeItem(key);
-    // }
 
     resetSession(): void{
         this._sessionDataDict = new Map<string, unknown>;

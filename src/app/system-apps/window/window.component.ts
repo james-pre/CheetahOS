@@ -62,7 +62,6 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
       this._sessionManagmentService = sessionManagmentService;
  
       this.retrievePastSessionData();
-      console.log('helloooo this is window')
 
       this._restoreOrMinSub = this._runningProcessService.restoreOrMinimizeWindowNotify.subscribe((p) => {this.restoreHiddenWindow(p)});
       this._focusOnNextProcessSub = this._runningProcessService.focusOnNextProcessNotify.subscribe(() => {this.setNextWindowToFocus()});
@@ -122,33 +121,6 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
       this.icon = this.processAppIcon;
     }
 
-    retrievePastSessionData():void{
-      const pickUpKey = this._sessionManagmentService._pickUpKey;
-      if(this._sessionManagmentService.hasTempSession(pickUpKey)){
-        const tmpSessKey = this._sessionManagmentService.getTempSession(pickUpKey) || ''; 
-        console.log('tmpSessKey:', tmpSessKey);
-  
-        const retrievedSessionData = this._sessionManagmentService.getSession(tmpSessKey) as BaseState[];
-        const windowSessionData = retrievedSessionData[1] as WindowState;
-        console.log('windowSessionData:', retrievedSessionData);
-  
-        if(windowSessionData !== undefined ){
-          
-          // this.currentStyles = {
-          //   'transform': 'translate(0,0)',
-          //   'width': '100%',
-          //   'height': 'calc(100% - 40px)', //This accounts for the taskbar height
-          //   'top': '0',
-          //   'left': '0',
-          //   'right': '0',
-          //   'bottom': '0', 
-          //   'z-index': z_index
-          // };
-        }
-
-        this._sessionManagmentService.removeSession(tmpSessKey);
-      }
-    }
 
     setHideAndShow():void{
       this.windowHide = !this.windowHide;
@@ -387,5 +359,47 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
         }
       }
    }
+
+   retrievePastSessionData():void{
+    const pickUpKey = this._sessionManagmentService._pickUpKey;
+    if(this._sessionManagmentService.hasTempSession(pickUpKey)){
+      const tmpSessKey = this._sessionManagmentService.getTempSession(pickUpKey) || ''; 
+
+      const retrievedSessionData = this._sessionManagmentService.getSession(tmpSessKey) as BaseState[];
+      const windowSessionData = retrievedSessionData[1] as WindowState;
+
+      if(windowSessionData !== undefined ){
+        
+        // this.currentStyles = {
+        //   'transform': 'translate(0,0)',
+        //   'width': '100%',
+        //   'height': 'calc(100% - 40px)', //This accounts for the taskbar height
+        //   'top': '0',
+        //   'left': '0',
+        //   'right': '0',
+        //   'bottom': '0', 
+        //   'z-index': z_index
+        // };
+      }
+
+      /*
+       Why i am removing the session below. Once window has it's size and position data, the session data is no longer needed
+
+      --- Order of Operation ---   the application open first, followed by creating a window component for it's presentation.
+
+        1. For the App Component
+          1. The constructor executes first
+
+        2.For the Windows Component
+          1. The constructor executes firest
+
+          2. ngOnChange exexutes first
+
+          3.  Then followed by ngOnInit
+      
+      */
+      this._sessionManagmentService.removeSession(tmpSessKey);
+    }
+  }
 
 }

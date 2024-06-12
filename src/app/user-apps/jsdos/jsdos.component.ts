@@ -11,9 +11,10 @@ import { Process } from 'src/app/system-files/process';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 import { FileInfo } from 'src/app/system-files/fileinfo';
-import { AppState } from 'src/app/system-files/state/state.interface';
+import { AppState, BaseState } from 'src/app/system-files/state/state.interface';
 import { StateType } from 'src/app/system-files/state/state.type';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
+import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
 
 declare const Dos: DosPlayerFactoryType;
 declare const emulators:Emulators
@@ -31,9 +32,12 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
   private _runningProcessService:RunningProcessService;
   private _triggerProcessService:TriggerProcessService;
   private _stateManagmentService:StateManagmentService;
+  private _sessionManagmentService: SessionManagmentService;
   private _ci!: CommandInterface;
   private _fileInfo!:FileInfo;
   private _appState!:AppState;
+  private gameSrc = ''
+  private SECONDS_DELAY = 1500;
 
   name= 'jsdos';
   hasWindow = true;
@@ -51,13 +55,16 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
   }
 
   constructor(fileService:FileService, processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService,
-              stateManagmentService: StateManagmentService) { 
+              stateManagmentService: StateManagmentService, sessionManagmentService: SessionManagmentService) { 
     this._fileService = fileService
     this._processIdService = processIdService;
     this._triggerProcessService = triggerProcessService;
     this._stateManagmentService = stateManagmentService;
+    this._sessionManagmentService = sessionManagmentService;
     this.processId = this._processIdService.getNewProcessId();
     
+    this.retrievePastSessionData();
+
     this._runningProcessService = runningProcessService;
     this._runningProcessService.addProcess(this.getComponentDetail());
   }
@@ -81,20 +88,17 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
     setTimeout( async () => {
 
       emulators.pathPrefix= '/';
+      
+      this.gameSrc = (this.gameSrc !=='')? 
+        this.gameSrc : this.getGamesSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
 
-      if(this._fileInfo.getContentPath != '' || this._fileInfo.getCurrentPath != ''){
-        const gameSrc = this.getGamesSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath)    
-        const data = await this._fileService.getFileAsync(gameSrc);
-        this._ci = await  Dos(this.dosWindow.nativeElement, this.dosOptions).run(data);
-        URL.revokeObjectURL(gameSrc);
+      const gameSrc = this.getGamesSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath)    
+      const data = await this._fileService.getFileAsync(gameSrc);
+      this._ci = await  Dos(this.dosWindow.nativeElement, this.dosOptions).run(data);
+      URL.revokeObjectURL(gameSrc);
 
-      }else{
-        alert(`JS-Dos could not started. Sorry :(`);
-
-        //look in the state managment service for information
-      }
-      this.name = this._fileInfo.getFileName;
-    }, 1500);
+      this.displayName = this._fileInfo.getFileName;
+    }, this.SECONDS_DELAY);
   }
 
   setJSDosWindowToFocus(pid:number):void{
@@ -128,14 +132,28 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
   }
 
   storeAppState(app_data:unknown):void{
+    const uid = `${this.name}-${this.processId}`;
     this._appState = {
       pid: this.processId,
       app_data: app_data as string,
       app_name: this.name,
-      unique_id: `${this.name}-${this.processId}`
+      unique_id: uid
     }
 
-    this._stateManagmentService.addState(`${this.name}-${this.processId}`, this._appState, StateType.App);
+    this._stateManagmentService.addState(uid, this._appState, StateType.App);
+  }
+
+  retrievePastSessionData():void{
+    const pickUpKey = this._sessionManagmentService._pickUpKey;
+    if(this._sessionManagmentService.hasTempSession(pickUpKey)){
+      const tmpSessKey = this._sessionManagmentService.getTempSession(pickUpKey) || ''; 
+      const retrievedSessionData = this._sessionManagmentService.getSession(tmpSessKey) as BaseState[];
+      const appSessionData = retrievedSessionData[0] as AppState;
+
+      if(appSessionData !== undefined  && appSessionData.app_data != ''){
+        this.gameSrc = appSessionData.app_data as string;
+      }
+    }
   }
 
   private getComponentDetail():Process{

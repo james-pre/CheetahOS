@@ -8,9 +8,10 @@ import { ComponentType } from 'src/app/system-files/component.types';
 import { Process } from 'src/app/system-files/process';
 import { TerminalCommand } from './model/terminal.command';
 import { TerminalCommands } from './terminal.commands';
-import { AppState } from 'src/app/system-files/state/state.interface';
+import { AppState, BaseState } from 'src/app/system-files/state/state.interface';
 import { StateType } from 'src/app/system-files/state/state.type';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
+import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
 
 @Component({
   selector: 'cos-terminal',
@@ -28,6 +29,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   private _formBuilder;
   private _terminaCommandsImpl!:TerminalCommands;
   private _stateManagmentService:StateManagmentService;
+  private _sessionManagmentService: SessionManagmentService;
   private _appState!:AppState;
 
   private msgPosCounter = 0;
@@ -62,12 +64,16 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   type = ComponentType.System;
   displayName = 'Terminal';
 
-  constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService, formBuilder:FormBuilder, stateManagmentService: StateManagmentService) { 
+  constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService, formBuilder:FormBuilder,
+               stateManagmentService: StateManagmentService, sessionManagmentService: SessionManagmentService) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this._formBuilder = formBuilder;
     this._stateManagmentService = stateManagmentService;
+    this._sessionManagmentService = sessionManagmentService;
     this._terminaCommandsImpl = new TerminalCommands();
+
+    this.retrievePastSessionData();
 
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail()); 
@@ -333,19 +339,38 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   storeAppState():void{
     const cmdHistory = this.commandHistory;
     const cmdList:string[] = [];
+    const uid = `${this.name}-${this.processId}`;
 
     for(let i = 0; i < cmdHistory.length; i++){
       cmdList.push(cmdHistory[i].getCommand);
     }
-
+  
     this._appState = {
       pid: this.processId,
       app_data: cmdList,
       app_name: this.name,
-      unique_id: `${this.name}-${this.processId}`
+      unique_id: uid
     }
 
-    this._stateManagmentService.addState(`${this.name}-${this.processId}`, this._appState, StateType.App);
+    this._stateManagmentService.addState(uid, this._appState, StateType.App);
+  }
+
+  retrievePastSessionData():void{
+    const pickUpKey = this._sessionManagmentService._pickUpKey;
+    if(this._sessionManagmentService.hasTempSession(pickUpKey)){
+      const tmpSessKey = this._sessionManagmentService.getTempSession(pickUpKey) || ''; 
+      const retrievedSessionData = this._sessionManagmentService.getSession(tmpSessKey) as BaseState[];
+      const appSessionData = retrievedSessionData[0] as AppState;
+
+      if(appSessionData !== undefined  && appSessionData.app_data != ''){
+
+        const terminalCmds =  appSessionData.app_data as string[];
+        for(let i = 0; i < terminalCmds.length; i++){
+          const cmd = new TerminalCommand(terminalCmds[i], 0, '');
+          this.commandHistory.push(cmd);
+        }
+      }
+    }
   }
 
   private getComponentDetail():Process{

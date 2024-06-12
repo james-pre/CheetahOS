@@ -17,7 +17,6 @@ import { JsdosComponent } from './user-apps/jsdos/jsdos.component';
 import { VideoPlayerComponent } from './system-apps/videoplayer/videoplayer.component';
 import { AudioPlayerComponent } from './system-apps/audioplayer/audioplayer.component';
 import { TerminalComponent } from './system-apps/terminal/terminal.component';
-import { BaseState } from './system-files/state/state.interface';
 
 @Component({
   selector: 'cos-root',
@@ -139,7 +138,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
     this._runningProcessService.removeProcess(eventData)
     this._componentReferenceService.removeComponentReference(eventData.getProcessId);
     this._processIdService.removeProcessId(eventData.getProcessId);
-    this.deleteEntryFromUserOpenedApps(eventData.getProcessName);
+    this.deleteEntryFromUserOpenedAppsAndSession(eventData);
 
     //alert subscribers
     this._runningProcessService.processListChangeNotify.next()
@@ -149,14 +148,16 @@ export class AppComponent implements OnDestroy, AfterViewInit {
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type)
   }
 
-  private deleteEntryFromUserOpenedApps(proccessName:string):void{
+  private deleteEntryFromUserOpenedAppsAndSession(proccess:Process):void{
       const deleteCount = 1
-      const pidIndex = this.userOpenedAppsList.indexOf(proccessName)
+      const pidIndex = this.userOpenedAppsList.indexOf(proccess.getProcessName)
 
       if (pidIndex !== -1) 
         this.userOpenedAppsList.splice(pidIndex, deleteCount);
 
       this._sessionMangamentServices.addSession(this.userOpenedAppsKey, this.userOpenedAppsList)
+      const uid = `${proccess.getProcessName}-${proccess.getProcessId}`;
+      this._sessionMangamentServices.removeSession(uid);
   }
 
   private fetchPriorSessionInfo():string[]{
@@ -174,17 +175,11 @@ export class AppComponent implements OnDestroy, AfterViewInit {
       const sessionKeys = this._sessionMangamentServices.getKeys();
 
       for(let i= 0; i < priorOpendApps.length; i++){
-          //this.loadApps(openedAppList[i]);
-
-          // console.log('openedAppList[i]:',priorOpendApps[i]);
-          // console.log('sessionKeys:',sessionKeys.filter(x => x.includes(priorOpendApps[i])));
-
-          const tmpKey = sessionKeys.filter(x => x.includes(priorOpendApps[i]));
-          for(let j = 0; j < tmpKey.length; j++)
-            this.retreivedKeys.push(tmpKey[j])
+        const tmpKey = sessionKeys.filter(x => x.includes(priorOpendApps[i]));
+        
+        for(let j = 0; j < tmpKey.length; j++)
+          this.retreivedKeys.push(tmpKey[j]);
       }
-
-      console.log('retreivedKeys:',this.retreivedKeys);
     }
 
     return this.retreivedKeys;
@@ -213,7 +208,6 @@ export class AppComponent implements OnDestroy, AfterViewInit {
     },this.SECONDS_DELAY[1], priorSessionData);
 
   }
-
 
 
   private addEntryFromUserOpenedApps(proccessName:string):void{

@@ -131,8 +131,6 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
     this._runningProcessService.addProcess(this.getComponentDetail());
     this.retrievePastSessionData();
 
-    console.log('helloooo this is fileexplorer');
-
     this._dirFilesUpdatedSub = this._fileService.dirFilesUpdateNotify.subscribe(() =>{this.loadFilesInfoAsync()});
     this._sortByNotifySub = fileManagerService.sortByNotify.subscribe((p)=>{this.sortIcons(p)});
     this._refreshNotifySub = fileManagerService.refreshNotify.subscribe(()=>{this.refreshIcons()});
@@ -160,24 +158,12 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
     this.hidePathTextBoxOnload();
     this.changeFileExplorerLayoutCSS(this.currentViewOption);
     this.changeTabLayoutIconCntnrCSS(this.currentViewOptionId,false);
+
+    this.pathForm.setValue({
+      pathInput: (this.directory !== '/osdrive/')? this.directory : '/osdrive/'
+    })
   
     await this.loadFilesInfoAsync();
-  }
-
-  retrievePastSessionData():void{
-    const pickUpKey = this._sessionManagmentService._pickUpKey;
-    if(this._sessionManagmentService.hasTempSession(pickUpKey)){
-      const tmpSessKey = this._sessionManagmentService.getTempSession(pickUpKey) || ''; 
-      console.log('tmpSessKey:', tmpSessKey);
-
-      const retrievedSessionData = this._sessionManagmentService.getSession(tmpSessKey) as BaseState[];
-      const appSessionData = retrievedSessionData[0] as AppState;
-      console.log('retrievedSessionData:', retrievedSessionData);
-
-      if(appSessionData !== undefined  && appSessionData.app_data != ''){
-        this.directory = appSessionData.app_data as string;
-      }
-    }
   }
   
 
@@ -1203,15 +1189,29 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
     this.showPathHistory = false;
   }
 
-  storeAppState(app_data:any):void{
+  storeAppState(app_data:unknown):void{
+    const uid = `${this.name}-${this.processId}`;
     this._appState = {
       pid: this.processId,
       app_data: app_data,
       app_name: this.name,
-      unique_id: `${this.name}-${this.processId}`
+      unique_id: uid
     }
     
-    this._stateManagmentService.addState(`${this.name}-${this.processId}`, this._appState, StateType.App);
+    this._stateManagmentService.addState(uid, this._appState, StateType.App);
+  }
+
+  retrievePastSessionData():void{
+    const pickUpKey = this._sessionManagmentService._pickUpKey;
+    if(this._sessionManagmentService.hasTempSession(pickUpKey)){
+      const tmpSessKey = this._sessionManagmentService.getTempSession(pickUpKey) || ''; 
+      const retrievedSessionData = this._sessionManagmentService.getSession(tmpSessKey) as BaseState[];
+      const appSessionData = retrievedSessionData[0] as AppState;
+
+      if(appSessionData !== undefined  && appSessionData.app_data != ''){
+        this.directory = appSessionData.app_data as string;
+      }
+    }
   }
 
   private getComponentDetail():Process{

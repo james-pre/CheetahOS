@@ -8,9 +8,10 @@ import { RunningProcessService } from 'src/app/shared/system-service/running.pro
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 import { FileInfo } from 'src/app/system-files/fileinfo';
 import { Constants } from "src/app/system-files/constants";
-import { AppState } from 'src/app/system-files/state/state.interface';
+import { AppState, BaseState } from 'src/app/system-files/state/state.interface';
 import { StateType } from 'src/app/system-files/state/state.type';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
+import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
 
 // eslint-disable-next-line no-var
 declare var videojs: (arg0: any, arg1: object, arg2: () => void) => any;
@@ -29,10 +30,13 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   private _runningProcessService:RunningProcessService;
   private _triggerProcessService:TriggerProcessService;
   private _stateManagmentService:StateManagmentService;
+  private _sessionManagmentService: SessionManagmentService;
   private _fileInfo!:FileInfo;
   private player: any;
   private _consts:Constants = new Constants();
   private _appState!:AppState;
+  private videoSrc = '';
+  private fileType = '';
 
   recents:string[] = [];
 
@@ -47,16 +51,18 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
 
   constructor(processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService,
-    stateManagmentService: StateManagmentService) { 
+    stateManagmentService: StateManagmentService, sessionManagmentService: SessionManagmentService) { 
     this._processIdService = processIdService;
     this._triggerProcessService = triggerProcessService;
     this._stateManagmentService = stateManagmentService;
+    this._sessionManagmentService= sessionManagmentService;
     this.processId = this._processIdService.getNewProcessId();
+
+    this.retrievePastSessionData();
     
     this._runningProcessService = runningProcessService;
     this._runningProcessService.addProcess(this.getComponentDetail());
   }
-
 
   ngOnInit(): void {
     this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
@@ -64,7 +70,6 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   showMenu(): void{
     this.showTopMenu = true;
-
     console.log('show menu')
   }
 
@@ -79,36 +84,33 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   ngAfterViewInit() {
 
     this.setVideoWindowToFocus(this.processId); 
-    const fileType = 'video/' + this._fileInfo.getFileType.replace('.','');
-    const videoSrc = this.getVideoSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
+    this.fileType =  (this.fileType !=='') ? 
+      this.fileType : 'video/' + this._fileInfo.getFileType.replace('.','');
 
-    if(videoSrc !== '/'){
-      const options = {
-        fluid: true,
-        responsive: true,
-        autoplay: true, 
-        controls:true,
-        aspectRatio: '16:9',
-        controlBar: {
-          skipButtons: {
-            backward: 10,
-            forward: 10
-          }
-        },
-        sources: [{ src:videoSrc, type: fileType }] 
-      }
+    this.videoSrc = (this.videoSrc !=='') ? 
+      this.videoSrc : this.getVideoSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
 
-      const appData:string[] = [fileType, videoSrc];
-      this.storeAppState(appData);
-
-      this.player = videojs(this.videowindow.nativeElement, options, function onPlayerReady(){
-        console.log('onPlayerReady:', "player is read");
-      });
-
-    }else{
-1
+    const options = {
+      fluid: true,
+      responsive: true,
+      autoplay: true, 
+      controls:true,
+      aspectRatio: '16:9',
+      controlBar: {
+        skipButtons: {
+          backward: 10,
+          forward: 10
+        }
+      },
+      sources: [{ src:this.videoSrc, type: this.fileType }] 
     }
 
+    const appData:string[] = [this.fileType, this.videoSrc];
+    this.storeAppState(appData);
+
+    this.player = videojs(this.videowindow.nativeElement, options, function onPlayerReady(){
+      console.log('onPlayerReady:', "player is read");
+    });
   }
 
   ngOnDestroy(): void {
@@ -151,14 +153,29 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   }
 
   storeAppState(app_data:unknown):void{
+    const uid = `${this.name}-${this.processId}`;
     this._appState = {
       pid: this.processId,
-      app_data: app_data as string,
+      app_data: app_data,
       app_name: this.name,
-      unique_id: `${this.name}-${this.processId}`
+      unique_id: uid
     }
+    this._stateManagmentService.addState(uid, this._appState, StateType.App);
+  }
 
-    this._stateManagmentService.addState(`${this.name}-${this.processId}`, this._appState, StateType.App);
+  retrievePastSessionData():void{
+    const pickUpKey = this._sessionManagmentService._pickUpKey;
+    if(this._sessionManagmentService.hasTempSession(pickUpKey)){
+      const tmpSessKey = this._sessionManagmentService.getTempSession(pickUpKey) || ''; 
+      const retrievedSessionData = this._sessionManagmentService.getSession(tmpSessKey) as BaseState[];
+      const appSessionData = retrievedSessionData[0] as AppState;
+
+      if(appSessionData !== undefined  && appSessionData.app_data != ''){
+        const videoData =  appSessionData.app_data as string[];
+        this.fileType = videoData[0];
+        this.videoSrc = videoData[1];
+      }
+    }
   }
 
   private getComponentDetail():Process{
