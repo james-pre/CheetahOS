@@ -49,7 +49,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   private retreivedKeys:string[] = [];
   private userOpenedAppsKey = "openedApps";
   private reOpendAppsCounter = 0;
-  private SECONDS_DELAY:number[] =[1500, 100];
+  private SECONDS_DELAY:number[] =[1500, 1500];
  
   hasWindow = false;
   icon = 'osdrive/icons/generic-program.ico';
@@ -190,7 +190,9 @@ export class AppComponent implements OnDestroy, AfterViewInit {
 
     const interval =  setInterval((pSessionData) => {
       let tmpCounter = 0;
-      for(let i = 0; i < pSessionData.length; i++){
+      let i = this.reOpendAppsCounter;
+
+      for(i; i < pSessionData.length; i++){
         if (tmpCounter < 1){
           const appName = priorSessionData[i].split('-')[0];
           console.log('appName:', appName);

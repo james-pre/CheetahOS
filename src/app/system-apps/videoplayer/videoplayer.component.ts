@@ -154,6 +154,7 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   storeAppState(app_data:unknown):void{
     const uid = `${this.name}-${this.processId}`;
+
     this._appState = {
       pid: this.processId,
       app_data: app_data,
@@ -168,12 +169,15 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
     if(this._sessionManagmentService.hasTempSession(pickUpKey)){
       const tmpSessKey = this._sessionManagmentService.getTempSession(pickUpKey) || ''; 
       const retrievedSessionData = this._sessionManagmentService.getSession(tmpSessKey) as BaseState[];
-      const appSessionData = retrievedSessionData[0] as AppState;
 
-      if(appSessionData !== undefined  && appSessionData.app_data != ''){
-        const videoData =  appSessionData.app_data as string[];
-        this.fileType = videoData[0];
-        this.videoSrc = videoData[1];
+      if(retrievedSessionData !== undefined){
+        const appSessionData = retrievedSessionData[0] as AppState;
+
+        if(appSessionData !== undefined  && appSessionData.app_data != ''){
+          const videoData =  appSessionData.app_data as string[];
+          this.fileType = videoData[0];
+          this.videoSrc = videoData[1];
+        }
       }
     }
   }

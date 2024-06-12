@@ -36,7 +36,7 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
   private _ci!: CommandInterface;
   private _fileInfo!:FileInfo;
   private _appState!:AppState;
-  private gameSrc = ''
+  private gameSrc = '';
   private SECONDS_DELAY = 1500;
 
   name= 'jsdos';
@@ -85,17 +85,17 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
     
     this.setJSDosWindowToFocus(this.processId); 
 
-    setTimeout( async () => {
+    setTimeout(async() => {
 
       emulators.pathPrefix= '/';
       
       this.gameSrc = (this.gameSrc !=='')? 
         this.gameSrc : this.getGamesSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
 
-      const gameSrc = this.getGamesSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath)    
-      const data = await this._fileService.getFileAsync(gameSrc);
+      const data = await this._fileService.getFileAsync(this.gameSrc);
       this._ci = await  Dos(this.dosWindow.nativeElement, this.dosOptions).run(data);
-      URL.revokeObjectURL(gameSrc);
+      this.storeAppState(this.gameSrc);
+      URL.revokeObjectURL(this.gameSrc);
 
       this.displayName = this._fileInfo.getFileName;
     }, this.SECONDS_DELAY);
@@ -133,6 +133,7 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
 
   storeAppState(app_data:unknown):void{
     const uid = `${this.name}-${this.processId}`;
+
     this._appState = {
       pid: this.processId,
       app_data: app_data as string,
@@ -148,10 +149,12 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
     if(this._sessionManagmentService.hasTempSession(pickUpKey)){
       const tmpSessKey = this._sessionManagmentService.getTempSession(pickUpKey) || ''; 
       const retrievedSessionData = this._sessionManagmentService.getSession(tmpSessKey) as BaseState[];
-      const appSessionData = retrievedSessionData[0] as AppState;
 
-      if(appSessionData !== undefined  && appSessionData.app_data != ''){
-        this.gameSrc = appSessionData.app_data as string;
+      if(retrievedSessionData !== undefined){
+        const appSessionData = retrievedSessionData[0] as AppState;
+        if(appSessionData !== undefined  && appSessionData.app_data != ''){
+          this.gameSrc = appSessionData.app_data as string;
+        }
       }
     }
   }

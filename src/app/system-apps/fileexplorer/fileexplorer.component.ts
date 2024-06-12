@@ -1191,6 +1191,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
 
   storeAppState(app_data:unknown):void{
     const uid = `${this.name}-${this.processId}`;
+
     this._appState = {
       pid: this.processId,
       app_data: app_data,
@@ -1206,10 +1207,12 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
     if(this._sessionManagmentService.hasTempSession(pickUpKey)){
       const tmpSessKey = this._sessionManagmentService.getTempSession(pickUpKey) || ''; 
       const retrievedSessionData = this._sessionManagmentService.getSession(tmpSessKey) as BaseState[];
-      const appSessionData = retrievedSessionData[0] as AppState;
 
-      if(appSessionData !== undefined  && appSessionData.app_data != ''){
-        this.directory = appSessionData.app_data as string;
+      if(retrievedSessionData !== undefined){
+        const appSessionData = retrievedSessionData[0] as AppState;
+        if(appSessionData !== undefined  && appSessionData.app_data != ''){
+          this.directory = appSessionData.app_data as string;
+        }
       }
     }
   }

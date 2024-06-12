@@ -9,6 +9,7 @@ import { FileMetaData } from "src/app/system-files/file.metadata";
 
 import { Subject } from "rxjs";
 import * as BrowserFS from 'browserfs';
+import { Buffer } from 'buffer';
 import osDriveFileSystemIndex from '../../../osdrive.json';
 import ini  from 'ini';
 
@@ -248,14 +249,27 @@ export class FileService{
     }
 
     public async getFileAsync(path:string): Promise<string> {
+
+        console.log('HERE IS THE PATH:',path);
+
+        if (!path) {
+            console.error('getFileAsync error: Path must not be empty');
+            return Promise.reject(new Error('Path must not be empty'));
+        }
+
         await this.initBrowserFsAsync();
+
+       
 
         return new Promise((resolve, reject) =>{
             this._fileSystem.readFile(path,(err, contents = Buffer.from('')) =>{
                 if(err){
                     console.log('getFileAsync error:',err)
-                    reject(err)
+                    reject(err);
+                    return
                 }
+
+                contents = contents || new Uint8Array();
                 const fileUrl = URL.createObjectURL(new Blob([new Uint8Array(contents)]))
                 resolve(fileUrl);
             });

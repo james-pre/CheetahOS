@@ -308,6 +308,13 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
         terminalCmd.setResponseCode = this.Success;
         terminalCmd.setCommandOutput = result;
       } 
+
+      if(inputCmd == "cd" || inputCmd == "dir" || inputCmd == "pwd"){
+        terminalCmd.setResponseCode = this.Warning;
+        terminalCmd.setCommandOutput = 'command not yet implemented :)';
+      } 
+
+      
     }else{
       terminalCmd.setResponseCode = this.Fail;
       terminalCmd.setCommandOutput = `${terminalCmd.getCommand}: command not found. Type 'help', or 'help -verbose' to view a list of available commands.`;
@@ -360,14 +367,16 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
     if(this._sessionManagmentService.hasTempSession(pickUpKey)){
       const tmpSessKey = this._sessionManagmentService.getTempSession(pickUpKey) || ''; 
       const retrievedSessionData = this._sessionManagmentService.getSession(tmpSessKey) as BaseState[];
-      const appSessionData = retrievedSessionData[0] as AppState;
 
-      if(appSessionData !== undefined  && appSessionData.app_data != ''){
-
-        const terminalCmds =  appSessionData.app_data as string[];
-        for(let i = 0; i < terminalCmds.length; i++){
-          const cmd = new TerminalCommand(terminalCmds[i], 0, '');
-          this.commandHistory.push(cmd);
+      if(retrievedSessionData !== undefined){
+        const appSessionData = retrievedSessionData[0] as AppState;
+        if(appSessionData !== undefined  && appSessionData.app_data != ''){
+  
+          const terminalCmds =  appSessionData.app_data as string[];
+          for(let i = 0; i < terminalCmds.length; i++){
+            const cmd = new TerminalCommand(terminalCmds[i], 0, '');
+            this.commandHistory.push(cmd);
+          }
         }
       }
     }

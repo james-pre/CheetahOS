@@ -112,7 +112,7 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
     }
 
     ngOnChanges(changes: SimpleChanges):void{
-      console.log('WINDOW onCHANGES:',changes);
+      //console.log('WINDOW onCHANGES:',changes);
 
       if(this.name == "Window")
           this.name = this.processAppName;
@@ -366,20 +366,23 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
       const tmpSessKey = this._sessionManagmentService.getTempSession(pickUpKey) || ''; 
 
       const retrievedSessionData = this._sessionManagmentService.getSession(tmpSessKey) as BaseState[];
-      const windowSessionData = retrievedSessionData[1] as WindowState;
+      
+      if(retrievedSessionData !== undefined){
+        const windowSessionData = retrievedSessionData[1] as WindowState;
 
-      if(windowSessionData !== undefined ){
-        
-        // this.currentStyles = {
-        //   'transform': 'translate(0,0)',
-        //   'width': '100%',
-        //   'height': 'calc(100% - 40px)', //This accounts for the taskbar height
-        //   'top': '0',
-        //   'left': '0',
-        //   'right': '0',
-        //   'bottom': '0', 
-        //   'z-index': z_index
-        // };
+        if(windowSessionData !== undefined ){
+          
+          // this.currentStyles = {
+          //   'transform': 'translate(0,0)',
+          //   'width': '100%',
+          //   'height': 'calc(100% - 40px)', //This accounts for the taskbar height
+          //   'top': '0',
+          //   'left': '0',
+          //   'right': '0',
+          //   'bottom': '0', 
+          //   'z-index': z_index
+          // };
+        }
       }
 
       /*

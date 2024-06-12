@@ -413,7 +413,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
       pid: this.processId,
       app_data: app_data,
       app_name: this.name,
-      unique_id: `${this.name}-${this.processId}`
+      unique_id: uid
     }
 
     this._stateManagmentService.addState(uid, this._appState, StateType.App);
@@ -424,10 +424,13 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
     if(this._sessionManagmentService.hasTempSession(pickUpKey)){
       const tmpSessKey = this._sessionManagmentService.getTempSession(pickUpKey) || ''; 
       const retrievedSessionData = this._sessionManagmentService.getSession(tmpSessKey) as BaseState[];
-      const appSessionData = retrievedSessionData[0] as AppState;
+
+      if(retrievedSessionData !== undefined){
+        const appSessionData = retrievedSessionData[0] as AppState;
   
-      if(appSessionData !== undefined  && appSessionData.app_data != ''){
-        this.audioSrc = appSessionData.app_data as string;
+        if(appSessionData !== undefined  && appSessionData.app_data != ''){
+          this.audioSrc = appSessionData.app_data as string;
+        }
       }
     }
   }
