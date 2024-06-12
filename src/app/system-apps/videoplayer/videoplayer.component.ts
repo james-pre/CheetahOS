@@ -12,6 +12,7 @@ import { AppState, BaseState } from 'src/app/system-files/state/state.interface'
 import { StateType } from 'src/app/system-files/state/state.type';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
+import { Subscription } from 'rxjs';
 
 // eslint-disable-next-line no-var
 declare var videojs: (arg0: any, arg1: object, arg2: () => void) => any;
@@ -25,7 +26,10 @@ declare var videojs: (arg0: any, arg1: object, arg2: () => void) => any;
 export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, AfterViewInit  {
 
   @ViewChild('videowindow', {static: true}) videowindow!: ElementRef;
+  @ViewChild('ptag', {static: true}) ptag!: ElementRef;
 
+  private _maximizeWindowSub!: Subscription;
+  
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _triggerProcessService:TriggerProcessService;
@@ -55,12 +59,13 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
     this._processIdService = processIdService;
     this._triggerProcessService = triggerProcessService;
     this._stateManagmentService = stateManagmentService;
+    this._runningProcessService = runningProcessService;
     this._sessionManagmentService= sessionManagmentService;
     this.processId = this._processIdService.getNewProcessId();
 
     this.retrievePastSessionData();
-    
-    this._runningProcessService = runningProcessService;
+
+    this._maximizeWindowSub = this._runningProcessService.maximizeWindowNotify.subscribe(() =>{this.maximizeWindow();})
     this._runningProcessService.addProcess(this.getComponentDetail());
   }
 
@@ -117,6 +122,7 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
     if (this.player) {
       this.player.dispose();
     }
+    this._maximizeWindowSub?.unsubscribe();
   }
 
   addToRecentsList(videoPath:string):void{
@@ -180,6 +186,12 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
         }
       }
     }
+  }
+
+  maximizeWindow():void{
+    const mainWindow = document.getElementById('vanta');
+    this.ptag.nativeElement.style.height = `${mainWindow?.offsetHeight || 0 - 40}px`;
+    this.ptag.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
   }
 
   private getComponentDetail():Process{

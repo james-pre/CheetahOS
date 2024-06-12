@@ -29,11 +29,12 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
   @ViewChild('tskMgrTable') tskMgrTable!: ElementRef;
 
+  private _maximizeWindowSub!: Subscription;
 
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _stateManagmentService: StateManagmentService;
-  private _triggerProcessService:TriggerProcessService;
+  //private _triggerProcessService:TriggerProcessService;
   private _renderer: Renderer2;
 
   private _processListChangeSub!: Subscription;
@@ -105,12 +106,13 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this._stateManagmentService = stateManagmentService;
-    this._triggerProcessService = triggerProcessService;
+    //this._triggerProcessService = triggerProcessService;
     this._renderer = renderer;
 
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail());
     this._processListChangeSub = this._runningProcessService.processListChangeNotify.subscribe(() =>{this.updateRunningProcess();})
+    this._maximizeWindowSub = this._runningProcessService.maximizeWindowNotify.subscribe(() =>{this.maximizeWindow();})
     this._currentSortingOrder = this._sorting.order;
 
     this._chnageTaskmgrRefreshIntervalSub = new Subject<number>();
@@ -130,6 +132,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     this._processListChangeSub?.unsubscribe();
     this._taskmgrRefreshIntervalSub?.unsubscribe();
     this._chnageTaskmgrRefreshIntervalSub?.unsubscribe();
+    this._maximizeWindowSub?.unsubscribe();
     
     this.sleepCounter = 0;
     this.processNumberToSuspend = 0;
@@ -777,6 +780,15 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     }
   }
 
+  maximizeWindow():void{
+    const mainWindow = document.getElementById('vanta');
+    const taskMgrCntr = document.getElementById("mainTaskMgrCntr");
+
+    if(taskMgrCntr){
+      // taskMgrCntr.style.height = `${mainWindow?.offsetHeight || 0 - 40}px`;
+      // taskMgrCntr.style.width = `${mainWindow?.offsetWidth}px`;
+    }
+  }
 
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type)

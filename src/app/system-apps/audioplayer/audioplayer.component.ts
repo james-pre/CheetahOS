@@ -12,6 +12,7 @@ import { StateManagmentService } from 'src/app/shared/system-service/state.manag
 import { AppState, BaseState } from 'src/app/system-files/state/state.interface';
 import { StateType } from 'src/app/system-files/state/state.type';
 import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
+import { Subscription } from 'rxjs';
 // eslint-disable-next-line no-var
 declare var Howl:any;
 declare let SiriWave:any;
@@ -41,6 +42,8 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   @ViewChild('barEmpty', {static: true}) barEmpty!: ElementRef;
   @ViewChild('sliderBtn', {static: true}) sliderBtn!: ElementRef;
 
+  private _maximizeWindowSub!: Subscription;
+  
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _triggerProcessService:TriggerProcessService;
@@ -82,6 +85,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
     this.retrievePastSessionData();
 
     this._runningProcessService = runningProcessService;
+    this._maximizeWindowSub = this._runningProcessService.maximizeWindowNotify.subscribe(() =>{this.maximizeWindow();})
     this._runningProcessService.addProcess(this.getComponentDetail());
   }
 
@@ -124,6 +128,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   ngOnDestroy():void{
     this.audioPlayer?.unload();
+    this._maximizeWindowSub?.unsubscribe();
   }
 
   showMenu(): void{
@@ -381,6 +386,13 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
       });
     });
   }
+
+  maximizeWindow():void{
+    const mainWindow = document.getElementById('vanta');
+    this.audioContainer.nativeElement.style.height = `${mainWindow?.offsetHeight || 0 - 40}px`;
+    this.audioContainer.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+  }
+
 
   getAudioSrc(pathOne:string, pathTwo:string):string{
     let audioSrc = '';
