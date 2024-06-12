@@ -72,6 +72,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   displayName = 'Task Manager';
 
   processes:Process[] =[];
+  closingNotAllowed:string[] = ["system", "desktop", "filemanager", "taskbar", "startbutton","clock","taskbarentry"];
   groupedData: any = {};
   selectedRefreshRate = 0;
 
@@ -541,15 +542,18 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   }
 
   onExitBtnClick():void{
-    const processToClose = this._runningProcessService.getProcess(this.processId);
-    this._stateManagmentService.removeState(`${this.name}-${this.processId}`);
-    this._runningProcessService.closeProcessNotify.next(processToClose);
+    this.processIdToClose = this.processId;
+    this.onEndTaskBtnClick();
   }
 
   onEndTaskBtnClick():void{
     const processToClose = this._runningProcessService.getProcess(this.processIdToClose);
-    this._stateManagmentService.removeState(`${this.name}-${this.processId}`);
-    this._runningProcessService.closeProcessNotify.next(processToClose);
+    if(!this.closingNotAllowed.includes(processToClose.getProcessName)){
+      this._stateManagmentService.removeState(`${this.name}-${this.processId}`);
+      this._runningProcessService.closeProcessNotify.next(processToClose);
+    }else{
+      alert(`The app: ${processToClose.getProcessName} is not allowed to be closed`)
+    }
   }
 
   onProcessSelected(rowIndex:number, processId:number):void{

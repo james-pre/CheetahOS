@@ -195,7 +195,6 @@ export class AppComponent implements OnDestroy, AfterViewInit {
       for(i; i < pSessionData.length; i++){
         if (tmpCounter < 1){
           const appName = priorSessionData[i].split('-')[0];
-          console.log('appName:', appName);
           this._sessionMangamentServices.addSession(pickUpKey, priorSessionData[i]);
           this.loadApps(appName);
 

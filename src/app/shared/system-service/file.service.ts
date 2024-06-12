@@ -249,17 +249,12 @@ export class FileService{
     }
 
     public async getFileAsync(path:string): Promise<string> {
-
-        console.log('HERE IS THE PATH:',path);
-
         if (!path) {
             console.error('getFileAsync error: Path must not be empty');
             return Promise.reject(new Error('Path must not be empty'));
         }
 
         await this.initBrowserFsAsync();
-
-       
 
         return new Promise((resolve, reject) =>{
             this._fileSystem.readFile(path,(err, contents = Buffer.from('')) =>{
