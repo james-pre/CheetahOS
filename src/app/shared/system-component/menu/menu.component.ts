@@ -8,7 +8,7 @@ import { Component, Input } from '@angular/core';
 export class MenuComponent {
 
   @Input() menuItems: { label: string, action: () => void }[] = [];
-
+  @Input() menuDictionary: { [key: string]: { name: string, action: () => void }[] } = {};
 
 
   onMenuItemClick(action: () => void): void {
