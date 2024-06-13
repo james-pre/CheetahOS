@@ -368,9 +368,11 @@
                                                     <input type="text" formControlName="renameInput"  (keypress)="onKeyPress($event)" autofocus spellcheck="false" id="renameTxtBox-{{this.processId}}-{{i}}"/>
                                                 </form>
                                             </div>
-                                            <span class="span-figcaption-tiles-view" id="figCapElmnt-{{this.processId}}-{{i}}">{{file.getFileName}}</span>
-                                            <span class="span-figcaption-tiles-view">{{file.getFileType}}</span>
-                                            <span class="span-figcaption-tiles-view">{{file.getSize1}} {{file.getFileSizeUnit}}</span>
+                                            <div class="div-figcaption-tiles-view-cntnr">
+                                                <div class="div-figcaption-tiles-view" id="figCapElmnt-{{this.processId}}-{{i}}">{{file.getFileName}}</div>
+                                                <div class="div-figcaption-tiles-view">{{file.getFileType}}</div>
+                                                <div class="div-figcaption-tiles-view">{{file.getSize1}} {{file.getFileSizeUnit}}</div>
+                                            </div>
                                         </div>
                                     </ng-template>
 
@@ -391,6 +393,7 @@
                         </div>
                     </div>
             
+
                     <cos-menu [menuItems]="menuData" *ngIf="showCntxtMenu" [style]="fxIconCntxtMenuStyle"> </cos-menu>
                 </ol>
             </div>
