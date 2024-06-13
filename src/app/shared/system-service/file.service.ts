@@ -150,7 +150,7 @@ export class FileService{
                 this._fileInfo.setSize = fileMetaData.getSize;
             }
             else if(extension == '.jsdos'){
-                this._fileInfo.setIconPath = '/osdrive/icons/js-dos-logo.png';
+                this._fileInfo.setIconPath = '/osdrive/icons/emulator-2.png';
                 this._fileInfo.setCurrentPath = path;
                 this._fileInfo.setFileType = extname(path);
                 this._fileInfo.setFileName = basename(path, extname(path));

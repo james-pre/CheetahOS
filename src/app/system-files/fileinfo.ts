@@ -55,6 +55,7 @@ export class FileInfo{
     get getFileName(){
         return this._fileName;
     }
+
     set setFileName(fileName:string){
         this._fileName = fileName;
     }
