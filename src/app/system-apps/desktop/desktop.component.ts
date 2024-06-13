@@ -112,6 +112,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
       color: Number(this.nextColor.changeHue('#4f32c2',this.CURRENT_DEG)?.replace('#','0x')),
     });
 
+    // this ain't working 
     //this.animationId = requestAnimationFrame(this.changeAnimationColor.bind(this)); 
   }
 
@@ -138,21 +139,21 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
      * If there is a count of 2 or more(highly unlikely) reponses for a given event, then, ignore the desktop's response
      */
 
-    // if(evtRespCount > this._runningProcessService.MAX_RESPONSE_TO_EVENT){
-    //   this._runningProcessService.responseToEventCount = 0
-    //   return;
-    // }
+    if(evtRespCount > this._runningProcessService.MAX_RESPONSE_TO_EVENT){
+      this._runningProcessService.responseToEventCount = 0
+      return;
+    }
 
-    // this.cntxtMenuStyle = {
-    //   'display': 'block', 
-    //   'width': '225px', 
-    //   'transform':`translate(${String(evt.clientX + 2)}px, ${String(evt.clientY)}px)`,
-    //   'z-index': 2,
-    //   'opacity':1
-    // }
+    this.cntxtMenuStyle = {
+      'display': 'block', 
+      'width': '225px', 
+      'transform':`translate(${String(evt.clientX + 2)}px, ${String(evt.clientY)}px)`,
+      'z-index': 2,
+      'opacity':1
+    }
 
-    // this._runningProcessService.responseToEventCount = 0;
-    // evt.preventDefault();
+    this._runningProcessService.responseToEventCount = 0;
+    evt.preventDefault();
   }
 
   hideContextMenu():void{
