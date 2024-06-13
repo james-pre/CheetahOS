@@ -56,6 +56,7 @@ export class FilemanagerComponent implements BaseComponent, OnInit, AfterViewIni
   iconSizeStyle:Record<string, unknown> = {};
   btnStyle:Record<string, unknown> = {};
 
+  showCntxtMenu = false;
   gridSize = 90; //column size of grid = 90px
   SECONDS_DELAY = 6000;
   renameForm!: FormGroup;
@@ -68,6 +69,14 @@ export class FilemanagerComponent implements BaseComponent, OnInit, AfterViewIni
   displayName = '';
   directory ='/osdrive/Desktop';
   files:FileInfo[] = [];
+
+  menuData = [
+    { label: 'Open', action: this.onTriggerRunProcess.bind(this) },
+    { label: 'Pin to Start', action: this.doNothing.bind(this) },
+    { label: 'Pin to Taskbar', action: this.doNothing.bind(this) },
+    { label: 'Delete', action: this.onDeleteFile.bind(this) },
+    { label: 'Rename', action: this.onRenameFileTxtBoxShow.bind(this) }
+  ];
 
   constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, triggerProcessService:TriggerProcessService, fileManagerService:FileManagerService, formBuilder: FormBuilder) { 
     this._processIdService = processIdService;
@@ -92,8 +101,6 @@ export class FilemanagerComponent implements BaseComponent, OnInit, AfterViewIni
     this.renameForm = this._formBuilder.nonNullable.group({
       renameInput: '',
     });
-
-    this.hideIconContextMenu();
   }
 
   async ngAfterViewInit():Promise<void>{
@@ -168,20 +175,22 @@ export class FilemanagerComponent implements BaseComponent, OnInit, AfterViewIni
   onShowIconContextMenu(evt:MouseEvent, file:FileInfo, id:number):void{
     this._runningProcessService.responseToEventCount++;
     this.selectedFile = file;
+    this.showCntxtMenu = !this.showCntxtMenu;
 
     // show IconContexMenu is still a btn click, just a different type
     this.doBtnClickThings(id);
-    
-
+  
     this.iconCntxtMenuStyle = {
-      'display': 'block', 
-      'width': '205px', 
+      'position':'absolute',
       'transform':`translate(${String(evt.clientX)}px, ${String(evt.clientY)}px)`,
       'z-index': 2,
-      'opacity':1
     }
 
     evt.preventDefault();
+
+  }
+  doNothing():void{
+    console.log('do nothing called');
   }
 
   doBtnClickThings(id:number):void{
@@ -198,16 +207,8 @@ export class FilemanagerComponent implements BaseComponent, OnInit, AfterViewIni
     }
   }
 
-  hideIconContextMenu():void{
-    this.iconCntxtMenuStyle = {
-      'display': 'none', 
-    }
-  }
-
   onHideIconContextMenu():void{
-    this.iconCntxtMenuStyle = {
-      'display': 'none', 
-    }
+    this.showCntxtMenu = false;
 
     //First case - I'm clicking only on the desktop icons
     if((this.isBtnClickEvt && this.btnClickCnt >= 1) && (!this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt == 0)){  

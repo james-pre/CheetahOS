@@ -107,6 +107,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   searchHistory =['Java','ProgramFile', 'Perenne'];
   pathHistory =['/osdrive/icons','/osdrive/Games', '/osdrive/Videos'];
 
+  showCntxtMenu = false;
   hasWindow = true;
   icon = 'osdrive/icons/file_explorer.ico';
   navPathIcon = 'osdrive/icons/my_computer.ico'
@@ -115,6 +116,14 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   type = ComponentType.System;
   directory ='/osdrive/';
   displayName = 'fileexplorer';
+
+  menuData = [
+    { label: 'Open', action: this.onTriggerRunProcess.bind(this) },
+    { label: 'Pin to Start', action: this.doNothing.bind(this) },
+    { label: 'Pin to Taskbar', action: this.doNothing.bind(this) },
+    { label: 'Delete', action: this.onDeleteFile.bind(this) },
+    { label: 'Rename', action: this.onRenameFileTxtBoxShow.bind(this) }
+  ];
 
 
   constructor(processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, triggerProcessService:TriggerProcessService, 
@@ -149,7 +158,6 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
     });
 
     this.setNavButtonsColor();
-    this.hideIconContextMenu();
   }
 
   async ngAfterViewInit():Promise<void>{
@@ -652,17 +660,16 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
     this._runningProcessService.responseToEventCount++;
     this.selectedFile = file;
     this.isIconInFocusDueToPriorAction = false;
+    this.showCntxtMenu = !this.showCntxtMenu;
 
     // show IconContexMenu is still a btn click, just a different type
     this.doBtnClickThings(id);
     this.setBtnStyle(id, true);
 
     this.fxIconCntxtMenuStyle = {
-      'display': 'block', 
-      'width': '205px', 
+      'position': 'absolute', 
       'transform':`translate(${String(x)}px, ${String(y)}px)`,
       'z-index': 2,
-      'opacity':1
     }
 
     evt.preventDefault();
@@ -756,16 +763,10 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
     }
   }
 
-  hideIconContextMenu():void{
-    this.fxIconCntxtMenuStyle = {
-      'display': 'none', 
-    }
-  }
+  doNothing():void{/** */}
   
   onHideIconContextMenu():void{
-    this.fxIconCntxtMenuStyle = {
-      'display': 'none', 
-    }
+    this.showCntxtMenu = false;
 
     //First case - I'm clicking only on the desktop icons
     if((this.isBtnClickEvt && this.btnClickCnt >= 1) && (!this.isHideCntxtMenuEvt && this.hideCntxtMenuEvtCnt == 0)){  

@@ -1,0 +1,18 @@
+
+<div class="dm-vertical-menu">
+    <div class="dm-empty-line-container"></div>
+
+    <div lass="dm-vertical-menu-cntnr" *ngFor="let menuItem of menuItems; let i = index">
+        <div class="dm-vertical-menu-item"  (click)="onMenuItemClick(menuItem.action)">
+            <span class="span dm-head"> <figure class="dm-fig-cntxt-menu"> </figure></span>
+            <span class="span dm-mid">{{menuItem.label}}</span>
+            <span class="span dm-tail"> <figure class="dm-fig-cntxt-menu"> </figure> </span>
+        </div>
+
+        <div class="dm-empty-line-container" *ngIf="i === 2"></div>
+        <div class="dm-line-container" *ngIf="i  === 2"><div class="dm-line"></div></div>
+        <div class="dm-empty-line-container" *ngIf="i === 2"></div>
+    </div>
+
+    <div class="dm-empty-line-container"></div>
+</div>
