@@ -7,7 +7,7 @@
 .video-top-menu-bar{
     display: flex;
     width: 100%;
-    height: fit-content;
+    height: 25px;
     left: 0%;
     background-color: #ffffff;
     color: #000;

@@ -26,7 +26,7 @@ declare var videojs: (arg0: any, arg1: object, arg2: () => void) => any;
 export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, AfterViewInit  {
 
   @ViewChild('videowindow', {static: true}) videowindow!: ElementRef;
-  @ViewChild('ptag', {static: true}) ptag!: ElementRef;
+  @ViewChild('mainVideoCntnr', {static: true}) mainVideoCntnr!: ElementRef;
 
   private _maximizeWindowSub!: Subscription;
   
@@ -190,10 +190,10 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   maximizeWindow():void{
     const mainWindow = document.getElementById('vanta');
-      //window title and button bar, and windows taskbar height
-      const pixelTosubtract = 30 + 40;
-    this.ptag.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
-    this.ptag.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+      //window title and button bar, and windows taskbar height, video top menu bar
+    const pixelTosubtract = 30 + 40 + 25;
+    this.mainVideoCntnr.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
+    this.mainVideoCntnr.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
   }
 
   private getComponentDetail():Process{
