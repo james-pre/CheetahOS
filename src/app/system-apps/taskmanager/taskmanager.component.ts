@@ -28,6 +28,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   // @ViewChild('networkId',{ static: true }) networkId!: ElementRef;
 
   @ViewChild('tskMgrTable') tskMgrTable!: ElementRef;
+  @ViewChild('tskmgrTblCntnr') tskmgrTblCntnr!: ElementRef;
 
   private _maximizeWindowSub!: Subscription;
 
@@ -781,13 +782,28 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   }
 
   maximizeWindow():void{
-    const mainWindow = document.getElementById('vanta');
-    const taskMgrCntr = document.getElementById("mainTaskMgrCntr");
 
-    if(taskMgrCntr){
-      // taskMgrCntr.style.height = `${mainWindow?.offsetHeight || 0 - 40}px`;
-      // taskMgrCntr.style.width = `${mainWindow?.offsetWidth}px`;
-    }
+    const mainWindow = document.getElementById('vanta'); 
+
+    // console.log('mainWindow?.offsetHeight:',mainWindow?.offsetHeight);
+    // console.log('mainWindow?.offsetWidth:',mainWindow?.offsetWidth);
+
+    /*
+    -45 (tskmgr footer)
+    -30 (window title and button tab)
+    -20 (taskmgr nav buttons)
+    -3  (span)
+    -19 (tskmgr tabs)
+    -1px (body border solid px)
+    -40 (windows taskbar)
+    */
+    const pixelToSubtract = 45 + 30 + 20 + 3 + 19 + 1 + 40;
+    this.tskmgrTblCntnr.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelToSubtract}px`;
+    this.tskmgrTblCntnr.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+
+
+    // this.tskMgrTable.nativeElement.style.height = `${mainWindow?.offsetHeight || 0 - 84}px`;
+    this.tskMgrTable.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
   }
 
   private getComponentDetail():Process{

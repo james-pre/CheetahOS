@@ -1,16 +1,14 @@
 /* Custom styles for the card */
 .card {
-  /* min-width: 150px; Set the width of the card */
-  /* min-height: 150px; Set the height of the card */
-
+  width: 100%;
+  height: 100%;
   border: 1px solid #ccc; /* Add a border to the card */
-  /* border-radius: 0;  Add rounded corners to the card */
-  overflow-x:hidden;
-  overflow-y: hidden;
 }
   
 /* Custom styles for the card-body */
 .card-body {
+  width: 100%;
+  height: 100%;
   padding: 0; /* Add padding inside the card body */
   background-color: #ffffff; /* Set the background color */
   color: #000; /* Set the text color */
@@ -57,50 +55,17 @@
 }
 
 
-/* Custom styles for col-md-2 */
-.col-md-2 {
-  background-color: #ffffff; /* Set a background color for col-md-2 */
-  padding: 10px; /* Add padding inside col-md-2 */
-  border: 1px solid #ccc; /* Add a border to col-md-2 */
-  /* border-radius: 0;  Add rounded corners to col-md-2 */
-  color: #000; /* Set text color for col-md-2 */
-  min-width: 25px;
-  /* max-width: 100px; */
-}
-
-/* Custom styles for col-md-4 */
-.col-md-4 {
-  background-color: #ffffff; /* Set a background color for col-md-4 */
-  padding: 10px; /* Add padding inside col-md-4 */
-  border: 1px solid #ccc; /* Add a border to col-md-4 */
-  /* border-radius: 0; Add rounded corners to col-md-4 */
-  color: #000; /* Set text color for col-md-4 */
-  min-width: 25px;
-  /* max-width: 200px; */
-}
-
-/* Custom styles for col-md-6 */
-.col-md-6 {
-  background-color: #ffffff; /* Set a background color for col-md-6 */
-  padding: 10px; /* Add padding inside col-md-6 */
-  border: 1px solid #ccc; /* Add a border to col-md-6 */
-  /* border-radius: 0; Add rounded corners to col-md-6 */
-  color: #000; /* Set text color for col-md-6 */
-  min-width: 25px;
-  /* max-width: 300px; */
-}
-
 /*----------------------------------------Table CSS START --------------------------*/
 /* Custom styles for .table-responsive (Optional) */
-.taskmgr-table-cntnr {
+.tskmgr-table-cntnr {
   width: 680px;
-  height: 269px;
-  overflow: auto; /* Enable horizontal scrolling when needed */
+  height:282px;
+  overflow: auto; /* Enable horizontal/vertical scrolling when needed */
   border-top:  none;
 }
 
 /* Custom styles for the table */
-.taskmgr-table {
+.tskmgr-table {
     /*overflow: scroll; */   /* Enable horizontal scrolling when needed */
     border-collapse: collapse; /* Remove spacing between table cells */
     width: 100%; /* Set the table width to 100% of its container */
@@ -119,7 +84,7 @@
 }
 
 /* Custom styles for table headers */
-.taskmgr-table th {
+.tskmgr-table th {
   background-color: #ffffff; /* Header background color */
   color: #333; /* Header text color */
   padding: 0; /* Header cell padding */
@@ -138,17 +103,17 @@ tbody{
 }
   
 /* Custom styles for table rows */
-.taskmgr-table tr {
+.tskmgr-table tr {
   background-color: #ffffff; /* Row background color */
 }
   
 /* Alternate row background color (zebra-striping) */
-.taskmgr-table tr:nth-child(even) {
+.tskmgr-table tr:nth-child(even) {
   background-color: #ffffff; 
 }
   
 /* Custom styles for table cells */
-.taskmgr-table td {
+.tskmgr-table td {
   padding: 3px 5px; /* Cell padding */
   min-width: 80px;
   margin-left: 5px;
@@ -160,17 +125,17 @@ tbody{
   border-top:none; border-bottom:none;
 }
 
-.taskmgr-table td:first-child td:last-child{
+.tskmgr-table td:first-child td:last-child{
   border-left: 0;
   border-right: 0;
 }
 
 /* Add hover effect to table rows (optional) */
-.taskmgr-table tr:hover {
+.tskmgr-table tr:hover {
   background-color: #e8f4fc;
 }
 
-.taskmgr-table tr.active td {
+.tskmgr-table tr.active td {
   background-color:#d0ecfc !important;
 }
 
@@ -386,7 +351,10 @@ span {
 
 .tsksmgr-footer-div-cntnr{
   display:flex;
-  position: relative;
+  position: fixed;
+  bottom: 0;
+  left: 0%;
+  width: 100%;
   height: 45px;
   font-size: small;
   font-weight: lighter;

@@ -4,7 +4,7 @@
   </ng-container>
 
   <ng-template #detailedView0>
-    <div class="tskmgr-nav-btn-cntnr" id="mainTaskMgrCntr">
+    <div class="tskmgr-nav-btn-cntnr" >
       <div class="tskmgr-nav-btn" (click)="hideShowNavMenu('tskmgr-nav-file-menu')" (mouseenter)="hideShowNavMenu1('tskmgr-nav-file-menu','enter')">
          <span class="tskmgr-btn-span">File</span>
           <div class="tskmgr-nav-menu-cntnr" id="tskmgr-nav-file-menu-{{this.processId}}">
@@ -74,12 +74,12 @@
         <div class="tskmgr-tab-pane active">
           <div class='card'>
               <div class='card-body'>
-                <div class='taskmgr-table-cntnr'>
+                <div class='tskmgr-table-cntnr' #tskmgrTblCntnr> 
   
                   <!-- add  class="data" data-rtc-resizable-table="table.one" to  the first <table> to activate resize.[ngClass]="
                        add data-rtc-resizable=columnName to the first <th> of each column were resize is desired
                     " -->
-                  <table class='taskmgr-table' *ngIf = 'processes.length > 0' #tskMgrTable>
+                  <table class='tskmgr-table' *ngIf = 'processes.length > 0' #tskMgrTable>
                     <thead>
                       <div style="height:10px; border-top: none;"></div>
                       <tr (contextmenu)="showContextMenu($event)" (click)="hideContextMenu()">             
