@@ -62,6 +62,7 @@
   height:282px;
   overflow: auto; /* Enable horizontal/vertical scrolling when needed */
   border-top:  none;
+  padding-bottom: 10px;
 }
 
 /* Custom styles for the table */
