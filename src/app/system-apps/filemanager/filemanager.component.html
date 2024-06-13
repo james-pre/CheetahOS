@@ -26,44 +26,5 @@
         </div>
     </div>
 
-
-    <div class="icon-vertical-menu" [style]="iconCntxtMenuStyle">
-        <div class="empty-line-container"></div>
-
-        <div class="icon-vertical-menu-item" (click)="onTriggerRunProcess()">
-            <span class="span head"> <figure class="figure-cntxt-menu"> </figure></span>
-            <span class="span mid" style="font-weight: bold;">Open</span>
-            <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
-        </div>
-
-        <div class="icon-vertical-menu-item">
-            <span class="span head"> <figure class="figure-cntxt-menu"> </figure></span>
-            <span class="span mid">Pin to Start</span>
-            <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
-        </div>
-
-        <div class="icon-vertical-menu-item" >
-            <span class="span head"> <figure  class="figure-cntxt-menu"> </figure></span>
-            <span class="span mid">Pin to taskbar</span>
-            <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
-        </div>
-
-        <div class="empty-line-container"></div>
-        <div class="line-container"><div class="line"></div></div>
-        <div class="empty-line-container"></div>
-
-        <div class="icon-vertical-menu-item"(click)="onDeleteFile()">
-            <span class="span head"> <figure class="figure-cntxt-menu" > </figure></span>
-            <span class="span mid">Delete</span>
-            <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
-        </div>
-
-        <div class="icon-vertical-menu-item" (click)="onRenameFileTxtBoxShow()">
-            <span class="span head"> <figure class="figure-cntxt-menu" > </figure></span>
-            <span class="span mid">Rename</span>
-            <span class="span tail"> <figure class="figure-cntxt-menu"> </figure> </span>
-        </div>
-
-        <div class="empty-line-container"></div>
-    </div>
+    <cos-menu [menuItems]="menuData" *ngIf="showCntxtMenu" [style]="iconCntxtMenuStyle"> </cos-menu>
 </ol>

@@ -29,6 +29,7 @@ import { TaskBarEntryHighlightDirective } from './system-apps/taskbarentries/tas
 import { LongPressDirective } from './system-apps/audioplayer/long.press.directive';
 import { ColumnResizeDirective } from './system-apps/taskmanager/taskmanager.column-resize.directive';
 import { TerminalComponent } from './system-apps/terminal/terminal.component';
+import { MenuComponent } from './shared/system-component/menu/menu.component';
 
 
 
@@ -58,6 +59,7 @@ import { TerminalComponent } from './system-apps/terminal/terminal.component';
     LongPressDirective,
     ColumnResizeDirective,
     TerminalComponent,
+    MenuComponent,
   ],
   imports: [
     BrowserModule,
