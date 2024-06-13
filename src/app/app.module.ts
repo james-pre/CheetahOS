@@ -21,17 +21,19 @@ import { TaskmanagerMiniComponent } from './system-apps/taskmanager/taskmanager.
 import { JsdosComponent } from './user-apps/jsdos/jsdos.component';
 import { VideoPlayerComponent } from './system-apps/videoplayer/videoplayer.component';
 import { AudioPlayerComponent } from './system-apps/audioplayer/audioplayer.component';
+import { TerminalComponent } from './system-apps/terminal/terminal.component';
+import { MenuComponent } from './shared/system-component/menu/menu.component';
+import { PhotoviewerComponent } from './system-apps/photoviewer/photoviewer.component';
+import { TexteditorComponent } from './system-apps/texteditor/texteditor.component';
 
 import { SafeUrlPipe } from './shared/system-pipes/safe.resource.url.pipe';
+import { TruncatePipe } from './shared/system-pipes/string.shorten.pipe';
 
 import { HighlightDirective } from './system-apps/window/window.btn.highlight.directives';
 import { TaskBarEntryHighlightDirective } from './system-apps/taskbarentries/taskbar.entry.highlight.directives';
 import { LongPressDirective } from './system-apps/audioplayer/long.press.directive';
 import { ColumnResizeDirective } from './system-apps/taskmanager/taskmanager.column-resize.directive';
-import { TerminalComponent } from './system-apps/terminal/terminal.component';
-import { MenuComponent } from './shared/system-component/menu/menu.component';
-import { PhotoviewerComponent } from './system-apps/photoviewer/photoviewer.component';
-import { TexteditorComponent } from './system-apps/texteditor/texteditor.component';
+
 
 
 
@@ -52,18 +54,20 @@ import { TexteditorComponent } from './system-apps/texteditor/texteditor.compone
     TaskmanagerComponent,
     TaskmanagerMiniComponent,
     JsdosComponent,
-    SafeUrlPipe,
     VideoPlayerComponent,
     AudioPlayerComponent,
+    TerminalComponent,
+    MenuComponent,
+    PhotoviewerComponent,
+    TexteditorComponent,
 
     HighlightDirective,
     TaskBarEntryHighlightDirective,
     LongPressDirective,
     ColumnResizeDirective,
-    TerminalComponent,
-    MenuComponent,
-    PhotoviewerComponent,
-    TexteditorComponent,
+
+    SafeUrlPipe,
+    TruncatePipe
   ],
   imports: [
     BrowserModule,

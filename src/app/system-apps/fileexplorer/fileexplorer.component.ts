@@ -622,7 +622,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
       this.navPathIcon = 'osdrive/icons/documents.ico';
     }
     else if(fileName === 'Downloads' && directory === '/osdrive/Downloads'){
-      this.navPathIcon = 'osdrive/icons/downloads.ico';
+      this.navPathIcon = 'osdrive/icons/downloads.png';
     }
     else if(fileName === 'Music' && directory === '/osdrive/Music'){
       this.navPathIcon = 'osdrive/icons/music.png';

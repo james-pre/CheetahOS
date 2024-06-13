@@ -56,13 +56,6 @@ export class FileInfo{
         return this._fileName;
     }
 
-    get getFileNameShort(){
-        if(this._fileName.length > 10)
-           return (this._fileName.length > 10)
-            ? this._fileName.substring(0, 9) + '..' : this._fileName;
-
-        return '';
-    }
     set setFileName(fileName:string){
         this._fileName = fileName;
     }

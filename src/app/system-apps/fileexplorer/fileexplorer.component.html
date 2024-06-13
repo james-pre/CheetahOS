@@ -275,7 +275,7 @@
                                     <img class="img-icon-size-view" [src]="file.getIconPath | safeResourceUrl" [alt]="file.getFileName" id="imgElmnt-{{this.processId}}-{{i}}"/>
 
                                     <figcaption class="figcaption-icon-size-view" id="figCapElmnt-{{this.processId}}-{{i}}">
-                                            {{file.getFileName}} 
+                                            {{file.getFileName  | truncateString}} 
                                     </figcaption>
 
                                     <div class="rename-textbox"  id="renameContainer-{{this.processId}}-{{i}}">
@@ -299,7 +299,7 @@
                                     </figure>
 
                                     <figcaption class="figcaption-list-view" id="figCapElmnt-{{this.processId}}-{{i}}">
-                                        {{file.getFileName}}
+                                        {{file.getFileName  | truncateString}} 
                                     </figcaption>
                                     <div class="rename-textbox"  id="renameContainer-{{this.processId}}-{{i}}">
                                         <form [formGroup]="renameForm"  (ngSubmit)="isFormDirty()">
@@ -325,7 +325,7 @@
 
                                     <div class="div-content-view">
                                         <figcaption class="figcaption-content-view"   id="figCapElmnt-{{this.processId}}-{{i}}">
-                                            {{file.getFileName}}
+                                            {{file.getFileName  | truncateString}} 
                                         </figcaption>
 
                                         <div class="div-extra-info-cntnr" *ngIf="!file.getIsFile, else elseBlock">
@@ -359,7 +359,7 @@
                                     </figure>
 
                                     <figcaption *ngIf="!file.getIsFile, else elseBlock" class="figcaption-tiles-view" id="figCapElmnt-{{this.processId}}-{{i}}">
-                                        {{file.getFileName}}
+                                        {{file.getFileName  | truncateString}} 
                                     </figcaption>
                                     <ng-template #elseBlock>
                                         <div class="figcaption-title-view-cntnr">
