@@ -8,6 +8,8 @@ import { BIRDS, GLOBE, HALO, RINGS, WAVE } from './vanta-object/vanta.interfaces
 import { IconsSizes, SortBys } from './desktop.enums';
 import { FileManagerService } from 'src/app/shared/system-service/file.manager.services';
 import { Colors } from './colorutil/colors';
+import { FileInfo } from 'src/app/system-files/fileinfo';
+import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 
 declare let VANTA: { HALO: any; BIRDS: any;  WAVES: any;   GLOBE: any;  RINGS: any;};
 
@@ -21,7 +23,9 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _fileManagerServices:FileManagerService;
+  private _triggerProcessService:TriggerProcessService;
   private _timerSubscription!: Subscription;
+  
 
   private _vantaEffect: any;
 
@@ -56,6 +60,8 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   type = ComponentType.System;
   displayName = '';
 
+  terminalApp ="terminal";
+
   waveBkgrnd:WAVE =  {el:'#vanta'}
   ringsBkgrnd:RINGS =  {el:'#vanta'}
   haloBkgrnd:HALO =  {el:'#vanta'}
@@ -73,12 +79,14 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   private defaultColor = 0x274c;
   private nextColor:Colors = new Colors();
   private animationId:any;
- 
 
-  constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService,fileManagerServices:FileManagerService) { 
+
+  constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService,fileManagerServices:FileManagerService,
+              triggerProcessService:TriggerProcessService) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this._fileManagerServices = fileManagerServices;
+    this._triggerProcessService = triggerProcessService;
 
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail());
@@ -138,21 +146,21 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
      * If there is a count of 2 or more(highly unlikely) reponses for a given event, then, ignore the desktop's response
      */
 
-    // if(evtRespCount > this._runningProcessService.MAX_RESPONSE_TO_EVENT){
-    //   this._runningProcessService.responseToEventCount = 0
-    //   return;
-    // }
+    if(evtRespCount > this._runningProcessService.MAX_RESPONSE_TO_EVENT){
+      this._runningProcessService.responseToEventCount = 0
+      return;
+    }
 
-    // this.cntxtMenuStyle = {
-    //   'display': 'block', 
-    //   'width': '225px', 
-    //   'transform':`translate(${String(evt.clientX + 2)}px, ${String(evt.clientY)}px)`,
-    //   'z-index': 2,
-    //   'opacity':1
-    // }
+    this.cntxtMenuStyle = {
+      'display': 'block', 
+      'width': '225px', 
+      'transform':`translate(${String(evt.clientX + 2)}px, ${String(evt.clientY)}px)`,
+      'z-index': 2,
+      'opacity':1
+    }
 
-    // this._runningProcessService.responseToEventCount = 0;
-    // evt.preventDefault();
+    this._runningProcessService.responseToEventCount = 0;
+    evt.preventDefault();
   }
 
   hideContextMenu():void{
@@ -252,6 +260,15 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     }
     
     this.hideContextMenu();
+  }
+
+  openApplication(arg0:string):void{
+    const file = new FileInfo()
+    file.setOpensWith = arg0;
+
+    if(this._triggerProcessService){
+        this._triggerProcessService.startApplication(file);
+    }
   }
 
   private buildVantaEffect(n:number) {

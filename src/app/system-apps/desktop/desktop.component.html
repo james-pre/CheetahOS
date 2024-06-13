@@ -96,6 +96,12 @@
         <div class="line-container"><div class="line"></div></div>
         <div class="empty-line-container"></div>
 
+        <div class="vertical-menu-item" (click)="openApplication(terminalApp)">
+            <span class="span head"> <figure class="figure-alt2"><img class="img-alt2" [src]="'/osdrive/icons/terminal_48.png'"/></figure></span>
+            <span class="span mid">Open in Terminal</span>
+            <span class="span tail"> <figure> </figure> </span>
+        </div>
+
         <div class="vertical-menu-item" (click)="nextBackground()">
             <span class="span head"> <figure > </figure></span>
             <span class="span mid">Next Background</span>
