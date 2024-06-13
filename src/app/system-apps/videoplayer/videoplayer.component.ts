@@ -102,6 +102,7 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
       controls:true,
       aspectRatio: '16:9',
       controlBar: {
+        fullscreenToggle: false,
         skipButtons: {
           backward: 10,
           forward: 10
@@ -116,13 +117,27 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
     this.player = videojs(this.videowindow.nativeElement, options, function onPlayerReady(){
       console.log('onPlayerReady:', "player is read");
     });
+
+    this.player.on('fullscreenchange', this.onFullscreenChange);
   }
 
   ngOnDestroy(): void {
     if (this.player) {
+      this.player.off('fullscreenchange', this.onFullscreenChange);
       this.player.dispose();
     }
     this._maximizeWindowSub?.unsubscribe();
+  }
+
+  onFullscreenChange = () => {
+    const isFullscreen = this.player.isFullscreen();
+    console.log('Fullscreen changed:', isFullscreen);
+
+    // Exit fullscreen mode immediately if it tries to enter
+    if (isFullscreen) {
+      this.player.exitFullscreen();
+    }
+    // Handle fullscreen change logic here
   }
 
   addToRecentsList(videoPath:string):void{
@@ -191,9 +206,9 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   maximizeWindow():void{
     const mainWindow = document.getElementById('vanta');
       //window title and button bar, and windows taskbar height, video top menu bar
-    const pixelTosubtract = 30 + 40 + 25;
-    this.mainVideoCntnr.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
-    this.mainVideoCntnr.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+    // const pixelTosubtract = 30 + 40 + 25;
+    // this.mainVideoCntnr.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
+    // this.mainVideoCntnr.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
   }
 
   private getComponentDetail():Process{
