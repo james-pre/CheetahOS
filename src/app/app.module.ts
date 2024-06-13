@@ -30,6 +30,8 @@ import { LongPressDirective } from './system-apps/audioplayer/long.press.directi
 import { ColumnResizeDirective } from './system-apps/taskmanager/taskmanager.column-resize.directive';
 import { TerminalComponent } from './system-apps/terminal/terminal.component';
 import { MenuComponent } from './shared/system-component/menu/menu.component';
+import { PhotoviewerComponent } from './system-apps/photoviewer/photoviewer.component';
+import { TexteditorComponent } from './system-apps/texteditor/texteditor.component';
 
 
 
@@ -60,6 +62,8 @@ import { MenuComponent } from './shared/system-component/menu/menu.component';
     ColumnResizeDirective,
     TerminalComponent,
     MenuComponent,
+    PhotoviewerComponent,
+    TexteditorComponent,
   ],
   imports: [
     BrowserModule,

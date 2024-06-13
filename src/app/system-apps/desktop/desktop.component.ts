@@ -80,6 +80,18 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   private nextColor:Colors = new Colors();
   private animationId:any;
 
+  // see how this was used in the filmanager & fileexplorer
+  // menuDictionary = {
+  //   'Category 1': [
+  //     { name: 'Item 1', action: () => console.log('Action 1 executed') },
+  //     { name: 'Item 2', action: () => console.log('Action 2 executed') },
+  //   ],
+  //   'Category 2': [
+  //     { name: 'Item 3', action: () => console.log('Action 3 executed') },
+  //     { name: 'Item 4', action: () => console.log('Action 4 executed') },
+  //   ]
+  // };
+ 
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService,fileManagerServices:FileManagerService,
               triggerProcessService:TriggerProcessService) { 
