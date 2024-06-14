@@ -19,6 +19,7 @@
           "options": {
             "allowedCommonJsDependencies": [
               "browserfs",
+              "'buffer'",
               "ini",
               "path",
               "js-dos"
@@ -44,7 +45,6 @@
               "node_modules/angular2-draggable/css/resizable.min.css"
             ],
             "scripts": [
-              "./src/scripts/bundle/index.js",
               "node_modules/js-dos/dist/js-dos.js",
               "./src/scripts/backgrounds/three.min.js",
               "./src/scripts/backgrounds/vanta.waves.min.js",

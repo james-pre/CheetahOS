@@ -33,6 +33,7 @@ import { HighlightDirective } from './system-apps/window/window.btn.highlight.di
 import { TaskBarEntryHighlightDirective } from './system-apps/taskbarentries/taskbar.entry.highlight.directives';
 import { LongPressDirective } from './system-apps/audioplayer/long.press.directive';
 import { ColumnResizeDirective } from './system-apps/taskmanager/taskmanager.column-resize.directive';
+import { RuffleComponent } from './user-apps/ruffle/ruffle.component';
 
 
 
@@ -60,6 +61,7 @@ import { ColumnResizeDirective } from './system-apps/taskmanager/taskmanager.col
     MenuComponent,
     PhotoviewerComponent,
     TexteditorComponent,
+    RuffleComponent,
 
     HighlightDirective,
     TaskBarEntryHighlightDirective,
@@ -68,6 +70,7 @@ import { ColumnResizeDirective } from './system-apps/taskmanager/taskmanager.col
 
     SafeUrlPipe,
     TruncatePipe
+    
   ],
   imports: [
     BrowserModule,
