@@ -115,7 +115,7 @@ export class FileService{
                 this._fileInfo.setContentPath = sc.getContentPath;
                 this._fileInfo.setFileType = extension;
                 this._fileInfo.setFileName = sc.geFileName;
-                this._fileInfo.setOpensWith = 'imageviewer';
+                this._fileInfo.setOpensWith = 'photoviewer';
                 this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
                 this._fileInfo.setSize = fileMetaData.getSize;
             }
@@ -155,6 +155,15 @@ export class FileService{
                 this._fileInfo.setFileType = extname(path);
                 this._fileInfo.setFileName = basename(path, extname(path));
                 this._fileInfo.setOpensWith = 'jsdos';
+                this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
+                this._fileInfo.setSize = fileMetaData.getSize;
+            }
+            else if(extension == '.swf'){
+                this._fileInfo.setIconPath = '/osdrive/icons/flash_67.png';
+                this._fileInfo.setCurrentPath = path;
+                this._fileInfo.setFileType = extname(path);
+                this._fileInfo.setFileName = basename(path, extname(path));
+                this._fileInfo.setOpensWith = 'ruffle';
                 this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
                 this._fileInfo.setSize = fileMetaData.getSize;
             }

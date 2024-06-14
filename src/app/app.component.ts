@@ -17,6 +17,8 @@ import { JsdosComponent } from './user-apps/jsdos/jsdos.component';
 import { VideoPlayerComponent } from './system-apps/videoplayer/videoplayer.component';
 import { AudioPlayerComponent } from './system-apps/audioplayer/audioplayer.component';
 import { TerminalComponent } from './system-apps/terminal/terminal.component';
+import { RuffleComponent } from './user-apps/ruffle/ruffle.component';
+import { PhotoviewerComponent } from './system-apps/photoviewer/photoviewer.component';
 
 @Component({
   selector: 'cos-root',
@@ -67,6 +69,8 @@ export class AppComponent implements OnDestroy, AfterViewInit {
     {type: TerminalComponent},
     // {type: TaskmanagerMiniComponent},
     {type: VideoPlayerComponent},
+    {type: RuffleComponent},
+    {type: PhotoviewerComponent},
     {type: TitleComponent},
     {type: GreetingComponent},
     {type: JsdosComponent}
