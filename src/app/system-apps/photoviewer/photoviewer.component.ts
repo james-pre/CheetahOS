@@ -12,7 +12,7 @@ import { StateType } from 'src/app/system-files/state/state.type';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
 // import ImageViewer from 'awesome-image-viewer'
-declare let ImageViewer:any;
+
 
 @Component({
   selector: 'cos-photoviewer',
@@ -41,6 +41,12 @@ export class PhotoviewerComponent implements BaseComponent, OnInit, OnDestroy, A
   processId = 0;
   type = ComponentType.System;
   displayName = 'PhotoViewer';
+  imageList:string[] = ['/osdrive/Pictures/Samples/Chill on the Moon.jpg', '/osdrive/Pictures/Samples/Mystical.jpg',
+                        '/osdrive/Pictures/Samples/Sparkling Water.jpg', '/osdrive/Pictures/Samples/Sunset Car.jpg',
+                        '/osdrive/Pictures/Samples/Sunset.jpg']
+        
+  currentImg = '';
+  private currentImgIndex = 0;
 
   constructor(fileService:FileService, processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService,
     stateManagmentService: StateManagmentService, sessionManagmentService: SessionManagmentService) { 
@@ -60,29 +66,56 @@ export class PhotoviewerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   ngOnInit(): void {
     this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
+    this.currentImg = this.imageList[0];
   }
 
-
+  ngOnDestroy(): void {
+    1
+  }
 
   async ngAfterViewInit() {
     this.setImageViewerWindowToFocus(this.processId); 
 
-    const container = document.getElementById('imageViewerWindow');
-    const testImg = [{mainUrl:'/osdrive/Pictures/stock-photo.jpeg', description:'stock photo'}];
-
-    this.photoViewer = new ImageViewer({
-      images: testImg
-    });
-
-    console.log('this.photoViewer:',this.photoViewer);
-
-
-    container?.appendChild(this.photoViewer);
+    // const container = document.getElementById('imageViewerWindow');
+    // const testImg = [{mainUrl:'/osdrive/Pictures/stock-photo.jpeg', description:'stock photo'}];
+    // this.photoViewer = new ImageViewer({
+    //   images: testImg
+    // });
+    // console.log('this.photoViewer:',this.photoViewer);
+    // container?.appendChild(this.photoViewer);
 
   }
 
-  ngOnDestroy(): void {
-    console.log('bye');
+  onKeyDown(evt:KeyboardEvent):void{
+
+    if(evt.key == "ArrowLeft"){
+      if((this.currentImgIndex > 0 && this.currentImgIndex <= this.imageList.length - 1)){
+        this.currentImg = this.imageList[this.currentImgIndex--];
+      }      
+    }
+
+    if(evt.key == "ArrowRight"){
+      if(this.currentImgIndex <= this.imageList.length - 1){
+        this.currentImg = this.imageList[this.currentImgIndex++];
+
+        if(this.currentImgIndex > this.imageList.length -1){
+          this.currentImgIndex = 0;
+        }
+      }
+    }
+  }
+
+  onClick():void{
+    if(this.currentImgIndex <= this.imageList.length - 1){
+      this.currentImg = this.imageList[this.currentImgIndex++];
+    }
+  }
+
+  focusOnInput():void{
+    const photoCntnr= document.getElementById('photoCntnr') as HTMLElement;
+    if(photoCntnr){
+      photoCntnr?.focus();
+    }
   }
 
 

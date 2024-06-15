@@ -164,16 +164,16 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
       return;
     }
 
-    this.cntxtMenuStyle = {
-      'display': 'block', 
-      'width': '225px', 
-      'transform':`translate(${String(evt.clientX + 2)}px, ${String(evt.clientY)}px)`,
-      'z-index': 2,
-      'opacity':1
-    }
+    // this.cntxtMenuStyle = {
+    //   'display': 'block', 
+    //   'width': '225px', 
+    //   'transform':`translate(${String(evt.clientX + 2)}px, ${String(evt.clientY)}px)`,
+    //   'z-index': 2,
+    //   'opacity':1
+    // }
 
-    this._runningProcessService.responseToEventCount = 0;
-    evt.preventDefault();
+    // this._runningProcessService.responseToEventCount = 0;
+    // evt.preventDefault();
   }
 
   hideContextMenu():void{
