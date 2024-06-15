@@ -89,8 +89,12 @@ export class PhotoviewerComponent implements BaseComponent, OnInit, OnDestroy, A
   onKeyDown(evt:KeyboardEvent):void{
 
     if(evt.key == "ArrowLeft"){
-      if((this.currentImgIndex > 0 && this.currentImgIndex <= this.imageList.length - 1)){
+      if((this.currentImgIndex >= 0)){
         this.currentImg = this.imageList[this.currentImgIndex--];
+
+        if(this.currentImgIndex < 0){
+          this.currentImgIndex = this.imageList.length - 1;
+        }
       }      
     }
 
@@ -105,9 +109,16 @@ export class PhotoviewerComponent implements BaseComponent, OnInit, OnDestroy, A
     }
   }
 
-  onClick():void{
-    if(this.currentImgIndex <= this.imageList.length - 1){
-      this.currentImg = this.imageList[this.currentImgIndex++];
+  onClick(id?:number):void{
+
+    if(id !== undefined){
+      this.currentImg = this.imageList[id];
+      this.currentImgIndex = id;
+    }else{
+      this.currentImgIndex = this.currentImgIndex + 1;
+      if(this.currentImgIndex <= this.imageList.length - 1){
+        this.currentImg = this.imageList[this.currentImgIndex];
+      }
     }
   }
 
