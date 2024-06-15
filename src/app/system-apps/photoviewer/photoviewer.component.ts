@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef, SimpleC
 import { FileService } from 'src/app/shared/system-service/file.service';
 import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { ComponentType } from 'src/app/system-files/component.types';
-import {extname} from 'path';
+import {extname, dirname} from 'path';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { Process } from 'src/app/system-files/process';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
@@ -13,8 +13,6 @@ import { StateType } from 'src/app/system-files/state/state.type';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
 import { Constants } from 'src/app/system-files/constants';
-// import ImageViewer from 'awesome-image-viewer'
-
 
 @Component({
   selector: 'cos-photoviewer',
@@ -22,8 +20,6 @@ import { Constants } from 'src/app/system-files/constants';
   styleUrls: ['./photoviewer.component.css']
 })
 export class PhotoviewerComponent implements BaseComponent, OnInit, OnDestroy, AfterViewInit {
-  private photoViewer:any;
- 
 
   private _fileService:FileService;
   private _processIdService:ProcessIDService;
@@ -62,7 +58,7 @@ export class PhotoviewerComponent implements BaseComponent, OnInit, OnDestroy, A
     this._sessionManagmentService = sessionManagmentService;
     this.processId = this._processIdService.getNewProcessId();
 
-    //this.retrievePastSessionData();
+    this.retrievePastSessionData();
 
     this._runningProcessService = runningProcessService;
     this._runningProcessService.addProcess(this.getComponentDetail());
@@ -83,23 +79,21 @@ export class PhotoviewerComponent implements BaseComponent, OnInit, OnDestroy, A
   }
   
 
-  async ngAfterViewInit() {
+  async ngAfterViewInit():Promise<void> {
     this.setImageViewerWindowToFocus(this.processId); 
 
     this.picSrc = (this.picSrc !=='') ? 
     this.picSrc : this.getPictureSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
 
-    const imgList = this.getCurrentPicturePathAndSearchForOther();
-    if(imgList.length > 0){
-        this.imageList = imgList;
+    await this.getCurrentPicturePathAndSearchForOther();
+    if(this.imageList.length > 0){
         this.currentImg = this.imageList[0];
     }else{
       this.currentImg = this.picSrc;
     }
 
-
-    // store either the imgList or picSrc
-    this.storeAppState(this.picSrc);
+    const appData = (this.imageList.length > 0)? this.imageList : this.picSrc;
+    this.storeAppState(appData);
 
     //tell angular to run additional detection cycle after 
     this.changeDetectorRef.detectChanges();
@@ -150,10 +144,21 @@ export class PhotoviewerComponent implements BaseComponent, OnInit, OnDestroy, A
     }
   }
 
-  getCurrentPicturePathAndSearchForOther():string[]{
+  async getCurrentPicturePathAndSearchForOther():Promise<void>{
     // if stuff was reutrned from session, then use it.
-    // else, go fetch.
-    return [];
+    if(this.imageList.length == 0){
+      // else, go fetch.
+      const dirPath = dirname(this.picSrc);
+      console.log('dirPath:', dirPath);
+      const pathList:string[] = await this._fileService.getFilesFromDirectoryAsync(dirPath) as string[];
+
+      //check for images
+      for(let i = 0; i < pathList.length - 1; i++){
+        if(this._consts.IMAGE_FILE_EXTENSIONS.includes(extname(pathList[i]))){
+          this.imageList.push(`${dirPath}/${pathList[i]}`);
+        }
+      }
+    }
   }
 
   setImageViewerWindowToFocus(pid:number):void{
@@ -206,7 +211,10 @@ export class PhotoviewerComponent implements BaseComponent, OnInit, OnDestroy, A
       if(retrievedSessionData !== undefined){
         const appSessionData = retrievedSessionData[0] as AppState;
         if(appSessionData !== undefined  && appSessionData.app_data != ''){
-          this.picSrc = appSessionData.app_data as string;
+          if(typeof appSessionData.app_data === 'string')
+            this.picSrc = appSessionData.app_data as string; 
+          else
+            this.imageList = appSessionData.app_data as string[];
         }
       }
     }
