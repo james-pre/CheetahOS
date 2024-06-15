@@ -1,7 +1,8 @@
-import { Component, ElementRef, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef, SimpleChanges } from '@angular/core';
 import { FileService } from 'src/app/shared/system-service/file.service';
 import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { ComponentType } from 'src/app/system-files/component.types';
+import {extname} from 'path';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { Process } from 'src/app/system-files/process';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
@@ -11,6 +12,7 @@ import { AppState, BaseState } from 'src/app/system-files/state/state.interface'
 import { StateType } from 'src/app/system-files/state/state.type';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
+import { Constants } from 'src/app/system-files/constants';
 // import ImageViewer from 'awesome-image-viewer'
 
 
@@ -32,7 +34,7 @@ export class PhotoviewerComponent implements BaseComponent, OnInit, OnDestroy, A
   private _fileInfo!:FileInfo;
   private _appState!:AppState;
   private picSrc = '';
-  private SECONDS_DELAY = 1500;
+  private _consts:Constants = new Constants();
 
   name= 'photoviewer';
   hasWindow = true;
@@ -41,15 +43,18 @@ export class PhotoviewerComponent implements BaseComponent, OnInit, OnDestroy, A
   processId = 0;
   type = ComponentType.System;
   displayName = 'PhotoViewer';
-  imageList:string[] = ['/osdrive/Pictures/Samples/Chill on the Moon.jpg', '/osdrive/Pictures/Samples/Mystical.jpg',
+  private defaultImg = '/osdrive/Pictures/Samples/no_img.jpeg';
+  private tst_imageList:string[] = ['/osdrive/Pictures/Samples/Chill on the Moon.jpg', '/osdrive/Pictures/Samples/Mystical.jpg',
                         '/osdrive/Pictures/Samples/Sparkling Water.jpg', '/osdrive/Pictures/Samples/Sunset Car.jpg',
                         '/osdrive/Pictures/Samples/Sunset.jpg']
+                      
+  imageList:string[] = []            
         
   currentImg = '';
   private currentImgIndex = 0;
 
   constructor(fileService:FileService, processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService,
-    stateManagmentService: StateManagmentService, sessionManagmentService: SessionManagmentService) { 
+    stateManagmentService: StateManagmentService, sessionManagmentService: SessionManagmentService, private changeDetectorRef: ChangeDetectorRef,) { 
     this._fileService = fileService
     this._processIdService = processIdService;
     this._triggerProcessService = triggerProcessService;
@@ -66,25 +71,41 @@ export class PhotoviewerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   ngOnInit(): void {
     this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
-    this.currentImg = this.imageList[0];
+
+    if(this.imageList.length > 0)
+      this.currentImg = this.imageList[0];
+    else
+      this.currentImg = this.defaultImg
   }
 
   ngOnDestroy(): void {
     1
   }
+  
 
   async ngAfterViewInit() {
     this.setImageViewerWindowToFocus(this.processId); 
 
-    // const container = document.getElementById('imageViewerWindow');
-    // const testImg = [{mainUrl:'/osdrive/Pictures/stock-photo.jpeg', description:'stock photo'}];
-    // this.photoViewer = new ImageViewer({
-    //   images: testImg
-    // });
-    // console.log('this.photoViewer:',this.photoViewer);
-    // container?.appendChild(this.photoViewer);
+    this.picSrc = (this.picSrc !=='') ? 
+    this.picSrc : this.getPictureSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
 
+    const imgList = this.getCurrentPicturePathAndSearchForOther();
+    if(imgList.length > 0){
+        this.imageList = imgList;
+        this.currentImg = this.imageList[0];
+    }else{
+      this.currentImg = this.picSrc;
+    }
+
+
+    // store either the imgList or picSrc
+    this.storeAppState(this.picSrc);
+
+    //tell angular to run additional detection cycle after 
+    this.changeDetectorRef.detectChanges();
   }
+
+
 
   onKeyDown(evt:KeyboardEvent):void{
 
@@ -129,10 +150,52 @@ export class PhotoviewerComponent implements BaseComponent, OnInit, OnDestroy, A
     }
   }
 
+  getCurrentPicturePathAndSearchForOther():string[]{
+    // if stuff was reutrned from session, then use it.
+    // else, go fetch.
+    return [];
+  }
 
   setImageViewerWindowToFocus(pid:number):void{
     this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
   }
+
+  getPictureSrc(pathOne:string, pathTwo:string):string{
+    let pictureSrc = '';
+
+    if(this.checkForExt(pathOne,pathTwo)){
+      pictureSrc = '/' + this._fileInfo.getContentPath;
+    }else{
+      pictureSrc =  this._fileInfo.getCurrentPath;
+    }
+    return pictureSrc;
+  }
+
+  checkForExt(contentPath:string, currentPath:string):boolean{
+    const contentExt = extname(contentPath);
+    const currentPathExt = extname(currentPath);
+    let res = false;
+
+    if(this._consts.IMAGE_FILE_EXTENSIONS.includes(contentExt)){
+      res = true;
+    }else if(this._consts.IMAGE_FILE_EXTENSIONS.includes(currentPathExt)){
+      res = false;
+    }
+    return res;
+  }
+
+  storeAppState(app_data:unknown):void{
+    const uid = `${this.name}-${this.processId}`;
+
+    this._appState = {
+      pid: this.processId,
+      app_data: app_data,
+      app_name: this.name,
+      unique_id: uid
+    }
+    this._stateManagmentService.addState(uid, this._appState, StateType.App);
+  }
+
 
   retrievePastSessionData():void{
     const pickUpKey = this._sessionManagmentService._pickUpKey;
