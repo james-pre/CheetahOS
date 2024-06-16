@@ -151,7 +151,7 @@ export class PhotoviewerComponent implements BaseComponent, OnInit, OnDestroy, A
       const pathList:string[] = await this._fileService.getFilesFromDirectoryAsync(dirPath) as string[];
 
       //check for images
-      for(let i = 0; i < pathList.length - 1; i++){
+      for(let i = 0; i <= pathList.length - 1; i++){
         if(this._consts.IMAGE_FILE_EXTENSIONS.includes(extname(pathList[i]))){
           this.imageList.push(`${dirPath}/${pathList[i]}`);
         }
