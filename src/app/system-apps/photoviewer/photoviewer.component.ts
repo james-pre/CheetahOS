@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef, SimpleChanges } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FileService } from 'src/app/shared/system-service/file.service';
 import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { ComponentType } from 'src/app/system-files/component.types';
@@ -41,8 +41,7 @@ export class PhotoviewerComponent implements BaseComponent, OnInit, OnDestroy, A
   displayName = 'PhotoViewer';
   private defaultImg = '/osdrive/Pictures/Samples/no_img.jpeg';
   private tst_imageList:string[] = ['/osdrive/Pictures/Samples/Chill on the Moon.jpg', '/osdrive/Pictures/Samples/Mystical.jpg',
-                        '/osdrive/Pictures/Samples/Sparkling Water.jpg', '/osdrive/Pictures/Samples/Sunset Car.jpg',
-                        '/osdrive/Pictures/Samples/Sunset.jpg']
+                        '/osdrive/Pictures/Samples/Sparkling Water.jpg']
                       
   imageList:string[] = []            
         
@@ -85,7 +84,7 @@ export class PhotoviewerComponent implements BaseComponent, OnInit, OnDestroy, A
     this.picSrc = (this.picSrc !=='') ? 
     this.picSrc : this.getPictureSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
 
-    await this.getCurrentPicturePathAndSearchForOther();
+    await this.getCurrentPicturePathAndSearchForOthers();
     if(this.imageList.length > 0){
         this.currentImg = this.imageList[0];
     }else{
@@ -98,7 +97,6 @@ export class PhotoviewerComponent implements BaseComponent, OnInit, OnDestroy, A
     //tell angular to run additional detection cycle after 
     this.changeDetectorRef.detectChanges();
   }
-
 
 
   onKeyDown(evt:KeyboardEvent):void{
@@ -144,12 +142,12 @@ export class PhotoviewerComponent implements BaseComponent, OnInit, OnDestroy, A
     }
   }
 
-  async getCurrentPicturePathAndSearchForOther():Promise<void>{
+  async getCurrentPicturePathAndSearchForOthers():Promise<void>{
     // if stuff was reutrned from session, then use it.
     if(this.imageList.length == 0){
       // else, go fetch.
       const dirPath = dirname(this.picSrc);
-      console.log('dirPath:', dirPath);
+      //console.log('dirPath:', dirPath);
       const pathList:string[] = await this._fileService.getFilesFromDirectoryAsync(dirPath) as string[];
 
       //check for images
