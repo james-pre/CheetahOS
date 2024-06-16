@@ -14,18 +14,23 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 Run `npm run build` to generate the filesystem(osdrive.json). Once the filesystem is created, update the file by placing all the auto generated content within the tag {"osdrive": .................}.
 
-***Note - npm will throw an error that it is unable to find make_http_index.js. All you have to do, is to got CheetahOs/node_modules/browserfs/dist/scripts and make a copy of make_xhrfs_index.js and rename it to  make_http_index.js
+It should look like this {"osdrive":{"Desktop":{"audioplayer.url":null,"fileexplorer.url":null,"heat.url":null,"hello.url":null,"taskmanager.url":null,"terminal.url":null,"videoplayer.url":null}}}
+
+***Note - npm will throw an error that it is unable to find make_http_index.js. All you have to do, is to got `CheetahOs/node_modules/browserfs/dist/scripts folder` and make a copy of `make_xhrfs_index.js` and rename it to `make_http_index.js`
 
 ***Note Some other error might occur in browserfs as a result of missing libs.
-|---> Cannot find namespace 'Dropbox' : replace reference to 'Dropbox' with 'any'. like client: Dropbox.Client; --> client: any;
 
-|---> Cannot find namespace 'NodeBuffer' : replace reference to 'NodeBuffer' with 'any'. like client: buffer: NodeBuffer; --> buffer: any;
+|---> Cannot find namespace `Dropbox`: replace reference to `Dropbox` with `any`. like `client: Dropbox.Client; --> client: any;`
 
-|---> Property 'put' in type 'IndexedDBRWTransaction' is not assignable to the same property in base type 'AsyncKeyValueRWTransaction'.
- |change (key: string, data: Buffer, overwrite: boolean, cb: BFSCallback<boolean>)  to (key: string, data: Buffer, overwrite: boolean, cb: any) 
+|---> Cannot find namespace `NodeBuffer` : replace reference to `NodeBuffer` with `any`. like `client: buffer: NodeBuffer; --> buffer: any;`
 
-|---> Type 'Stats' is missing the following properties from type 'StatsBase<number>': atimeMs, mtimeMs, ctimeMs, birthtimeMs
- | add this line of code:  atimeMs: number; mtimeMs: number; ctimeMs: number; birthtimeMs: number;
+|---> Property `put` in type `IndexedDBRWTransaction` is not assignable to the same property in base type 'AsyncKeyValueRWTransaction'.
+
+ |---> change `(key: string, data: Buffer, overwrite: boolean, cb: BFSCallback<boolean>)`  to `(key: string, data: Buffer, overwrite: boolean, cb: any)`
+
+|---> Type `Stats` is missing the following properties from type `StatsBase<number>: atimeMs, mtimeMs, ctimeMs, birthtimeMs`
+
+ |---> add this line of code:`atimeMs: number; mtimeMs: number; ctimeMs: number; birthtimeMs: number;`
 
 ## Build
 
