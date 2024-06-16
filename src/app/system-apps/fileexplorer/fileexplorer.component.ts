@@ -85,7 +85,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   recentPathEntries:string[] = [];
   upPathEntries:string[] = ['/osdrive/Desktop'];
   _directoryHops:string[] = ['osdrive'];
-  SECONDS_DELAY = 6000;
+  SECONDS_DELAY:number[] = [100, 1500, 6000];
   
   defaultviewOption = ViewOptions.MEDIUM_ICON_VIEW;
   currentViewOption = ViewOptions.MEDIUM_ICON_VIEW;
@@ -108,6 +108,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   pathHistory =['/osdrive/icons','/osdrive/Games', '/osdrive/Videos'];
 
   showCntxtMenu = false;
+  showInfoTip = false;
   hasWindow = true;
   icon = 'osdrive/icons/file_explorer.ico';
   navPathIcon = 'osdrive/icons/my_computer.ico'
@@ -692,11 +693,14 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
     }
   }
 
-  onMouseEnter(id:number):void{
+  onMouseEnter(evt:MouseEvent, id:number):void{
+    this.showInfoTip = true;
     this.setBtnStyle(id, true);
+    this.showInformationTip(evt);
   }
 
   onMouseLeave(id:number):void{
+    this.showInfoTip = false;
     if(id != this.selectedElementId){
       this.removeBtnStyle(id);
     }
@@ -704,7 +708,6 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
       this.setBtnStyle(id,false);
     }
   }
-
 
   setBtnStyle(id:number, isMouseHover:boolean):void{
     const btnElement = document.getElementById(`btnElmnt-${this.processId}-${id}`) as HTMLElement;
@@ -848,6 +851,26 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
     }
   }
 
+  showInformationTip(evt:MouseEvent):void{
+
+    const rect =  this.fileExplorerContainer.nativeElement.getBoundingClientRect();
+    const x = (evt.clientX - rect.left) - 15;
+    const y = (evt.clientY - rect.top) - 10;
+
+    setTimeout(()=>{ // hide after 6 secs
+      const infoTip = document.getElementById(`fx-information-tip-${this.processId}`) as HTMLElement;
+
+      console.log('infoTip',infoTip)
+      if(infoTip){
+        setTimeout(()=>{ // hide after 6 secs
+          infoTip.style.display = 'block';
+          infoTip.style.transform = `translate(${String(x)}px, ${String(y)}px)`;
+        },this.SECONDS_DELAY[1]) 
+      }
+    },this.SECONDS_DELAY[0]) 
+
+  }
+
   async refreshIcons():Promise<void>{
     this.isIconInFocusDueToPriorAction = false;
     await this.loadFilesInfoAsync();
@@ -869,14 +892,14 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
 
       setTimeout(()=>{ // hide after 6 secs
         this.hideInvalidCharsToolTip();
-      },this.SECONDS_DELAY) 
+      },this.SECONDS_DELAY[2]) 
 
       return res;
     }
   }
 
   onInputChange():void{
-    const SearchTxtBox = document.getElementById(`searchTxtBox-${this.processId}`) as HTMLInputElement
+    const SearchTxtBox = document.getElementById(`searchTxtBox-${this.processId}`) as HTMLInputElement;
     const charLength = SearchTxtBox.value.length
     if( charLength > 0){
       this.isSearchBoxNotEmpty = true;
@@ -889,7 +912,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   }
 
   onClearSearchTextBox():void{
-    const SearchTxtBox = document.getElementById(`searchTxtBox-${this.processId}`) as HTMLInputElement
+    const SearchTxtBox = document.getElementById(`searchTxtBox-${this.processId}`) as HTMLInputElement;
     SearchTxtBox.value = '';
     this.isSearchBoxNotEmpty = false;
 

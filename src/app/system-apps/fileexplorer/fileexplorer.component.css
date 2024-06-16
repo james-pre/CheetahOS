@@ -1141,3 +1141,21 @@ input::selection{
     left: 20px;
     transform: rotate(180deg);
 }
+
+.fx-information-tip-container{
+    display: none;
+    position: absolute;
+    z-index: 1;
+    width: fit-content;
+    border: 1px solid #5a5a5a;
+    background-color: #202020;
+}
+
+.fx-information-tip-item{
+    height: fit-content;
+    width: fit-content;
+    font-size: 10px;
+    font-weight: normal;
+    text-align: center;
+    color: white;
+}
