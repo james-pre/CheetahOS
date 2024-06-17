@@ -1,0 +1,39 @@
+<div class="error-dialog-main-container">
+    <div class="error-dialog-header-container" tabindex="0">
+        <div class="error-dialog-left-header-section">
+            <h1 class="error-dialog-h1">
+                <figure class="error-dialog-figure">
+                    <img class="error-dialog-img" [src]="this.icon" [alt]="this.name"/>
+                    <figcaption class="error-dialog-figcaption"> {{this.displayName}} </figcaption>
+                </figure>
+            </h1>
+        </div>
+        <div class="error-dialog-right-header-section">
+            <nav class="error-dialog-nav">
+                <button class="error-dialog-button" [ngStyle]="closeBtnStyles" id="closeBtn" appHighlight (click)="onCloseBtnClick()"  title="Close" >
+                    <svg class="error-dialog-svg" width="10" viewBox="0 0 10 10">
+                        <path d="M10.2.7L9.5 0 5.1 4.4.7 0 0 .7l4.4 4.4L0 9.5l.7.7 4.4-4.4 4.4 4.4.7-.7-4.4-4.4z" fill = "#FFFFF"/>
+                    </svg>
+                </button>
+            </nav>
+        </div>
+    </div>
+
+    <div class="error-dialog-mid-container">
+        <div class="error-dialog-mid-section1">
+            <h1 class="error-dialog-h2">
+                <figure class="error-dialog-figure1">
+                    <img class="error-dialog-img1" [src]="'/osdrive/icons/red-x_50.png'" [alt]="this.name"/>
+                    <figcaption class="error-dialog-figcaption1"> {{this.displayName}} </figcaption>
+                </figure>
+            </h1>
+        </div>
+        <div class="error-dialog-mid-section2">
+            <span class="error-dialog-mid-section2-msg">Application not found</span>
+        </div>
+    </div>
+
+    <div class="error-dialog-tail-container">
+        
+    </div>
+</div>

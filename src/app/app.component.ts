@@ -19,6 +19,7 @@ import { AudioPlayerComponent } from './system-apps/audioplayer/audioplayer.comp
 import { TerminalComponent } from './system-apps/terminal/terminal.component';
 import { RuffleComponent } from './user-apps/ruffle/ruffle.component';
 import { PhotoviewerComponent } from './system-apps/photoviewer/photoviewer.component';
+import { DialogComponent } from './shared/system-component/dialog/dialog.component';
 
 @Component({
   selector: 'cos-root',
@@ -52,7 +53,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   private userOpenedAppsKey = "openedApps";
   private reOpendAppsCounter = 0;
   private SECONDS_DELAY:number[] =[1500, 1500];
- 
+
   hasWindow = false;
   icon = 'osdrive/icons/generic-program.ico';
   name = 'system';
@@ -116,7 +117,9 @@ export class AppComponent implements OnDestroy, AfterViewInit {
     if(this._appDirectory.appExist(appName)){
         this.lazyLoadComponment(this._appDirectory.getAppPosition(appName));
     }else{
-      alert(`The app: ${appName} was not found. It could have been deleted or location changed.`)
+      this.lazyLoadDialogComponment();
+
+      //alert(`The app: ${appName} was not found. It could have been deleted or location changed.`)
     }
   }
 
@@ -129,6 +132,10 @@ export class AppComponent implements OnDestroy, AfterViewInit {
 
    //alert subscribers
    this._runningProcessService.processListChangeNotify.next()
+  }
+
+  private  lazyLoadDialogComponment() {
+    this.itemViewContainer.createComponent(DialogComponent);
   }
 
   onCloseBtnClicked(eventData:Process):void{

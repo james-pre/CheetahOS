@@ -72,7 +72,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   showCntxtMenu = false;
   showInformationTip = false;
   hasWindow = true;
-  hideInformationTip = false;
+  //hideInformationTip = false;
 
   fxIconCntxtMenuStyle:Record<string, unknown> = {};
   clearSearchStyle:Record<string, unknown> = {};
@@ -716,7 +716,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
 
   onMouseLeave(id:number):void{
     this.showInformationTip = false;
-    this.hideInformationTip = false;
+    //this.hideInformationTip = false;
 
     if(id != this.selectedElementId){
       this.removeBtnStyle(id);
@@ -876,14 +876,15 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
     const y = (evt.clientY - rect.top) - 10;
 
     setTimeout(()=>{
-      const infoTip = document.getElementById(`fx-information-tip-${this.processId}`) as HTMLElement;
+      const infoTip = document.getElementById(`fx-information-tip-${this.processId}`) as HTMLDivElement;
       if(infoTip){
         setTimeout(()=>{ 
           infoTip.style.display = 'block';
           infoTip.style.transform = `translate(${String(x)}px, ${String(y)}px)`;
-          this.setInformationTipInfo(file);
-          this.hideInformationTip = true;
 
+          this.setInformationTipInfo(file);
+
+          //this.hideInformationTip = true;
           // if(this.hideInformationTip){
           //   setTimeout(()=>{ // hide after 9 secs
           //     this.hideInformationTip = false;
@@ -923,7 +924,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
     }
 
     if(fileType === '.txt'){
-      this.fileInfoTipData.push({label:infoTipFields[1], data:'Text Document'});
+      this.fileInfoTipData.push({label:infoTipFields[7], data:'Text Document'});
       this.fileInfoTipData.push({label:infoTipFields[3], data: fileDateModified });
       this.fileInfoTipData.push({label:infoTipFields[6], data:fileSize });
     }
@@ -938,7 +939,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
       }else if(fileName === 'Pictures' ){
         this.fileInfoTipData.push({label:'', data:'Contains digital photos, images and graphic files'})
       }else{
-        this.fileInfoTipData.push({label:infoTipFields[1], data:fileAuthor });
+        this.fileInfoTipData.push({label:infoTipFields[7], data:fileType });
         this.fileInfoTipData.push({label:infoTipFields[2], data:fileDateModified });
       }
     }

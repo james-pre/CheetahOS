@@ -34,6 +34,7 @@ import { TaskBarEntryHighlightDirective } from './system-apps/taskbarentries/tas
 import { LongPressDirective } from './system-apps/audioplayer/long.press.directive';
 import { ColumnResizeDirective } from './system-apps/taskmanager/taskmanager.column-resize.directive';
 import { RuffleComponent } from './user-apps/ruffle/ruffle.component';
+import { DialogComponent } from './shared/system-component/dialog/dialog.component';
 
 
 
@@ -69,7 +70,8 @@ import { RuffleComponent } from './user-apps/ruffle/ruffle.component';
     ColumnResizeDirective,
 
     SafeUrlPipe,
-    TruncatePipe
+    TruncatePipe,
+    DialogComponent
     
   ],
   imports: [

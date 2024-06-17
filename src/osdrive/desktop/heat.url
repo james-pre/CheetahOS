@@ -3,4 +3,4 @@ FileName=heat
 IconPath=/osdrive/Pictures/heat.png
 FileType=.png
 ContentPath=osdrive/Pictures/heat.png
-OpensWith=photoviewer
+OpensWith=imageviewer
