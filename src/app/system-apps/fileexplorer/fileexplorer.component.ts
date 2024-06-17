@@ -597,6 +597,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
 
     console.log('fileexplorer-runProcess:',file)
     this.showInformationTip = false;
+    this.isImage = false;
     // console.log('what was clicked:',file.getFileName +'-----' + file.getOpensWith +'---'+ file.getCurrentPath +'----'+ file.getIcon) TBD
     if((file.getOpensWith === 'fileexplorer' && file.getFileName !== 'fileexplorer') && file.getFileType ==='folder'){
 
@@ -709,12 +710,13 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   onMouseEnter(evt:MouseEvent, file:FileInfo, id:number):void{
     this.showInformationTip = true;
     this.setBtnStyle(id, true);
-    this.displayInformationTip(evt, file, id);
+    this.displayInformationTip(evt, file);
   }
 
   onMouseLeave(id:number):void{
     this.showInformationTip = false;
     this.hideInformationTip = false;
+    this.isImage = false;
 
     if(id != this.selectedElementId){
       this.removeBtnStyle(id);
@@ -867,7 +869,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   }
 
   // this method is gross
-  displayInformationTip(evt:MouseEvent, file:FileInfo, id: number):void{
+  displayInformationTip(evt:MouseEvent, file:FileInfo):void{
 
     const rect =  this.fileExplorerContainer.nativeElement.getBoundingClientRect();
     const x = (evt.clientX - rect.left) - 15;
@@ -879,12 +881,13 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
         setTimeout(()=>{ // hide after 6 secs
           infoTip.style.display = 'block';
           infoTip.style.transform = `translate(${String(x)}px, ${String(y)}px)`;
-          this.setInformationTipInfo(file, id);
+          this.setInformationTipInfo(file);
           this.hideInformationTip = true;
 
           if(this.hideInformationTip){
             setTimeout(()=>{ // hide after 9 secs
               this.hideInformationTip = false;
+              this.isImage = false;
               this.showInformationTip = false;
             },this.SECONDS_DELAY[3]) 
           }
@@ -893,21 +896,21 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
     },this.SECONDS_DELAY[0]) // wait 100th of a sec
   }
 
-  setInformationTipInfo(file:FileInfo, id: number):void{
+  setInformationTipInfo(file:FileInfo):void{
 
     this.fileAuthor = 'Relampago Del Catatumbo';
     this.fileType = file.getFileType;
     this.fileDateModified = file.getDateModifiedUS;
     this.fileSize = `${String(file.getSize1)}  ${file.getFileSizeUnit}`
-    this.fileDimesions = '50 x 50';
 
     if(this._consts.IMAGE_FILE_EXTENSIONS.includes(file.getFileType)){
       this.isImage = true;
-      const img = document.getElementById(`imgElmnt-${this.processId}-${id}`); 
 
-      const width = img?.clientWidth;
-      const height = img?.clientHeight;
-      console.log(`height:${height}   width:${width}`);
+      const img = new Image();
+      img.src = file.getCurrentPath;
+      const width = img?.naturalWidth;
+      const height = img?.naturalHeight;
+      this.fileDimesions = `${width} x ${height}`;
     }
   }
 
