@@ -24,7 +24,7 @@ It should look like this {"osdrive":{"Desktop":{"audioplayer.url":null,"fileexpl
 
 |---> Cannot find namespace `NodeBuffer` : replace reference to `NodeBuffer` with `any`. like `client: buffer: NodeBuffer; --> buffer: any;`
 
-|---> Property `put` in type `IndexedDBRWTransaction` is not assignable to the same property in base type 'AsyncKeyValueRWTransaction'.
+|---> Property `put` in type `IndexedDBRWTransaction` is not assignable to the same property in base type `AsyncKeyValueRWTransaction`.
 
  |---> change `(key: string, data: Buffer, overwrite: boolean, cb: BFSCallback<boolean>)`  to `(key: string, data: Buffer, overwrite: boolean, cb: any)`
 

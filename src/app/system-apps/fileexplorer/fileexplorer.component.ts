@@ -13,10 +13,11 @@ import { StateManagmentService } from 'src/app/shared/system-service/state.manag
 import { FileManagerService } from 'src/app/shared/system-service/file.manager.services';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ViewOptions } from './fileexplorer.enums';
-import {basename} from 'path';
+import {basename, extname} from 'path';
 import { AppState, BaseState } from 'src/app/system-files/state/state.interface';
 import { StateType } from 'src/app/system-files/state/state.type';
 import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
+import { Constants } from 'src/app/system-files/constants';
 
 @Component({
   selector: 'cos-fileexplorer',
@@ -37,6 +38,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   private _sessionManagmentService: SessionManagmentService;
   private _formBuilder;
   private _appState!:AppState;
+  private _consts:Constants = new Constants();
 
   private _viewByNotifySub!:Subscription;
   private _sortByNotifySub!:Subscription;
@@ -64,10 +66,15 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   private currentIconName = '';
 
   isSearchBoxNotEmpty = false;
+  isImage = false;
   showPathHistory = false;
   onClearSearchIconHover = false;
   onSearchIconHover = false;
- 
+  showCntxtMenu = false;
+  showInformationTip = false;
+  hasWindow = true;
+  hideInformationTip = false;
+
   fxIconCntxtMenuStyle:Record<string, unknown> = {};
   clearSearchStyle:Record<string, unknown> = {};
   searchStyle:Record<string, unknown> = {};
@@ -85,7 +92,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   recentPathEntries:string[] = [];
   upPathEntries:string[] = ['/osdrive/Desktop'];
   _directoryHops:string[] = ['osdrive'];
-  SECONDS_DELAY:number[] = [100, 1500, 6000];
+  SECONDS_DELAY:number[] = [100, 1500, 6000, 9000];
   
   defaultviewOption = ViewOptions.MEDIUM_ICON_VIEW;
   currentViewOption = ViewOptions.MEDIUM_ICON_VIEW;
@@ -107,9 +114,21 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   searchHistory =['Java','ProgramFile', 'Perenne'];
   pathHistory =['/osdrive/icons','/osdrive/Games', '/osdrive/Videos'];
 
-  showCntxtMenu = false;
-  showInfoTip = false;
-  hasWindow = true;
+  menuData = [
+    { label: 'Open', action: this.onTriggerRunProcess.bind(this) },
+    { label: 'Pin to Start', action: this.doNothing.bind(this) },
+    { label: 'Pin to Taskbar', action: this.doNothing.bind(this) },
+    { label: 'Delete', action: this.onDeleteFile.bind(this) },
+    { label: 'Rename', action: this.onRenameFileTxtBoxShow.bind(this) }
+  ];
+
+  fileType = '';
+  fileAuthor = '';
+  fileSize = '';
+  fileDimesions = '';
+  fileDateModified = '';
+
+
   icon = 'osdrive/icons/file_explorer.ico';
   navPathIcon = 'osdrive/icons/my_computer.ico'
   name = 'fileexplorer';
@@ -118,13 +137,6 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   directory ='/osdrive/';
   displayName = 'fileexplorer';
 
-  menuData = [
-    { label: 'Open', action: this.onTriggerRunProcess.bind(this) },
-    { label: 'Pin to Start', action: this.doNothing.bind(this) },
-    { label: 'Pin to Taskbar', action: this.doNothing.bind(this) },
-    { label: 'Delete', action: this.onDeleteFile.bind(this) },
-    { label: 'Rename', action: this.onRenameFileTxtBoxShow.bind(this) }
-  ];
 
 
   constructor(processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, triggerProcessService:TriggerProcessService, 
@@ -584,6 +596,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   async runProcess(file:FileInfo):Promise<void>{
 
     console.log('fileexplorer-runProcess:',file)
+    this.showInformationTip = false;
     // console.log('what was clicked:',file.getFileName +'-----' + file.getOpensWith +'---'+ file.getCurrentPath +'----'+ file.getIcon) TBD
     if((file.getOpensWith === 'fileexplorer' && file.getFileName !== 'fileexplorer') && file.getFileType ==='folder'){
 
@@ -693,14 +706,16 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
     }
   }
 
-  onMouseEnter(evt:MouseEvent, id:number):void{
-    this.showInfoTip = true;
+  onMouseEnter(evt:MouseEvent, file:FileInfo, id:number):void{
+    this.showInformationTip = true;
     this.setBtnStyle(id, true);
-    this.showInformationTip(evt);
+    this.displayInformationTip(evt, file, id);
   }
 
   onMouseLeave(id:number):void{
-    this.showInfoTip = false;
+    this.showInformationTip = false;
+    this.hideInformationTip = false;
+
     if(id != this.selectedElementId){
       this.removeBtnStyle(id);
     }
@@ -851,24 +866,49 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
     }
   }
 
-  showInformationTip(evt:MouseEvent):void{
+  // this method is gross
+  displayInformationTip(evt:MouseEvent, file:FileInfo, id: number):void{
 
     const rect =  this.fileExplorerContainer.nativeElement.getBoundingClientRect();
     const x = (evt.clientX - rect.left) - 15;
     const y = (evt.clientY - rect.top) - 10;
 
-    setTimeout(()=>{ // hide after 6 secs
+    setTimeout(()=>{
       const infoTip = document.getElementById(`fx-information-tip-${this.processId}`) as HTMLElement;
-
-      console.log('infoTip',infoTip)
       if(infoTip){
         setTimeout(()=>{ // hide after 6 secs
           infoTip.style.display = 'block';
           infoTip.style.transform = `translate(${String(x)}px, ${String(y)}px)`;
-        },this.SECONDS_DELAY[1]) 
-      }
-    },this.SECONDS_DELAY[0]) 
+          this.setInformationTipInfo(file, id);
+          this.hideInformationTip = true;
 
+          if(this.hideInformationTip){
+            setTimeout(()=>{ // hide after 9 secs
+              this.hideInformationTip = false;
+              this.showInformationTip = false;
+            },this.SECONDS_DELAY[3]) 
+          }
+        },this.SECONDS_DELAY[1])  //wait 1.5 seconds
+      }
+    },this.SECONDS_DELAY[0]) // wait 100th of a sec
+  }
+
+  setInformationTipInfo(file:FileInfo, id: number):void{
+
+    this.fileAuthor = 'Relampago Del Catatumbo';
+    this.fileType = file.getFileType;
+    this.fileDateModified = file.getDateModifiedUS;
+    this.fileSize = `${String(file.getSize1)}  ${file.getFileSizeUnit}`
+    this.fileDimesions = '50 x 50';
+
+    if(this._consts.IMAGE_FILE_EXTENSIONS.includes(file.getFileType)){
+      this.isImage = true;
+      const img = document.getElementById(`imgElmnt-${this.processId}-${id}`); 
+
+      const width = img?.clientWidth;
+      const height = img?.clientHeight;
+      console.log(`height:${height}   width:${width}`);
+    }
   }
 
   async refreshIcons():Promise<void>{

@@ -267,7 +267,7 @@
                     <ng-template #iconsView>
                         <li class="li-icon-size-view" *ngFor="let file of files; let i = index" id="ilElmnt-{{this.processId}}" >
 
-                            <button class="button-icon-size-view" tabindex="0" (dblclick)="runProcess(file)" (mouseenter)="onMouseEnter($event,i)" (mouseleave)="onMouseLeave(i)"
+                            <button class="button-icon-size-view" tabindex="0" (dblclick)="runProcess(file)" (mouseenter)="onMouseEnter($event, file, i)" (mouseleave)="onMouseLeave(i)"
                                 (contextmenu)="onShowIconContextMenu($event, file, i)" (click)="onBtnClick(i)" id="btnElmnt-{{this.processId}}-{{i}}">
 
                                 <figure class="figure-icon-size-view" id="figElmnt-{{this.processId}}-{{i}}">
@@ -290,12 +290,12 @@
 
                     <ng-template #listView0>
                         <li class="li-list-view" *ngFor="let file of files; let i = index" id="ilElmnt-{{this.processId}}">
-                            <button class="button-list-view" tabindex="0" (dblclick)="runProcess(file)" (mouseenter)="onMouseEnter($event,i)" (mouseleave)="onMouseLeave(i)"
+                            <button class="button-list-view" tabindex="0" (dblclick)="runProcess(file)" (mouseenter)="onMouseEnter($event, file, i)" (mouseleave)="onMouseLeave(i)"
                                 (contextmenu)="onShowIconContextMenu($event, file, i)" (click)="onBtnClick(i)"  id="btnElmnt-{{this.processId}}-{{i}}">
 
                                 <span class="span-list-view">
                                     <figure class="figure-list-view">
-                                        <img class="img-list-view" [src]="file.getIconPath | safeResourceUrl" [alt]="file.getFileName"/>
+                                        <img class="img-list-view" [src]="file.getIconPath | safeResourceUrl" [alt]="file.getFileName" id="imgElmnt-{{this.processId}}-{{i}}"/>
                                     </figure>
 
                                     <figcaption class="figcaption-list-view" id="figCapElmnt-{{this.processId}}-{{i}}">
@@ -314,9 +314,9 @@
                         <p>Detail View</p>
                     </ng-template>
                     <ng-template #contentView0>
-                        <!-- adding (mouseenter)="onMouseEnter($event,i)" (mouseleave)="onMouseLeave(i)" id="btnElmnt-{{this.processId}}-{{i}}" to the li elements covers it completley on highlight-->
+                        <!-- adding (mouseenter)="onMouseEnter($event, file, i)" (mouseleave)="onMouseLeave(i)" id="btnElmnt-{{this.processId}}-{{i}}" to the li elements covers it completley on highlight-->
                         <li class="li-content-view" *ngFor="let file of files; let i = index">
-                            <button class="button-content-view" tabindex="0" (dblclick)="runProcess(file)" (mouseenter)="onMouseEnter($event,i)" (mouseleave)="onMouseLeave(i)"
+                            <button class="button-content-view" tabindex="0" (dblclick)="runProcess(file)" (mouseenter)="onMouseEnter($event, file, i)" (mouseleave)="onMouseLeave(i)"
                                 (contextmenu)="onShowIconContextMenu($event, file, i)" (click)="onBtnClick(i)" id="btnElmnt-{{this.processId}}-{{i}}">
                                 <span class="span-content-view">
                                     <figure class="figure-content-view" id="figElmnt-{{this.processId}}-{{i}}">
@@ -351,11 +351,11 @@
                     </ng-template>
                     <ng-template #tilesView0>
                         <li class="li-tiles-view" *ngFor="let file of files; let i = index">
-                            <button class="button-tiles-view" tabindex="0" (dblclick)="runProcess(file)" (mouseenter)="onMouseEnter($event,i)" (mouseleave)="onMouseLeave(i)"
+                            <button class="button-tiles-view" tabindex="0" (dblclick)="runProcess(file)" (mouseenter)="onMouseEnter($event, file, i)" (mouseleave)="onMouseLeave(i)"
                                 (contextmenu)="onShowIconContextMenu($event, file, i)" (click)="onBtnClick(i)" id="btnElmnt-{{this.processId}}-{{i}}">
                                 <span class="span-tiles-view">
                                     <figure class="figure-tiles-view">
-                                        <img class="img-tiles-view" [src]="file.getIconPath | safeResourceUrl" [alt]="file.getFileName"/>
+                                        <img class="img-tiles-view" [src]="file.getIconPath | safeResourceUrl" [alt]="file.getFileName" id="imgElmnt-{{this.processId}}-{{i}}"/>
                                     </figure>
 
                                     <figcaption *ngIf="!file.getIsFile, else elseBlock" class="figcaption-tiles-view" id="figCapElmnt-{{this.processId}}-{{i}}">
@@ -396,11 +396,11 @@
 
                     <cos-menu [menuItems]="menuData" *ngIf="showCntxtMenu" [style]="fxIconCntxtMenuStyle"> </cos-menu>
 
-                    <div class="fx-information-tip-container" id="fx-information-tip-{{this.processId}}"  *ngIf="showInfoTip">
-                        <div class="fx-information-tip-item">Type:Jpeg File </div>
-                        <div class="fx-information-tip-item">Author:Chinonso, Maduakolam </div>
-                        <div class="fx-information-tip-item">Size:3.9 MB</div>
-                        <div class="fx-information-tip-item">Date Modified:10/10/2023 11:16AM</div>
+                    <div class="fx-information-tip-container" id="fx-information-tip-{{this.processId}}"  *ngIf="showInformationTip">
+                        <div class="fx-information-tip-item">Type: {{fileType}} </div>
+                        <div class="fx-information-tip-item">Author: {{fileAuthor}} </div>
+                        <div class="fx-information-tip-item">Size: {{fileSize}}</div>
+                        <div class="fx-information-tip-item">Date Modified: {{fileDateModified}}</div>
                     </div>
                 </ol>
             </div>
