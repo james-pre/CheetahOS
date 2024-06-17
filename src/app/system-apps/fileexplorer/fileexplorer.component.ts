@@ -13,7 +13,7 @@ import { StateManagmentService } from 'src/app/shared/system-service/state.manag
 import { FileManagerService } from 'src/app/shared/system-service/file.manager.services';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ViewOptions } from './fileexplorer.enums';
-import {basename, extname} from 'path';
+import {basename} from 'path';
 import { AppState, BaseState } from 'src/app/system-files/state/state.interface';
 import { StateType } from 'src/app/system-files/state/state.type';
 import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
@@ -66,7 +66,6 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   private currentIconName = '';
 
   isSearchBoxNotEmpty = false;
-  isImage = false;
   showPathHistory = false;
   onClearSearchIconHover = false;
   onSearchIconHover = false;
@@ -92,7 +91,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   recentPathEntries:string[] = [];
   upPathEntries:string[] = ['/osdrive/Desktop'];
   _directoryHops:string[] = ['osdrive'];
-  SECONDS_DELAY:number[] = [100, 1500, 6000, 9000];
+  SECONDS_DELAY:number[] = [100, 1500, 6000, 12000];
   
   defaultviewOption = ViewOptions.MEDIUM_ICON_VIEW;
   currentViewOption = ViewOptions.MEDIUM_ICON_VIEW;
@@ -121,6 +120,8 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
     { label: 'Delete', action: this.onDeleteFile.bind(this) },
     { label: 'Rename', action: this.onRenameFileTxtBoxShow.bind(this) }
   ];
+
+  fileInfoTipData = [{label:'', data:''}];
 
   fileType = '';
   fileAuthor = '';
@@ -597,7 +598,6 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
 
     console.log('fileexplorer-runProcess:',file)
     this.showInformationTip = false;
-    this.isImage = false;
     // console.log('what was clicked:',file.getFileName +'-----' + file.getOpensWith +'---'+ file.getCurrentPath +'----'+ file.getIcon) TBD
     if((file.getOpensWith === 'fileexplorer' && file.getFileName !== 'fileexplorer') && file.getFileType ==='folder'){
 
@@ -675,6 +675,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
     this._runningProcessService.responseToEventCount++;
     this.selectedFile = file;
     this.isIconInFocusDueToPriorAction = false;
+    this.showInformationTip = false;
     this.showCntxtMenu = !this.showCntxtMenu;
 
     // show IconContexMenu is still a btn click, just a different type
@@ -716,7 +717,6 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   onMouseLeave(id:number):void{
     this.showInformationTip = false;
     this.hideInformationTip = false;
-    this.isImage = false;
 
     if(id != this.selectedElementId){
       this.removeBtnStyle(id);
@@ -878,19 +878,19 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
     setTimeout(()=>{
       const infoTip = document.getElementById(`fx-information-tip-${this.processId}`) as HTMLElement;
       if(infoTip){
-        setTimeout(()=>{ // hide after 6 secs
+        setTimeout(()=>{ 
           infoTip.style.display = 'block';
           infoTip.style.transform = `translate(${String(x)}px, ${String(y)}px)`;
           this.setInformationTipInfo(file);
           this.hideInformationTip = true;
 
-          if(this.hideInformationTip){
-            setTimeout(()=>{ // hide after 9 secs
-              this.hideInformationTip = false;
-              this.isImage = false;
-              this.showInformationTip = false;
-            },this.SECONDS_DELAY[3]) 
-          }
+          // if(this.hideInformationTip){
+          //   setTimeout(()=>{ // hide after 9 secs
+          //     this.hideInformationTip = false;
+          //     this.showInformationTip = false;
+          //   },this.SECONDS_DELAY[3]) 
+          // }
+
         },this.SECONDS_DELAY[1])  //wait 1.5 seconds
       }
     },this.SECONDS_DELAY[0]) // wait 100th of a sec
@@ -898,19 +898,49 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
 
   setInformationTipInfo(file:FileInfo):void{
 
-    this.fileAuthor = 'Relampago Del Catatumbo';
-    this.fileType = file.getFileType;
-    this.fileDateModified = file.getDateModifiedUS;
-    this.fileSize = `${String(file.getSize1)}  ${file.getFileSizeUnit}`
+    console.log('file:',file);
+
+    const infoTipFields = ['Author:', 'Item type:','Date created:','Date modified:', 'Dimesions:', 'General', 'Size:','Type:'];
+    const fileAuthor = 'Relampago Del Catatumbo';
+    const fileType = file.getFileType;
+    const fileDateModified = file.getDateModifiedUS;
+    const fileSize = `${String(file.getSize1)}  ${file.getFileSizeUnit}`;
+    const fileName = file.getFileName;
+
+    //reset
+    this.fileInfoTipData = [];
 
     if(this._consts.IMAGE_FILE_EXTENSIONS.includes(file.getFileType)){
-      this.isImage = true;
-
       const img = new Image();
       img.src = file.getCurrentPath;
       const width = img?.naturalWidth;
       const height = img?.naturalHeight;
-      this.fileDimesions = `${width} x ${height}`;
+      const imgDimesions = `${width} x ${height}`;
+
+      this.fileInfoTipData.push({label:infoTipFields[1], data:`${file.getFileType.replace('.','').toLocaleUpperCase()} File`});
+      this.fileInfoTipData.push({label:infoTipFields[4], data:imgDimesions })
+      this.fileInfoTipData.push({label:infoTipFields[6], data:fileSize })
+    }
+
+    if(fileType === '.txt'){
+      this.fileInfoTipData.push({label:infoTipFields[1], data:'Text Document'});
+      this.fileInfoTipData.push({label:infoTipFields[3], data: fileDateModified });
+      this.fileInfoTipData.push({label:infoTipFields[6], data:fileSize });
+    }
+
+    if(fileType === 'folder'){
+      if(fileName === 'Desktop' || fileName === 'Documents' || fileName === 'Downloads'){
+        this.fileInfoTipData.push({label:infoTipFields[2], data:fileDateModified })
+      }else if(fileName === 'Music'){
+        this.fileInfoTipData.push({label:'', data:'Contains music and other audio files' })
+      }else if(fileName === 'Videos'){
+        this.fileInfoTipData.push({label:'', data:'Contains movies and other video files' })
+      }else if(fileName === 'Pictures' ){
+        this.fileInfoTipData.push({label:'', data:'Contains digital photos, images and graphic files'})
+      }else{
+        this.fileInfoTipData.push({label:infoTipFields[1], data:fileAuthor });
+        this.fileInfoTipData.push({label:infoTipFields[2], data:fileDateModified });
+      }
     }
   }
 
