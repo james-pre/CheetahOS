@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import { ComponentType } from 'src/app/system-files/component.types';
 
 @Component({
@@ -11,11 +11,14 @@ import { ComponentType } from 'src/app/system-files/component.types';
 export class DialogComponent implements OnInit {
 
 
+  @Input() nameOfAppNotFound = '';
+
   hasWindow = false;
   icon = '';
   name = 'error dialog';
   type = ComponentType.System;
   displayName = ':/osdrive';
+  displayMgs = `osdrive:/app directory/${this.nameOfAppNotFound}`;
   
   closeBtnStyles: Record<string, unknown> = {};
 

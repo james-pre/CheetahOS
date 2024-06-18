@@ -3,8 +3,8 @@
         <div class="error-dialog-left-header-section">
             <h1 class="error-dialog-h1">
                 <figure class="error-dialog-figure">
-                    <img class="error-dialog-img" [src]="this.icon" [alt]="this.name"/>
-                    <figcaption class="error-dialog-figcaption"> {{this.displayName}} </figcaption>
+                    <!-- <img class="error-dialog-img" [src]="this.icon" [alt]="this.name"/> -->
+                    <figcaption class="error-dialog-figcaption"> {{this.displayMgs}} </figcaption>
                 </figure>
             </h1>
         </div>
@@ -21,12 +21,14 @@
 
     <div class="error-dialog-mid-container">
         <div class="error-dialog-mid-section1">
-            <h1 class="error-dialog-h2">
+            <div class="error-dialog-mid-img">
                 <figure class="error-dialog-figure1">
                     <img class="error-dialog-img1" [src]="'/osdrive/icons/red-x_50.png'" [alt]="this.name"/>
-                    <figcaption class="error-dialog-figcaption1"> {{this.displayName}} </figcaption>
                 </figure>
-            </h1>
+            </div>
+            <div class="error-dialog-mid-txt">
+                <span class="error-dialog-mid-section1-msg">{{this.displayMgs}}</span>
+            </div>
         </div>
         <div class="error-dialog-mid-section2">
             <span class="error-dialog-mid-section2-msg">Application not found</span>
@@ -37,3 +39,18 @@
         
     </div>
 </div>
+
+
+<!-- <div class="error-dialog-mid-container">
+    <div class="error-dialog-mid-section1">
+        <h1 class="error-dialog-h2">
+            <figure class="error-dialog-figure1">
+                <img class="error-dialog-img1" [src]="'/osdrive/icons/red-x_50.png'" [alt]="this.name"/>
+                <figcaption class="error-dialog-figcaption1"> {{this.displayMgs}} </figcaption>
+            </figure>
+        </h1>
+    </div>
+    <div class="error-dialog-mid-section2">
+        <span class="error-dialog-mid-section2-msg">Application not found</span>
+    </div>
+</div> -->
