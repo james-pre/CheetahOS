@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import { ComponentType } from 'src/app/system-files/component.types';
 
 @Component({
@@ -8,7 +8,7 @@ import { ComponentType } from 'src/app/system-files/component.types';
 })
 
 
-export class DialogComponent implements OnInit {
+export class DialogComponent implements OnInit,OnChanges {
 
 
   @Input() nameOfAppNotFound = '';
@@ -17,12 +17,12 @@ export class DialogComponent implements OnInit {
   icon = '';
   name = 'error dialog';
   type = ComponentType.System;
-  displayName = ':/osdrive';
-  displayMgs = `osdrive:/app directory/${this.nameOfAppNotFound}`;
+  displayName = ':/Osdrive';
+  displayMgs = '';
   
   closeBtnStyles: Record<string, unknown> = {};
 
-  constructor(){
+  constructor(private changeDetectorRef: ChangeDetectorRef ){
     console.log('you seeing this shit :)');
   }
 
@@ -30,6 +30,12 @@ export class DialogComponent implements OnInit {
   ngOnInit(): void {
     console.log('you seeing this shit :)');
   }
+
+  ngOnChanges(changes: SimpleChanges):void{
+    //console.log('DIALOG onCHANGES:',changes);
+    this.displayMgs = `Osdrive:/App Directory/${this.nameOfAppNotFound}`;
+  }
+
 
   onCloseBtnClick():void{
   1

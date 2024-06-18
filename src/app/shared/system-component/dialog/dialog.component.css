@@ -34,7 +34,7 @@ right: 0;
 
 .error-dialog-h1{
     color: #fff;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: normal;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     height: 29px;
@@ -102,12 +102,12 @@ right: 0;
 
 .error-dialog-mid-section1{
     display: flex;
-    height: 57.5px;
+    height: 52.5px;
     width: 100%;
 }
 
 .error-dialog-mid-section2{
-    height: 37.5px;
+    height: 42.5px;
     width: 100%;
 }
 
@@ -117,7 +117,7 @@ right: 0;
 
 .error-dialog-mid-img{
     width: fit-content;
-    height: 57.5px;
+    height: 52.5px;
 }
 
 .error-dialog-img1{
@@ -148,11 +148,16 @@ right: 0;
 
 .error-dialog-mid-section1-msg, .error-dialog-mid-section2-msg {
     position: relative;
-    left: -80px;
-    top: 14px;
-    font-size: 14px;
+    font-size: 13px;
+    width: 100%;
     font-weight: normal;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.error-dialog-mid-section1-msg{
+    padding-left: 21px;
+    left: -50px;
+    top: 15px;
 }
 
 .error-dialog-mid-section2-msg{

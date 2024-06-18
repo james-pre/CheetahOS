@@ -117,7 +117,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
     if(this._appDirectory.appExist(appName)){
         this.lazyLoadComponment(this._appDirectory.getAppPosition(appName));
     }else{
-      this.lazyLoadDialogComponment();
+      this.lazyLoadDialogComponment(appName);
 
       //alert(`The app: ${appName} was not found. It could have been deleted or location changed.`)
     }
@@ -134,8 +134,11 @@ export class AppComponent implements OnDestroy, AfterViewInit {
    this._runningProcessService.processListChangeNotify.next()
   }
 
-  private  lazyLoadDialogComponment() {
-    this.itemViewContainer.createComponent(DialogComponent);
+  private  lazyLoadDialogComponment(appName:string) {
+    
+    const componentRef = this.itemViewContainer.createComponent(DialogComponent);
+    componentRef.setInput('nameOfAppNotFound', appName);
+    componentRef.changeDetectorRef.detectChanges();
   }
 
   onCloseBtnClicked(eventData:Process):void{
@@ -220,7 +223,6 @@ export class AppComponent implements OnDestroy, AfterViewInit {
     },this.SECONDS_DELAY[1], priorSessionData);
 
   }
-
 
   private addEntryFromUserOpenedApps(proccessName:string):void{
     this.userOpenedAppsList.push(proccessName);
