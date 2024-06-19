@@ -1,6 +1,7 @@
 import {ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { NotificationService } from '../../system-service/notification.service';
+import { NotificationType } from 'src/app/system-files/notification.type';
 
 @Component({
   selector: 'cos-dialog',
@@ -17,22 +18,17 @@ export class DialogComponent implements OnChanges {
   private _notificationServices:NotificationService;
 
   notificationOption = '';
-  errorNotification = "Error";
-  infoNotification = "Info";
+  errorNotification = NotificationType.Error;
+  infoNotification =  NotificationType.Info;
 
-  hasWindow = false;
-  icon = '';
-  name = 'error dialog';
+
+  notificationId = 0;
   type = ComponentType.System;
-  displayName = ':/Osdrive';
   displayMgs = '';
-
-
-  
-  closeBtnStyles: Record<string, unknown> = {};
 
   constructor(private changeDetectorRef: ChangeDetectorRef, notificationServices:NotificationService){
     this._notificationServices = notificationServices;
+    this.notificationId = this.generateNotificationId();
   }
 
 
@@ -44,7 +40,13 @@ export class DialogComponent implements OnChanges {
 
 
   onCloseDialogBox():void{
-    this._notificationServices.closeDialogBoxNotify.next();
+    this._notificationServices.closeDialogBoxNotify.next(this.notificationId);
+  }
+
+  private generateNotificationId(): number{
+    const min = Math.ceil(0);
+    const max = Math.floor(999);
+    return Math.floor(Math.random() * (max - min + 1)) + min; 
   }
 
 }

@@ -99,9 +99,9 @@ export class AppComponent implements OnDestroy, AfterViewInit {
     this._appNotFoundSub = this._triggerProcessService.appNotFoundNotify.subscribe((appName) =>{this.showDialogMsgBox(NotificationType.Error,appName)})
     this._appIsRunningSub = this._triggerProcessService.appIsRunningNotify.subscribe((appName) =>{this.showDialogMsgBox(NotificationType.Info,appName)})
     this._errorNotifySub = this._notificationServices.errorNotify.subscribe((appName) =>{this.showDialogMsgBox(NotificationType.Error,appName)})
-    this._infoNotifySub = this._notificationServices.errorNotify.subscribe((appName) =>{this.showDialogMsgBox(NotificationType.Info,appName)})
+    this._infoNotifySub = this._notificationServices.InfoNotify.subscribe((appName) =>{this.showDialogMsgBox(NotificationType.Info,appName)})
     this._closeProcessSub = this._runningProcessService.closeProcessNotify.subscribe((p) =>{this.onCloseBtnClicked(p)})
-    this._closeMsgDialogSub = this._notificationServices.closeDialogBoxNotify.subscribe(() =>{this.closeDialogMsgBox()})
+    this._closeMsgDialogSub = this._notificationServices.closeDialogBoxNotify.subscribe((i) =>{this.closeDialogMsgBox(i)})
     this._runningProcessService.addProcess(this.getComponentDetail());
 
     this._appDirectory = new AppDirectory();
@@ -142,8 +142,10 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   }
 
   private showDialogMsgBox(dialogMsgType:string, msg:string):void{
-  
     const componentRef = this.itemViewContainer.createComponent(DialogComponent);
+    const notificationId = componentRef.instance.notificationId;
+    this._componentReferenceService.addComponentReference(notificationId, componentRef);
+
 
     if(dialogMsgType === NotificationType.Error){
       componentRef.setInput('inputMsg', msg);
@@ -156,15 +158,17 @@ export class AppComponent implements OnDestroy, AfterViewInit {
     componentRef.changeDetectorRef.detectChanges();
   }
 
-  private closeDialogMsgBox():void{
-    1
+  private closeDialogMsgBox(dialogId:number):void{
+    const componentToDelete = this._componentReferenceService.getComponentReference(dialogId);
+    this._componentRefView = componentToDelete.hostView;
+    const iVCntr  = this.itemViewContainer.indexOf(this._componentRefView);
+    this.itemViewContainer.remove(iVCntr);
   }
 
   onCloseBtnClicked(eventData:Process):void{
     
     const componentToDelete = this._componentReferenceService.getComponentReference(eventData.getProcessId);
     this._componentRefView = componentToDelete.hostView;
-    
     const iVCntr  = this.itemViewContainer.indexOf(this._componentRefView);
     this.itemViewContainer.remove(iVCntr);
 
