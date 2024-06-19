@@ -1,18 +1,22 @@
 /*Head Section*/
 
-.error-dialog-main-container{
+.error-dialog-main-container, .info-dialog-main-container{
     font-size: 1rem;
     text-align: center;
     background-color: #fff;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 50%);
     position: absolute;
-    width: 350px;
-    height: 170px;
     top: 40%;
     left: 15%;
     transform: translate(-50%, -50%); /* Move the element back by 50% of its own width and height */
     outline: 1px hsl(0deg 0% 20%/70%);
     z-index: 2;
+}
+
+
+.error-dialog-main-container{
+    width: 350px;
+    height: 170px;
 }
 
 .error-dialog-header-container{
@@ -92,9 +96,9 @@ right: 0;
     height: 30px;
 }
 
-/*Mid Section*/
+/*Mid Section ERROR & INFO*/
 
-.error-dialog-mid-container{
+.error-dialog-mid-container, .info-dialog-mid-container{
     display: block;
     width: 100%;
     height: 95px;
@@ -106,12 +110,12 @@ right: 0;
     width: 100%;
 }
 
-.error-dialog-mid-section2{
+.error-dialog-mid-section2, .info-dialog-mid-section2{
     height: 42.5px;
     width: 100%;
 }
 
-.error-dialog-mid-section2-msg{
+.error-dialog-mid-section2-msg, .info-dialog-mid-section2-msg{
     position: relative;
 }
 
@@ -184,3 +188,70 @@ right: 0;
     height: 24px;
     width: 65px;
   }
+
+
+
+  /*Info Notifivation*/
+
+.info-dialog-main-container{
+    width: 400px;
+    height: 130px;
+}
+
+.info-dialog-mid-section1{
+    display: flex;
+    height: 80px;
+    width: 100%;
+}
+
+  /*Mid Info */
+
+.info-dialog-mid-img1{
+    width: fit-content;
+    height: 80px;
+}
+
+.info-dialog-img1{
+    position: relative;
+    top: 25px;
+    height: 38px;
+    width: 38px;
+    margin: 0 14px;
+    image-rendering: optimizeQuality;
+}
+  
+.info-dialog-figure1{
+    display: flex;
+    align-items: center;
+    height: 38px;
+}
+  
+.info-dialog-figcaption1{
+    color: #000;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.info-dialog-mid-txt1{
+    width: calc(100% - 54px);
+}
+
+.info-dialog-mid-section1-msg{
+    padding-left: 10px;
+    left: -30px;
+    top: 34px;
+    position: relative;
+    font-size: 13px;
+    width: 100%;
+    font-weight: normal;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/*Tail Section*/
+.info-dialog-tail-container{
+    display: flex;
+    background-color: #e5e5e5;
+    width: 100%;
+    height: 45px;
+}

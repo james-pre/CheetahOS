@@ -20,6 +20,8 @@ import { TerminalComponent } from './system-apps/terminal/terminal.component';
 import { RuffleComponent } from './user-apps/ruffle/ruffle.component';
 import { PhotoviewerComponent } from './system-apps/photoviewer/photoviewer.component';
 import { DialogComponent } from './shared/system-component/dialog/dialog.component';
+import { NotificationType } from './system-files/notification.type';
+import { NotificationService } from './shared/system-service/notification.service';
 
 @Component({
   selector: 'cos-root',
@@ -40,6 +42,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   private _componentReferenceService:ComponentReferenceService;
   private _triggerProcessService:TriggerProcessService;
   private _sessionMangamentServices:SessionManagmentService;
+  private _notificationServices:NotificationService;
   private _componentRefView!:ViewRef;
   private _appDirectory:AppDirectory;
 
@@ -47,6 +50,8 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   private _startProcessSub!:Subscription;
   private _appNotFoundSub!:Subscription;
   private _appIsRunningSub!:Subscription;  
+  private _errorNotifySub!:Subscription;
+  private _infoNotifySub!:Subscription;  
 
   private userOpenedAppsList:string[] = [];
   private retreivedKeys:string[] = [];
@@ -79,7 +84,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
 
 
   constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService,componentReferenceService:ComponentReferenceService, triggerProcessService:TriggerProcessService,
-    sessionMangamentServices:SessionManagmentService){
+    sessionMangamentServices:SessionManagmentService, notificationServices:NotificationService){
     this._processIdService = processIdService
     this.processId = this._processIdService.getNewProcessId()
 
@@ -87,10 +92,14 @@ export class AppComponent implements OnDestroy, AfterViewInit {
     this._runningProcessService = runningProcessService;
     this._triggerProcessService = triggerProcessService;
     this._sessionMangamentServices = sessionMangamentServices;
+    this._notificationServices = notificationServices;
 
     this._startProcessSub = this._triggerProcessService.startProcessNotify.subscribe((appName) =>{this.loadApps(appName)})
-    this._startProcessSub = this._triggerProcessService.appNotFoundNotify.subscribe((appName) =>{this.loadApps(appName)})
-    this._runningProcessService.closeProcessNotify.subscribe((p) =>{this.onCloseBtnClicked(p)})
+    this._appNotFoundSub = this._triggerProcessService.appNotFoundNotify.subscribe((appName) =>{this.showDialogMsg(NotificationType.Error,appName)})
+    this._appIsRunningSub = this._triggerProcessService.appIsRunningNotify.subscribe((appName) =>{this.showDialogMsg(NotificationType.Info,appName)})
+    this._errorNotifySub = this._notificationServices.errorNotify.subscribe((appName) =>{this.showDialogMsg(NotificationType.Error,appName)})
+    this._infoNotifySub = this._notificationServices.errorNotify.subscribe((appName) =>{this.showDialogMsg(NotificationType.Info,appName)})
+    this._closeProcessSub = this._runningProcessService.closeProcessNotify.subscribe((p) =>{this.onCloseBtnClicked(p)})
     this._runningProcessService.addProcess(this.getComponentDetail());
 
     this._appDirectory = new AppDirectory();
@@ -101,6 +110,8 @@ export class AppComponent implements OnDestroy, AfterViewInit {
     this._startProcessSub?.unsubscribe();
     this._appNotFoundSub?.unsubscribe();
     this._appIsRunningSub?.unsubscribe();
+    this._errorNotifySub?.unsubscribe();
+    this._infoNotifySub?.unsubscribe();
   }
 
   ngAfterViewInit():void{
@@ -114,13 +125,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   }
 
   async loadApps(appName:string):Promise<void>{
-    if(this._appDirectory.appExist(appName)){
-        this.lazyLoadComponment(this._appDirectory.getAppPosition(appName));
-    }else{
-      this.lazyLoadDialogComponment(appName);
-
-      //alert(`The app: ${appName} was not found. It could have been deleted or location changed.`)
-    }
+    this.lazyLoadComponment(this._appDirectory.getAppPosition(appName));
   }
 
   private async lazyLoadComponment(appPosition:number) {
@@ -134,10 +139,18 @@ export class AppComponent implements OnDestroy, AfterViewInit {
    this._runningProcessService.processListChangeNotify.next()
   }
 
-  private  lazyLoadDialogComponment(appName:string) {
-    
+  private showDialogMsg(dialogMsgType:string, msg:string) {
+  
     const componentRef = this.itemViewContainer.createComponent(DialogComponent);
-    componentRef.setInput('nameOfAppNotFound', appName);
+
+    if(dialogMsgType === NotificationType.Error){
+      componentRef.setInput('inputMsg', msg);
+      componentRef.setInput('notificationType', dialogMsgType);
+    }else if(dialogMsgType === NotificationType.Info){
+      componentRef.setInput('inputMsg', msg);
+      componentRef.setInput('notificationType', dialogMsgType);
+    }
+
     componentRef.changeDetectorRef.detectChanges();
   }
 

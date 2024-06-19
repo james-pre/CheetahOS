@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import { ComponentType } from 'src/app/system-files/component.types';
 
 @Component({
@@ -8,10 +8,14 @@ import { ComponentType } from 'src/app/system-files/component.types';
 })
 
 
-export class DialogComponent implements OnInit,OnChanges {
+export class DialogComponent implements OnChanges {
 
+  @Input() inputMsg = '';
+  @Input() notificationType = '';
 
-  @Input() nameOfAppNotFound = '';
+  notificationOption = '';
+  errorNotification = "Error";
+  infoNotification = "Info";
 
   hasWindow = false;
   icon = '';
@@ -19,25 +23,23 @@ export class DialogComponent implements OnInit,OnChanges {
   type = ComponentType.System;
   displayName = ':/Osdrive';
   displayMgs = '';
+
+
   
   closeBtnStyles: Record<string, unknown> = {};
 
   constructor(private changeDetectorRef: ChangeDetectorRef ){
-    console.log('you seeing this shit :)');
   }
 
-
-  ngOnInit(): void {
-    console.log('you seeing this shit :)');
-  }
 
   ngOnChanges(changes: SimpleChanges):void{
     //console.log('DIALOG onCHANGES:',changes);
-    this.displayMgs = `Osdrive:/App Directory/${this.nameOfAppNotFound}`;
+    this.displayMgs = this.inputMsg;
+    this.notificationOption =this.notificationType;
   }
 
 
-  onCloseBtnClick():void{
+  onCloseDialogBox():void{
   1
   }
 

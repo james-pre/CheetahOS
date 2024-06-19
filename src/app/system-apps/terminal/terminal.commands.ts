@@ -13,6 +13,7 @@ export class TerminalCommands{
     private _runningProcessService:RunningProcessService;
     private _stateManagmentService:StateManagmentService;
     private _appDirctory = new AppDirectory();
+    private closingNotAllowed:string[] = ["system", "desktop", "filemanager", "taskbar", "startbutton","clock","taskbarentry"];
 
     constructor() { 
         this._triggerProcessService = TriggerProcessService.instance;
@@ -173,9 +174,14 @@ All commands:
         const pid = Number(arg1);
         const processToClose = this._runningProcessService.getProcess(pid);
         if(processToClose){
-            this._stateManagmentService.removeState(`${processToClose.getProcessId}-${processToClose.getProcessId}`);
-            this._runningProcessService.closeProcessNotify.next(processToClose);
-            return `closing app, app name: ${processToClose.getProcessName}  app id: ${processToClose.getProcessId}`;
+            if(this.closingNotAllowed.includes(processToClose.getProcessName)){
+                return `The app: ${processToClose.getProcessName} is not allowed to be closed`;
+            }else{
+                this._stateManagmentService.removeState(`${processToClose.getProcessId}-${processToClose.getProcessId}`);
+                this._runningProcessService.closeProcessNotify.next(processToClose);
+                return `closing app, app name: ${processToClose.getProcessName}  app id: ${processToClose.getProcessId}`;
+            }
+
         }else{
             return `${arg1}: No active process with pid:${arg1} found.`
         }

@@ -10,6 +10,7 @@ import { StateManagmentService } from 'src/app/shared/system-service/state.manag
 import { FileInfo } from 'src/app/system-files/fileinfo';
 import { RefreshRates, RefreshRatesIntervals, TableColumns,DisplayViews } from './taskmanager.enum';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
+import { NotificationService } from 'src/app/shared/system-service/notification.service';
 // import { ResizableTableColumns } from '@validide/resizable-table-columns';
 // import { IStore } from 'resizable-options';
 
@@ -35,7 +36,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _stateManagmentService: StateManagmentService;
-  //private _triggerProcessService:TriggerProcessService;
+  private _notificationService:NotificationService;
   private _renderer: Renderer2;
 
   private _processListChangeSub!: Subscription;
@@ -102,12 +103,12 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService,
-     stateManagmentService: StateManagmentService,triggerProcessService:TriggerProcessService, renderer: Renderer2) { 
+     stateManagmentService: StateManagmentService, notificationService:NotificationService, renderer: Renderer2) { 
 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this._stateManagmentService = stateManagmentService;
-    //this._triggerProcessService = triggerProcessService;
+    this._notificationService = notificationService;
     this._renderer = renderer;
 
     this.processId = this._processIdService.getNewProcessId()
@@ -556,7 +557,9 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       this._stateManagmentService.removeState(`${this.name}-${this.processId}`);
       this._runningProcessService.closeProcessNotify.next(processToClose);
     }else{
-      alert(`The app: ${processToClose.getProcessName} is not allowed to be closed`)
+      //alert(`The app: ${processToClose.getProcessName} is not allowed to be closed`)
+      const msg = `The app: ${processToClose.getProcessName} is not allowed to be closed`;
+      this._notificationService.warningNotify.next(msg);
     }
   }
 
