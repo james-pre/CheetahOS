@@ -173,7 +173,10 @@ export class FilemanagerComponent implements BaseComponent, OnInit, AfterViewIni
   }
 
   onShowIconContextMenu(evt:MouseEvent, file:FileInfo, id:number):void{
-    this._runningProcessService.responseToEventCount++;
+    
+    const uid = `${this.name}-${this.processId}`;
+    this._runningProcessService.addEventOriginator(uid);
+
     this.selectedFile = file;
     this.showCntxtMenu = !this.showCntxtMenu;
 

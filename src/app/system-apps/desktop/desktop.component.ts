@@ -80,18 +80,6 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   private nextColor:Colors = new Colors();
   private animationId:any;
 
-  // see how this was used in the filmanager & fileexplorer
-  // menuDictionary = {
-  //   'Category 1': [
-  //     { name: 'Item 1', action: () => console.log('Action 1 executed') },
-  //     { name: 'Item 2', action: () => console.log('Action 2 executed') },
-  //   ],
-  //   'Category 2': [
-  //     { name: 'Item 3', action: () => console.log('Action 3 executed') },
-  //     { name: 'Item 4', action: () => console.log('Action 4 executed') },
-  //   ]
-  // };
- 
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService,fileManagerServices:FileManagerService,
               triggerProcessService:TriggerProcessService) { 
@@ -149,8 +137,6 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
   showContextMenu(evt:MouseEvent):void{
-    this._runningProcessService.responseToEventCount++;
-    const evtRespCount = this._runningProcessService.responseToEventCount;
 
     /**
      * There is a doubling of responses to certain events that exist on the 
@@ -159,21 +145,21 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
      * If there is a count of 2 or more(highly unlikely) reponses for a given event, then, ignore the desktop's response
      */
 
-    if(evtRespCount > this._runningProcessService.MAX_RESPONSE_TO_EVENT){
-      this._runningProcessService.responseToEventCount = 0
-      return;
+    const evtOriginator = this._runningProcessService.getEventOrginator();
+
+    if(evtOriginator == ''){
+      this.cntxtMenuStyle = {
+        'display': 'block', 
+        'width': '225px', 
+        'transform':`translate(${String(evt.clientX + 2)}px, ${String(evt.clientY)}px)`,
+        'z-index': 2,
+        'opacity':1
+      }
+      evt.preventDefault();
     }
-
-    // this.cntxtMenuStyle = {
-    //   'display': 'block', 
-    //   'width': '225px', 
-    //   'transform':`translate(${String(evt.clientX + 2)}px, ${String(evt.clientY)}px)`,
-    //   'z-index': 2,
-    //   'opacity':1
-    // }
-
-    // this._runningProcessService.responseToEventCount = 0;
-    // evt.preventDefault();
+    else{
+      this._runningProcessService.removeEventOriginator();
+    }
   }
 
   hideContextMenu():void{

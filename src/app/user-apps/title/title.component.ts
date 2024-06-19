@@ -47,11 +47,20 @@ export class TitleComponent implements BaseComponent, OnDestroy, AfterViewInit{
   }
 
   maximizeWindow():void{
-    const mainWindow = document.getElementById('vanta');
-    //window title and button bar, and windows taskbar height
-    const pixelTosubtract = 30 + 40;
-    this.ptag.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
-    this.ptag.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+
+    const uid = `${this.name}-${this.processId}`;
+    const evtOriginator = this._runningProcessService.getEventOrginator();
+
+    if(uid === evtOriginator){
+
+      this._runningProcessService.removeEventOriginator();
+      const mainWindow = document.getElementById('vanta');
+      //window title and button bar, and windows taskbar height
+      const pixelTosubtract = 30 + 40;
+      this.ptag.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
+      this.ptag.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+
+    }
   }
 
   setTitleWindowToFocus(pid:number):void{

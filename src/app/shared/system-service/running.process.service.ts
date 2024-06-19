@@ -10,10 +10,11 @@ import { Process } from "src/app/system-files/process";
 export class RunningProcessService{
 
     static instance: RunningProcessService;
-    responseToEventCount = 0;
-    readonly MAX_RESPONSE_TO_EVENT = 1;
+    // responseToEventCount = 0;
+    // readonly MAX_RESPONSE_TO_EVENT = 1;
 
-    private _runningProcesses:Process[]
+    private _runningProcesses:Process[];
+    private _eventOriginator = '';
     processListChangeNotify: Subject<void> = new Subject<void>();
     closeProcessNotify: Subject<Process> = new Subject<Process>();
     focusOnNextProcessNotify: Subject<void> = new Subject<void>();
@@ -31,6 +32,10 @@ export class RunningProcessService{
         this._runningProcesses.push(proccessToAdd)
     }
 
+    addEventOriginator(eventOrig:string):void{
+        this._eventOriginator = eventOrig;
+    }
+
     removeProcess(proccessToRemove:Process):void{
         const deleteCount = 1;
         const procIndex = this._runningProcesses.findIndex((process) => {
@@ -42,6 +47,10 @@ export class RunningProcessService{
         }
     }
 
+    removeEventOriginator():void{
+        this._eventOriginator = '';
+    }
+
     getProcess(processId:number):Process{
         const process = this._runningProcesses.find((process) => {
             return process.getProcessId === processId;
@@ -49,6 +58,10 @@ export class RunningProcessService{
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return process!;
+    }
+
+    getEventOrginator():string{
+        return this._eventOriginator;
     }
 
     isProcessRunning(appName:string):boolean{

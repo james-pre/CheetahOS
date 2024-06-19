@@ -320,6 +320,9 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     const x = evt.clientX - rect.left;
     const y = evt.clientY - rect.top;
 
+    const uid = `${this.name}-${this.processId}`;
+    this._runningProcessService.addEventOriginator(uid);
+
     this.cntxtMenuStyle = {
       'display': 'block', 
       'width': '180px', 
@@ -328,7 +331,6 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       'opacity':1
     }
 
-    this._runningProcessService.responseToEventCount++;
     evt.preventDefault();
   }
 
@@ -764,28 +766,33 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   }
 
   maximizeWindow():void{
+    const uid = `${this.name}-${this.processId}`;
+    const evtOriginator = this._runningProcessService.getEventOrginator();
 
-    const mainWindow = document.getElementById('vanta'); 
+    if(uid === evtOriginator){
+      this._runningProcessService.removeEventOriginator();
+      const mainWindow = document.getElementById('vanta'); 
 
-    // console.log('mainWindow?.offsetHeight:',mainWindow?.offsetHeight);
-    // console.log('mainWindow?.offsetWidth:',mainWindow?.offsetWidth);
-
-    /*
-    -45 (tskmgr footer)
-    -30 (window title and button tab)
-    -20 (taskmgr nav buttons)
-    -3  (span)
-    -19 (tskmgr tabs)
-    -1px (body border solid px)
-    -40 (windows taskbar)
-    */
-    const pixelToSubtract = 45 + 30 + 20 + 3 + 19 + 1 + 40;
-    this.tskmgrTblCntnr.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelToSubtract}px`;
-    this.tskmgrTblCntnr.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
-
-
-    // this.tskMgrTable.nativeElement.style.height = `${mainWindow?.offsetHeight || 0 - 84}px`;
-    this.tskMgrTable.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+      // console.log('mainWindow?.offsetHeight:',mainWindow?.offsetHeight);
+      // console.log('mainWindow?.offsetWidth:',mainWindow?.offsetWidth);
+  
+      /*
+      -45 (tskmgr footer)
+      -30 (window title and button tab)
+      -20 (taskmgr nav buttons)
+      -3  (span)
+      -19 (tskmgr tabs)
+      -1px (body border solid px)
+      -40 (windows taskbar)
+      */
+      const pixelToSubtract = 45 + 30 + 20 + 3 + 19 + 1 + 40;
+      this.tskmgrTblCntnr.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelToSubtract}px`;
+      this.tskmgrTblCntnr.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+  
+  
+      // this.tskMgrTable.nativeElement.style.height = `${mainWindow?.offsetHeight || 0 - 84}px`;
+      this.tskMgrTable.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+    }
   }
 
   private getComponentDetail():Process{

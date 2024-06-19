@@ -334,11 +334,17 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   }
 
   maximizeWindow():void{
-    const mainWindow = document.getElementById('vanta');
-    //window title and button bar, and windows taskbar height
-    const pixelTosubtract = 30 + 40;
-    this.terminalCntnr.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
-    this.terminalCntnr.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+    const uid = `${this.name}-${this.processId}`;
+    const evtOriginator = this._runningProcessService.getEventOrginator();
+
+    if(uid === evtOriginator){
+      this._runningProcessService.removeEventOriginator();
+      const mainWindow = document.getElementById('vanta');
+      //window title and button bar, and windows taskbar height
+      const pixelTosubtract = 30 + 40;
+      this.terminalCntnr.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
+      this.terminalCntnr.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+    }
   }
 
   setTerminalWindowToFocus(pid:number):void{

@@ -204,11 +204,20 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   }
 
   maximizeWindow():void{
-    const mainWindow = document.getElementById('vanta');
+    const uid = `${this.name}-${this.processId}`;
+    const evtOriginator = this._runningProcessService.getEventOrginator();
+
+    if(uid === evtOriginator){
+
+      this._runningProcessService.removeEventOriginator();
+      const mainWindow = document.getElementById('vanta');
+
       //window title and button bar, and windows taskbar height, video top menu bar
-    // const pixelTosubtract = 30 + 40 + 25;
-    // this.mainVideoCntnr.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
-    // this.mainVideoCntnr.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+      // const pixelTosubtract = 30 + 40 + 25;
+      // this.mainVideoCntnr.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
+      // this.mainVideoCntnr.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+
+    }
   }
 
   private getComponentDetail():Process{

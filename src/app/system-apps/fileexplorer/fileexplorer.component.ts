@@ -672,7 +672,9 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
     const x = evt.clientX - rect.left;
     const y = evt.clientY - rect.top;
     
-    this._runningProcessService.responseToEventCount++;
+    const uid = `${this.name}-${this.processId}`;
+    this._runningProcessService.addEventOriginator(uid);
+
     this.selectedFile = file;
     this.isIconInFocusDueToPriorAction = false;
     this.showInformationTip = false;
@@ -819,6 +821,13 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
       //   this.btnStyleAndValuesReset();
       // }
     }
+  }
+
+  preventDesktopContextMenu(evt:MouseEvent,):void{
+    const uid = `${this.name}-${this.processId}`;
+    this._runningProcessService.addEventOriginator(uid);
+
+    evt.preventDefault();
   }
 
   onDragStart(evt:any):void{
@@ -1312,6 +1321,22 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
           this.directory = appSessionData.app_data as string;
         }
       }
+    }
+  }
+
+  maximizeWindow():void{
+    const uid = `${this.name}-${this.processId}`;
+    const evtOriginator = this._runningProcessService.getEventOrginator();
+
+    if(uid === evtOriginator){
+
+      this._runningProcessService.removeEventOriginator();
+      const mainWindow = document.getElementById('vanta');
+      //window title and button bar, and windows taskbar height
+      const pixelTosubtract = 30 + 40;
+      this.fileExplorerContainer.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0 ) - pixelTosubtract}px`;
+      this.fileExplorerContainer.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+
     }
   }
 

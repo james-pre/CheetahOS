@@ -163,6 +163,9 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
       if(this.windowMaximize){
         if(windowState.pid == this.processId){
           this.setWindowToFullScreen(this.processId, windowState.z_index);
+          const uid = `${this.processAppName}-${this.processId}`;
+          console.log(`${uid} raised the maximize event`);
+          this._runningProcessService.addEventOriginator(uid);
           this._runningProcessService.maximizeWindowNotify.next();
         }
       }
