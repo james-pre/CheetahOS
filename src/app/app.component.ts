@@ -146,7 +146,6 @@ export class AppComponent implements OnDestroy, AfterViewInit {
     const notificationId = componentRef.instance.notificationId;
     this._componentReferenceService.addComponentReference(notificationId, componentRef);
 
-
     if(dialogMsgType === NotificationType.Error){
       componentRef.setInput('inputMsg', msg);
       componentRef.setInput('notificationType', dialogMsgType);
@@ -154,8 +153,6 @@ export class AppComponent implements OnDestroy, AfterViewInit {
       componentRef.setInput('inputMsg', msg);
       componentRef.setInput('notificationType', dialogMsgType);
     }
-
-    componentRef.changeDetectorRef.detectChanges();
   }
 
   private closeDialogMsgBox(dialogId:number):void{
