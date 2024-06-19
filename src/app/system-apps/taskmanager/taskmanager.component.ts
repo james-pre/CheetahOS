@@ -1,4 +1,4 @@
-import { Component, OnInit,OnDestroy, AfterViewInit, ViewChild, ElementRef, Renderer2, Input} from '@angular/core';
+import { Component, OnInit,OnDestroy, AfterViewInit, ViewChild, ElementRef, Renderer2} from '@angular/core';
 import { Subject, Subscription, interval, switchMap } from 'rxjs';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
@@ -7,12 +7,8 @@ import { ComponentType } from 'src/app/system-files/component.types';
 import { Process } from 'src/app/system-files/process';
 import { SortingInterface } from './sorting.interface';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
-import { FileInfo } from 'src/app/system-files/fileinfo';
 import { RefreshRates, RefreshRatesIntervals, TableColumns,DisplayViews } from './taskmanager.enum';
-import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 import { NotificationService } from 'src/app/shared/system-service/notification.service';
-// import { ResizableTableColumns } from '@validide/resizable-table-columns';
-// import { IStore } from 'resizable-options';
 
 
 @Component({
@@ -21,12 +17,6 @@ import { NotificationService } from 'src/app/shared/system-service/notification.
   styleUrls: ['./taskmanager.component.css']
 })
 export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,AfterViewInit {
-
-   //acceess before it exists. So Angular is angry
-  // @ViewChild('cpuId',{ static: true }) cpuId!: ElementRef;
-  // @ViewChild('memroyId',{ static: true }) memroyId!: ElementRef;
-  // @ViewChild('diskId',{ static: true }) diskId!: ElementRef;
-  // @ViewChild('networkId',{ static: true }) networkId!: ElementRef;
 
   @ViewChild('tskMgrTable') tskMgrTable!: ElementRef;
   @ViewChild('tskmgrTblCntnr') tskmgrTblCntnr!: ElementRef;
@@ -528,17 +518,6 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   }
 
   onFewerDetailsBtnClick():void{
-    // const file:FileInfo = new FileInfo();
-    // file.setIconPath = '/osdrive/icons/taskmanger.png';
-    // file.setOpensWith = 'taskmanagermini';
-    // file.setFileType ='.png';
-
-    // const processToClose = this._runningProcessService.getProcess(this.processId);
-    // this._stateManagmentService.removeState(this.processId);
-    // this._triggerProcessService.startApplication(file);
-
-    // this._runningProcessService.closeProcessNotify.next(processToClose);
-
     this.viewOptions = DisplayViews.MINI_VIEW;
   }
 

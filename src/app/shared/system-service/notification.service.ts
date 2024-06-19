@@ -10,5 +10,5 @@ export class NotificationService{
     errorNotify: Subject<string> = new Subject<string>();
     InfoNotify: Subject<string> = new Subject<string>();
     warningNotify: Subject<string> = new Subject<string>();
-    closeDialogBoxNotify: Subject<string> = new Subject<string>();
+    closeDialogBoxNotify: Subject<void> = new Subject<void>();
 }

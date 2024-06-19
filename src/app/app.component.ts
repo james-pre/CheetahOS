@@ -47,6 +47,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   private _appDirectory:AppDirectory;
 
   private _closeProcessSub!:Subscription;
+  private _closeMsgDialogSub!:Subscription;
   private _startProcessSub!:Subscription;
   private _appNotFoundSub!:Subscription;
   private _appIsRunningSub!:Subscription;  
@@ -95,11 +96,12 @@ export class AppComponent implements OnDestroy, AfterViewInit {
     this._notificationServices = notificationServices;
 
     this._startProcessSub = this._triggerProcessService.startProcessNotify.subscribe((appName) =>{this.loadApps(appName)})
-    this._appNotFoundSub = this._triggerProcessService.appNotFoundNotify.subscribe((appName) =>{this.showDialogMsg(NotificationType.Error,appName)})
-    this._appIsRunningSub = this._triggerProcessService.appIsRunningNotify.subscribe((appName) =>{this.showDialogMsg(NotificationType.Info,appName)})
-    this._errorNotifySub = this._notificationServices.errorNotify.subscribe((appName) =>{this.showDialogMsg(NotificationType.Error,appName)})
-    this._infoNotifySub = this._notificationServices.errorNotify.subscribe((appName) =>{this.showDialogMsg(NotificationType.Info,appName)})
+    this._appNotFoundSub = this._triggerProcessService.appNotFoundNotify.subscribe((appName) =>{this.showDialogMsgBox(NotificationType.Error,appName)})
+    this._appIsRunningSub = this._triggerProcessService.appIsRunningNotify.subscribe((appName) =>{this.showDialogMsgBox(NotificationType.Info,appName)})
+    this._errorNotifySub = this._notificationServices.errorNotify.subscribe((appName) =>{this.showDialogMsgBox(NotificationType.Error,appName)})
+    this._infoNotifySub = this._notificationServices.errorNotify.subscribe((appName) =>{this.showDialogMsgBox(NotificationType.Info,appName)})
     this._closeProcessSub = this._runningProcessService.closeProcessNotify.subscribe((p) =>{this.onCloseBtnClicked(p)})
+    this._closeMsgDialogSub = this._notificationServices.closeDialogBoxNotify.subscribe(() =>{this.closeDialogMsgBox()})
     this._runningProcessService.addProcess(this.getComponentDetail());
 
     this._appDirectory = new AppDirectory();
@@ -139,7 +141,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
    this._runningProcessService.processListChangeNotify.next()
   }
 
-  private showDialogMsg(dialogMsgType:string, msg:string) {
+  private showDialogMsgBox(dialogMsgType:string, msg:string):void{
   
     const componentRef = this.itemViewContainer.createComponent(DialogComponent);
 
@@ -152,6 +154,10 @@ export class AppComponent implements OnDestroy, AfterViewInit {
     }
 
     componentRef.changeDetectorRef.detectChanges();
+  }
+
+  private closeDialogMsgBox():void{
+    1
   }
 
   onCloseBtnClicked(eventData:Process):void{

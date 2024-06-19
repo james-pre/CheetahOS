@@ -1,5 +1,6 @@
 import {ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import { ComponentType } from 'src/app/system-files/component.types';
+import { NotificationService } from '../../system-service/notification.service';
 
 @Component({
   selector: 'cos-dialog',
@@ -12,6 +13,8 @@ export class DialogComponent implements OnChanges {
 
   @Input() inputMsg = '';
   @Input() notificationType = '';
+
+  private _notificationServices:NotificationService;
 
   notificationOption = '';
   errorNotification = "Error";
@@ -28,7 +31,8 @@ export class DialogComponent implements OnChanges {
   
   closeBtnStyles: Record<string, unknown> = {};
 
-  constructor(private changeDetectorRef: ChangeDetectorRef ){
+  constructor(private changeDetectorRef: ChangeDetectorRef, notificationServices:NotificationService){
+    this._notificationServices = notificationServices;
   }
 
 
@@ -40,7 +44,7 @@ export class DialogComponent implements OnChanges {
 
 
   onCloseDialogBox():void{
-  1
+    this._notificationServices.closeDialogBoxNotify.next();
   }
 
 }
