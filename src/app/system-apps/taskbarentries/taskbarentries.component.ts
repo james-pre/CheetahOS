@@ -18,7 +18,7 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
   
   runningProcess:Process[] = [];
   pinToStartList = [
-     {icon:'osdrive/icons/file_explorer.ico', appName:'fileexplorer'},
+     {icon:'osdrive/icons/file_explorer.png', appName:'fileexplorer'},
      {icon:'/osdrive/icons/terminal_48.png', appName:'terminal'},
      {icon:'/osdrive/icons/text-editor_48.png', appName:'texteditor'}];
 

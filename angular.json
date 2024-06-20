@@ -45,16 +45,7 @@
               "node_modules/angular2-draggable/css/resizable.min.css"
             ],
             "scripts": [
-              "node_modules/js-dos/dist/js-dos.js",
-              "./src/scripts/backgrounds/three.min.js",
-              "./src/scripts/backgrounds/vanta.waves.min.js",
-              "./src/scripts/backgrounds/vanta.halo.min.js",
-              "./src/scripts/backgrounds/vanta.globe.min.js",
-              "./src/scripts/backgrounds/vanta.birds.min.js",
-              "./src/scripts/backgrounds/vanta.rings.min.js",
-              "./src/scripts/videoplayer/video.min.js",
-              "./src/scripts/audioplayer/howler.min.js",
-              "./src/scripts/audioplayer/siriwave.umd.min.js"
+              "node_modules/js-dos/dist/js-dos.js"
             ]
           },
           "configurations": {

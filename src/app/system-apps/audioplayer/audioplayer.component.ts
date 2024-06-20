@@ -13,6 +13,7 @@ import { AppState, BaseState } from 'src/app/system-files/state/state.interface'
 import { StateType } from 'src/app/system-files/state/state.type';
 import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
 import { Subscription } from 'rxjs';
+import { ScriptService } from 'src/app/shared/system-service/script.services';
 // eslint-disable-next-line no-var
 declare var Howl:any;
 declare let SiriWave:any;
@@ -49,6 +50,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   private _triggerProcessService:TriggerProcessService;
   private _stateManagmentService:StateManagmentService;
   private _sessionManagmentService: SessionManagmentService;
+  private _scriptService: ScriptService;
   private _fileInfo!:FileInfo;
   private _consts:Constants = new Constants();
   private _appState!:AppState;
@@ -75,11 +77,12 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
  
   constructor(processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService,
-    stateManagmentService: StateManagmentService, sessionManagmentService: SessionManagmentService) { 
+    stateManagmentService: StateManagmentService, sessionManagmentService: SessionManagmentService, scriptService: ScriptService) { 
     this._processIdService = processIdService;
     this._triggerProcessService = triggerProcessService;
     this._stateManagmentService = stateManagmentService;
     this._sessionManagmentService= sessionManagmentService;
+    this._scriptService = scriptService;
     this.processId = this._processIdService.getNewProcessId();
     
     this.retrievePastSessionData();
@@ -92,18 +95,12 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   ngOnInit(): void {
     this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
-
-    this.siriWave = new SiriWave({
-      container: this.waveForm.nativeElement,
-      width: 640,
-      height: 480,
-      autostart: false,
-      cover: true,
-      speed: 0.03,
-      amplitude: 0.7,
-      frequency: 2
-    });
-    
+    // this._scriptService.loadScript("howler","assets/howler/howler.min.js").then(()=>{
+    //   console.log('howler loading complete');
+    // });
+    // this._scriptService.loadScript("siriwave","assets/howler/siriwave.umd.min.js").then(()=>{
+    //   console.log('siriwave loading complete');
+    // });
   }
 
   ngAfterViewInit():void{  
@@ -112,14 +109,32 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
     this.audioSrc = (this.audioSrc !== '')? 
       this.audioSrc :this.getAudioSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
 
-    if(this.playList.length == 0){
-      this.loadHowlSingleTrackObjectAsync()
-          .then(howl => { this.audioPlayer = howl; })
-          .catch(error => { console.error('Error loading track:', error); });
+      this._scriptService.loadScript("howler","assets/howler/howler.min.js").then(()=>{
 
-      this.storeAppState(this.audioSrc);
-    }
+        this._scriptService.loadScript("siriwave","assets/howler/siriwave.umd.min.js").then(()=>{
+
+          this.siriWave = new SiriWave({
+            container: this.waveForm.nativeElement,
+            width: 640,
+            height: 480,
+            autostart: false,
+            cover: true,
+            speed: 0.03,
+            amplitude: 0.7,
+            frequency: 2
+          });
   
+          if(this.playList.length == 0){
+            this.loadHowlSingleTrackObjectAsync()
+                .then(howl => { this.audioPlayer = howl; })
+                .catch(error => { console.error('Error loading track:', error); });
+      
+            this.storeAppState(this.audioSrc);
+          }
+        });
+      });
+
+
     // when i implement the playlist feature
     // if((this.audioSrc !== '/' && this.playList.length >= 1) || (this.audioSrc  === '/' && this.playList.length >= 1)){
     //   1

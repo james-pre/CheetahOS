@@ -13,6 +13,7 @@ import { StateType } from 'src/app/system-files/state/state.type';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
 import { Subscription } from 'rxjs';
+import { ScriptService } from 'src/app/shared/system-service/script.services';
 
 // eslint-disable-next-line no-var
 declare var videojs: (arg0: any, arg1: object, arg2: () => void) => any;
@@ -35,6 +36,7 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   private _triggerProcessService:TriggerProcessService;
   private _stateManagmentService:StateManagmentService;
   private _sessionManagmentService: SessionManagmentService;
+  private _scriptService: ScriptService;
   private _fileInfo!:FileInfo;
   private player: any;
   private _consts:Constants = new Constants();
@@ -55,14 +57,16 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
 
   constructor(processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService,
-    stateManagmentService: StateManagmentService, sessionManagmentService: SessionManagmentService) { 
+    stateManagmentService: StateManagmentService, sessionManagmentService: SessionManagmentService, scriptService: ScriptService) { 
     this._processIdService = processIdService;
     this._triggerProcessService = triggerProcessService;
     this._stateManagmentService = stateManagmentService;
     this._runningProcessService = runningProcessService;
     this._sessionManagmentService= sessionManagmentService;
+    this._scriptService = scriptService;
     this.processId = this._processIdService.getNewProcessId();
 
+  
     this.retrievePastSessionData();
 
     this._maximizeWindowSub = this._runningProcessService.maximizeWindowNotify.subscribe(() =>{this.maximizeWindow();})
@@ -96,29 +100,33 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
       this.videoSrc : this.getVideoSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
 
     const options = {
-      fluid: true,
-      responsive: true,
-      autoplay: true, 
-      controls:true,
-      aspectRatio: '16:9',
-      controlBar: {
-        fullscreenToggle: false,
-        skipButtons: {
-          backward: 10,
-          forward: 10
-        }
-      },
-      sources: [{ src:this.videoSrc, type: this.fileType }] 
-    }
-
+        fluid: true,
+        responsive: true,
+        autoplay: true, 
+        controls:true,
+        aspectRatio: '16:9',
+        controlBar: {
+          fullscreenToggle: false,
+          skipButtons: {
+            backward: 10,
+            forward: 10
+          }
+        },
+        sources: [{ src:this.videoSrc, type: this.fileType }] 
+      }
+  
     const appData:string[] = [this.fileType, this.videoSrc];
     this.storeAppState(appData);
 
-    this.player = videojs(this.videowindow.nativeElement, options, function onPlayerReady(){
-      console.log('onPlayerReady:', "player is read");
-    });
+    this._scriptService.loadScript("videojs","assets/videojs/video.min.js").then(() =>{
 
-    this.player.on('fullscreenchange', this.onFullscreenChange);
+      this.player = videojs(this.videowindow.nativeElement, options, function onPlayerReady(){
+        console.log('onPlayerReady:', "player is read");
+      });
+  
+      //this.player.on('fullscreenchange', this.onFullscreenChange);
+
+    })
   }
 
   ngOnDestroy(): void {

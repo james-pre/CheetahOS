@@ -12,6 +12,7 @@ import { AppState, BaseState } from 'src/app/system-files/state/state.interface'
 import { StateType } from 'src/app/system-files/state/state.type';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
+import { ScriptService } from 'src/app/shared/system-service/script.services';
 
 
 @Component({
@@ -29,6 +30,7 @@ export class RuffleComponent implements BaseComponent, OnInit, OnDestroy, AfterV
   private _triggerProcessService:TriggerProcessService;
   private _stateManagmentService:StateManagmentService;
   private _sessionManagmentService: SessionManagmentService;
+  private _scriptService: ScriptService;
   private _fileInfo!:FileInfo;
   private _appState!:AppState;
   private gameSrc = '';
@@ -43,12 +45,13 @@ export class RuffleComponent implements BaseComponent, OnInit, OnDestroy, AfterV
   displayName = 'Ruffle-EM';
 
   constructor(fileService:FileService, processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService,
-    stateManagmentService: StateManagmentService, sessionManagmentService: SessionManagmentService) { 
+    stateManagmentService: StateManagmentService, sessionManagmentService: SessionManagmentService, scriptService: ScriptService) { 
     this._fileService = fileService
     this._processIdService = processIdService;
     this._triggerProcessService = triggerProcessService;
     this._stateManagmentService = stateManagmentService;
     this._sessionManagmentService = sessionManagmentService;
+    this._scriptService = scriptService;
     this.processId = this._processIdService.getNewProcessId();
 
     this.retrievePastSessionData();
@@ -59,6 +62,12 @@ export class RuffleComponent implements BaseComponent, OnInit, OnDestroy, AfterV
 
   ngOnInit(): void {
     this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
+
+    // this.loadWasm('assets/ruffle-wasm/318626a8878622d4730e.wasm');
+    // this.loadWasm('assets/ruffle-wasm/42f8dbf7f8b1cca631d0.wasm');
+    // "./src/scripts/ruffle/ruffle.js",
+    // "./src/scripts/ruffle/core.ruffle.199108ce0aa8adfdc8f0.js",
+    // "./src/scripts/ruffle/core.ruffle.e88cc385ca3824332d82.js"
   }
 
 
@@ -68,16 +77,52 @@ export class RuffleComponent implements BaseComponent, OnInit, OnDestroy, AfterV
     this.gameSrc = (this.gameSrc !=='')? 
     this.gameSrc : this.getGamesSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
 
-    this.rufflePlayer = (window as any).RufflePlayer.newest();
-    //console.log(' this.rufflePlayer', this.rufflePlayer);
-    this.loadSWF('ruffleWindow',this.gameSrc);
-    this.storeAppState(this.gameSrc);
+    this._scriptService.loadScript("ruffle","https://unpkg.com/@ruffle-rs/ruffle").then(()=>{
+      this.rufflePlayer = (window as any).RufflePlayer.newest();
+      //console.log(' this.rufflePlayer', this.rufflePlayer);
+      this.loadSWF('ruffleWindow',this.gameSrc);
+      this.storeAppState(this.gameSrc);
 
+    });
   }
 
   ngOnDestroy(): void {
     console.log('bye');
   }
+
+    async loadWasm(url: string): Promise<WebAssembly.Instance> {
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
+        }
+        const { instance } = await WebAssembly.instantiateStreaming(response);
+        console.log('WASM Loaded and Instantiated', instance);
+        return instance;
+      } catch (err) {
+        console.error('Error loading WASM:', err);
+        throw err;
+      }
+    }
+
+    private getImports() {
+      return {
+        env: {
+          // Define your imported functions and memory objects here
+          memory: new WebAssembly.Memory({ initial: 256, maximum: 256 }),
+          table: new WebAssembly.Table({ initial: 0, element: 'anyfunc' }),
+          // __wbindgen_cb_drop: function(arg) {
+          //   console.log("__wbindgen_cb_drop called with arg:", arg);
+          // },
+          // __wbindgen_throw: function(ptr: number, len: number) {
+          //   throw new Error(`wasm-bindgen throw: ${ptr}, ${len}`);
+          // },
+          __wbindgen_memory: function() {
+            return this.memory;
+          }
+        }
+      };
+    }
 
 
   public loadSWF(elementId: string, swfUrl: string) {

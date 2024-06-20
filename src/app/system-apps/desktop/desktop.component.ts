@@ -10,6 +10,7 @@ import { FileManagerService } from 'src/app/shared/system-service/file.manager.s
 import { Colors } from './colorutil/colors';
 import { FileInfo } from 'src/app/system-files/fileinfo';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
+import { ScriptService } from 'src/app/shared/system-service/script.services';
 
 declare let VANTA: { HALO: any; BIRDS: any;  WAVES: any;   GLOBE: any;  RINGS: any;};
 
@@ -25,6 +26,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   private _fileManagerServices:FileManagerService;
   private _triggerProcessService:TriggerProcessService;
   private _timerSubscription!: Subscription;
+  private _scriptService: ScriptService;
   
 
   private _vantaEffect: any;
@@ -82,11 +84,12 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService,fileManagerServices:FileManagerService,
-              triggerProcessService:TriggerProcessService) { 
+              triggerProcessService:TriggerProcessService, scriptService: ScriptService) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this._fileManagerServices = fileManagerServices;
     this._triggerProcessService = triggerProcessService;
+    this._scriptService = scriptService;
 
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail());
@@ -94,21 +97,40 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
   ngOnInit():void{
-    this._vantaEffect = VANTA.WAVES({
-      el: '#vanta',
-      color:this.defaultColor, //this._numSequence,
-      waveHeight:20,
-      shininess: 50,
-      waveSpeed:0.5,
-      zoom:0.75,     
-    });
+
+    this._scriptService.loadScript("threejs","assets/backgrounds/three.min.js").then(() =>{
+
+      this._scriptService.loadScript("vanta-waves","assets/backgrounds/vanta.waves.min.js").then(() =>{
+
+        this._vantaEffect = VANTA.WAVES({
+          el: '#vanta',
+          color:this.defaultColor, //this._numSequence,
+          waveHeight:20,
+          shininess: 50,
+          waveSpeed:0.5,
+          zoom:0.75,     
+        });
+      })
+    })
   }
 
   ngAfterViewInit():void{
   
     //this.animationId = requestAnimationFrame(this.changeAnimationColor.bind(this));  
-  
+
      this.hideContextMenu();
+     this.loadOtherBackgrounds();
+  }
+
+  loadOtherBackgrounds():void{
+    const bkgrounds:string[] = ["assets/backgrounds/vanta.halo.min.js","assets/backgrounds/vanta.globe.min.js",
+                          "assets/backgrounds/vanta.birds.min.js", "assets/backgrounds/vanta.rings.min.js"];
+        
+    const names:string[] = ["halo", "globe", "birds", "rings"]
+
+    for(let i =0; i <= bkgrounds.length - 1; i++){
+      this._scriptService.loadScript(names[i], bkgrounds[i]);
+    }
   }
 
   changeAnimationColor():void{
