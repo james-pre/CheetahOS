@@ -27,7 +27,8 @@ import { Constants } from 'src/app/system-files/constants';
 })
 
 export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('fileExplorerContainer', {static: true}) fileExplorerContainer!: ElementRef;
+  @ViewChild('fileExplorerMainContainer', {static: true}) fileExplrMainCntnr!: ElementRef;
+  @ViewChild('fileExplorerContentContainer', {static: true}) fileExplrCntntCntnr!: ElementRef;
  
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
@@ -334,7 +335,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
       }
     }else if(iconView == this.contentView){
 
-      const rect =  this.fileExplorerContainer.nativeElement.getBoundingClientRect();
+      const rect =  this.fileExplrCntntCntnr.nativeElement.getBoundingClientRect();
       if(olElmnt){
         olElmnt.style.gridTemplateColumns = `repeat(auto-fill, minmax(50px, ${rect.width}px)`;
         olElmnt.style.gridTemplateRows = 'repeat(auto-fill, 43px)'; 
@@ -668,7 +669,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   }
 
   onShowIconContextMenu(evt:MouseEvent, file:FileInfo, id:number):void{
-    const rect =  this.fileExplorerContainer.nativeElement.getBoundingClientRect();
+    const rect =  this.fileExplrCntntCntnr.nativeElement.getBoundingClientRect();
     const x = evt.clientX - rect.left;
     const y = evt.clientY - rect.top;
     
@@ -880,7 +881,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   // this method is gross
   displayInformationTip(evt:MouseEvent, file:FileInfo):void{
 
-    const rect =  this.fileExplorerContainer.nativeElement.getBoundingClientRect();
+    const rect =  this.fileExplrCntntCntnr.nativeElement.getBoundingClientRect();
     const x = (evt.clientX - rect.left) - 15;
     const y = (evt.clientY - rect.top) - 10;
 
@@ -1141,7 +1142,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
     const invalidCharToolTipElement = document.getElementById(`invalidChars-${this.processId}`) as HTMLElement;
     const renameContainerElement= document.getElementById(`renameContainer-${this.processId}-${this.selectedElementId}`) as HTMLElement;
 
-    const fileRect =  this.fileExplorerContainer.nativeElement.getBoundingClientRect();
+    const fileRect =  this.fileExplrCntntCntnr.nativeElement.getBoundingClientRect();
     const rect = renameContainerElement.getBoundingClientRect();
 
     const x = rect.left - fileRect.left;
@@ -1329,13 +1330,12 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
     const evtOriginator = this._runningProcessService.getEventOrginator();
 
     if(uid === evtOriginator){
-
       this._runningProcessService.removeEventOriginator();
       const mainWindow = document.getElementById('vanta');
       //window title and button bar, and windows taskbar height
       const pixelTosubtract = 30 + 40;
-      this.fileExplorerContainer.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0 ) - pixelTosubtract}px`;
-      this.fileExplorerContainer.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+      this.fileExplrMainCntnr.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0 ) - pixelTosubtract}px`;
+      this.fileExplrMainCntnr.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
 
     }
   }

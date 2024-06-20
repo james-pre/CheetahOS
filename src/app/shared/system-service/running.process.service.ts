@@ -10,9 +10,6 @@ import { Process } from "src/app/system-files/process";
 export class RunningProcessService{
 
     static instance: RunningProcessService;
-    // responseToEventCount = 0;
-    // readonly MAX_RESPONSE_TO_EVENT = 1;
-
     private _runningProcesses:Process[];
     private _eventOriginator = '';
     processListChangeNotify: Subject<void> = new Subject<void>();
