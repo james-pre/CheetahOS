@@ -15,6 +15,7 @@ import { AppState, BaseState } from 'src/app/system-files/state/state.interface'
 import { StateType } from 'src/app/system-files/state/state.type';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
+import { ScriptService } from 'src/app/shared/system-service/script.services';
 
 declare const Dos: DosPlayerFactoryType;
 declare const emulators:Emulators
@@ -33,6 +34,7 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
   private _triggerProcessService:TriggerProcessService;
   private _stateManagmentService:StateManagmentService;
   private _sessionManagmentService: SessionManagmentService;
+  private _scriptService: ScriptService;
   private _ci!: CommandInterface;
   private _fileInfo!:FileInfo;
   private _appState!:AppState;
@@ -55,12 +57,13 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
   }
 
   constructor(fileService:FileService, processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService,
-              stateManagmentService: StateManagmentService, sessionManagmentService: SessionManagmentService) { 
+              stateManagmentService: StateManagmentService, sessionManagmentService: SessionManagmentService, scriptService: ScriptService) { 
     this._fileService = fileService
     this._processIdService = processIdService;
     this._triggerProcessService = triggerProcessService;
     this._stateManagmentService = stateManagmentService;
     this._sessionManagmentService = sessionManagmentService;
+    this._scriptService = scriptService;
     this.processId = this._processIdService.getNewProcessId();
     
     this.retrievePastSessionData();
@@ -84,13 +87,14 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
   async ngAfterViewInit() {
     
     this.setJSDosWindowToFocus(this.processId); 
+      
+    this.gameSrc = (this.gameSrc !=='')? 
+      this.gameSrc : this.getGamesSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
 
-    setTimeout(async() => {
+
+    this._scriptService.loadScript("js-dos", "assets/js-dos/js-dos.js").then(async() =>{
 
       emulators.pathPrefix= '/';
-      
-      this.gameSrc = (this.gameSrc !=='')? 
-        this.gameSrc : this.getGamesSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
 
       const data = await this._fileService.getFileAsync(this.gameSrc);
       this._ci = await  Dos(this.dosWindow.nativeElement, this.dosOptions).run(data);
@@ -98,7 +102,8 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
       URL.revokeObjectURL(this.gameSrc);
 
       this.displayName = this._fileInfo.getFileName;
-    }, this.SECONDS_DELAY);
+    })
+
   }
 
   setJSDosWindowToFocus(pid:number):void{
