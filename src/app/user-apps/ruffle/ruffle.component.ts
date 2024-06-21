@@ -1,5 +1,4 @@
-import { Component, ElementRef, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
-import { FileService } from 'src/app/shared/system-service/file.service';
+import { Component, ElementRef, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
@@ -20,11 +19,10 @@ import { ScriptService } from 'src/app/shared/system-service/script.services';
   templateUrl: './ruffle.component.html',
   styleUrls: ['./ruffle.component.css']
 })
-export class RuffleComponent implements BaseComponent, OnInit, OnDestroy, AfterViewInit {
+export class RuffleComponent implements BaseComponent, OnInit, AfterViewInit {
   private rufflePlayer:any;
-  @ViewChild('ruffleWindow') ruffleWindow!: ElementRef; 
+  @ViewChild('ruffleContainer', { static: true }) ruffleContainer!: ElementRef;
 
-  private _fileService:FileService;
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _triggerProcessService:TriggerProcessService;
@@ -34,7 +32,6 @@ export class RuffleComponent implements BaseComponent, OnInit, OnDestroy, AfterV
   private _fileInfo!:FileInfo;
   private _appState!:AppState;
   private gameSrc = '';
-  private SECONDS_DELAY = 1500;
 
   name= 'ruffle';
   hasWindow = true;
@@ -44,9 +41,9 @@ export class RuffleComponent implements BaseComponent, OnInit, OnDestroy, AfterV
   type = ComponentType.User;
   displayName = 'Ruffle-EM';
 
-  constructor(fileService:FileService, processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService,
+  constructor(processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService,
     stateManagmentService: StateManagmentService, sessionManagmentService: SessionManagmentService, scriptService: ScriptService) { 
-    this._fileService = fileService
+    
     this._processIdService = processIdService;
     this._triggerProcessService = triggerProcessService;
     this._stateManagmentService = stateManagmentService;
@@ -62,12 +59,6 @@ export class RuffleComponent implements BaseComponent, OnInit, OnDestroy, AfterV
 
   ngOnInit(): void {
     this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
-
-    // this.loadWasm('assets/ruffle-wasm/318626a8878622d4730e.wasm');
-    // this.loadWasm('assets/ruffle-wasm/42f8dbf7f8b1cca631d0.wasm');
-    // "./src/scripts/ruffle/ruffle.js",
-    // "./src/scripts/ruffle/core.ruffle.199108ce0aa8adfdc8f0.js",
-    // "./src/scripts/ruffle/core.ruffle.e88cc385ca3824332d82.js"
   }
 
 
@@ -77,52 +68,12 @@ export class RuffleComponent implements BaseComponent, OnInit, OnDestroy, AfterV
     this.gameSrc = (this.gameSrc !=='')? 
     this.gameSrc : this.getGamesSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
 
-    this._scriptService.loadScript("ruffle","https://unpkg.com/@ruffle-rs/ruffle").then(()=>{
+    this._scriptService.loadScript("ruffle","assets/ruffle/ruffle.js").then(()=>{
       this.rufflePlayer = (window as any).RufflePlayer.newest();
-      //console.log(' this.rufflePlayer', this.rufflePlayer);
       this.loadSWF('ruffleWindow',this.gameSrc);
       this.storeAppState(this.gameSrc);
-
     });
   }
-
-  ngOnDestroy(): void {
-    console.log('bye');
-  }
-
-    async loadWasm(url: string): Promise<WebAssembly.Instance> {
-      try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
-        }
-        const { instance } = await WebAssembly.instantiateStreaming(response);
-        console.log('WASM Loaded and Instantiated', instance);
-        return instance;
-      } catch (err) {
-        console.error('Error loading WASM:', err);
-        throw err;
-      }
-    }
-
-    private getImports() {
-      return {
-        env: {
-          // Define your imported functions and memory objects here
-          memory: new WebAssembly.Memory({ initial: 256, maximum: 256 }),
-          table: new WebAssembly.Table({ initial: 0, element: 'anyfunc' }),
-          // __wbindgen_cb_drop: function(arg) {
-          //   console.log("__wbindgen_cb_drop called with arg:", arg);
-          // },
-          // __wbindgen_throw: function(ptr: number, len: number) {
-          //   throw new Error(`wasm-bindgen throw: ${ptr}, ${len}`);
-          // },
-          __wbindgen_memory: function() {
-            return this.memory;
-          }
-        }
-      };
-    }
 
 
   public loadSWF(elementId: string, swfUrl: string) {
@@ -131,14 +82,8 @@ export class RuffleComponent implements BaseComponent, OnInit, OnDestroy, AfterV
       return;
     }
 
-    const container = document.getElementById(elementId);
-    if (!container) {
-      console.error(`Element with id ${elementId} not found`);
-      return;
-    }
-
     const player = this.rufflePlayer.createPlayer();
-    container.appendChild(player);
+    this.ruffleContainer.nativeElement.appendChild(player);
     player.load(swfUrl);
   }
 

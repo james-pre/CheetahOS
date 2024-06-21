@@ -39,7 +39,6 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
   private _fileInfo!:FileInfo;
   private _appState!:AppState;
   private gameSrc = '';
-  private SECONDS_DELAY = 1500;
 
   name= 'jsdos';
   hasWindow = true;
@@ -91,7 +90,6 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
     this.gameSrc = (this.gameSrc !=='')? 
       this.gameSrc : this.getGamesSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
 
-
     this._scriptService.loadScript("js-dos", "assets/js-dos/js-dos.js").then(async() =>{
 
       emulators.pathPrefix= '/';
@@ -138,14 +136,12 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
 
   storeAppState(app_data:unknown):void{
     const uid = `${this.name}-${this.processId}`;
-
     this._appState = {
       pid: this.processId,
       app_data: app_data as string,
       app_name: this.name,
       unique_id: uid
     }
-
     this._stateManagmentService.addState(uid, this._appState, StateType.App);
   }
 

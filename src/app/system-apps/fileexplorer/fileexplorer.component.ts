@@ -131,7 +131,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   fileDateModified = '';
 
 
-  icon = 'osdrive/icons/file_explorer.ico';
+  icon = 'osdrive/icons/file_explorer.png';
   navPathIcon = 'osdrive/icons/my_computer.ico'
   name = 'fileexplorer';
   processId = 0;

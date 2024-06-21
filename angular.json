@@ -19,7 +19,7 @@
           "options": {
             "allowedCommonJsDependencies": [
               "browserfs",
-              "'buffer'",
+              "buffer",
               "ini",
               "path",
               "js-dos"
@@ -35,8 +35,13 @@
               "src/osdrive",
               {
                 "glob": "**/*",
-                "input": "./node_modules/js-dos/dist",
+                "input": "src/assets/js-dos",
                 "output": "/"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets/ruffle",
+                "output": "/assets/ruffle"
               }
             ],
             "styles": [
@@ -45,9 +50,7 @@
               "src/css/quill/quill.snow.css",
               "node_modules/angular2-draggable/css/resizable.min.css"
             ],
-            "scripts": [
-              
-            ]
+            "scripts": []
           },
           "configurations": {
             "production": {

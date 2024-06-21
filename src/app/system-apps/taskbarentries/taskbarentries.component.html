@@ -1,10 +1,9 @@
 <ol> 
-     <li taskBarEntryHighlight *ngFor="let rProcess of runningProcess">
-          <cos-taskbarentry [taskBarPid]="rProcess.getProcessId" [taskBarIconImgUrl]="rProcess.getIcon"  [taskBarIconName]="rProcess.getProcessName" (restoreOrMinizeWindowEvent)="restoreOrMinizeWindow($event)"> </cos-taskbarentry> 
-     </li>
-
-
      <li class="li-inactive" taskBarEntryHighlight *ngFor="let pins of pinToStartList">
           <cos-taskbarentry  [taskBarIconImgUrl]="pins.icon"  [taskBarIconName]="pins.appName" > </cos-taskbarentry> 
+     </li>
+
+     <li taskBarEntryHighlight *ngFor="let rProcess of runningProcess">
+          <cos-taskbarentry [taskBarPid]="rProcess.getProcessId" [taskBarIconImgUrl]="rProcess.getIcon"  [taskBarIconName]="rProcess.getProcessName" (restoreOrMinizeWindowEvent)="restoreOrMinizeWindow($event)"> </cos-taskbarentry> 
      </li>
 </ol>
