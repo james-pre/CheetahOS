@@ -89,10 +89,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "CheetahOs:build:production"
+              "buildTarget": "CheetahOs:build:production"
             },
             "development": {
-              "browserTarget": "CheetahOs:build:development"
+              "buildTarget": "CheetahOs:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -100,7 +100,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "CheetahOs:build"
+            "buildTarget": "CheetahOs:build"
           }
         },
         "test": {
