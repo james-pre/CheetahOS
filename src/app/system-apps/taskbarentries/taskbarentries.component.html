@@ -1,6 +1,6 @@
 <ol> 
-     <li class="li-inactive" taskBarEntryHighlight *ngFor="let pins of pinToStartList;  let i = index">
-          <cos-taskbarentry  [taskBarIconImgUrl]="pins.icon"  [taskBarIconName]="pins.appName" id="tskbar-{{pins.appName}}" > </cos-taskbarentry> 
+     <li class="li-inactive" taskBarEntryHighlight *ngFor="let pins of pinToStartList;  let i = index" id="tskbar-{{pins.appName}}">
+          <cos-taskbarentry  [taskBarIconImgUrl]="pins.icon"  [taskBarIconName]="pins.appName" > </cos-taskbarentry> 
      </li>
 
      <li taskBarEntryHighlight *ngFor="let rProcess of runningProcess">

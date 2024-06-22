@@ -32,7 +32,8 @@ export class TriggerProcessService{
         let msg = '';
         if(this._appDirectory.appExist(file.getOpensWith)){
 
-            if(!this._runningProcessService.isProcessRunning(file.getOpensWith)){
+            if(!this._runningProcessService.isProcessRunning(file.getOpensWith) || 
+                (this._runningProcessService.isProcessRunning(file.getOpensWith) && !this._onlyOneInstanceAllowed.includes(file.getOpensWith))){
                 this.startProcessNotify.next(file.getOpensWith);
                 this._TriggerList.push(file);
                 return;

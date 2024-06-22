@@ -15,8 +15,10 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _processListChangeSub!: Subscription;
+  private prevOpenedProccesses:string[]= [];
   
   runningProcess:Process[] = [];
+  
   pinToStartList = [
      {icon:'osdrive/icons/file_explorer.png', appName:'fileexplorer'},
      {icon:'/osdrive/icons/terminal_48.png', appName:'terminal'},
@@ -54,59 +56,75 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
 
   updateRunningProcess():void{
     this.runningProcess = this.filterProcesses();
+
+    this.turnOffInActiveProccess();
   }
 
   private filterProcesses():Process[]{
+    const uniqueProccesses = this.getUniqueProccess();
+    const proccessesNotInPinToStart:Process[] = [];
 
+    this.storeHistory(uniqueProccesses);
+    /**
+     * i have 2 lists of varying lengths
+     * list one can have duplicates of the same object, but list 2 only has unique objects
+     * compare both lists, if object.name from list1 equal to object.name from list 2
+     * setIconToActive
+     * else, put object in a different list
+     */
+    uniqueProccesses.filter(x =>{
+      if(this.pinToStartList.some( i => i.appName === x.getProcessName)){
+        this.setIconState(x.getProcessName,true);
+      }else{
+        proccessesNotInPinToStart.push(x);
+      }
+    });
+  
+    return proccessesNotInPinToStart;
+  }
+
+  getUniqueProccess():Process[]{
+    const uniqueProccesses:Process[] = [];
     /**
      * filter first on processes that have windows
      * then select unique instance of process with same proccess name
      */
-    // const processWithWindows = this._runningProcessService.getProcesses().filter(p => p.getHasWindow == true);
-    // const ids = processWithWindows.map(p => p.getProcessName);
-    // return processWithWindows.filter(({getProcessName}, index) => !ids.includes(getProcessName, index + 1))
+    this._runningProcessService.getProcesses()
+      .filter(p => p.getHasWindow == true)
+      .filter(x =>{
+        if(!uniqueProccesses.some(a => a.getProcessName === x.getProcessName)){
+          uniqueProccesses.push(x)
+        }
+    });
 
-    const uniqueProccesses:Process[] = [];
-    const proccessesNotInPinToStart:Process[] = [];
-    const processWithWindows = this._runningProcessService.getProcesses().filter(p => p.getHasWindow == true);
-    
-    for(let i = 0; i <= processWithWindows.length - 1; i++){
-      //if one object with matching processname isn't found, then add it
-      if(!uniqueProccesses.some( x => x.getProcessName === processWithWindows[i].getProcessName)){
-        uniqueProccesses.push(processWithWindows[i]);
-      }
-    }
-
-    /**
-     * i have 2 lists of varying lenght containing the same type of object
-     * list one can have duplicates of the same object, but list 2 only has unique objects
-     * compare both lists if object.name from list equal to object.name from list 2
-     * print these objects match
-     */
-
-
-    // compare the filteredProcess list against the pinToStar List
-
-    for(let i = 0; i <= uniqueProccesses.length -1; i++){
-
-      if(this.pinToStartList.some( x => x.appName === uniqueProccesses[i].getProcessName)){
-
-        this.setIconToActive(uniqueProccesses[i].getProcessName)
-      }else{
-        proccessesNotInPinToStart.push(uniqueProccesses[i]);
-      }
-
-    }
-   
-    return proccessesNotInPinToStart;
+    return uniqueProccesses
   }
 
-  private setIconToActive(appName:string){
+  private storeHistory(arg:Process[]):void{
+    arg.filter(x =>{
+      if(!this.prevOpenedProccesses.includes(x.getProcessName)){
+        this.prevOpenedProccesses.push(x.getProcessName)
+      }
+    });
+  }
 
+  turnOffInActiveProccess():void{
+    const runningProcess = this.getUniqueProccess();
+    this.prevOpenedProccesses.filter(x =>{
+      if(!runningProcess.some(i => i.getProcessName === x)){
+        this.setIconState(x,false);
+      }
+    });
+  }
+
+  setIconState(appName:string, isActive:boolean){
     const liElemnt = document.getElementById(`tskbar-${appName}`) as HTMLElement;
-
     if(liElemnt){
-      liElemnt.style.borderBottom = '2px solid hsl(207deg 100%  72% / 90%)';
+
+      if(isActive)
+        liElemnt.style.borderBottomColor = ' hsl(207deg 100%  72% / 90%)';
+      else
+      liElemnt.style.borderBottomColor = 'transparent';
     }
   }
 
