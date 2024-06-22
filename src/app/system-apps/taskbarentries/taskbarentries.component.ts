@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 import { MenuService } from 'src/app/shared/system-service/menu.services';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
+import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { FileInfo } from 'src/app/system-files/fileinfo';
 import { Process } from 'src/app/system-files/process';
@@ -16,6 +17,7 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
 
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
+  private _triggerProcessService:TriggerProcessService;
   private _menuService:MenuService;
   private _processListChangeSub!: Subscription;
   private _addIconToTaskbarSub!: Subscription;
@@ -25,10 +27,10 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
   runningProcess:Process[] = [];
   pinToTaskBarList:FileInfo[] = [];
 
-  // pinToTaskBarList = [
-  //   {icon:'osdrive/icons/file_explorer.png', appName:'fileexplorer'},
-  //   {icon:'/osdrive/icons/terminal_48.png', appName:'terminal'},
-  //   {icon:'/osdrive/icons/text-editor_48.png', appName:'texteditor'}];
+  pinToTaskBarList1 = [
+    {icon:'osdrive/icons/file_explorer.png', appName:'fileexplorer'},
+    {icon:'/osdrive/icons/terminal_48.png', appName:'terminal'},
+    {icon:'/osdrive/icons/text-editor_48.png', appName:'texteditor'}];
 
   hover = false;
   hasWindow = false;
@@ -39,9 +41,11 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
   displayName = '';
   appProcessId = 0;
 
-  constructor(processIdService:ProcessIDService,runningProcessService:RunningProcessService, menuService:MenuService) { 
+  constructor(processIdService:ProcessIDService,runningProcessService:RunningProcessService, menuService:MenuService,
+              triggerProcessService:TriggerProcessService) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
+    this._triggerProcessService = triggerProcessService;
     this._menuService = menuService;
 
     this.processId = this._processIdService.getNewProcessId();
@@ -156,11 +160,16 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  onPinnedAppIconClick():void{
+  onPinnedAppIconClick(file:FileInfo):void{
     // check if the give app is running
     // if it isn't running, then trigger it
-    // if it is running, the grab a proccess id for the given appname from the running apps services and pass it to the 
-    //restoreOrMinizeWindow function
+    if(!this._runningProcessService.isProcessRunning(file.getOpensWith)){
+      this._triggerProcessService.startApplication(file);
+      return;
+    }else{
+      const process = this._runningProcessService.getProcesses().filter(x => x.getProcessName === file.getOpensWith);
+      this._runningProcessService.restoreOrMinimizeWindowNotify.next(process[0].getProcessId);
+    }
   }
 
   private getComponentDetail():Process{
