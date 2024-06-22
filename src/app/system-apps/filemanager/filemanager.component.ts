@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 import { FileManagerService } from 'src/app/shared/system-service/file.manager.services';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { MenuService } from 'src/app/shared/system-service/menu.services';
 
 @Component({
   selector: 'cos-filemanager',
@@ -25,6 +26,7 @@ export class FilemanagerComponent implements BaseComponent, OnInit, AfterViewIni
   private _fileService:FileService;
   private _directoryFilesEntires!:FileEntry[];
   private _triggerProcessService:TriggerProcessService;
+  private _menuService:MenuService;
   private _formBuilder;
 
   private _viewByNotifySub!:Subscription;
@@ -73,16 +75,18 @@ export class FilemanagerComponent implements BaseComponent, OnInit, AfterViewIni
   menuData = [
     { label: 'Open', action: this.onTriggerRunProcess.bind(this) },
     { label: 'Pin to Start', action: this.doNothing.bind(this) },
-    { label: 'Pin to Taskbar', action: this.doNothing.bind(this) },
+    { label: 'Pin to Taskbar', action: this.pinIconToTaskBar.bind(this) },
     { label: 'Delete', action: this.onDeleteFile.bind(this) },
     { label: 'Rename', action: this.onRenameFileTxtBoxShow.bind(this) }
   ];
 
-  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, triggerProcessService:TriggerProcessService, fileManagerService:FileManagerService, formBuilder: FormBuilder) { 
+  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService,
+              triggerProcessService:TriggerProcessService, fileManagerService:FileManagerService, formBuilder: FormBuilder, menuService:MenuService) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this._fileService = fileInfoService;
     this._triggerProcessService = triggerProcessService;
+    this._menuService = menuService;
     this._formBuilder = formBuilder;
 
     this.processId = this._processIdService.getNewProcessId();
@@ -173,7 +177,6 @@ export class FilemanagerComponent implements BaseComponent, OnInit, AfterViewIni
   }
 
   onShowIconContextMenu(evt:MouseEvent, file:FileInfo, id:number):void{
-    
     const uid = `${this.name}-${this.processId}`;
     this._runningProcessService.addEventOriginator(uid);
 
@@ -190,10 +193,13 @@ export class FilemanagerComponent implements BaseComponent, OnInit, AfterViewIni
     }
 
     evt.preventDefault();
-
   }
   doNothing():void{
     console.log('do nothing called');
+  }
+
+  pinIconToTaskBar():void{
+    this._menuService.pinToTaskBar.next(this.selectedFile);
   }
 
   doBtnClickThings(id:number):void{

@@ -117,7 +117,6 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   menuData = [
     { label: 'Open', action: this.onTriggerRunProcess.bind(this) },
     { label: 'Pin to Start', action: this.doNothing.bind(this) },
-    { label: 'Pin to Taskbar', action: this.doNothing.bind(this) },
     { label: 'Delete', action: this.onDeleteFile.bind(this) },
     { label: 'Rename', action: this.onRenameFileTxtBoxShow.bind(this) }
   ];

@@ -1,8 +1,10 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { MenuService } from 'src/app/shared/system-service/menu.services';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { ComponentType } from 'src/app/system-files/component.types';
+import { FileInfo } from 'src/app/system-files/fileinfo';
 import { Process } from 'src/app/system-files/process';
 
 @Component({
@@ -14,15 +16,19 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
 
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
+  private _menuService:MenuService;
   private _processListChangeSub!: Subscription;
+  private _addIconToTaskbarSub!: Subscription;
+  private _removeIconFromTaskbarSub!: Subscription;
   private prevOpenedProccesses:string[]= [];
   
   runningProcess:Process[] = [];
-  
-  pinToStartList = [
-     {icon:'osdrive/icons/file_explorer.png', appName:'fileexplorer'},
-     {icon:'/osdrive/icons/terminal_48.png', appName:'terminal'},
-     {icon:'/osdrive/icons/text-editor_48.png', appName:'texteditor'}];
+  pinToTaskBarList:FileInfo[] = [];
+
+  // pinToTaskBarList = [
+  //   {icon:'osdrive/icons/file_explorer.png', appName:'fileexplorer'},
+  //   {icon:'/osdrive/icons/terminal_48.png', appName:'terminal'},
+  //   {icon:'/osdrive/icons/text-editor_48.png', appName:'texteditor'}];
 
   hover = false;
   hasWindow = false;
@@ -31,27 +37,32 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
   processId = 0;
   type = ComponentType.System;
   displayName = '';
+  appProcessId = 0;
 
-  constructor(processIdService:ProcessIDService,runningProcessService:RunningProcessService) { 
+  constructor(processIdService:ProcessIDService,runningProcessService:RunningProcessService, menuService:MenuService) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
-    this.processId = this._processIdService.getNewProcessId()
+    this._menuService = menuService;
+
+    this.processId = this._processIdService.getNewProcessId();
     this._runningProcessService.addProcess(this.getComponentDetail());
-    this._processListChangeSub = this._runningProcessService.processListChangeNotify.subscribe(() =>{this.updateRunningProcess();})
+    this._processListChangeSub = this._runningProcessService.processListChangeNotify.subscribe(() =>{this.updateRunningProcess()});
+    this._addIconToTaskbarSub = this._menuService.pinToTaskBar.subscribe((p)=>{this.pinIconToTaskBarList(p)});
+    this._removeIconFromTaskbarSub = this._menuService.unPinToTaskBar.subscribe((p)=>{this.unPinIconToTaskBarList(p)});
   }
   
   ngAfterViewInit(): void {
     //change detection is the better solution
     setTimeout(() => {
       this.runningProcess = this.filterProcesses();
-      //console.log('processs:',this.runningProcess) TBD
     }, 1500);
-    //.filter(p => p.getType == ComponentType.userComponent); TBD
-    //console.log('count of proc:', this._runningProcessService.processCount()) //TBD
   }
 
   ngOnDestroy(): void {
     this._processListChangeSub?.unsubscribe();
+    this._addIconToTaskbarSub?.unsubscribe();
+    this._removeIconFromTaskbarSub?.unsubscribe();
+    
   }
 
   updateRunningProcess():void{
@@ -60,7 +71,23 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
     this.turnOffInActiveProccess();
   }
 
-  private filterProcesses():Process[]{
+  pinIconToTaskBarList(file:FileInfo):void{
+    if(!this.pinToTaskBarList.some(x => x.getOpensWith === file.getOpensWith))
+        this.pinToTaskBarList.push(file);
+  }
+
+  unPinIconToTaskBarList(file:FileInfo):void{
+    const deleteCount = 1;
+    const procIndex = this.pinToTaskBarList.findIndex((pin) => {
+        return pin.getOpensWith === file.getOpensWith;
+      });
+
+    if(procIndex != -1){
+        this.pinToTaskBarList.splice(procIndex, deleteCount)
+    }
+  }
+
+  filterProcesses():Process[]{
     const uniqueProccesses = this.getUniqueProccess();
     const proccessesNotInPinToStart:Process[] = [];
 
@@ -73,7 +100,8 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
      * else, put object in a different list
      */
     uniqueProccesses.filter(x =>{
-      if(this.pinToStartList.some( i => i.appName === x.getProcessName)){
+      if(this.pinToTaskBarList.some( i => i.getOpensWith === x.getProcessName)){
+        this.appProcessId = x.getProcessId;
         this.setIconState(x.getProcessName,true);
       }else{
         proccessesNotInPinToStart.push(x);
@@ -100,7 +128,7 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
     return uniqueProccesses
   }
 
-  private storeHistory(arg:Process[]):void{
+  storeHistory(arg:Process[]):void{
     arg.filter(x =>{
       if(!this.prevOpenedProccesses.includes(x.getProcessName)){
         this.prevOpenedProccesses.push(x.getProcessName)
@@ -122,10 +150,17 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
     if(liElemnt){
 
       if(isActive)
-        liElemnt.style.borderBottomColor = ' hsl(207deg 100%  72% / 90%)';
+        liElemnt.style.borderBottomColor = 'hsl(207deg 100%  72% / 90%)';
       else
       liElemnt.style.borderBottomColor = 'transparent';
     }
+  }
+
+  onPinnedAppIconClick():void{
+    // check if the give app is running
+    // if it isn't running, then trigger it
+    // if it is running, the grab a proccess id for the given appname from the running apps services and pass it to the 
+    //restoreOrMinizeWindow function
   }
 
   private getComponentDetail():Process{
