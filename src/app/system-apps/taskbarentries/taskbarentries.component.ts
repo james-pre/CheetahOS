@@ -62,9 +62,52 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
      * filter first on processes that have windows
      * then select unique instance of process with same proccess name
      */
+    // const processWithWindows = this._runningProcessService.getProcesses().filter(p => p.getHasWindow == true);
+    // const ids = processWithWindows.map(p => p.getProcessName);
+    // return processWithWindows.filter(({getProcessName}, index) => !ids.includes(getProcessName, index + 1))
+
+    const uniqueProccesses:Process[] = [];
+    const proccessesNotInPinToStart:Process[] = [];
     const processWithWindows = this._runningProcessService.getProcesses().filter(p => p.getHasWindow == true);
-    const ids = processWithWindows.map(p => p.getProcessName);
-    return processWithWindows.filter(({getProcessName}, index) => !ids.includes(getProcessName, index + 1))
+    
+    for(let i = 0; i <= processWithWindows.length - 1; i++){
+      //if one object with matching processname isn't found, then add it
+      if(!uniqueProccesses.some( x => x.getProcessName === processWithWindows[i].getProcessName)){
+        uniqueProccesses.push(processWithWindows[i]);
+      }
+    }
+
+    /**
+     * i have 2 lists of varying lenght containing the same type of object
+     * list one can have duplicates of the same object, but list 2 only has unique objects
+     * compare both lists if object.name from list equal to object.name from list 2
+     * print these objects match
+     */
+
+
+    // compare the filteredProcess list against the pinToStar List
+
+    for(let i = 0; i <= uniqueProccesses.length -1; i++){
+
+      if(this.pinToStartList.some( x => x.appName === uniqueProccesses[i].getProcessName)){
+
+        this.setIconToActive(uniqueProccesses[i].getProcessName)
+      }else{
+        proccessesNotInPinToStart.push(uniqueProccesses[i]);
+      }
+
+    }
+   
+    return proccessesNotInPinToStart;
+  }
+
+  private setIconToActive(appName:string){
+
+    const liElemnt = document.getElementById(`tskbar-${appName}`) as HTMLElement;
+
+    if(liElemnt){
+      liElemnt.style.borderBottom = '2px solid hsl(207deg 100%  72% / 90%)';
+    }
   }
 
   private getComponentDetail():Process{
