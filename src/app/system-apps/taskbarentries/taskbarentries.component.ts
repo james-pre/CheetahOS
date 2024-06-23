@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 import { MenuService } from 'src/app/shared/system-service/menu.services';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
+import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { FileInfo } from 'src/app/system-files/fileinfo';
@@ -18,10 +19,15 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _triggerProcessService:TriggerProcessService;
+  private _stateManagmentService:StateManagmentService;
   private _menuService:MenuService;
+
   private _processListChangeSub!: Subscription;
   private _addIconToTaskbarSub!: Subscription;
   private _removeIconFromTaskbarSub!: Subscription;
+  private _openApplicationFromTaskbarSub!: Subscription;
+  private _closeApplicationsFromTaskbarSub!: Subscription;
+
   private prevOpenedProccesses:string[]= [];
   
   runningProcess:Process[] = [];
@@ -38,17 +44,20 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
   appProcessId = 0;
 
   constructor(processIdService:ProcessIDService,runningProcessService:RunningProcessService, menuService:MenuService,
-              triggerProcessService:TriggerProcessService) { 
+              triggerProcessService:TriggerProcessService, stateManagmentService:StateManagmentService) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this._triggerProcessService = triggerProcessService;
+    this._stateManagmentService = stateManagmentService;
     this._menuService = menuService;
 
     this.processId = this._processIdService.getNewProcessId();
     this._runningProcessService.addProcess(this.getComponentDetail());
     this._processListChangeSub = this._runningProcessService.processListChangeNotify.subscribe(() =>{this.updateRunningProcess()});
     this._addIconToTaskbarSub = this._menuService.pinToTaskBar.subscribe((p)=>{this.pinIconToTaskBarList(p)});
-    this._removeIconFromTaskbarSub = this._menuService.unPinToTaskBar.subscribe(()=>{this.unPinIconToTaskBarList()});
+    this._removeIconFromTaskbarSub = this._menuService.unPinFromTaskBar.subscribe((p)=>{this.unPinIconFromTaskBarList(p)});
+    this._openApplicationFromTaskbarSub = this._menuService.openApplicationFromTaskBar.subscribe((p)=>{this.openApplication(p)});
+    this._closeApplicationsFromTaskbarSub = this._menuService.closeApplicationFromTaskBar.subscribe((p) =>{this.closeApplication(p)});
   }
   
   ngAfterViewInit(): void {
@@ -62,6 +71,8 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
     this._processListChangeSub?.unsubscribe();
     this._addIconToTaskbarSub?.unsubscribe();
     this._removeIconFromTaskbarSub?.unsubscribe();
+    this._openApplicationFromTaskbarSub?.unsubscribe();
+    this._closeApplicationsFromTaskbarSub?.unsubscribe();
   }
 
   updateRunningProcess():void{
@@ -75,8 +86,7 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
         this.pinToTaskBarList.push(file);
   }
 
-  unPinIconToTaskBarList():void{
-    const file = this.selectedFile;
+  unPinIconFromTaskBarList(file:FileInfo):void{
     const deleteCount = 1;
     const procIndex = this.pinToTaskBarList.findIndex((pin) => {
         return pin.getOpensWith === file.getOpensWith;
@@ -85,6 +95,8 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
     if(procIndex != -1){
         this.pinToTaskBarList.splice(procIndex, deleteCount)
     }
+
+    this.updateRunningProcess();
   }
 
   filterProcesses():Process[]{
@@ -168,17 +180,22 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  openApplication(file:FileInfo):void{
+    this._triggerProcessService.startApplication(file);
+  }
 
-  openApp():void{
-    this._triggerProcessService.startApplication(this.selectedFile);
+  closeApplication(proccess:Process[]):void{
+    console.log('taskbar--processes to close:', proccess);
+    for(let i = 0; i <= proccess.length - 1; i++){
+      this._stateManagmentService.removeState(`${proccess[i].getProcessId}-${proccess[i].getProcessId}`);
+      this._runningProcessService.closeProcessNotify.next(proccess[i]);
+    }
   }
 
   onShowIconContextMenu(evt:MouseEvent, file:FileInfo):void{
-
     /* My hand was forced, I had to let the desktop display the taskbar context menu.
      * This is due to the fact that the taskbar has a max height of 40px, which is not enough room to display the context menu
      */
-
     const liElemnt = document.getElementById(`tskbar-${file.getOpensWith}`) as HTMLElement;
     const rect =  liElemnt.getBoundingClientRect();
     const data:object[] = [rect, file];
@@ -191,18 +208,12 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
     evt.preventDefault();
   }
 
-  closeWindow():void{
-    1
+  restoreOrMinizeWindow(processId:number){
+    this._runningProcessService.restoreOrMinimizeWindowNotify.next(processId)
   }
 
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type)
-  }
-
-  restoreOrMinizeWindow(processId:number){
-    //const theProcess = this._runningProcessService.getProcess(processId); TBD
-    //console.log('close evt triggered for pid:'+ theProcess.getProcessId +'----'+'pname:'+theProcess.getProcessName); //TBD
-    this._runningProcessService.restoreOrMinimizeWindowNotify.next(processId)
   }
 
 }

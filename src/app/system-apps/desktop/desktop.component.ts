@@ -31,6 +31,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   private _menuService: MenuService;
   
   private _showTaskBarMenuSub!:Subscription;
+  private _hideTaskBarMenuSub!:Subscription;
 
   private _vantaEffect: any;
 
@@ -60,7 +61,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   tskBarCntxtMenuStyle:Record<string, unknown> = {};
   showTskBarCntxtMenu = false;
   tskBarMenuOption =  "taskbar-menu";
-  selectedFile!:FileInfo
+  selectedFileFromTaskBar!:FileInfo
 
   hasWindow = false;
   icon = 'osdrive/icons/generic-program.ico';
@@ -89,19 +90,10 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   private nextColor:Colors = new Colors();
   private animationId:any;
 
-
-  // menuData = [
-  //   {icon:'', label: '', action: this.openApp.bind(this) },
-  //   {icon:'', label: 'Unpin from taskbar', action: this.unPinIconToTaskBarList.bind(this) },
-  //   {icon:'', label: 'Close window', action: this.closeWindow.bind(this) }
-  // ];
-
  taskBarMenuData = [
-    {icon:'', label: '', action: ()=> console.log('hello world') },
-    {icon:'osdrive/icons/unpin_24.png', label: 'Unpin from taskbar', action: ()=> console.log('hello world')  },
-    {icon:'osdrive/icons/x_32.png', label: 'Close window', action:()=> console.log('hello world')  }
+    {icon:'', label: '', action: this.openApplicationFromTaskBar.bind(this)},
+    {icon:'osdrive/icons/unpin_24.png', label: 'Unpin from taskbar', action: this.unPinApplicationFromTaskBar.bind(this)},
   ];
-
 
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService,fileManagerServices:FileManagerService,
@@ -114,6 +106,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     this._menuService = menuService;
 
     this._showTaskBarMenuSub = this._menuService.showTaskBarMenu.subscribe((p) => { this.onShowTaskBarContextMenu(p)});
+    this._hideTaskBarMenuSub = this._menuService.hideTaskBarMenu.subscribe(() => { this.hideTaskBarContextMenu()});
 
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail());
@@ -121,11 +114,8 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
   ngOnInit():void{
-
     this._scriptService.loadScript("threejs","assets/backgrounds/three.min.js").then(() =>{
-
       this._scriptService.loadScript("vanta-waves","assets/backgrounds/vanta.waves.min.js").then(() =>{
-
         this._vantaEffect = VANTA.WAVES({
           el: '#vanta',
           color:this.defaultColor, //this._numSequence,
@@ -139,19 +129,16 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
   ngAfterViewInit():void{
-  
     //this.animationId = requestAnimationFrame(this.changeAnimationColor.bind(this));  
-
      this.hideContextMenu();
      this.loadOtherBackgrounds();
   }
 
   loadOtherBackgrounds():void{
+    const names:string[] = ["halo", "globe", "birds", "rings"]
     const bkgrounds:string[] = ["assets/backgrounds/vanta.halo.min.js","assets/backgrounds/vanta.globe.min.js",
                           "assets/backgrounds/vanta.birds.min.js", "assets/backgrounds/vanta.rings.min.js"];
         
-    const names:string[] = ["halo", "globe", "birds", "rings"]
-
     for(let i =0; i <= bkgrounds.length - 1; i++){
       this._scriptService.loadScript(names[i], bkgrounds[i]);
     }
@@ -312,10 +299,9 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     const file = new FileInfo()
     file.setOpensWith = arg0;
 
-    if(this._triggerProcessService){
-        this._triggerProcessService.startApplication(file);
-    }
+    this._triggerProcessService.startApplication(file);
   }
+
 
   private buildVantaEffect(n:number) {
 
@@ -345,31 +331,78 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
 
-
   onShowTaskBarContextMenu(data:object[]):void{
-
-    console.log('responding to taskbar call')
-
     const rect = data[0] as DOMRect;
     const file = data[1] as FileInfo;
+    this.selectedFileFromTaskBar = file;
 
-    this.selectedFile = file;
-
-    const firstRow = this.taskBarMenuData[0];
-    firstRow.icon = file.getIconPath;
-    firstRow.label = file.getOpensWith;
-    this.taskBarMenuData[0] = firstRow;
- 
+    // first count, then show the cntxt menu
+    const proccessCount = this.countInstaceAndSetMenu();
     this.showTskBarCntxtMenu = true;
 
-    this.tskBarCntxtMenuStyle = {
-      'position':'absolute',
-      'transform':`translate(${String(rect.x - 60)}px, ${String(rect.y - 97.5)}px)`,
-      'z-index': 2,
+    if(proccessCount == 0){
+      this.tskBarCntxtMenuStyle = {
+        'position':'absolute',
+        'transform':`translate(${String(rect.x - 60)}px, ${String(rect.y - 68.5)}px)`,
+        'z-index': 2,
+      }
+    }else {
+      this.tskBarCntxtMenuStyle = {
+        'position':'absolute',
+        'transform':`translate(${String(rect.x - 60)}px, ${String(rect.y - 97.5)}px)`,
+        'z-index': 2,
+      }
+    }
+  }
+
+  hideTaskBarContextMenu():void{
+    this.showTskBarCntxtMenu = false;
+  }
+
+  countInstaceAndSetMenu():number{
+    const file = this.selectedFileFromTaskBar;
+    const proccessCount = this._runningProcessService.getProcesses()
+      .filter(p => p.getProcessName === file.getOpensWith).length;
+
+    const rowZero = this.taskBarMenuData[0];
+    rowZero.icon = file.getIconPath;
+    rowZero.label = file.getOpensWith;
+    this.taskBarMenuData[0] = rowZero;
+
+    if(proccessCount == 1){
+      const menuEntry = {icon:'osdrive/icons/x_32.png', label: 'Close window', action:this.closeApplicationFromTaskBar.bind(this)};
+      this.taskBarMenuData.push(menuEntry);
+    }else if(proccessCount > 1){
+      const rowTwo = this.taskBarMenuData[2];
+      rowTwo.label = 'Close all windows';
+      this.taskBarMenuData[2] = rowTwo;
     }
 
-    // evt.preventDefault();
+    return proccessCount;
   }
+
+  openApplicationFromTaskBar():void{
+    this.showTskBarCntxtMenu = false;
+    const file = this.selectedFileFromTaskBar;  
+    this._triggerProcessService.startApplication(file);
+  }
+
+  closeApplicationFromTaskBar():void{
+    this.showTskBarCntxtMenu = false;
+    const file = this.selectedFileFromTaskBar;
+    const proccesses = this._runningProcessService.getProcesses()
+      .filter(p => p.getProcessName === file.getOpensWith);
+
+    console.log('desktop--processes to close:', proccesses);
+    this._menuService.closeApplicationFromTaskBar.next(proccesses);
+  }
+
+  unPinApplicationFromTaskBar():void{
+    this.showTskBarCntxtMenu = false;
+    const file = this.selectedFileFromTaskBar;
+    this._menuService.unPinFromTaskBar.next(file);
+  }
+
 
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type)

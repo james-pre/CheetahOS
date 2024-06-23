@@ -115,6 +115,11 @@ span.dm-tail{
     font-weight: normal;
 }
 
+.dm-p{
+    position: relative;
+    top: 10%;
+}
+
 .dm-tskbar-tail{
     max-width: 25%;
     padding-left: 48px;

@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 import { FileInfo } from "src/app/system-files/fileinfo";
+import { Process } from "src/app/system-files/process";
 
 
 @Injectable({
@@ -9,7 +10,11 @@ import { FileInfo } from "src/app/system-files/fileinfo";
 
 export class MenuService{
     pinToTaskBar: Subject<FileInfo> = new Subject<FileInfo>();
-    unPinToTaskBar: Subject<void> = new Subject<void>();
+    unPinFromTaskBar: Subject<FileInfo> = new Subject<FileInfo>();
+    // openApplication: Subject<FileInfo> = new Subject<FileInfo>();
+    // closeApplication: Subject<FileInfo[]> = new Subject<FileInfo[]>();
+    openApplicationFromTaskBar: Subject<FileInfo> = new Subject<FileInfo>();
+    closeApplicationFromTaskBar: Subject<Process[]> = new Subject<Process[]>();
     showTaskBarMenu: Subject<object[]> = new Subject<object[]>();
     hideTaskBarMenu: Subject<void> = new Subject<void>();
 

@@ -27,9 +27,9 @@
   
     <div lass="dm-vertical-menu-cntnr" *ngFor="let menuItem of menuItems; let i = index">
         <div class="dm-vertical-menu-item"  (click)="onMenuItemClick(menuItem.action)">
-            <div class="span dm-tskbar-head"> <figure class="dm-tskbar-fig-cntxt-menu"><img *ngIf="menuItem.icon.length > 0" class="dm-tskbar-img-alt" [src]="menuItem.icon"/></figure></div>
-            <div class="span dm-tskbar-mid">{{menuItem.label}}</div>
-            <div class="span dm-tskbar-tail"> <figure class="dm-tskbar-fig-cntxt-menu"> </figure> </div>
+            <div class="dm-tskbar-head"> <figure class="dm-tskbar-fig-cntxt-menu"><img *ngIf="menuItem.icon.length > 0" class="dm-tskbar-img-alt" [src]="menuItem.icon"/></figure></div>
+            <div class="dm-tskbar-mid"><p class="dm-p">{{menuItem.label}}</p></div>
+            <div class="dm-tskbar-tail"> <figure class="dm-tskbar-fig-cntxt-menu"> </figure> </div>
         </div>
     </div>
   
