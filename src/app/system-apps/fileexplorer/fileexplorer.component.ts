@@ -115,11 +115,12 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   pathHistory =['/osdrive/icons','/osdrive/Games', '/osdrive/Videos'];
 
   menuData = [
-    { label: 'Open', action: this.onTriggerRunProcess.bind(this) },
-    { label: 'Pin to Start', action: this.doNothing.bind(this) },
-    { label: 'Delete', action: this.onDeleteFile.bind(this) },
-    { label: 'Rename', action: this.onRenameFileTxtBoxShow.bind(this) }
+    {icon:'', label: 'Open', action: this.onTriggerRunProcess.bind(this) },
+    {icon:'', label: 'Pin to Start', action: this.doNothing.bind(this) },
+    {icon:'', label: 'Delete', action: this.onDeleteFile.bind(this) },
+    {icon:'', label: 'Rename', action: this.onRenameFileTxtBoxShow.bind(this) }
   ];
+  fileExplrMngrMenuOption = "file-explorer-file-manager-menu";
 
   fileInfoTipData = [{label:'', data:''}];
 

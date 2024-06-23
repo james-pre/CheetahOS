@@ -73,12 +73,14 @@ export class FilemanagerComponent implements BaseComponent, OnInit, AfterViewIni
   files:FileInfo[] = [];
 
   menuData = [
-    { label: 'Open', action: this.onTriggerRunProcess.bind(this) },
-    { label: 'Pin to Start', action: this.doNothing.bind(this) },
-    { label: 'Pin to Taskbar', action: this.pinIconToTaskBar.bind(this) },
-    { label: 'Delete', action: this.onDeleteFile.bind(this) },
-    { label: 'Rename', action: this.onRenameFileTxtBoxShow.bind(this) }
+    {icon:'', label: 'Open', action: this.onTriggerRunProcess.bind(this) },
+    {icon:'', label: 'Pin to Start', action: this.doNothing.bind(this) },
+    {icon:'', label: 'Pin to Taskbar', action: this.pinIconToTaskBar.bind(this) },
+    {icon:'', label: 'Delete', action: this.onDeleteFile.bind(this) },
+    {icon:'', label: 'Rename', action: this.onRenameFileTxtBoxShow.bind(this) }
   ];
+  
+  fileExplrMngrMenuOption = "file-explorer-file-manager-menu";
 
   constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService,
               triggerProcessService:TriggerProcessService, fileManagerService:FileManagerService, formBuilder: FormBuilder, menuService:MenuService) { 
@@ -194,6 +196,7 @@ export class FilemanagerComponent implements BaseComponent, OnInit, AfterViewIni
 
     evt.preventDefault();
   }
+
   doNothing():void{
     console.log('do nothing called');
   }

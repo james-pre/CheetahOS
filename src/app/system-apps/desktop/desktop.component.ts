@@ -11,6 +11,7 @@ import { Colors } from './colorutil/colors';
 import { FileInfo } from 'src/app/system-files/fileinfo';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 import { ScriptService } from 'src/app/shared/system-service/script.services';
+import { MenuService } from 'src/app/shared/system-service/menu.services';
 
 declare let VANTA: { HALO: any; BIRDS: any;  WAVES: any;   GLOBE: any;  RINGS: any;};
 
@@ -27,7 +28,9 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   private _triggerProcessService:TriggerProcessService;
   private _timerSubscription!: Subscription;
   private _scriptService: ScriptService;
+  private _menuService: MenuService;
   
+  private _showTaskBarMenuSub!:Subscription;
 
   private _vantaEffect: any;
 
@@ -54,6 +57,10 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   showDesktopIcons = true;
 
   cntxtMenuStyle:Record<string, unknown> = {};
+  tskBarCntxtMenuStyle:Record<string, unknown> = {};
+  showTskBarCntxtMenu = false;
+  tskBarMenuOption =  "taskbar-menu";
+  selectedFile!:FileInfo
 
   hasWindow = false;
   icon = 'osdrive/icons/generic-program.ico';
@@ -83,13 +90,30 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   private animationId:any;
 
 
+  // menuData = [
+  //   {icon:'', label: '', action: this.openApp.bind(this) },
+  //   {icon:'', label: 'Unpin from taskbar', action: this.unPinIconToTaskBarList.bind(this) },
+  //   {icon:'', label: 'Close window', action: this.closeWindow.bind(this) }
+  // ];
+
+ taskBarMenuData = [
+    {icon:'', label: '', action: ()=> console.log('hello world') },
+    {icon:'osdrive/icons/unpin_24.png', label: 'Unpin from taskbar', action: ()=> console.log('hello world')  },
+    {icon:'osdrive/icons/x_32.png', label: 'Close window', action:()=> console.log('hello world')  }
+  ];
+
+
+
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService,fileManagerServices:FileManagerService,
-              triggerProcessService:TriggerProcessService, scriptService: ScriptService) { 
+              triggerProcessService:TriggerProcessService, scriptService: ScriptService, menuService: MenuService) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this._fileManagerServices = fileManagerServices;
     this._triggerProcessService = triggerProcessService;
     this._scriptService = scriptService;
+    this._menuService = menuService;
+
+    this._showTaskBarMenuSub = this._menuService.showTaskBarMenu.subscribe((p) => { this.onShowTaskBarContextMenu(p)});
 
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail());
@@ -148,6 +172,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
   ngOnDestroy(): void {
     this._timerSubscription?.unsubscribe();
+    this._showTaskBarMenuSub?.unsubscribe();
     cancelAnimationFrame(this.animationId);
     this._vantaEffect?.destroy();
   }
@@ -170,14 +195,14 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     const evtOriginator = this._runningProcessService.getEventOrginator();
 
     if(evtOriginator == ''){
-      this.cntxtMenuStyle = {
-        'display': 'block', 
-        'width': '225px', 
-        'transform':`translate(${String(evt.clientX + 2)}px, ${String(evt.clientY)}px)`,
-        'z-index': 2,
-        'opacity':1
-      }
-      evt.preventDefault();
+      // this.cntxtMenuStyle = {
+      //   'display': 'block', 
+      //   'width': '225px', 
+      //   'transform':`translate(${String(evt.clientX + 2)}px, ${String(evt.clientY)}px)`,
+      //   'z-index': 2,
+      //   'opacity':1
+      // }
+      // evt.preventDefault();
     }
     else{
       this._runningProcessService.removeEventOriginator();
@@ -319,6 +344,32 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
   }
 
+
+
+  onShowTaskBarContextMenu(data:object[]):void{
+
+    console.log('responding to taskbar call')
+
+    const rect = data[0] as DOMRect;
+    const file = data[1] as FileInfo;
+
+    this.selectedFile = file;
+
+    const firstRow = this.taskBarMenuData[0];
+    firstRow.icon = file.getIconPath;
+    firstRow.label = file.getOpensWith;
+    this.taskBarMenuData[0] = firstRow;
+ 
+    this.showTskBarCntxtMenu = true;
+
+    this.tskBarCntxtMenuStyle = {
+      'position':'absolute',
+      'transform':`translate(${String(rect.x - 60)}px, ${String(rect.y - 97.5)}px)`,
+      'z-index': 2,
+    }
+
+    // evt.preventDefault();
+  }
 
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type)

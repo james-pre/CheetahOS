@@ -1,5 +1,5 @@
 <ol> 
-     <li class="li-inactive" taskBarEntryHighlight *ngFor="let pin of pinToTaskBarList;  let i = index" id="tskbar-{{pin.getOpensWith}}"  (click)="onPinnedAppIconClick(pin)">
+     <li class="li-inactive" taskBarEntryHighlight *ngFor="let pin of pinToTaskBarList;  let i = index" id="tskbar-{{pin.getOpensWith}}"  (click)="onPinnedAppIconClick(pin)" (contextmenu)="onShowIconContextMenu($event, pin)">
           <cos-taskbarentry  [taskBarPid]="appProcessId" [taskBarIconImgUrl]="pin.getIconPath"  [taskBarIconName]="pin.getOpensWith" > </cos-taskbarentry> 
      </li>
 

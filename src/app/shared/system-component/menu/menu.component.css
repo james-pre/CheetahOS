@@ -66,7 +66,76 @@ span.dm-tail{
 }
 
 .dm-fig-cntxt-menu{
+    position: relative;
+    align-items: center;
+    display: inline-flex;
+    min-width: 18px;
+    top: 0;
+    left: 15%;
+}
+
+
+.dm-img-alt{
+    height: 16px;
+    width: 16px;
+    image-rendering:optimizeQuality;
+    position: relative;
+}
+
+.dm-figure-alt{
+    /* position: relative;
+    align-items: center;
+    display: inline-flex;
+    min-width: 18px;
+    top: 0;
+    left: 15%; */
+
     align-items: center;
     display:inline-flex;
     min-width: 18px;
+}
+
+
+
+.dm-tskbar-head{
+    max-width: 27%;
+    padding-left: 5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.dm-tskbar-mid{
+    min-width: 48%;
+    padding-left: 10px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    color: white; /* Black text color */
+    text-align: left;
+    font-size: 11px;
+    font-weight: normal;
+}
+
+.dm-tskbar-tail{
+    max-width: 25%;
+    padding-left: 48px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+
+.dm-tskbar-fig-cntxt-menu{
+    position: relative;
+    align-items: center;
+    display: inline-flex;
+    min-width: 18px;
+    top: 0;
+    left: 15%;
+}
+
+
+.dm-tskbar-img-alt{
+    height: 18px;
+    width: 18px;
+    image-rendering:optimizeQuality;
+    position: relative;
 }

@@ -26,13 +26,9 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
   
   runningProcess:Process[] = [];
   pinToTaskBarList:FileInfo[] = [];
+  selectedFile!:FileInfo
 
-  pinToTaskBarList1 = [
-    {icon:'osdrive/icons/file_explorer.png', appName:'fileexplorer'},
-    {icon:'/osdrive/icons/terminal_48.png', appName:'terminal'},
-    {icon:'/osdrive/icons/text-editor_48.png', appName:'texteditor'}];
-
-  hover = false;
+  showCntxtMenu  = false;
   hasWindow = false;
   icon = 'osdrive/icons/generic-program.ico';
   name = 'taskbarentry';
@@ -52,7 +48,7 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
     this._runningProcessService.addProcess(this.getComponentDetail());
     this._processListChangeSub = this._runningProcessService.processListChangeNotify.subscribe(() =>{this.updateRunningProcess()});
     this._addIconToTaskbarSub = this._menuService.pinToTaskBar.subscribe((p)=>{this.pinIconToTaskBarList(p)});
-    this._removeIconFromTaskbarSub = this._menuService.unPinToTaskBar.subscribe((p)=>{this.unPinIconToTaskBarList(p)});
+    this._removeIconFromTaskbarSub = this._menuService.unPinToTaskBar.subscribe(()=>{this.unPinIconToTaskBarList()});
   }
   
   ngAfterViewInit(): void {
@@ -66,7 +62,6 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
     this._processListChangeSub?.unsubscribe();
     this._addIconToTaskbarSub?.unsubscribe();
     this._removeIconFromTaskbarSub?.unsubscribe();
-    
   }
 
   updateRunningProcess():void{
@@ -80,7 +75,8 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
         this.pinToTaskBarList.push(file);
   }
 
-  unPinIconToTaskBarList(file:FileInfo):void{
+  unPinIconToTaskBarList():void{
+    const file = this.selectedFile;
     const deleteCount = 1;
     const procIndex = this.pinToTaskBarList.findIndex((pin) => {
         return pin.getOpensWith === file.getOpensWith;
@@ -170,6 +166,33 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
       const process = this._runningProcessService.getProcesses().filter(x => x.getProcessName === file.getOpensWith);
       this._runningProcessService.restoreOrMinimizeWindowNotify.next(process[0].getProcessId);
     }
+  }
+
+
+  openApp():void{
+    this._triggerProcessService.startApplication(this.selectedFile);
+  }
+
+  onShowIconContextMenu(evt:MouseEvent, file:FileInfo):void{
+
+    /* My hand was forced, I had to let the desktop display the taskbar context menu.
+     * This is due to the fact that the taskbar has a max height of 40px, which is not enough room to display the context menu
+     */
+
+    const liElemnt = document.getElementById(`tskbar-${file.getOpensWith}`) as HTMLElement;
+    const rect =  liElemnt.getBoundingClientRect();
+    const data:object[] = [rect, file];
+
+    const uid = `${this.name}-${this.processId}`;
+    this._runningProcessService.addEventOriginator(uid);
+
+    this._menuService.showTaskBarMenu.next(data);
+
+    evt.preventDefault();
+  }
+
+  closeWindow():void{
+    1
   }
 
   private getComponentDetail():Process{

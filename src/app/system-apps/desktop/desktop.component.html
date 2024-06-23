@@ -126,5 +126,6 @@
 
         <div class="empty-line-container"></div>
     </div>
+    <cos-menu [menuItems]="taskBarMenuData" *ngIf="showTskBarCntxtMenu" [style]="tskBarCntxtMenuStyle" [menuType]="tskBarMenuOption"> </cos-menu>
     <ng-content> </ng-content>
 </main>

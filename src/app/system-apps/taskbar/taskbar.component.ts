@@ -14,6 +14,7 @@ export class TaskbarComponent implements OnInit {
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
 
+  
   hasWindow = false;
   icon = 'osdrive/icons/generic-program.ico';
   name = 'taskbar';
