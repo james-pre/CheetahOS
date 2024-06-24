@@ -11,6 +11,7 @@ export class RunningProcessService{
 
     static instance: RunningProcessService;
     private _runningProcesses:Process[];
+    private _runningProcessesImages:Map<number, string>;
     private _eventOriginator = '';
     processListChangeNotify: Subject<void> = new Subject<void>();
     closeProcessNotify: Subject<Process> = new Subject<Process>();
@@ -22,11 +23,16 @@ export class RunningProcessService{
 
     constructor(){
         this._runningProcesses = [];
+        this._runningProcessesImages = new Map<number, string>();
         RunningProcessService.instance = this; //I added this to access the service from a class, not component
     }
 
     addProcess(proccessToAdd:Process):void{
         this._runningProcesses.push(proccessToAdd)
+    }
+
+    addProcessImage(pid:number, imageData:string):void{
+        this._runningProcessesImages.set(pid, imageData);
     }
 
     addEventOriginator(eventOrig:string):void{
@@ -42,6 +48,11 @@ export class RunningProcessService{
         if(procIndex != -1){
             this._runningProcesses.splice(procIndex, deleteCount)
         }
+    }
+
+    removeProcessImage(pid:number):void{
+        if(this._runningProcessesImages.has(pid))
+            this._runningProcessesImages.delete(pid);
     }
 
     removeEventOriginator():void{

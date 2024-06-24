@@ -6,7 +6,6 @@ import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { Process } from 'src/app/system-files/process';
 import * as htmlToImage from 'html-to-image';
-import { toPng } from 'html-to-image';
 
 @Component({
   selector:'cos-title',
@@ -21,9 +20,6 @@ export class TitleComponent implements BaseComponent, OnDestroy, AfterViewInit{
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _maximizeWindowSub!: Subscription;
-
-  imageHolder!:HTMLImageElement;
-
   SECONDS_DELAY = 250;
 
   hasWindow = true;
@@ -40,7 +36,7 @@ export class TitleComponent implements BaseComponent, OnDestroy, AfterViewInit{
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail()); 
 
-    this._maximizeWindowSub = this._runningProcessService.maximizeWindowNotify.subscribe(() =>{this.maximizeWindow();})
+    this._maximizeWindowSub = this._runningProcessService.maximizeWindowNotify.subscribe(() =>{this.maximizeWindow()});
   }
 
 
@@ -57,18 +53,10 @@ export class TitleComponent implements BaseComponent, OnDestroy, AfterViewInit{
   }
 
   captureComponentImg():void{
-
     htmlToImage.toPng(this.helloContent.nativeElement).then(htmlImg =>{
       const image = new Image();
       image.src = htmlImg
-
-      this.imageHolder = image;
-
-      const link = document.createElement('a');
-      link.href = image.src;
-      link.download = 'captured-image.png';
-
-      document.body.appendChild(link);
+      this._runningProcessService.addProcessImage(this.processId, image.src);
     })
   }
 
