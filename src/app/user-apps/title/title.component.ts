@@ -5,6 +5,8 @@ import { RunningProcessService } from 'src/app/shared/system-service/running.pro
 import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { Process } from 'src/app/system-files/process';
+import * as htmlToImage from 'html-to-image';
+import { toPng } from 'html-to-image';
 
 @Component({
   selector:'cos-title',
@@ -14,11 +16,15 @@ import { Process } from 'src/app/system-files/process';
 
 export class TitleComponent implements BaseComponent, OnDestroy, AfterViewInit{
 
-  @ViewChild('ptag', {static: true}) ptag!: ElementRef;
+  @ViewChild('helloContent', {static: true}) helloContent!: ElementRef;
 
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _maximizeWindowSub!: Subscription;
+
+  imageHolder!:HTMLImageElement;
+
+  SECONDS_DELAY = 250;
 
   hasWindow = true;
   icon = 'osdrive/Pictures/favicon_nice.png';
@@ -40,10 +46,30 @@ export class TitleComponent implements BaseComponent, OnDestroy, AfterViewInit{
 
   ngAfterViewInit(): void {
     this.setTitleWindowToFocus(this.processId); 
+
+    setTimeout(()=>{
+      this.captureComponentImg();
+    },this.SECONDS_DELAY) 
   }
 
   ngOnDestroy():void{
     this._maximizeWindowSub?.unsubscribe();
+  }
+
+  captureComponentImg():void{
+
+    htmlToImage.toPng(this.helloContent.nativeElement).then(htmlImg =>{
+      const image = new Image();
+      image.src = htmlImg
+
+      this.imageHolder = image;
+
+      const link = document.createElement('a');
+      link.href = image.src;
+      link.download = 'captured-image.png';
+
+      document.body.appendChild(link);
+    })
   }
 
   maximizeWindow():void{
@@ -57,8 +83,8 @@ export class TitleComponent implements BaseComponent, OnDestroy, AfterViewInit{
       const mainWindow = document.getElementById('vanta');
       //window title and button bar, and windows taskbar height
       const pixelTosubtract = 30 + 40;
-      this.ptag.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
-      this.ptag.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+      this.helloContent.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
+      this.helloContent.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
 
     }
   }
