@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MenuService } from 'src/app/shared/system-service/menu.services';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { ComponentType } from 'src/app/system-files/component.types';
@@ -13,8 +14,9 @@ export class TaskbarComponent implements OnInit {
 
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
+  private _menuService:MenuService;
 
-  
+
   hasWindow = false;
   icon = 'osdrive/icons/generic-program.ico';
   name = 'taskbar';
@@ -22,9 +24,10 @@ export class TaskbarComponent implements OnInit {
   type = ComponentType.System
   displayName = ''
 
-  constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService) { 
+  constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService, menuService:MenuService) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
+    this._menuService = menuService;
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail());
   }
@@ -34,6 +37,9 @@ export class TaskbarComponent implements OnInit {
     1 
   }
   
+  hideContextMenus():void{
+    this._menuService.hideContextMenus.next();
+  }
 
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type)

@@ -31,7 +31,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   private _menuService: MenuService;
   
   private _showTaskBarMenuSub!:Subscription;
-  private _hideTaskBarMenuSub!:Subscription;
+  private _hideMenuSub!:Subscription;
 
   private _vantaEffect: any;
 
@@ -107,7 +107,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     this._menuService = menuService;
 
     this._showTaskBarMenuSub = this._menuService.showTaskBarMenu.subscribe((p) => { this.onShowTaskBarContextMenu(p)});
-    this._hideTaskBarMenuSub = this._menuService.hideTaskBarMenu.subscribe(() => { this.hideTaskBarContextMenu()});
+    this._hideMenuSub = this._menuService.hideContextMenus.subscribe(() => { this.hideContextMenu()});
 
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail());
@@ -161,6 +161,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   ngOnDestroy(): void {
     this._timerSubscription?.unsubscribe();
     this._showTaskBarMenuSub?.unsubscribe();
+    this._hideMenuSub?.unsubscribe();
     cancelAnimationFrame(this.animationId);
     this._vantaEffect?.destroy();
   }
@@ -420,7 +421,6 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     const proccesses = this._runningProcessService.getProcesses()
       .filter(p => p.getProcessName === file.getOpensWith);
 
-    console.log('desktop--processes to close:', proccesses);
     this._menuService.closeApplicationFromTaskBar.next(proccesses);
   }
 
