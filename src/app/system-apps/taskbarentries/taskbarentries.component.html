@@ -3,7 +3,7 @@
           <cos-taskbarentry  [taskBarPid]="appProcessId" [taskBarIconImgUrl]="pin.getIconPath"  [taskBarIconName]="pin.getOpensWith" > </cos-taskbarentry> 
      </li>
 
-     <li taskBarEntryHighlight *ngFor="let rProcess of runningProcess">
+     <li taskBarEntryHighlight *ngFor="let rProcess of runningProcess" id="tskbar-UnPinned-{{rProcess.getProcessName}}" (contextmenu)="onShowUnPinnedIconContextMenu($event, rProcess)">
           <cos-taskbarentry [taskBarPid]="rProcess.getProcessId" [taskBarIconImgUrl]="rProcess.getIcon"  [taskBarIconName]="rProcess.getProcessName" (restoreOrMinizeWindowEvent)="restoreOrMinizeWindow($event)"> </cos-taskbarentry> 
      </li>
 </ol>

@@ -15,7 +15,7 @@ export class MenuService{
     // closeApplication: Subject<FileInfo[]> = new Subject<FileInfo[]>();
     openApplicationFromTaskBar: Subject<FileInfo> = new Subject<FileInfo>();
     closeApplicationFromTaskBar: Subject<Process[]> = new Subject<Process[]>();
-    showTaskBarMenu: Subject<object[]> = new Subject<object[]>();
+    showTaskBarMenu: Subject<unknown[]> = new Subject<unknown[]>();
     hideTaskBarMenu: Subject<void> = new Subject<void>();
 
 }

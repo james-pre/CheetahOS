@@ -1,5 +1,5 @@
- <main id="vanta" class="main-desktop" (contextmenu)="showContextMenu($event)" (click)="hideContextMenu()">   <!--(contextmenu)="showContextMenu($event)" (click)="hideContextMenu()" -->
-    <div class="vertical-menu" [style]="cntxtMenuStyle" #cntxtMenu>
+ <main id="vanta" class="main-desktop" (contextmenu)="showDesktopContextMenu($event)" (click)="hideContextMenu()">   <!--(contextmenu)="showContextMenu($event)" (click)="hideContextMenu()" -->
+    <div *ngIf="showDesktopCntxtMenu" class="vertical-menu" [style]="cntxtMenuStyle">
         <div class="empty-line-container"></div>
         <div class="vertical-sub-menu" >
             <div class="vertical-menu-item">

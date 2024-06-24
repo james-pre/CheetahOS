@@ -29,12 +29,11 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
   private _closeApplicationsFromTaskbarSub!: Subscription;
 
   private prevOpenedProccesses:string[]= [];
-  
+  SECONDS_DELAY = 100;
   runningProcess:Process[] = [];
   pinToTaskBarList:FileInfo[] = [];
   selectedFile!:FileInfo
-
-  showCntxtMenu  = false;
+  
   hasWindow = false;
   icon = 'osdrive/icons/generic-program.ico';
   name = 'taskbarentry';
@@ -78,12 +77,16 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
   updateRunningProcess():void{
     this.runningProcess = this.filterProcesses();
 
-    this.turnOffInActiveProccess();
+    setTimeout(()=>{
+      this.changeProcessStateIdentifier();
+    },this.SECONDS_DELAY) 
   }
 
   pinIconToTaskBarList(file:FileInfo):void{
     if(!this.pinToTaskBarList.some(x => x.getOpensWith === file.getOpensWith))
         this.pinToTaskBarList.push(file);
+
+    this.updateRunningProcess();
   }
 
   unPinIconFromTaskBarList(file:FileInfo):void{
@@ -95,7 +98,6 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
     if(procIndex != -1){
         this.pinToTaskBarList.splice(procIndex, deleteCount)
     }
-
     this.updateRunningProcess();
   }
 
@@ -111,7 +113,7 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
      * setIconToActive
      * else, put object in a different list
      */
-    uniqueProccesses.filter(x =>{
+    uniqueProccesses.forEach(x =>{
       if(this.pinToTaskBarList.some( i => i.getOpensWith === x.getProcessName)){
         this.appProcessId = x.getProcessId;
         this.setIconState(x.getProcessName,true);
@@ -131,7 +133,7 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
      */
     this._runningProcessService.getProcesses()
       .filter(p => p.getHasWindow == true)
-      .filter(x =>{
+      .forEach(x =>{
         if(!uniqueProccesses.some(a => a.getProcessName === x.getProcessName)){
           uniqueProccesses.push(x)
         }
@@ -141,18 +143,20 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
   }
 
   storeHistory(arg:Process[]):void{
-    arg.filter(x =>{
+    arg.forEach(x =>{
       if(!this.prevOpenedProccesses.includes(x.getProcessName)){
         this.prevOpenedProccesses.push(x.getProcessName)
       }
     });
   }
 
-  turnOffInActiveProccess():void{
+  changeProcessStateIdentifier():void{
     const runningProcess = this.getUniqueProccess();
-    this.prevOpenedProccesses.filter(x =>{
+    this.prevOpenedProccesses.forEach(x =>{
       if(!runningProcess.some(i => i.getProcessName === x)){
         this.setIconState(x,false);
+      }else{
+        this.setIconState(x,true);
       }
     });
   }
@@ -160,7 +164,6 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
   setIconState(appName:string, isActive:boolean){
     const liElemnt = document.getElementById(`tskbar-${appName}`) as HTMLElement;
     if(liElemnt){
-
       if(isActive)
         liElemnt.style.borderBottomColor = 'hsl(207deg 100%  72% / 90%)';
       else
@@ -185,7 +188,6 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
   }
 
   closeApplication(proccess:Process[]):void{
-    console.log('taskbar--processes to close:', proccess);
     for(let i = 0; i <= proccess.length - 1; i++){
       this._stateManagmentService.removeState(`${proccess[i].getProcessId}-${proccess[i].getProcessId}`);
       this._runningProcessService.closeProcessNotify.next(proccess[i]);
@@ -198,7 +200,27 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
      */
     const liElemnt = document.getElementById(`tskbar-${file.getOpensWith}`) as HTMLElement;
     const rect =  liElemnt.getBoundingClientRect();
-    const data:object[] = [rect, file];
+    const isPinned = true;
+    const data:unknown[] = [rect, file, isPinned];
+
+    const uid = `${this.name}-${this.processId}`;
+    this._runningProcessService.addEventOriginator(uid);
+
+    this._menuService.showTaskBarMenu.next(data);
+
+    evt.preventDefault();
+  }
+
+  onShowUnPinnedIconContextMenu(evt:MouseEvent, proccess:Process):void{
+
+    const file = new FileInfo();
+    file.setOpensWith = proccess.getProcessName;
+    file.setIconPath = proccess.getIcon;
+
+    const liElemnt = document.getElementById(`tskbar-UnPinned-${file.getOpensWith}`) as HTMLElement;
+    const rect =  liElemnt.getBoundingClientRect();
+    const isPinned = false;
+    const data:unknown[] = [rect, file, isPinned];
 
     const uid = `${this.name}-${this.processId}`;
     this._runningProcessService.addEventOriginator(uid);

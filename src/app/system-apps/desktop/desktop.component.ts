@@ -59,6 +59,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
   cntxtMenuStyle:Record<string, unknown> = {};
   tskBarCntxtMenuStyle:Record<string, unknown> = {};
+  showDesktopCntxtMenu = false;
   showTskBarCntxtMenu = false;
   tskBarMenuOption =  "taskbar-menu";
   selectedFileFromTaskBar!:FileInfo
@@ -92,7 +93,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
  taskBarMenuData = [
     {icon:'', label: '', action: this.openApplicationFromTaskBar.bind(this)},
-    {icon:'osdrive/icons/unpin_24.png', label: 'Unpin from taskbar', action: this.unPinApplicationFromTaskBar.bind(this)},
+    {icon:'', label: '', action: ()=> console.log() },
   ];
 
 
@@ -170,7 +171,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     return Math.floor(Math.random() * (max - min) + min);
   }
 
-  showContextMenu(evt:MouseEvent):void{
+  showDesktopContextMenu(evt:MouseEvent):void{
 
     /**
      * There is a doubling of responses to certain events that exist on the 
@@ -182,14 +183,15 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     const evtOriginator = this._runningProcessService.getEventOrginator();
 
     if(evtOriginator == ''){
-      // this.cntxtMenuStyle = {
-      //   'display': 'block', 
-      //   'width': '225px', 
-      //   'transform':`translate(${String(evt.clientX + 2)}px, ${String(evt.clientY)}px)`,
-      //   'z-index': 2,
-      //   'opacity':1
-      // }
-      // evt.preventDefault();
+      this.showDesktopCntxtMenu = true;
+      this.cntxtMenuStyle = {
+        'display': 'block', 
+        'width': '225px', 
+        'transform':`translate(${String(evt.clientX + 2)}px, ${String(evt.clientY)}px)`,
+        'z-index': 2,
+        'opacity':1
+      }
+      evt.preventDefault();
     }
     else{
       this._runningProcessService.removeEventOriginator();
@@ -197,9 +199,8 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
   hideContextMenu():void{
-    this.cntxtMenuStyle = {
-      'display': 'none', 
-    }
+    this.showDesktopCntxtMenu = false;
+    this.showTskBarCntxtMenu = false;
   }
 
   viewBy(viewBy:string):void{
@@ -331,11 +332,13 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
 
-  onShowTaskBarContextMenu(data:object[]):void{
+  onShowTaskBarContextMenu(data:unknown[]):void{
     const rect = data[0] as DOMRect;
     const file = data[1] as FileInfo;
+    const isPinned = data[2] as boolean;
     this.selectedFileFromTaskBar = file;
 
+    this.switchBetweenPinAndUnpin(isPinned);
     // first count, then show the cntxt menu
     const proccessCount = this.countInstaceAndSetMenu();
     this.showTskBarCntxtMenu = true;
@@ -359,6 +362,24 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     this.showTskBarCntxtMenu = false;
   }
 
+  switchBetweenPinAndUnpin(isAppPinned:boolean):void{
+    if(isAppPinned){
+      const menuEntry = {icon:'osdrive/icons/unpin_24.png', label:'Unpin from taskbar', action: this.unPinApplicationFromTaskBar.bind(this)}
+      const rowOne = this.taskBarMenuData[1];
+      rowOne.icon = menuEntry.icon;
+      rowOne.label = menuEntry.label;
+      rowOne.action = menuEntry.action;
+      this.taskBarMenuData[1] = rowOne;
+    }else if(!isAppPinned){
+      const menuEntry = {icon:'osdrive/icons/pin_24.png', label:'Pin to taskbar', action: this.pinApplicationFromTaskBar.bind(this)}
+      const rowOne = this.taskBarMenuData[1];
+      rowOne.icon = menuEntry.icon;
+      rowOne.label = menuEntry.label;
+      rowOne.action = menuEntry.action;
+      this.taskBarMenuData[1] = rowOne;
+    }
+  }
+
   countInstaceAndSetMenu():number{
     const file = this.selectedFileFromTaskBar;
     const proccessCount = this._runningProcessService.getProcesses()
@@ -370,8 +391,14 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     this.taskBarMenuData[0] = rowZero;
 
     if(proccessCount == 1){
-      const menuEntry = {icon:'osdrive/icons/x_32.png', label: 'Close window', action:this.closeApplicationFromTaskBar.bind(this)};
-      this.taskBarMenuData.push(menuEntry);
+      if(this.taskBarMenuData.length == 2){
+        const menuEntry = {icon:'osdrive/icons/x_32.png', label: 'Close window', action:this.closeApplicationFromTaskBar.bind(this)};
+        this.taskBarMenuData.push(menuEntry);
+      }else{
+        const rowTwo = this.taskBarMenuData[2];
+        rowTwo.label = 'Close window';
+        this.taskBarMenuData[2] = rowTwo;
+      }
     }else if(proccessCount > 1){
       const rowTwo = this.taskBarMenuData[2];
       rowTwo.label = 'Close all windows';
@@ -395,6 +422,12 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
     console.log('desktop--processes to close:', proccesses);
     this._menuService.closeApplicationFromTaskBar.next(proccesses);
+  }
+
+  pinApplicationFromTaskBar():void{
+    this.showTskBarCntxtMenu = false;
+    const file = this.selectedFileFromTaskBar;
+    this._menuService.pinToTaskBar.next(file);
   }
 
   unPinApplicationFromTaskBar():void{
