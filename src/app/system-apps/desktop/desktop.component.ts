@@ -26,12 +26,14 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   private _runningProcessService:RunningProcessService;
   private _fileManagerServices:FileManagerService;
   private _triggerProcessService:TriggerProcessService;
-  private _timerSubscription!: Subscription;
   private _scriptService: ScriptService;
   private _menuService: MenuService;
   
+  private _timerSubscription!: Subscription;
   private _showTaskBarMenuSub!:Subscription;
   private _hideMenuSub!:Subscription;
+  private _showTaskBarPreviewWindowSub!:Subscription;
+  private _hideTaskBarPreviewWindowSub!:Subscription;
 
   private _vantaEffect: any;
 
@@ -59,10 +61,13 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
   cntxtMenuStyle:Record<string, unknown> = {};
   tskBarCntxtMenuStyle:Record<string, unknown> = {};
+  tskBarPrevWindowStyle:Record<string, unknown> = {};
   showDesktopCntxtMenu = false;
   showTskBarCntxtMenu = false;
+  showTskBarPreviewWindow = false;
   tskBarMenuOption =  "taskbar-menu";
-  selectedFileFromTaskBar!:FileInfo
+  selectedFileFromTaskBar!:FileInfo;
+  appToPreview = '';
 
   hasWindow = false;
   icon = 'osdrive/icons/generic-program.ico';
@@ -107,7 +112,9 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     this._menuService = menuService;
 
     this._showTaskBarMenuSub = this._menuService.showTaskBarMenu.subscribe((p) => { this.onShowTaskBarContextMenu(p)});
+    this._showTaskBarPreviewWindowSub = this._runningProcessService.showPreviewWindowNotify.subscribe((p) => { this.showTaskBarPreviewWindow(p)});
     this._hideMenuSub = this._menuService.hideContextMenus.subscribe(() => { this.hideContextMenu()});
+    this._hideTaskBarPreviewWindowSub = this._runningProcessService.hidePreviewWindowNotify.subscribe(() => { this.hideTaskBarPreviewWindow()});
 
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail());
@@ -162,6 +169,9 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     this._timerSubscription?.unsubscribe();
     this._showTaskBarMenuSub?.unsubscribe();
     this._hideMenuSub?.unsubscribe();
+    this._showTaskBarPreviewWindowSub?.unsubscribe();
+    this._hideTaskBarPreviewWindowSub?.unsubscribe();
+
     cancelAnimationFrame(this.animationId);
     this._vantaEffect?.destroy();
   }
@@ -332,7 +342,6 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
   }
 
-
   onShowTaskBarContextMenu(data:unknown[]):void{
     const rect = data[0] as DOMRect;
     const file = data[1] as FileInfo;
@@ -436,6 +445,22 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     this._menuService.unPinFromTaskBar.next(file);
   }
 
+  showTaskBarPreviewWindow(data:unknown[]):void{
+    const rect = data[0] as DOMRect;
+    const appName = data[1] as string;
+    this.appToPreview = appName;
+    this.showTskBarPreviewWindow = true;
+
+    this.tskBarPrevWindowStyle = {
+      'position':'absolute',
+      'transform':`translate(${String(rect.x - 60)}px, ${String(rect.y - 68.5)}px)`,
+      'z-index': 2,
+    }
+  }
+
+  hideTaskBarPreviewWindow():void{
+    //this.showTskBarPreviewWindow = false;
+  }
 
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type)

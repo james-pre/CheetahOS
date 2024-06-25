@@ -33,6 +33,9 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
   runningProcess:Process[] = [];
   pinToTaskBarList:FileInfo[] = [];
   selectedFile!:FileInfo
+
+  pinned = "pinned";
+  unPinned = "unPinned";
   
   hasWindow = false;
   icon = 'osdrive/icons/generic-program.ico';
@@ -228,6 +231,20 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
     this._menuService.showTaskBarMenu.next(data);
 
     evt.preventDefault();
+  }
+
+  onMouseEnter(appName:string, caller:string):void{
+    const prefix = (caller == "pinned")? 'tskbar': 'tskbar-UnPinned';
+    const liElemnt = document.getElementById(`${prefix}-${appName}`) as HTMLElement;
+    const rect =  liElemnt.getBoundingClientRect();
+    const data:unknown[] = [rect, appName];
+
+    //if(this._runningProcessService.isProcessRunning(appName))
+      this._runningProcessService.showPreviewWindowNotify.next(data);
+  }
+
+  onMouseLeave():void{
+    this._runningProcessService.hidePreviewWindowNotify.next();
   }
 
   restoreOrMinizeWindow(processId:number){

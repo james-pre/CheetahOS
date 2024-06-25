@@ -11,8 +11,9 @@ export class RunningProcessService{
 
     static instance: RunningProcessService;
     private _runningProcesses:Process[];
-    private _runningProcessesImages:Map<number, string>;
+    private _runningProcessesImages:Map<string, unknown[]>;
     private _eventOriginator = '';
+
     processListChangeNotify: Subject<void> = new Subject<void>();
     closeProcessNotify: Subject<Process> = new Subject<Process>();
     focusOnNextProcessNotify: Subject<void> = new Subject<void>();
@@ -20,10 +21,12 @@ export class RunningProcessService{
     focusOutOtherProcessNotify: Subject<number> = new Subject<number>();
     restoreOrMinimizeWindowNotify: Subject<number> = new Subject<number>();
     maximizeWindowNotify: Subject<void> = new Subject<void>();
+    showPreviewWindowNotify: Subject<unknown[]> = new Subject<unknown[]>();
+    hidePreviewWindowNotify: Subject<void> = new Subject<void>();
 
     constructor(){
         this._runningProcesses = [];
-        this._runningProcessesImages = new Map<number, string>();
+        this._runningProcessesImages = new Map<string, unknown[]>();
         RunningProcessService.instance = this; //I added this to access the service from a class, not component
     }
 
@@ -31,8 +34,14 @@ export class RunningProcessService{
         this._runningProcesses.push(proccessToAdd)
     }
 
-    addProcessImage(pid:number, imageData:string):void{
-        this._runningProcessesImages.set(pid, imageData);
+    addProcessImage(appName:string, data:unknown[]):void{
+        if(!this._runningProcessesImages.has(appName))
+            this._runningProcessesImages.set(appName, data);
+        else{
+            const currImages = this._runningProcessesImages.get(appName)
+            currImages?.push(data);
+            this._runningProcessesImages.set(appName, data);
+        }
     }
 
     addEventOriginator(eventOrig:string):void{
@@ -50,9 +59,26 @@ export class RunningProcessService{
         }
     }
 
-    removeProcessImage(pid:number):void{
-        if(this._runningProcessesImages.has(pid))
-            this._runningProcessesImages.delete(pid);
+    removeProcessImages(appName:string):void{
+        if(this._runningProcessesImages.has(appName))
+            this._runningProcessesImages.delete(appName);
+    }
+
+    removeProcessImage(appName:string, pid:number):void{
+        const deleteCount = 1;
+        if(this._runningProcessesImages.has(appName)){
+            const currImages = this._runningProcessesImages.get(appName) as [{pid:0, imageSrc:''}] 
+
+            console.log('removeProcessImage - Did the cast work', currImages);
+
+            const dataIndex = currImages.findIndex((d) => {
+                return d.pid  === pid;
+              });
+    
+            if(dataIndex != -1){
+                currImages.splice(dataIndex, deleteCount)
+            }
+        }    
     }
 
     removeEventOriginator():void{
@@ -66,6 +92,14 @@ export class RunningProcessService{
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return process!;
+    }
+
+
+    getProcessImages(appName:string):unknown[]{
+        if(this._runningProcessesImages.has(appName))
+           return this._runningProcessesImages.get(appName) ||  [{}];
+
+        return [{}];
     }
 
     getEventOrginator():string{

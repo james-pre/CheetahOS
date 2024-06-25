@@ -126,6 +126,7 @@
 
         <div class="empty-line-container"></div>
     </div>
+    <cos-taskbarpreview  [appName]="appToPreview" *ngIf="showTskBarPreviewWindow"  [ngStyle]="tskBarPrevWindowStyle">  </cos-taskbarpreview>
     <cos-menu [menuItems]="taskBarMenuData" *ngIf="showTskBarCntxtMenu" [style]="tskBarCntxtMenuStyle" [menuType]="tskBarMenuOption"> </cos-menu>
     <ng-content> </ng-content>
 </main>

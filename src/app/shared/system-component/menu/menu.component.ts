@@ -9,15 +9,11 @@ export class MenuComponent implements OnChanges {
 
   @Input() menuItems: {icon: string, label: string, action: () => void }[] = [];
   @Input() menuDictionary: { [key: string]: { name: string, action: () => void }[] } = {};
-
   @Input() menuType = '';
-
 
   menuOption = '';
   fileExplrMngrMenuOption = "file-explorer-file-manager-menu";
   tskBarMenuOption =  "taskbar-menu";
-
-
 
   ngOnChanges(changes: SimpleChanges):void{
     //console.log('DIALOG onCHANGES:',changes);

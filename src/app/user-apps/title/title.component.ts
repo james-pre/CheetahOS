@@ -56,7 +56,9 @@ export class TitleComponent implements BaseComponent, OnDestroy, AfterViewInit{
     htmlToImage.toPng(this.helloContent.nativeElement).then(htmlImg =>{
       const image = new Image();
       image.src = htmlImg
-      this._runningProcessService.addProcessImage(this.processId, image.src);
+
+      const cmpntImg = [{pid:this.processId, imageSrc:image.src}];
+      this._runningProcessService.addProcessImage(this.name, cmpntImg);
     })
   }
 
