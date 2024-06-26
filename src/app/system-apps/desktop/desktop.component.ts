@@ -456,13 +456,17 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
     this.tskBarPrevWindowStyle = {
       'position':'absolute',
-      'transform':`translate(${String(rect.x - 40)}px, ${String(rect.y - 126)}px)`,
+      'transform':`translate(${String(rect.x - 59)}px, ${String(rect.y - 126)}px)`,
       'z-index': 2,
     }
   }
 
   hideTaskBarPreviewWindow():void{
-    //this.showTskBarPreviewWindow = false;
+    // this.tskBarPrevWindowStyle = {
+    //   'transition': 'opacity 3s ease-out',
+    //   'opacity': 0,
+    // }
+    this.showTskBarPreviewWindow = false;
   }
 
   private getComponentDetail():Process{

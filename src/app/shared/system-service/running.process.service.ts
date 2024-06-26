@@ -71,8 +71,6 @@ export class RunningProcessService{
         const deleteCount = 1;
         if(this._runningProcessesImages.has(appName)){
             const currImages = this._runningProcessesImages.get(appName) || [];
-            console.log('removeProcessImage - Did the cast work', currImages);
-
             const dataIndex = currImages.findIndex((d) => {
                 return d.pid  === pid;
               });

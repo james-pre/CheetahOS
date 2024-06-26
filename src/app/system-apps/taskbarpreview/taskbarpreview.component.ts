@@ -28,8 +28,16 @@ export class TaskbarPreviewComponent implements OnChanges, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.componentImages = this._runningProcessService.getProcessImages(this.name);
-    this.shortAppInfo();
+
+    setTimeout(() => {
+      const tmp:TaskBarPreviewImage = {
+        pid:1034,
+        imageData: ''
+      }
+      this.componentImages = [tmp]; // this._runningProcessService.getProcessImages(this.name);
+      this.shortAppInfo();
+    }, 250);
+
   }
 
   shortAppInfo():void{

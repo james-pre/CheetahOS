@@ -5,6 +5,19 @@
     position: absolute;
     display: inline-flex;
     z-index: 2;
+    animation: fade 1s ease forwards;
+    transition-delay:1s;
+}
+
+@keyframes fade {
+    from {
+      opacity: 0;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
 }
 
 .taskbar-preview-ol{
@@ -120,7 +133,15 @@
     background-color: #ababab;
 }
 
-.taskbar-preview-img1{
+.taskbar-preview-img1-pri{
+    height: 48px;
+    width: 48px;
+    position: relative;
+    left: 35%;
+    top: 1px
+}
+  
+.taskbar-preview-img1-sec{
     height: 96px;
     width: 146px;
     position: relative;

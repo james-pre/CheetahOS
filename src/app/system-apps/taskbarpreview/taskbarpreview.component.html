@@ -22,7 +22,7 @@
         </div>
         <div class="taskbar-preview-image-container">
             <figure class="taskbar-preview-figure1">
-                <img class="taskbar-preview-img1" [src]="images.imageData"/>
+                <img  [ngClass]="images.imageData ? 'taskbar-preview-img1-sec':'taskbar-preview-img1-pri'" [src]="images.imageData || icon"/>
             </figure>
         </div>
     </div>
