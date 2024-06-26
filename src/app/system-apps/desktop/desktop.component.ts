@@ -453,7 +453,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
     this.tskBarPrevWindowStyle = {
       'position':'absolute',
-      'transform':`translate(${String(rect.x - 60)}px, ${String(rect.y - 68.5)}px)`,
+      'transform':`translate(${String(rect.x - 40)}px, ${String(rect.y - 126)}px)`,
       'z-index': 2,
     }
   }

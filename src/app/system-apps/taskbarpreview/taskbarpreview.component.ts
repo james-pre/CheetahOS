@@ -12,6 +12,7 @@ export class TaskbarPreviewComponent implements OnChanges, AfterViewInit {
 
   @Input() appName = '';
 
+  appInfo = 'This is just a simple test';
   componentImages:unknown[] = [{pid:0, imageData:''}];
 
   constructor(runningProcessService:RunningProcessService){
@@ -26,6 +27,19 @@ export class TaskbarPreviewComponent implements OnChanges, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.componentImages = this._runningProcessService.getProcessImages(this.appName);
+    this.shortAppInfo();
+  }
+
+  shortAppInfo():void{
+    const limit = 26;
+    const ellipsis = '...';
+ 
+    //limit = this.appInfo.substring(0, limit).lastIndexOf(' ');
+    this.appInfo = (this.appInfo.length > limit) ? this.appInfo.substring(0, limit) + ellipsis : this.appInfo;
+  }
+
+  onClosePreviewWindow():void{
+    console.log('I will implement this......later')
   }
 
 }

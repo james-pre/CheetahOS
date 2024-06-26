@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TaskbarpreviewComponent } from './taskbarpreview.component';
+import { TaskbarPreviewComponent } from './taskbarpreview.component';
 
-describe('TaskbarpreviewComponent', () => {
-  let component: TaskbarpreviewComponent;
-  let fixture: ComponentFixture<TaskbarpreviewComponent>;
+describe('TaskbarPreviewComponent', () => {
+  let component: TaskbarPreviewComponent;
+  let fixture: ComponentFixture<TaskbarPreviewComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TaskbarpreviewComponent]
+      imports: [TaskbarPreviewComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(TaskbarpreviewComponent);
+    fixture = TestBed.createComponent(TaskbarPreviewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -22,6 +22,37 @@
     height: 100%;
 }
 
+.taskbar-preview-header-container{
+    width:150px;
+    height:25px;
+    position: relative;
+    display: flex;
+}
+
+.taskbar-preview-left-header-section{
+    width:calc(100% - 35px);
+    height: 25px;
+    left: 0;
+}
+  
+.taskbar-preview-right-header-section{
+    height: 25px;
+    right: 0;
+}
+
+.taskbar-preview-h1{
+    color: #fff;
+    font-size: 10.5px;
+    font-weight: normal;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    height: 25px;
+    border-bottom: 1px transparent;  
+    width: fit-content;
+    flex-grow: 1;
+    display: flex;
+    left: 0;
+}
+
 .taskbar-preview-figure{
     align-items: center;
     display: flex;
@@ -30,9 +61,69 @@
 }
 
 .taskbar-preview-img{
-    height: 48px;
-    width: 48px;
-    image-rendering:optimizeQuality;
+    height:14px;
+    width:14px;
     position: relative;
     top: 1px
 }
+  
+
+.taskbar-preview-figcaption{
+    padding-left: 3px;
+    color: #fff;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+  
+.taskbar-preview-button{
+    border-left: 1px transparent;
+    box-sizing: content-box;
+    color: #fff;
+    display: flex;
+    font-size: 15px;
+    width: 35px;
+    place-content: center;
+    place-items: center;
+}
+  
+  
+.taskbar-preview-svg{
+    fill: transparent;
+    margin-bottom: 2px;
+}
+
+.taskbar-preview-svg:hover{
+    fill: #ababab;
+}
+  
+.taskbar-preview-nav{
+    display: flex;
+    position: absolute;
+    width: fit-content;
+    right: 0;
+    height: 25px;
+}
+
+.taskbar-preview-image-container{
+    width:150px;
+    height:100px;
+}
+
+.taskbar-preview-figure1{
+    margin: 2px 2px;
+    display: flex;
+    align-items: center;
+    height: 96px;
+    width: 146px;
+    align-items: center;
+    background-color: #ababab;
+}
+
+.taskbar-preview-img1{
+    height: 48px;
+    width: 48px;
+    position: relative;
+    top: 1px
+}
+  
