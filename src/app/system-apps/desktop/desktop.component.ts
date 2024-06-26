@@ -68,6 +68,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   tskBarMenuOption =  "taskbar-menu";
   selectedFileFromTaskBar!:FileInfo;
   appToPreview = '';
+  appToPreviewIcon = '';
 
   hasWindow = false;
   icon = 'osdrive/icons/generic-program.ico';
@@ -448,7 +449,9 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   showTaskBarPreviewWindow(data:unknown[]):void{
     const rect = data[0] as DOMRect;
     const appName = data[1] as string;
+    const iconPath = data[2] as string;
     this.appToPreview = appName;
+    this.appToPreviewIcon = iconPath;
     this.showTskBarPreviewWindow = true;
 
     this.tskBarPrevWindowStyle = {

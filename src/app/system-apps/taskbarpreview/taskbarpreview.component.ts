@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges, AfterViewInit } from '@angular/core';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
+import { TaskBarPreviewImage } from './taskbar.preview';
 
 @Component({
   selector: 'cos-taskbarpreview',
@@ -10,10 +11,11 @@ export class TaskbarPreviewComponent implements OnChanges, AfterViewInit {
 
   private _runningProcessService:RunningProcessService;
 
-  @Input() appName = '';
+  @Input() name = '';
+  @Input() icon = '';
 
   appInfo = 'This is just a simple test';
-  componentImages:unknown[] = [{pid:0, imageData:''}];
+  componentImages!:TaskBarPreviewImage[];
 
   constructor(runningProcessService:RunningProcessService){
     this._runningProcessService = runningProcessService
@@ -22,11 +24,11 @@ export class TaskbarPreviewComponent implements OnChanges, AfterViewInit {
   ngOnChanges(changes: SimpleChanges):void{
     //console.log('DIALOG onCHANGES:',changes);
  
-    console.log('this.appName:',this.appName);
+    console.log('this.name:',this.name);
   }
 
   ngAfterViewInit(): void {
-    this.componentImages = this._runningProcessService.getProcessImages(this.appName);
+    this.componentImages = this._runningProcessService.getProcessImages(this.name);
     this.shortAppInfo();
   }
 

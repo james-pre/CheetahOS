@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
+import { TaskBarPreviewImage } from "src/app/system-apps/taskbarpreview/taskbar.preview";
 import { Process } from "src/app/system-files/process";
 
 
@@ -11,7 +12,7 @@ export class RunningProcessService{
 
     static instance: RunningProcessService;
     private _runningProcesses:Process[];
-    private _runningProcessesImages:Map<string, unknown[]>;
+    private _runningProcessesImages:Map<string, TaskBarPreviewImage[]>;
     private _eventOriginator = '';
 
     processListChangeNotify: Subject<void> = new Subject<void>();
@@ -26,7 +27,7 @@ export class RunningProcessService{
 
     constructor(){
         this._runningProcesses = [];
-        this._runningProcessesImages = new Map<string, unknown[]>();
+        this._runningProcessesImages = new Map<string, TaskBarPreviewImage[]>();
         RunningProcessService.instance = this; //I added this to access the service from a class, not component
     }
 
@@ -34,13 +35,15 @@ export class RunningProcessService{
         this._runningProcesses.push(proccessToAdd)
     }
 
-    addProcessImage(appName:string, data:unknown[]):void{
-        if(!this._runningProcessesImages.has(appName))
-            this._runningProcessesImages.set(appName, data);
+    addProcessImage(appName:string, data:TaskBarPreviewImage):void{
+        if(!this._runningProcessesImages.has(appName)){
+            const tmpArr:TaskBarPreviewImage[] = [data];
+            this._runningProcessesImages.set(appName, tmpArr);
+        }
         else{
-            const currImages = this._runningProcessesImages.get(appName)
-            currImages?.push(data);
-            this._runningProcessesImages.set(appName, data);
+            const currImages = this._runningProcessesImages.get(appName) || [];
+            currImages.push(data);
+            this._runningProcessesImages.set(appName, currImages);
         }
     }
 
@@ -67,8 +70,7 @@ export class RunningProcessService{
     removeProcessImage(appName:string, pid:number):void{
         const deleteCount = 1;
         if(this._runningProcessesImages.has(appName)){
-            const currImages = this._runningProcessesImages.get(appName) as [{pid:0, imageSrc:''}] 
-
+            const currImages = this._runningProcessesImages.get(appName) || [];
             console.log('removeProcessImage - Did the cast work', currImages);
 
             const dataIndex = currImages.findIndex((d) => {
@@ -76,7 +78,7 @@ export class RunningProcessService{
               });
     
             if(dataIndex != -1){
-                currImages.splice(dataIndex, deleteCount)
+                currImages.splice(dataIndex || 0, deleteCount)
             }
         }    
     }
@@ -95,11 +97,11 @@ export class RunningProcessService{
     }
 
 
-    getProcessImages(appName:string):unknown[]{
+    getProcessImages(appName:string):TaskBarPreviewImage[]{
         if(this._runningProcessesImages.has(appName))
-           return this._runningProcessesImages.get(appName) ||  [{}];
+           return this._runningProcessesImages.get(appName) || [];
 
-        return [{}];
+        return [];
     }
 
     getEventOrginator():string{

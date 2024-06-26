@@ -233,11 +233,11 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
     evt.preventDefault();
   }
 
-  onMouseEnter(appName:string, caller:string):void{
+  onMouseEnter(appName:string, iconPath:string, caller:string):void{
     const prefix = (caller == "pinned")? 'tskbar': 'tskbar-UnPinned';
     const liElemnt = document.getElementById(`${prefix}-${appName}`) as HTMLElement;
     const rect =  liElemnt.getBoundingClientRect();
-    const data:unknown[] = [rect, appName];
+    const data:unknown[] = [rect, appName, iconPath];
 
     //if(this._runningProcessService.isProcessRunning(appName))
       this._runningProcessService.showPreviewWindowNotify.next(data);

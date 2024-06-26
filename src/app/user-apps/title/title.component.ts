@@ -6,6 +6,7 @@ import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { Process } from 'src/app/system-files/process';
 import * as htmlToImage from 'html-to-image';
+import { TaskBarPreviewImage } from 'src/app/system-apps/taskbarpreview/taskbar.preview';
 
 @Component({
   selector:'cos-title',
@@ -54,10 +55,13 @@ export class TitleComponent implements BaseComponent, OnDestroy, AfterViewInit{
 
   captureComponentImg():void{
     htmlToImage.toPng(this.helloContent.nativeElement).then(htmlImg =>{
-      const image = new Image();
-      image.src = htmlImg
+      console.log('img data:',htmlImg);
 
-      const cmpntImg = [{pid:this.processId, imageSrc:image.src}];
+      const cmpntImg:TaskBarPreviewImage = {
+        pid: this.processId,
+        imageData: htmlImg
+      }
+    
       this._runningProcessService.addProcessImage(this.name, cmpntImg);
     })
   }
