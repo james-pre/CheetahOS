@@ -108,7 +108,6 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     {icon:'', label: '', action: ()=> console.log() },
   ];
 
-  dskTopMenuDictionary = {};
   dskTopMenuItem:{ icon1: string; icon2: string; label: string; nest: DeskTopMenuItem[]; action: () => void; emptyline: boolean; }[] = []
 
 

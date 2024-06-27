@@ -18,6 +18,8 @@ import { AppState, BaseState } from 'src/app/system-files/state/state.interface'
 import { StateType } from 'src/app/system-files/state/state.type';
 import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
 import { Constants } from 'src/app/system-files/constants';
+import * as htmlToImage from 'html-to-image';
+import { TaskBarPreviewImage } from '../taskbarpreview/taskbar.preview';
 
 @Component({
   selector: 'cos-fileexplorer',
@@ -27,7 +29,8 @@ import { Constants } from 'src/app/system-files/constants';
 })
 
 export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('fileExplorerMainContainer', {static: true}) fileExplrMainCntnr!: ElementRef;
+  @ViewChild('fileExplorerMainContainer', {static: true}) fileExplrMainCntnr!: ElementRef; 
+  @ViewChild('fileExplorerRootContainer', {static: true}) fileExplorerRootContainer!: ElementRef; 
   @ViewChild('fileExplorerContentContainer', {static: true}) fileExplrCntntCntnr!: ElementRef;
  
   private _processIdService:ProcessIDService;
@@ -92,7 +95,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   recentPathEntries:string[] = [];
   upPathEntries:string[] = ['/osdrive/Desktop'];
   _directoryHops:string[] = ['osdrive'];
-  SECONDS_DELAY:number[] = [100, 1500, 6000, 12000];
+  SECONDS_DELAY:number[] = [100, 1500, 6000, 12000, 250];
   
   defaultviewOption = ViewOptions.MEDIUM_ICON_VIEW;
   currentViewOption = ViewOptions.MEDIUM_ICON_VIEW;
@@ -186,7 +189,24 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
       pathInput: (this.directory !== '/osdrive/')? this.directory : '/osdrive/'
     })
   
-    await this.loadFilesInfoAsync();
+    await this.loadFilesInfoAsync().then(()=>{
+      setTimeout(()=>{
+        this.captureComponentImg();
+      },this.SECONDS_DELAY[4]) 
+    });
+
+  }
+
+  captureComponentImg():void{
+    htmlToImage.toPng(this.fileExplorerRootContainer.nativeElement).then(htmlImg =>{
+      //console.log('img data:',htmlImg);
+
+      const cmpntImg:TaskBarPreviewImage = {
+        pid: this.processId,
+        imageData: htmlImg
+      }
+      this._runningProcessService.addProcessImage(this.name, cmpntImg);
+    })
   }
   
 

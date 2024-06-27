@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { DeskTopMenuItem } from './menu.item';
+import { DeskTopMenuItem, MenuItem } from './menu.item';
 
 @Component({
   selector: 'cos-menu',
@@ -8,7 +8,7 @@ import { DeskTopMenuItem } from './menu.item';
 })
 export class MenuComponent implements OnChanges {
 
-  @Input() menuItems: {icon: string, label: string, action: () => void }[] = [];
+  @Input() menuItems: MenuItem[] = [];
 
   @Input() desktopMenuItems: {icon1: string, icon2: string, label: string, nest:DeskTopMenuItem[], action: () => void, emptyline:boolean }[] = [];
 

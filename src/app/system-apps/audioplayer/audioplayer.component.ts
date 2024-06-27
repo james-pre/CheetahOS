@@ -14,6 +14,8 @@ import { StateType } from 'src/app/system-files/state/state.type';
 import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
 import { Subscription } from 'rxjs';
 import { ScriptService } from 'src/app/shared/system-service/script.services';
+import * as htmlToImage from 'html-to-image';
+import { TaskBarPreviewImage } from '../taskbarpreview/taskbar.preview';
 // eslint-disable-next-line no-var
 declare var Howl:any;
 declare let SiriWave:any;
@@ -55,6 +57,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   private _consts:Constants = new Constants();
   private _appState!:AppState;
 
+  SECONDS_DELAY = 250;
   private audioSrc = '';
   private audioPlayer: any;
   private siriWave: any;
@@ -134,11 +137,27 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
         });
       });
 
+      setTimeout(()=>{
+        this.captureComponentImg();
+      },this.SECONDS_DELAY) 
+  
 
     // when i implement the playlist feature
     // if((this.audioSrc !== '/' && this.playList.length >= 1) || (this.audioSrc  === '/' && this.playList.length >= 1)){
     //   1
     // }
+  }
+
+  captureComponentImg():void{
+    htmlToImage.toPng(this.audioContainer.nativeElement).then(htmlImg =>{
+      //console.log('img data:',htmlImg);
+
+      const cmpntImg:TaskBarPreviewImage = {
+        pid: this.processId,
+        imageData: htmlImg
+      }
+      this._runningProcessService.addProcessImage(this.name, cmpntImg);
+    })
   }
 
   ngOnDestroy():void{
