@@ -1,4 +1,5 @@
-<ng-container [ngTemplateOutlet]="menuOption === fileExplrMngrMenuOption ? fileExplrMngrMenu : tskBarMenu ">
+<ng-container [ngTemplateOutlet]="menuOption === fileExplrMngrMenuOption ? fileExplrMngrMenu :
+                                  menuOption === tskBarMenuOption ? tskBarMenu: dsktpMenu ">
 </ng-container>
 
 <ng-template #fileExplrMngrMenu>
@@ -39,16 +40,38 @@
 </ng-template>
 
 
+<ng-template #dsktpMenu>
+  <div class="dm-dsktp-vertical-menu">
+
+    <div class="dm-dsktp-empty-line-container"></div>
+
+    <div class="dm-dsktp-vertical-sub-menu" *ngFor="let category of keys" >
+
+      <div class="dm-dsktp-vertical-menu-item">
+        <div class="dm-dsktp-head"><figure class="dm-dsktp-figure"></figure></div>
+        <div class="dm-dsktp-mid">{{ category.split('#')[1] }}</div>
+        <div class="dm-dsktp-tail"><figure class="dm-dsktp-figure"> <img class="dm-dsktp-img" [src]="category.split('#')[2]"/></figure></div>
+      </div>
+      <div class="dm-dsktp-vertical-sub-menu-content" >
+        <div class="empty-line-container"></div>
+
+          <div *ngFor="let item of menuDictionary[category]; let j = index" (click)="onMenuItemClick(item.action)">
+            <div class="dm-dsktp-vertical-menu-item">
+              <div class="dm-dsktp-head"><figure [ngClass]=" item.styleOption === 'A' ?'dm-dsktp-figure-alt' : 'dm-dsktp-figure-alt2'">
+                                         <img *ngIf="item.variables?.value" [ngClass]=" item.styleOption === 'A' ?'dm-dsktp-img-alt' : 'dm-dsktp-img-alt2'" [src]="item.icon"/></figure></div>
+              <div class="dm-dsktp-mid">{{item.label}}</div>
+              <div class="dm-dsktp-tail"><figure class="dm-dsktp-figure"></figure></div>
+            </div>
+    
+            <div *ngIf="item.emptyline" class="dm-dsktp-empty-line-container"></div>
+            <div *ngIf="item.emptyline" class="dm-dsktp-line-container"><div class="dm-dsktp-line"></div></div>
+            <div *ngIf="item.emptyline" class="dm-dsktp-empty-line-container"></div>
+          </div>
+        <div class="empty-line-container"></div>
+      </div>
+      
+    </div>
+  </div>
+</ng-template>
 
 
-
-<!-- i want to use this to convert the desktop menu  -->
-<!-- <div *ngFor="let category of getKeys(menuDictionary)">
-    <h3>{{ category }}</h3>
-    <ul>
-      <li *ngFor="let item of menuDictionary[category]" (click)="onMenuItemClick(item.action)">
-        {{ item.name }}
-      </li>
-    </ul>
-</div>
-   -->

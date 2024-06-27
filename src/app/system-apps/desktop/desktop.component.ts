@@ -12,6 +12,7 @@ import { FileInfo } from 'src/app/system-files/fileinfo';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 import { ScriptService } from 'src/app/shared/system-service/script.services';
 import { MenuService } from 'src/app/shared/system-service/menu.services';
+import { DeskTopMenuItem, MenuItemVariable } from 'src/app/shared/system-component/menu/menu.item';
 
 declare let VANTA: { HALO: any; BIRDS: any;  WAVES: any;   GLOBE: any;  RINGS: any;};
 
@@ -60,9 +61,10 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   autoArrangeIcons = true;
   showDesktopIcons = true;
 
-  cntxtMenuStyle:Record<string, unknown> = {};
+  dskTopCntxtMenuStyle:Record<string, unknown> = {};
   tskBarCntxtMenuStyle:Record<string, unknown> = {};
   tskBarPrevWindowStyle:Record<string, unknown> = {};
+  deskTopMenuOption =  "desktop-menu";
   showDesktopCntxtMenu = false;
   showTskBarCntxtMenu = false;
   showTskBarPreviewWindow = false;
@@ -106,6 +108,8 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     {icon:'', label: '', action: ()=> console.log() },
   ];
 
+  dskTopMenuDictionary = {};
+
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService,fileManagerServices:FileManagerService,
               triggerProcessService:TriggerProcessService, scriptService: ScriptService, menuService: MenuService) { 
@@ -140,6 +144,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
         });
       })
     })
+    this.buildDesktopMenu();
   }
 
   ngAfterViewInit():void{
@@ -202,9 +207,9 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
     if(evtOriginator == ''){
       this.showDesktopCntxtMenu = true;
-      this.cntxtMenuStyle = {
-        'display': 'block', 
-        'width': '225px', 
+      this.dskTopCntxtMenuStyle = {
+        'position':'absolute',
+        'width': '210px', 
         'transform':`translate(${String(evt.clientX + 2)}px, ${String(evt.clientY)}px)`,
         'z-index': 2,
         'opacity':1
@@ -219,6 +224,10 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   hideContextMenu():void{
     this.showDesktopCntxtMenu = false;
     this.showTskBarCntxtMenu = false;
+  }
+
+  viewBy1():void{
+1
   }
 
   viewBy(viewBy:string):void{
@@ -321,6 +330,38 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     this._triggerProcessService.startApplication(file);
   }
 
+  buildDesktopMenu():void{
+
+    const smallIconState:MenuItemVariable={ name:'smallIcon',  value:true }
+    const smallIcon:DeskTopMenuItem={ icon:'osdrive/icons/circle.png', label:'Small icons',  action: this.viewBy1.bind(this),  variables:smallIconState, 
+      emptyline:false, styleOption:'A' }
+
+    const mediumIconState:MenuItemVariable={ name:'mediumIcon', value:true }
+    const mediumIcon:DeskTopMenuItem={ icon:'osdrive/icons/circle.png', label:'Medium icons',  action: this.viewBy1.bind(this),  variables:mediumIconState, 
+      emptyline:false, styleOption:'A' }
+
+    const largeIconState:MenuItemVariable={name:'largeIcon', value:false}
+    const largeIcon:DeskTopMenuItem={ icon:'osdrive/icons/circle.png', label:'Large icons', action: this.viewBy1.bind(this), variables:largeIconState,
+      emptyline:true, styleOption:'A' }
+
+    const autoArrageState:MenuItemVariable={name:'AutoArrange', value:false}
+    const autoArrageIcon:DeskTopMenuItem={ icon:'osdrive/icons/chkmark32.png', label:'Auto arrange icons',  action: this.viewBy1.bind(this),  variables:autoArrageState, 
+      emptyline:false, styleOption:'B' }
+
+    const autoAlignState:MenuItemVariable={name:'AutoAlign', value:false}
+    const autoAlign:DeskTopMenuItem={ icon:'osdrive/icons/chkmark32.png', label:'Align icons to grid',  action: this.viewBy1.bind(this),  variables:autoAlignState, 
+      emptyline:true, styleOption:'B' }
+
+    const showDesktopIcons:DeskTopMenuItem={ icon:'osdrive/icons/chkmark32.png', label:'Align icons to grid',  action: this.viewBy1.bind(this),
+      emptyline:false,  styleOption:'B'}
+
+    const view = [smallIcon,mediumIcon,largeIcon, autoArrageIcon, autoAlign,showDesktopIcons]
+    //menuDict.set('#View#osdrive/icons/arrow_next.png',view)
+
+    this.dskTopMenuDictionary = {
+      '#View#osdrive/icons/arrow_next.png':view
+    };
+  }
 
   private buildVantaEffect(n:number) {
 

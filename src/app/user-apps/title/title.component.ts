@@ -16,7 +16,7 @@ import { TaskBarPreviewImage } from 'src/app/system-apps/taskbarpreview/taskbar.
 
 export class TitleComponent implements BaseComponent, OnDestroy, AfterViewInit{
 
-  @ViewChild('helloContent', {static: true}) helloContent!: ElementRef;
+  @ViewChild('titleContent', {static: true}) titleContent!: ElementRef;
 
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
@@ -54,14 +54,13 @@ export class TitleComponent implements BaseComponent, OnDestroy, AfterViewInit{
   }
 
   captureComponentImg():void{
-    htmlToImage.toPng(this.helloContent.nativeElement).then(htmlImg =>{
-      console.log('img data:',htmlImg);
+    htmlToImage.toPng(this.titleContent.nativeElement).then(htmlImg =>{
+      //console.log('img data:',htmlImg);
 
       const cmpntImg:TaskBarPreviewImage = {
         pid: this.processId,
         imageData: htmlImg
       }
-    
       this._runningProcessService.addProcessImage(this.name, cmpntImg);
     })
   }
@@ -77,8 +76,8 @@ export class TitleComponent implements BaseComponent, OnDestroy, AfterViewInit{
       const mainWindow = document.getElementById('vanta');
       //window title and button bar, and windows taskbar height
       const pixelTosubtract = 30 + 40;
-      this.helloContent.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
-      this.helloContent.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+      this.titleContent.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
+      this.titleContent.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
 
     }
   }

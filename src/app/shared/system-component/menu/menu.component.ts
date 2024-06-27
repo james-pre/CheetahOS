@@ -1,4 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { DeskTopMenuItem, MenuItem } from './menu.item';
 
 @Component({
   selector: 'cos-menu',
@@ -8,16 +9,25 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 export class MenuComponent implements OnChanges {
 
   @Input() menuItems: {icon: string, label: string, action: () => void }[] = [];
-  @Input() menuDictionary: { [key: string]: { name: string, action: () => void }[] } = {};
+  // @Input() menuDictionary1: { [key: string]: { name: string, action: () => void }[] } = {};
+
+  @Input() menuDictionary: { [key:string]: DeskTopMenuItem[] } = {};
+
   @Input() menuType = '';
 
   menuOption = '';
   fileExplrMngrMenuOption = "file-explorer-file-manager-menu";
   tskBarMenuOption =  "taskbar-menu";
+  deskTopMenuOption =  "desktop-menu";
+  keys: string[] = [];
 
   ngOnChanges(changes: SimpleChanges):void{
     //console.log('DIALOG onCHANGES:',changes);
     this.menuOption = this.menuType;
+
+    if(this.menuType === this.deskTopMenuOption){
+      this.getKeys(this.menuDictionary);
+    }
     console.log('this.menuOption:',this.menuOption);
   }
 
@@ -26,8 +36,11 @@ export class MenuComponent implements OnChanges {
     action();
   }
 
-  getKeys(obj: any): string[] {
-    return Object.keys(obj);
+  getKeys(obj: any):void{
+    console.log('obj:',obj);
+
+    console.log(' Object.keys(obj):', Object.keys(obj));
+    this.keys = Object.keys(obj);
   }
 
 }

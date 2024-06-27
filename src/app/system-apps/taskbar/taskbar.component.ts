@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MenuService } from 'src/app/shared/system-service/menu.services';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
@@ -10,7 +10,7 @@ import { Process } from 'src/app/system-files/process';
   templateUrl: './taskbar.component.html',
   styleUrls: ['./taskbar.component.css']
 })
-export class TaskbarComponent implements OnInit {
+export class TaskbarComponent {
 
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
@@ -32,10 +32,6 @@ export class TaskbarComponent implements OnInit {
     this._runningProcessService.addProcess(this.getComponentDetail());
   }
 
-
-  ngOnInit(): void {
-    1 
-  }
   
   hideContextMenus():void{
     this._menuService.hideContextMenus.next();
