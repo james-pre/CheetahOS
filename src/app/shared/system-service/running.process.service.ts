@@ -24,6 +24,7 @@ export class RunningProcessService{
     maximizeWindowNotify: Subject<void> = new Subject<void>();
     showPreviewWindowNotify: Subject<unknown[]> = new Subject<unknown[]>();
     hidePreviewWindowNotify: Subject<void> = new Subject<void>();
+    keepPreviewWindowNotify: Subject<void> = new Subject<void>();
 
     constructor(){
         this._runningProcesses = [];

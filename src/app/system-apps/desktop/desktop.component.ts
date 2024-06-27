@@ -34,6 +34,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   private _hideMenuSub!:Subscription;
   private _showTaskBarPreviewWindowSub!:Subscription;
   private _hideTaskBarPreviewWindowSub!:Subscription;
+  private _keepTaskBarPreviewWindowSub!:Subscription;
 
   private _vantaEffect: any;
 
@@ -70,6 +71,8 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   selectedFileFromTaskBar!:FileInfo;
   appToPreview = '';
   appToPreviewIcon = '';
+  removeTskBarPrevWindowFromDOMTimeoutId!: NodeJS.Timeout;
+  hideTskBarPrevWindowTimeoutId!: NodeJS.Timeout;
 
   hasWindow = false;
   icon = 'osdrive/icons/generic-program.ico';
@@ -117,6 +120,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     this._showTaskBarPreviewWindowSub = this._runningProcessService.showPreviewWindowNotify.subscribe((p) => { this.showTaskBarPreviewWindow(p)});
     this._hideMenuSub = this._menuService.hideContextMenus.subscribe(() => { this.hideContextMenu()});
     this._hideTaskBarPreviewWindowSub = this._runningProcessService.hidePreviewWindowNotify.subscribe(() => { this.hideTaskBarPreviewWindow()});
+    this._keepTaskBarPreviewWindowSub = this._runningProcessService.keepPreviewWindowNotify.subscribe(() => { this.keepTaskBarPreviewWindow()});
 
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail());
@@ -173,6 +177,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     this._hideMenuSub?.unsubscribe();
     this._showTaskBarPreviewWindowSub?.unsubscribe();
     this._hideTaskBarPreviewWindowSub?.unsubscribe();
+    this._keepTaskBarPreviewWindowSub?.unsubscribe();
 
     cancelAnimationFrame(this.animationId);
     this._vantaEffect?.destroy();
@@ -454,7 +459,9 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     this.appToPreview = appName;
     this.appToPreviewIcon = iconPath;
     this.showTskBarPreviewWindow = true;
-    this.tskBarPreviewWindowState = 'in'
+    this.tskBarPreviewWindowState = 'in';
+
+    this.clearTimeout();
 
     this.tskBarPrevWindowStyle = {
       'position':'absolute',
@@ -464,11 +471,26 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
   hideTaskBarPreviewWindow():void{
-    // this.tskBarPreviewWindowState = 'out';
+    this.hideTskBarPrevWindowTimeoutId = setTimeout(()=>{
+      this.tskBarPreviewWindowState = 'out';
+    }, 1000)
+  
+    this.removeTskBarPrevWindowFromDOMTimeoutId = setTimeout(()=>{
+      this.showTskBarPreviewWindow = false;
+    }, 2000)
+  }
 
-    // setTimeout(()=>{
-    //   this.showTskBarPreviewWindow = false;
-    // }, 2000)
+  keepTaskBarPreviewWindow():void{
+    this.clearTimeout();
+  }
+
+  removeOldTaskBarPreviewWindowNow():void{
+    this.showTskBarPreviewWindow = false;
+  }
+
+  clearTimeout():void{
+    clearTimeout(this.hideTskBarPrevWindowTimeoutId);
+    clearTimeout(this.removeTskBarPrevWindowFromDOMTimeoutId);
   }
 
   private getComponentDetail():Process{

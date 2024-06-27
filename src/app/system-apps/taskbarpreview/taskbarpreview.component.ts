@@ -2,6 +2,7 @@ import { Component, Input, OnChanges, SimpleChanges, AfterViewInit } from '@angu
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { TaskBarPreviewImage } from './taskbar.preview';
 import { trigger, state, style, animate, transition } from '@angular/animations'
+import { MenuService } from 'src/app/shared/system-service/menu.services';
 
 @Component({
   selector: 'cos-taskbarpreview',
@@ -27,7 +28,6 @@ export class TaskbarPreviewComponent implements OnChanges, AfterViewInit {
   @Input() name = '';
   @Input() icon = '';
   @Input() fadeState = '';
-
 
   appInfo = 'This is just a simple test';
   componentImages!:TaskBarPreviewImage[];
@@ -67,6 +67,15 @@ export class TaskbarPreviewComponent implements OnChanges, AfterViewInit {
 
   onClosePreviewWindow():void{
     console.log('I will implement this......later')
+  }
+
+
+  keepTaskBarPreviewWindow():void{
+    this._runningProcessService.keepPreviewWindowNotify.next();
+  }
+
+  hideTaskBarPreviewWindow():void{
+    this._runningProcessService.hidePreviewWindowNotify.next();
   }
 
 }
