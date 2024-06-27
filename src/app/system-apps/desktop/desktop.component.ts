@@ -65,6 +65,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   showDesktopCntxtMenu = false;
   showTskBarCntxtMenu = false;
   showTskBarPreviewWindow = false;
+  tskBarPreviewWindowState = 'in';
   tskBarMenuOption =  "taskbar-menu";
   selectedFileFromTaskBar!:FileInfo;
   appToPreview = '';
@@ -453,20 +454,21 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     this.appToPreview = appName;
     this.appToPreviewIcon = iconPath;
     this.showTskBarPreviewWindow = true;
+    this.tskBarPreviewWindowState = 'in'
 
     this.tskBarPrevWindowStyle = {
       'position':'absolute',
-      'transform':`translate(${String(rect.x - 59)}px, ${String(rect.y - 126)}px)`,
+      'transform':`translate(${String(rect.x - 59)}px, ${String(rect.y - 131)}px)`,
       'z-index': 2,
     }
   }
 
   hideTaskBarPreviewWindow():void{
-    // this.tskBarPrevWindowStyle = {
-    //   'transition': 'opacity 3s ease-out',
-    //   'opacity': 0,
-    // }
-    this.showTskBarPreviewWindow = false;
+    // this.tskBarPreviewWindowState = 'out';
+
+    // setTimeout(()=>{
+    //   this.showTskBarPreviewWindow = false;
+    // }, 2000)
   }
 
   private getComponentDetail():Process{
