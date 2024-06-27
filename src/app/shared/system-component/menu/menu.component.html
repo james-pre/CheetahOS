@@ -42,20 +42,16 @@
 
 <ng-template #dsktpMenu>
   <div class="dm-dsktp-vertical-menu">
-
     <div class="dm-dsktp-empty-line-container"></div>
-
-    <div class="dm-dsktp-vertical-sub-menu" *ngFor="let category of keys" >
-
-      <div class="dm-dsktp-vertical-menu-item">
-        <div class="dm-dsktp-head"><figure class="dm-dsktp-figure"></figure></div>
-        <div class="dm-dsktp-mid">{{ category.split('#')[1] }}</div>
-        <div class="dm-dsktp-tail"><figure class="dm-dsktp-figure"> <img class="dm-dsktp-img" [src]="category.split('#')[2]"/></figure></div>
+    <div class="dm-dsktp-vertical-sub-menu" *ngFor="let menuItem of desktopMenuItems; let i = index" >
+      <div class="dm-dsktp-vertical-menu-item" (click)="onMenuItemClick(menuItem.action)">
+        <div class="dm-dsktp-head"><figure class="dm-dsktp-figure"><img *ngIf="menuItem.icon1" class="dm-dsktp-img" [src]="menuItem.icon1"/></figure></div>
+        <div class="dm-dsktp-mid"><p class="dm-dsktp-p"> {{menuItem.label}}</p></div>
+        <div class="dm-dsktp-tail"><figure class="dm-dsktp-figure"> <img *ngIf="menuItem.icon2" class="dm-dsktp-img" [src]="menuItem.icon2"/></figure></div>
       </div>
-      <div class="dm-dsktp-vertical-sub-menu-content" >
+      <div  *ngIf="menuItem.nest.length" class="dm-dsktp-vertical-sub-menu-content" >
         <div class="empty-line-container"></div>
-
-          <div *ngFor="let item of menuDictionary[category]; let j = index" (click)="onMenuItemClick(item.action)">
+          <div *ngFor="let item of menuItem.nest; let j = index" (click)="onMenuItemClick(item.action)">
             <div class="dm-dsktp-vertical-menu-item">
               <div class="dm-dsktp-head"><figure [ngClass]=" item.styleOption === 'A' ?'dm-dsktp-figure-alt' : 'dm-dsktp-figure-alt2'">
                                          <img *ngIf="item.variables?.value" [ngClass]=" item.styleOption === 'A' ?'dm-dsktp-img-alt' : 'dm-dsktp-img-alt2'" [src]="item.icon"/></figure></div>

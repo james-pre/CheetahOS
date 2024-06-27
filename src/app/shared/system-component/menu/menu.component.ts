@@ -9,7 +9,8 @@ import { DeskTopMenuItem, MenuItem } from './menu.item';
 export class MenuComponent implements OnChanges {
 
   @Input() menuItems: {icon: string, label: string, action: () => void }[] = [];
-  // @Input() menuDictionary1: { [key: string]: { name: string, action: () => void }[] } = {};
+
+  @Input() desktopMenuItems: {icon1: string, icon2: string, label: string, nest:DeskTopMenuItem[], action: () => void }[] = [];
 
   @Input() menuDictionary: { [key:string]: DeskTopMenuItem[] } = {};
 
@@ -25,9 +26,9 @@ export class MenuComponent implements OnChanges {
     //console.log('DIALOG onCHANGES:',changes);
     this.menuOption = this.menuType;
 
-    if(this.menuType === this.deskTopMenuOption){
-      this.getKeys(this.menuDictionary);
-    }
+    // if(this.menuType === this.deskTopMenuOption){
+    //   this.getKeys(this.menuDictionary);
+    // }
     console.log('this.menuOption:',this.menuOption);
   }
 

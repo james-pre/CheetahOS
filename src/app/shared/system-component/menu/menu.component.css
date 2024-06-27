@@ -189,6 +189,10 @@ span.dm-tail{
    /*  transition: all 0.5s ease 0.3s; Delay the transition for the sub-menu content */
 }
 
+.dm-dsktp-p{
+    position: relative;
+    top: 10%;
+}
 .dm-dsktp-vertical-sub-menu-content {
     display: none;
     position: absolute;
@@ -233,7 +237,7 @@ span.dm-tail{
     padding: 0 4px;
     color: black; /* Black text color */
     text-align: left;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: normal;
 }
 

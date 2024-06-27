@@ -1,6 +1,6 @@
- <main id="vanta" class="main-desktop" (contextmenu)="showDesktopContextMenu($event)" (click)="hideContextMenu()">   <!--(contextmenu)="showContextMenu($event)" (click)="hideContextMenu()" -->
+ <main id="vanta" class="main-desktop" (contextmenu)="showDesktopContextMenu($event)" (click)="hideContextMenu()"> 
 
-    <cos-menu [menuDictionary]="dskTopMenuDictionary" *ngIf="showDesktopCntxtMenu" [style]="dskTopCntxtMenuStyle" [menuType]="deskTopMenuOption"> </cos-menu>
+    <cos-menu [desktopMenuItems]="dskTopMenuItem" *ngIf="showDesktopCntxtMenu" [style]="dskTopCntxtMenuStyle" [menuType]="deskTopMenuOption"> </cos-menu>
     <cos-taskbarpreview  [fadeState]="tskBarPreviewWindowState" [name]="appToPreview" [icon]="appToPreviewIcon" *ngIf="showTskBarPreviewWindow"  [ngStyle]="tskBarPrevWindowStyle">  </cos-taskbarpreview>
     <cos-menu [menuItems]="taskBarMenuData" *ngIf="showTskBarCntxtMenu" [style]="tskBarCntxtMenuStyle" [menuType]="tskBarMenuOption"> </cos-menu>
     <ng-content> </ng-content>
