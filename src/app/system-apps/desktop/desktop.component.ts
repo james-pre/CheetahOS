@@ -12,7 +12,7 @@ import { FileInfo } from 'src/app/system-files/fileinfo';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 import { ScriptService } from 'src/app/shared/system-service/script.services';
 import { MenuService } from 'src/app/shared/system-service/menu.services';
-import { DeskTopMenuItem, MenuItemVariable } from 'src/app/shared/system-component/menu/menu.item';
+import { DeskTopMenuItem } from 'src/app/shared/system-component/menu/menu.item';
 
 declare let VANTA: { HALO: any; BIRDS: any;  WAVES: any;   GLOBE: any;  RINGS: any;};
 
@@ -109,14 +109,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   ];
 
   dskTopMenuDictionary = {};
-  dskTopMenuItem = [{icon1:'', icon2: 'osdrive/icons/arrow_next.png', label: 'View', nest:this.buildViewByMenu(), action: ()=> console.log()},
-  {icon1:'',  icon2: 'osdrive/icons/arrow_next.png', label: 'Sort by', nest:this.buildSortByMenu(), action: ()=> console.log()},
-  {icon1:'',  icon2: '', label: 'Refresh', nest:[], action:this.refresh.bind(this)},
-  {icon1:'/osdrive/icons/terminal_48.png',  icon2: '', label: 'Open inTerminal', nest:[], action: this.openTerminal.bind(this)},
-  {icon1:'',  icon2: '', label: 'Next Background', nest:[], action: this.nextBackground.bind(this)},
-  {icon1:'',  icon2: '', label: 'Previous Background', nest:[], action: this.previousBackground.bind(this)},
-  {icon1:'',  icon2: '', label: 'New', nest:[], action: ()=> console.log()}
-  ]
+  dskTopMenuItem:{ icon1: string; icon2: string; label: string; nest: DeskTopMenuItem[]; action: () => void; emptyline: boolean; }[] = []
 
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService,fileManagerServices:FileManagerService,
@@ -152,6 +145,8 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
         });
       })
     })
+
+    this.getDesktopMenuData();
   }
 
   ngAfterViewInit():void{
@@ -265,6 +260,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     }
 
     this._fileManagerServices.viewByNotify.next(viewBy);
+    this.getDesktopMenuData();
   }
 
   sortByNameM():void{
@@ -312,16 +308,19 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     }
 
     this._fileManagerServices.sortByNotify.next(sortBy);
+    this.getDesktopMenuData();
   }
 
   autoArrangeIcon():void{
     this.autoArrangeIcons = !this.autoArrangeIcons
-    this._fileManagerServices.autoArrangeIconsNotify.next(this.autoArrangeIcons)
+    this._fileManagerServices.autoArrangeIconsNotify.next(this.autoArrangeIcons);
+    this.getDesktopMenuData();
   }
 
   autoAlignIcon():void{
     this.autoAlignIcons = !this.autoAlignIcons
-    this._fileManagerServices.alignIconsToGridNotify.next(this.autoAlignIcons)
+    this._fileManagerServices.alignIconsToGridNotify.next(this.autoAlignIcons);
+    this.getDesktopMenuData();
   }
 
   refresh():void{
@@ -331,6 +330,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   showDesktopIcon():void{
     this.showDesktopIcons = !this.showDesktopIcons
     this._fileManagerServices.showDesktopIconsNotify.next(this.showDesktopIcons);
+    this.getDesktopMenuData();
   }
 
   previousBackground():void{
@@ -365,27 +365,23 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
 
   buildViewByMenu():DeskTopMenuItem[]{
-    const smallIconState:MenuItemVariable={ name:'smallIcon',  value:true }
-    const smallIcon:DeskTopMenuItem={ icon:'osdrive/icons/circle.png', label:'Small icons',  action: this.viewBySmallIcon.bind(this),  variables:smallIconState, 
+
+    const smallIcon:DeskTopMenuItem={ icon:'osdrive/icons/circle.png', label:'Small icons',  action: this.viewBySmallIcon.bind(this),  variables:this.isSmallIcon, 
       emptyline:false, styleOption:'A' }
 
-    const mediumIconState:MenuItemVariable={ name:'mediumIcon', value:false }
-    const mediumIcon:DeskTopMenuItem={ icon:'osdrive/icons/circle.png', label:'Medium icons',  action: this.viewByMediumIcon.bind(this),  variables:mediumIconState, 
+    const mediumIcon:DeskTopMenuItem={ icon:'osdrive/icons/circle.png', label:'Medium icons',  action: this.viewByMediumIcon.bind(this),  variables:this.isMediumIcon, 
       emptyline:false, styleOption:'A' }
 
-    const largeIconState:MenuItemVariable={name:'largeIcon', value:false}
-    const largeIcon:DeskTopMenuItem={ icon:'osdrive/icons/circle.png', label:'Large icons', action: this.viewByLargeIcon.bind(this), variables:largeIconState,
+    const largeIcon:DeskTopMenuItem={ icon:'osdrive/icons/circle.png', label:'Large icons', action: this.viewByLargeIcon.bind(this), variables:this.isLargeIcon,
       emptyline:true, styleOption:'A' }
 
-    const autoArrageState:MenuItemVariable={name:'AutoArrange', value:false}
-    const autoArrageIcon:DeskTopMenuItem={ icon:'osdrive/icons/chkmark32.png', label:'Auto arrange icons',  action: this.autoArrangeIcon.bind(this),  variables:autoArrageState, 
+    const autoArrageIcon:DeskTopMenuItem={ icon:'osdrive/icons/chkmark32.png', label:'Auto arrange icons',  action: this.autoArrangeIcon.bind(this),  variables:this.autoArrangeIcons, 
       emptyline:false, styleOption:'B' }
 
-    const autoAlignState:MenuItemVariable={name:'AutoAlign', value:false}
-    const autoAlign:DeskTopMenuItem={ icon:'osdrive/icons/chkmark32.png', label:'Align icons to grid',  action: this.autoAlignIcon.bind(this),  variables:autoAlignState, 
+    const autoAlign:DeskTopMenuItem={ icon:'osdrive/icons/chkmark32.png', label:'Align icons to grid',  action: this.autoAlignIcon.bind(this),  variables:this.autoAlignIcons, 
       emptyline:true, styleOption:'B' }
 
-    const showDesktopIcons:DeskTopMenuItem={ icon:'osdrive/icons/chkmark32.png', label:'Show desktop icons',  action: this.showDesktopIcon.bind(this),
+    const showDesktopIcons:DeskTopMenuItem={ icon:'osdrive/icons/chkmark32.png', label:'Show desktop icons',  action: this.showDesktopIcon.bind(this), variables:this.showDesktopIcons,
       emptyline:false,  styleOption:'B'}
 
     const viewByMenu = [smallIcon,mediumIcon,largeIcon, autoArrageIcon, autoAlign,showDesktopIcons];
@@ -394,25 +390,34 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
   buildSortByMenu(): DeskTopMenuItem[]{
-    const sortByNameState:MenuItemVariable={ name:'smallIcon',  value:true }
-    const sortByName:DeskTopMenuItem={ icon:'osdrive/icons/circle.png', label:'Name',  action: this.sortByNameM.bind(this),  variables:sortByNameState, 
+
+    const sortByName:DeskTopMenuItem={ icon:'osdrive/icons/circle.png', label:'Name',  action: this.sortByNameM.bind(this),  variables:this.isSortByName , 
       emptyline:false, styleOption:'A' }
 
-      const sortBySizeState:MenuItemVariable={ name:'smallIcon',  value:false }
-    const sortBySize:DeskTopMenuItem={ icon:'osdrive/icons/circle.png', label:'Size',  action: this.sortBySizeM.bind(this),  variables:sortBySizeState, 
+    const sortBySize:DeskTopMenuItem={ icon:'osdrive/icons/circle.png', label:'Size',  action: this.sortBySizeM.bind(this),  variables:this.isSortBySize , 
       emptyline:false, styleOption:'A' }
 
-      const sortByNameItemType:MenuItemVariable={ name:'smallIcon',  value:false }
-    const sortByItemType:DeskTopMenuItem={ icon:'osdrive/icons/circle.png', label:'Item type',  action: this.sortByItemTypeM.bind(this),  variables:sortByNameItemType, 
+    const sortByItemType:DeskTopMenuItem={ icon:'osdrive/icons/circle.png', label:'Item type',  action: this.sortByItemTypeM.bind(this),  variables:this.isSortByItemType, 
       emptyline:false, styleOption:'A' }
 
-      const sortByDateModifiedState:MenuItemVariable={ name:'smallIcon',  value:false }
-    const sortByDateModified:DeskTopMenuItem={ icon:'osdrive/icons/circle.png', label:'Date modified',  action: this.sortByDateModifiedM.bind(this),  variables:sortByDateModifiedState, 
+    const sortByDateModified:DeskTopMenuItem={ icon:'osdrive/icons/circle.png', label:'Date modified',  action: this.sortByDateModifiedM.bind(this),  variables:this.isSortByDateModified, 
       emptyline:false, styleOption:'A' }
 
     const sortByMenu = [sortByName, sortBySize, sortByItemType, sortByDateModified ]
 
     return sortByMenu
+  }
+
+  getDesktopMenuData():void{
+    this.dskTopMenuItem = [
+          {icon1:'', icon2: 'osdrive/icons/arrow_next.png', label:'View', nest:this.buildViewByMenu(), action: ()=> console.log(), emptyline:false},
+        {icon1:'',  icon2:'osdrive/icons/arrow_next.png', label:'Sort by', nest:this.buildSortByMenu(), action: ()=> console.log(), emptyline:false},
+        {icon1:'',  icon2:'', label: 'Refresh', nest:[], action:this.refresh.bind(this), emptyline:true},
+        {icon1:'/osdrive/icons/terminal_48.png', icon2:'', label:'Open inTerminal', nest:[], action: this.openTerminal.bind(this), emptyline:false},
+        {icon1:'',  icon2:'', label:'Next Background', nest:[], action: this.nextBackground.bind(this), emptyline:false},
+        {icon1:'',  icon2:'', label:'Previous Background', nest:[], action: this.previousBackground.bind(this), emptyline:true},
+        {icon1:'',  icon2:'osdrive/icons/arrow_next.png', label:'New', nest:[], action: ()=> console.log(), emptyline:true}
+      ]
   }
 
   private buildVantaEffect(n:number) {

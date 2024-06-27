@@ -1,14 +1,10 @@
 
-export interface MenuItemVariable{
-    name:string
-    value:boolean
-}
 
 export interface DeskTopMenuItem {
     icon:string;
     label: string;
     action: () => void;
-    variables?: MenuItemVariable;
+    variables?: boolean;
     emptyline:boolean;
     styleOption:string;
 }
