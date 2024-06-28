@@ -21,18 +21,17 @@
    /*  transition: background-color 0.3s ease; Add a transition for background-color */
 }
 
+.dm-vertical-menu .dm-vertical-menu-item:hover{
+    background-color: #484444;
+}
 
 .dm-vertical-menu{
     background-color: #484444;
 }
 
-.dm-line-container, .dm-dsktp-line-container  {
+.dm-line-container{
     max-height: 1px;
     background-color: #2b2b2b;
-}
-
-.dm-dsktp-line-container{
-    background-color: #eee;
 }
 
 .dm-line {

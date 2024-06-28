@@ -239,7 +239,7 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
     const rect =  liElemnt.getBoundingClientRect();
     const data:unknown[] = [rect, appName, iconPath];
 
-    //if(this._runningProcessService.isProcessRunning(appName))
+    if(this._runningProcessService.isProcessRunning(appName))
       this._runningProcessService.showPreviewWindowNotify.next(data);
   }
 

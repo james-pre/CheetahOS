@@ -455,6 +455,8 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     this.switchBetweenPinAndUnpin(isPinned);
     // first count, then show the cntxt menu
     const proccessCount = this.countInstaceAndSetMenu();
+
+    this.removeOldTaskBarPreviewWindowNow();
     this.showTskBarCntxtMenu = true;
 
     if(proccessCount == 0){
@@ -555,6 +557,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     const iconPath = data[2] as string;
     this.appToPreview = appName;
     this.appToPreviewIcon = iconPath;
+
     this.showTskBarPreviewWindow = true;
     this.tskBarPreviewWindowState = 'in';
 
@@ -570,11 +573,12 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   hideTaskBarPreviewWindow():void{
     this.hideTskBarPrevWindowTimeoutId = setTimeout(()=>{
       this.tskBarPreviewWindowState = 'out';
-    }, 1000)
+    }, 200)
   
     this.removeTskBarPrevWindowFromDOMTimeoutId = setTimeout(()=>{
       this.showTskBarPreviewWindow = false;
-    }, 2000)
+      this.hideTaskBarContextMenu();
+    }, 700)
   }
 
   keepTaskBarPreviewWindow():void{

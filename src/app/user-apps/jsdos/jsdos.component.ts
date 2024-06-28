@@ -16,6 +16,8 @@ import { StateType } from 'src/app/system-files/state/state.type';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
 import { ScriptService } from 'src/app/shared/system-service/script.services';
+import * as htmlToImage from 'html-to-image';
+import { TaskBarPreviewImage } from 'src/app/system-apps/taskbarpreview/taskbar.preview';
 
 declare const Dos: DosPlayerFactoryType;
 declare const emulators:Emulators
@@ -39,6 +41,8 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
   private _fileInfo!:FileInfo;
   private _appState!:AppState;
   private gameSrc = '';
+
+  SECONDS_DELAY = 250;
 
   name= 'jsdos';
   hasWindow = true;
@@ -102,6 +106,20 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
       this.displayName = this._fileInfo.getFileName;
     })
 
+    setTimeout(()=>{
+      this.captureComponentImg();
+    },this.SECONDS_DELAY) 
+  }
+
+  captureComponentImg():void{
+    htmlToImage.toPng(this.dosWindow.nativeElement).then(htmlImg =>{
+      //console.log('img data:',htmlImg);
+      const cmpntImg:TaskBarPreviewImage = {
+        pid: this.processId,
+        imageData: htmlImg
+      }
+      this._runningProcessService.addProcessImage(this.name, cmpntImg);
+    })
   }
 
   setJSDosWindowToFocus(pid:number):void{

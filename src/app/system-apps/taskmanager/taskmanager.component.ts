@@ -9,6 +9,8 @@ import { SortingInterface } from './sorting.interface';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 import { RefreshRates, RefreshRatesIntervals, TableColumns,DisplayViews } from './taskmanager.enum';
 import { NotificationService } from 'src/app/shared/system-service/notification.service';
+import { TaskBarPreviewImage } from '../taskbarpreview/taskbar.preview';
+import * as htmlToImage from 'html-to-image';
 
 
 @Component({
@@ -18,7 +20,8 @@ import { NotificationService } from 'src/app/shared/system-service/notification.
 })
 export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,AfterViewInit {
 
-  @ViewChild('tskMgrTable') tskMgrTable!: ElementRef;
+  @ViewChild('tskManagerRootContainer') tskManagerRootContainer!: ElementRef; 
+  @ViewChild('tskMgrTable') tskMgrTable!: ElementRef;  
   @ViewChild('tskmgrTblCntnr') tskmgrTblCntnr!: ElementRef;
 
   private _maximizeWindowSub!: Subscription;
@@ -56,19 +59,6 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   processNameColumnVisible = false;
   typeColumnVisible = false;
 
- 
-  hasWindow = true;
-  icon = 'osdrive/icons/taskmanger.png';
-  name = 'taskmanager';
-  processId = 0;
-  type = ComponentType.System;
-  displayName = 'Task Manager';
-
-  processes:Process[] =[];
-  closingNotAllowed:string[] = ["system", "desktop", "filemanager", "taskbar", "startbutton","clock","taskbarentry"];
-  groupedData: any = {};
-  selectedRefreshRate = 0;
-
   cntxtMenuStyle:Record<string, unknown> = {};
   thStyle:Record<string,unknown> = {};
   thStyle1:Record<string,unknown> = {};
@@ -84,12 +74,26 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   detailedView = DisplayViews.DETAILED_VIEW;
   viewOptions = '';
 
+  SECONDS_DELAY = 250
+
+  processes:Process[] =[];
+  closingNotAllowed:string[] = ["system", "desktop", "filemanager", "taskbar", "startbutton","clock","taskbarentry"];
+  groupedData: any = {};
+  selectedRefreshRate = 0;
+
   cpuUtil = 0;
   memUtil = 0;
   diskUtil = 0;
   networkUtil = 0;
   gpuUtil = 0;
   powerUtil = 'Very low';
+
+  hasWindow = true;
+  icon = 'osdrive/icons/taskmanger.png';
+  name = 'taskmanager';
+  processId = 0;
+  type = ComponentType.System;
+  displayName = 'Task Manager';
 
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService,
@@ -136,17 +140,12 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     this.setTaskMangrWindowToFocus(this.processId); 
     this.hideContextMenu();
 
-    // const table = this.tskMgrTable.nativeElement as HTMLCollection;
-    // new ResizableTableColumns(table, null); table column resize is acting.....not right.
-
     this.applyDefaultColumnStyle();
     //Initial delay 1 seconds and interval countdown also 2 second
     this._taskmgrRefreshIntervalSub = interval(this.refreshRateInterval).subscribe(() => {
       this.generateLies();
       this.sortTable(this._sorting.column, false);
     });
-
- 
 
     this._chnageTaskmgrRefreshIntervalSub.pipe(
       switchMap( newRefreshRate => {
@@ -159,7 +158,24 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       this.generateLies();
       this.sortTable(this._sorting.column, false);
     });
+
+
+    setTimeout(()=>{
+      this.captureComponentImg();
+    },this.SECONDS_DELAY) 
   }
+
+  captureComponentImg():void{
+    htmlToImage.toPng(this.tskManagerRootContainer.nativeElement).then(htmlImg =>{
+      //console.log('img data:',htmlImg);
+
+      const cmpntImg:TaskBarPreviewImage = {
+        pid: this.processId,
+        imageData: htmlImg
+      }
+      this._runningProcessService.addProcessImage(this.name, cmpntImg);
+    })
+}
 
 
   isDescSorting(column: string): boolean {

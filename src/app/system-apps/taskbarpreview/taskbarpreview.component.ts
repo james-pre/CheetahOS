@@ -11,10 +11,10 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
       state('in', style({ opacity: 1 })),
       state('out', style({ opacity: 0 })),
       transition('* => in', [
-        animate('0.75s ease-in')
+        animate('0.50s ease-in')
       ]),
       transition('in => out', [
-        animate('0.75s ease-out')
+        animate('0.50s ease-out')
       ]),
     ])
   ]
@@ -27,8 +27,9 @@ export class TaskbarPreviewComponent implements OnChanges, AfterViewInit {
   @Input() icon = '';
   @Input() fadeState = '';
 
-  appInfo = 'This is just a simple test';
   componentImages!:TaskBarPreviewImage[];
+  appInfo = '';
+  SECONDS_DELAY = 250;
 
   constructor(runningProcessService:RunningProcessService){
     this._runningProcessService = runningProcessService
@@ -36,27 +37,23 @@ export class TaskbarPreviewComponent implements OnChanges, AfterViewInit {
   }
 
   ngOnChanges(changes: SimpleChanges):void{
-    //console.log('DIALOG onCHANGES:',changes);
- 
-    console.log('this.name:',this.name);
-    console.log('this.fadeState:',this.fadeState);
+    console.log('PREVIEW onCHANGES:',changes);
+    // console.log('this.name:',this.name);
+    // console.log('this.fadeState:',this.fadeState);
   }
 
   ngAfterViewInit(): void {
-
     setTimeout(() => {
-
       this.componentImages = this._runningProcessService.getProcessImages(this.name);
       this.shortAppInfo();
-    }, 250);
-
+    }, this.SECONDS_DELAY);
   }
 
   shortAppInfo():void{
+    this.appInfo = this.name;
     const limit = 26;
     const ellipsis = '...';
- 
-    //limit = this.appInfo.substring(0, limit).lastIndexOf(' ');
+
     this.appInfo = (this.appInfo.length > limit) ? this.appInfo.substring(0, limit) + ellipsis : this.appInfo;
   }
 

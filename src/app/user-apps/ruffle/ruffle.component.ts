@@ -12,6 +12,8 @@ import { StateType } from 'src/app/system-files/state/state.type';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
 import { ScriptService } from 'src/app/shared/system-service/script.services';
+import * as htmlToImage from 'html-to-image';
+import { TaskBarPreviewImage } from 'src/app/system-apps/taskbarpreview/taskbar.preview';
 
 
 @Component({
@@ -32,6 +34,8 @@ export class RuffleComponent implements BaseComponent, OnInit, AfterViewInit {
   private _fileInfo!:FileInfo;
   private _appState!:AppState;
   private gameSrc = '';
+
+  SECONDS_DELAY = 250;
 
   name= 'ruffle';
   hasWindow = true;
@@ -73,6 +77,11 @@ export class RuffleComponent implements BaseComponent, OnInit, AfterViewInit {
       this.loadSWF('ruffleWindow',this.gameSrc);
       this.storeAppState(this.gameSrc);
     });
+
+
+    setTimeout(()=>{
+      this.captureComponentImg();
+    },this.SECONDS_DELAY) 
   }
 
 
@@ -91,6 +100,18 @@ export class RuffleComponent implements BaseComponent, OnInit, AfterViewInit {
   setRuffleWindowToFocus(pid:number):void{
     this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
   }
+
+  captureComponentImg():void{
+    htmlToImage.toPng(this.ruffleContainer.nativeElement).then(htmlImg =>{
+      //console.log('img data:',htmlImg);
+
+      const cmpntImg:TaskBarPreviewImage = {
+        pid: this.processId,
+        imageData: htmlImg
+      }
+      this._runningProcessService.addProcessImage(this.name, cmpntImg);
+    })
+}
 
   getGamesSrc(pathOne:string, pathTwo:string):string{
     let gameSrc = '';

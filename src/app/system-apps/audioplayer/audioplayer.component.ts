@@ -98,12 +98,6 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   ngOnInit(): void {
     this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
-    // this._scriptService.loadScript("howler","assets/howler/howler.min.js").then(()=>{
-    //   console.log('howler loading complete');
-    // });
-    // this._scriptService.loadScript("siriwave","assets/howler/siriwave.umd.min.js").then(()=>{
-    //   console.log('siriwave loading complete');
-    // });
   }
 
   ngAfterViewInit():void{  
@@ -150,7 +144,6 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   captureComponentImg():void{
     htmlToImage.toPng(this.audioContainer.nativeElement).then(htmlImg =>{
-      //console.log('img data:',htmlImg);
 
       const cmpntImg:TaskBarPreviewImage = {
         pid: this.processId,
@@ -394,7 +387,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
         preload: false,
         autoSuspend: false,
         onend:()=>{
-          console.log('Finished!');
+          //console.log('Finished!');
           this.siriWave.canvas.style.opacity = 0;
           this.bar.nativeElement.style.display = 'block';
           this.pauseBtn.nativeElement.style.display = 'none';
@@ -403,11 +396,10 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
           this.siriWave.stop();
         },
         onload:()=>{
-          console.log('loaded!');
-            const duration =audioPlayer.duration();
-            this.duration = this.formatTime(duration);
-
-            resolve(audioPlayer);
+          //console.log('loaded!');
+          const duration =audioPlayer.duration();
+          this.duration = this.formatTime(duration);
+          resolve(audioPlayer);
         },
         onseek:()=>{
           // Start updating the progress of the track.
@@ -441,7 +433,6 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   getAudioSrc(pathOne:string, pathTwo:string):string{
     let audioSrc = '';
-
     if(this.checkForExt(pathOne,pathTwo)){
       audioSrc = '/' + this._fileInfo.getContentPath;
     }else{
@@ -465,7 +456,6 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   storeAppState(app_data:unknown):void{
     const uid = `${this.name}-${this.processId}`;
-
     this._appState = {
       pid: this.processId,
       app_data: app_data,
@@ -491,7 +481,6 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
       }
     }
   }
-
 
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type, this._triggerProcessService.getLastProcessTrigger)
