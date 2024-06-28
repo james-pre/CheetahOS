@@ -14,7 +14,8 @@ import { StateManagmentService } from 'src/app/shared/system-service/state.manag
 import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
 import { Subscription } from 'rxjs';
 import { ScriptService } from 'src/app/shared/system-service/script.services';
-
+import * as htmlToImage from 'html-to-image';
+import { TaskBarPreviewImage } from '../taskbarpreview/taskbar.preview';
 // eslint-disable-next-line no-var
 declare var videojs: (arg0: any, arg1: object, arg2: () => void) => any;
 
@@ -45,7 +46,7 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   private fileType = '';
 
   recents:string[] = [];
-
+  SECONDS_DELAY = 250;
 
   name= 'videoplayer';
   hasWindow = true;
@@ -127,6 +128,10 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
       //this.player.on('fullscreenchange', this.onFullscreenChange);
 
     })
+
+    setTimeout(()=>{
+      this.captureComponentImg();
+    },this.SECONDS_DELAY) 
   }
 
   ngOnDestroy(): void {
@@ -136,6 +141,18 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
     }
     this._maximizeWindowSub?.unsubscribe();
   }
+
+  captureComponentImg():void{
+    htmlToImage.toPng(this.mainVideoCntnr.nativeElement).then(htmlImg =>{
+      //console.log('img data:',htmlImg);
+
+      const cmpntImg:TaskBarPreviewImage = {
+        pid: this.processId,
+        imageData: htmlImg
+      }
+      this._runningProcessService.addProcessImage(this.name, cmpntImg);
+    })
+}
 
   onFullscreenChange = () => {
     const isFullscreen = this.player.isFullscreen();

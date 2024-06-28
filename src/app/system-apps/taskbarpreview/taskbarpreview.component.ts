@@ -2,8 +2,6 @@ import { Component, Input, OnChanges, SimpleChanges, AfterViewInit } from '@angu
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { TaskBarPreviewImage } from './taskbar.preview';
 import { trigger, state, style, animate, transition } from '@angular/animations'
-import { MenuService } from 'src/app/shared/system-service/menu.services';
-
 @Component({
   selector: 'cos-taskbarpreview',
   templateUrl: './taskbarpreview.component.html',

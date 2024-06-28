@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { FileService } from 'src/app/shared/system-service/file.service';
 import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { ComponentType } from 'src/app/system-files/component.types';
@@ -13,6 +13,8 @@ import { StateType } from 'src/app/system-files/state/state.type';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
 import { Constants } from 'src/app/system-files/constants';
+import * as htmlToImage from 'html-to-image';
+import { TaskBarPreviewImage } from '../taskbarpreview/taskbar.preview';
 
 @Component({
   selector: 'cos-photoviewer',
@@ -20,6 +22,8 @@ import { Constants } from 'src/app/system-files/constants';
   styleUrls: ['./photoviewer.component.css']
 })
 export class PhotoviewerComponent implements BaseComponent, OnInit, OnDestroy, AfterViewInit {
+
+  @ViewChild('photoContainer', {static: true}) photoContainer!: ElementRef; 
 
   private _fileService:FileService;
   private _processIdService:ProcessIDService;
@@ -32,6 +36,7 @@ export class PhotoviewerComponent implements BaseComponent, OnInit, OnDestroy, A
   private picSrc = '';
   private _consts:Constants = new Constants();
 
+  SECONDS_DELAY = 250;
   name= 'photoviewer';
   hasWindow = true;
   icon = '/osdrive/icons/photos_48.png';
@@ -96,8 +101,23 @@ export class PhotoviewerComponent implements BaseComponent, OnInit, OnDestroy, A
 
     //tell angular to run additional detection cycle after 
     this.changeDetectorRef.detectChanges();
+
+    setTimeout(()=>{
+      this.captureComponentImg();
+    },this.SECONDS_DELAY) 
   }
 
+  captureComponentImg():void{
+    htmlToImage.toPng(this.photoContainer.nativeElement).then(htmlImg =>{
+      //console.log('img data:',htmlImg);
+
+      const cmpntImg:TaskBarPreviewImage = {
+        pid: this.processId,
+        imageData: htmlImg
+      }
+      this._runningProcessService.addProcessImage(this.name, cmpntImg);
+    })
+  }
 
   onKeyDown(evt:KeyboardEvent):void{
 
