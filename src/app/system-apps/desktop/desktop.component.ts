@@ -151,7 +151,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   ngAfterViewInit():void{
     //this.animationId = requestAnimationFrame(this.changeAnimationColor.bind(this));  
      this.hideContextMenu();
-     //this.loadOtherBackgrounds();
+     this.loadOtherBackgrounds();
   }
 
   loadOtherBackgrounds():void{
