@@ -33,18 +33,21 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
    private _focusOnCurrentProcessSub!:Subscription;
    private _focusOutOtherProcessSub!:Subscription;
 
-
-  hasWindow = false;
-  icon = '';
-  name = 'Window';
-  processId = 0;
-  uniqueId = '';
-  type = ComponentType.System;
-  displayName = '';
+  SECONDS_DELAY = 350;
 
   windowOpen = true;
   windowHide = false;
   windowMaximize = false;
+  windowMinMaxAction = 'minimized';
+  windowTransfrom =  'translate(0,0)';
+  windowWidth = '0px';
+  windowHeight = '0px';
+  windowTop = '0';
+  windowLeft = '0';
+  windowRight = 0;
+  windowBottom = 0;
+  windowZIndex = 0;
+
   isWindowMaximizable = true;
   currentWindowSizeState = false;
   currentStyles: Record<string, unknown> = {};
@@ -53,6 +56,14 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
   defaultWidthOnOpen = 0;
   defaultHeightOnOpen = 0;
   private readonly z_index = '25914523'; // this number = zindex
+
+  hasWindow = false;
+  icon = '';
+  name = 'Window';
+  processId = 0;
+  uniqueId = '';
+  type = ComponentType.System;
+  displayName = '';
   
 
     constructor(runningProcessService:RunningProcessService, private changeDetectorRef: ChangeDetectorRef, 
@@ -60,6 +71,8 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
       this._runningProcessService = runningProcessService;
       this._stateManagmentService = stateManagmentService;
       this._sessionManagmentService = sessionManagmentService;
+
+
  
       this.retrievePastSessionData();
 
@@ -78,6 +91,8 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
       this.icon = this.processAppIcon;
       this.name = this.processAppName;
       this.isWindowMaximizable = this.isMaximizable;
+
+
     }
 
     ngOnDestroy():void{
@@ -92,6 +107,16 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
       this.defaultWidthOnOpen  = this.getDivWindowElement.offsetWidth;
 
 
+
+      this.windowTransfrom =  'translate(0, 0)';
+      this.windowHeight =  `${String(this.defaultHeightOnOpen)}px`;
+      this.windowWidth =  `${String(this.defaultWidthOnOpen)}px`;
+      // this.windowTop = `${String(40)}%`;
+      // this.windowLeft = `${String(16)}%`;
+      // this.windowRight = 0;
+      // this.windowBottom = 0;
+      this.windowZIndex = 2;
+
       this._originalWindowsState = {
         app_name: this.name,
         pid : this.processId,
@@ -99,7 +124,7 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
         width: this.defaultWidthOnOpen,
         x_axis: 0,
         y_axis: 0,
-        z_index:0,
+        z_index:2,
         is_visible:true
       }
       
@@ -125,7 +150,6 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
     setHideAndShow():void{
       this.windowHide = !this.windowHide;
       // CSS styles: set per current state of component properties
-
       const windowState = this._stateManagmentService.getState(this.uniqueId, StateType.Window) as WindowState;
 
       if(this.windowHide){
@@ -140,13 +164,18 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
             // if window was in full screen when hidden, fit it properly when un-hidden
             this.setWindowToFullScreen(this.processId, windowState.z_index);
           }else{
-            this.currentStyles = {
-              // opacity: 1,
-              'width': `${String(windowState.width)}`, 
-              'height': `${String(windowState.height)}`, 
-              'transform': `translate(${String(windowState.x_axis)}px, ${String(windowState.y_axis)}px)`,
-               'z-index': windowState.z_index
-            };
+            // this.currentStyles = {
+            //   // opacity: 1,
+            //   'width': `${String(windowState.width)}`, 
+            //   'height': `${String(windowState.height)}`, 
+            //   'transform': `translate(${String(windowState.x_axis)}px, ${String(windowState.y_axis)}px)`,
+            //    'z-index': windowState.z_index
+            // };
+
+            this.windowWidth = `${String(windowState.width)}px`;
+            this.windowHeight = `${String(windowState.height)}px`;
+            this.windowTransfrom =  `translate(${String(windowState.x_axis)}px, ${String(windowState.y_axis)}px)`;
+            this.windowZIndex =  windowState.z_index;
           }
 
           windowState.is_visible = true;
@@ -171,16 +200,22 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
       }
       else if(!this.windowMaximize){
         if(windowState.pid == this.processId){
-          this.currentStyles = {
-            'width': `${String(windowState.width)}px`, 
-            'height': `${String(windowState.height)}px`, 
-            'transform': `translate(${String(windowState.x_axis)}px, ${String(windowState.y_axis)}px)`,
-            'z-index': windowState.z_index
-          };
+
+          this.windowWidth = `${String(windowState.width)}px`;
+          this.windowHeight = `${String(windowState.height)}px`;
+          this.windowTransfrom =  `translate(${String(windowState.x_axis)}px, ${String(windowState.y_axis)}px)`;
+          this.windowZIndex =  windowState.z_index;
+
+          // this.currentStyles = {
+          //   'width': `${String(windowState.width)}px`, 
+          //   'height': `${String(windowState.height)}px`, 
+          //   'transform': `translate(${String(windowState.x_axis)}px, ${String(windowState.y_axis)}px)`,
+          //   'z-index': windowState.z_index
+          // };
         }
       }
-
       this.windowMaximize = !this.windowMaximize;
+
     }
 
     setBtnFocus(pid:number):void{
@@ -209,16 +244,27 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
 
     setWindowToFullScreen(pid:number, z_index:number):void{
       if(this.processId == pid){
-        this.currentStyles = {
-          'transform': 'translate(0,0)',
-          'width': '100%',
-          'height': 'calc(100% - 40px)', //This accounts for the taskbar height
-          'top': '0',
-          'left': '0',
-          'right': '0',
-          'bottom': '0', 
-          'z-index': z_index
-        };
+
+        this.windowTransfrom =  'translate(0,0)';
+        this.windowWidth = '100%';
+        this.windowHeight = 'calc(100% - 40px)';
+        this.windowTop = '0';
+        this.windowLeft = '0';
+        this.windowRight = 0;
+        this.windowBottom = 0;
+        this.windowZIndex =  z_index;
+
+
+        // this.currentStyles = {
+        //   'transform': 'translate(0,0)',
+        //   'width': '100%',
+        //   'height': 'calc(100% - 40px)', //This accounts for the taskbar height
+        //   'top': '0',
+        //   'left': '0',
+        //   'right': '0',
+        //   'bottom': '0', 
+        //   'z-index': z_index
+        // };
       }
     }
    
@@ -237,12 +283,14 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
     onMaximizeBtnClick():void{
       if(this.isWindowMaximizable){
         this.windowMaximize = true;
+        this.windowMinMaxAction = 'maximized';
         this.setMaximizeAndUnMaximize();
       }
     }
 
     onUnMaximizeBtnClick():void{
       this.windowMaximize = false;
+      this.windowMinMaxAction = 'minimized';
       this.setMaximizeAndUnMaximize();
     }
 
@@ -251,8 +299,10 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
       if(this.isWindowMaximizable){
         if(this.currentWindowSizeState && !this.windowMaximize){
           this.windowMaximize = false;
+          this.windowMinMaxAction = 'minimized';
         }else{
           this.windowMaximize = true;
+          this.windowMinMaxAction = 'maximized';
         }
         this.setMaximizeAndUnMaximize()
       }
@@ -288,10 +338,13 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
     }
 
     onCloseBtnClick():void{
-      const processToClose = this._runningProcessService.getProcess(this.processId);
-      this._stateManagmentService.removeState(this.uniqueId);
-      this._runningProcessService.closeProcessNotify.next(processToClose);
-      this._runningProcessService.focusOnNextProcessNotify.next();
+      this.windowOpen = false;
+      setTimeout(()=>{
+        const processToClose = this._runningProcessService.getProcess(this.processId);
+        this._stateManagmentService.removeState(this.uniqueId);
+        this._runningProcessService.closeProcessNotify.next(processToClose);
+        this._runningProcessService.focusOnNextProcessNotify.next();
+      },this.SECONDS_DELAY) ;
     }
 
     setFocusOnWindow(pid:number):void{
@@ -315,7 +368,7 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
     removeFocusOnWindow(pid:number):void{
       const processWithWindows = this._runningProcessService.getProcesses().filter(p => p.getHasWindow == true && p.getProcessId != pid);
 
-      for (let i=0; i < processWithWindows.length; i++){
+      for(let i = 0; i < processWithWindows.length; i++){
           const process = processWithWindows[i];
           const window = this._stateManagmentService.getState(`${process.getProcessName}-${process.getProcessId}`, StateType.Window) as WindowState;
           
