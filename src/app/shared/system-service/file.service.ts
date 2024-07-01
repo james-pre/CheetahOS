@@ -30,6 +30,8 @@ export class FileService{
     dirFilesReadyNotify: Subject<void> = new Subject<void>();
     dirFilesUpdateNotify: Subject<void> = new Subject<void>();
 
+    SECONDS_DELAY = 150;
+
     constructor(){ 
         this._fileExistsMap =  new Map<string, number>();
         FileService.instace = this;
@@ -76,7 +78,7 @@ export class FileService{
                     resolve(files);
                   }
                 });
-            }, 100);
+            }, this.SECONDS_DELAY);
         });
     }
 

@@ -1,19 +1,16 @@
 
 <div
-[@openClose]="windowOpen ? 'open' : 'closed'"
-[@hideShow]="windowHide ? 'hidden' : 'visible'"
+[@openClose]="{
+    value: windowOpenCloseAction,
+    params:{ wt0p: windowTransform0p, wt25p: windowTransform25p,  wt50p: windowTransform50p, wt75p: windowTransform75p, wt100p: windowTransform100p }
+}"
+[@hideShow]="{
+    value: windowHideShowAction,
+    params:{ yAxis0p : yAxis0p,  yAxis25p: yAxis25p,  yAxis50p : yAxis50p, yAxis75p : yAxis75p,  yAxis100p : yAxis100p }
+}"
 [@minimizeMaximize]="{
     value: windowMinMaxAction,
-    params:{
-        winWidth: windowWidth,
-        winHeight: windowHeight,
-        winTransform: windowTransfrom,
-        winTop: windowTop,
-        winBottom: windowBottom,
-        winLeft: windowLeft,
-        winRight: windowRight,
-        winZIndex:windowZIndex
-    }
+    params:{ winWidth: windowWidth, winHeight: windowHeight, winTransform: windowTransform, winZIndex:windowZIndex }
 }"
 
 [ngStyle]="currentStyles" #divWindow   tabindex="0" class="window-container  window-dd-box"

@@ -35,18 +35,33 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
 
   SECONDS_DELAY = 350;
 
-  windowOpen = true;
+
   windowHide = false;
   windowMaximize = false;
+  windowOpenCloseAction = 'open';
+  windowHideShowAction = 'visible';
   windowMinMaxAction = 'minimized';
-  windowTransfrom =  'translate(0,0)';
+
+  windowTransform =  'translate(0,0)';
+
+  windowTransform0p =   'translate(0,0)';
+  windowTransform25p =  'translate(-25px,25px)';
+  windowTransform50p =  'translate(-50px,50px)';
+  windowTransform75p =  'translate(-75px,75px)';
+  windowTransform100p = 'translate(-100px,100px)';
+
+  yAxis0p =   'translate(0,0)';
+  yAxis25p =  'translate(0,25px)';
+  yAxis50p =  'translate(0,50px)';
+  yAxis75p =  'translate(0,75px)';
+  yAxis100p = 'translate(0,100px)';
+
   windowWidth = '0px';
   windowHeight = '0px';
-  windowTop = '0';
-  windowLeft = '0';
-  windowRight = 0;
-  windowBottom = 0;
-  windowZIndex = 0;
+  windowZIndex = '0';
+
+  xAxisTmp = 0;
+  yAxisTmp = 0;
 
   isWindowMaximizable = true;
   currentWindowSizeState = false;
@@ -71,8 +86,6 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
       this._runningProcessService = runningProcessService;
       this._stateManagmentService = stateManagmentService;
       this._sessionManagmentService = sessionManagmentService;
-
-
  
       this.retrievePastSessionData();
 
@@ -91,8 +104,7 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
       this.icon = this.processAppIcon;
       this.name = this.processAppName;
       this.isWindowMaximizable = this.isMaximizable;
-
-
+      this.windowOpenCloseAction = 'open'
     }
 
     ngOnDestroy():void{
@@ -106,16 +118,10 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
       this.defaultHeightOnOpen = this.getDivWindowElement.offsetHeight;
       this.defaultWidthOnOpen  = this.getDivWindowElement.offsetWidth;
 
-
-
-      this.windowTransfrom =  'translate(0, 0)';
+      this.windowTransform =  'translate(0, 0)';
       this.windowHeight =  `${String(this.defaultHeightOnOpen)}px`;
       this.windowWidth =  `${String(this.defaultWidthOnOpen)}px`;
-      // this.windowTop = `${String(40)}%`;
-      // this.windowLeft = `${String(16)}%`;
-      // this.windowRight = 0;
-      // this.windowBottom = 0;
-      this.windowZIndex = 2;
+      this.windowZIndex = '2';
 
       this._originalWindowsState = {
         app_name: this.name,
@@ -149,6 +155,8 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
 
     setHideAndShow():void{
       this.windowHide = !this.windowHide;
+      this.windowHideShowAction = this.windowHide ? 'hidden' : 'visible';
+      this.generateHideAnimationValues(this.xAxisTmp, this.yAxisTmp);
       // CSS styles: set per current state of component properties
       const windowState = this._stateManagmentService.getState(this.uniqueId, StateType.Window) as WindowState;
 
@@ -161,23 +169,9 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
       else if(!this.windowHide){
         if(windowState.pid == this.processId){
           if(this.currentWindowSizeState){ 
-            // if window was in full screen when hidden, fit it properly when un-hidden
+            // if window was in full screen when hidden, give the proper z-index when unhidden
             this.setWindowToFullScreen(this.processId, windowState.z_index);
-          }else{
-            // this.currentStyles = {
-            //   // opacity: 1,
-            //   'width': `${String(windowState.width)}`, 
-            //   'height': `${String(windowState.height)}`, 
-            //   'transform': `translate(${String(windowState.x_axis)}px, ${String(windowState.y_axis)}px)`,
-            //    'z-index': windowState.z_index
-            // };
-
-            this.windowWidth = `${String(windowState.width)}px`;
-            this.windowHeight = `${String(windowState.height)}px`;
-            this.windowTransfrom =  `translate(${String(windowState.x_axis)}px, ${String(windowState.y_axis)}px)`;
-            this.windowZIndex =  windowState.z_index;
           }
-
           windowState.is_visible = true;
           this._stateManagmentService.addState(this.uniqueId, windowState, StateType.Window);
         }
@@ -185,37 +179,26 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
     }
 
     setMaximizeAndUnMaximize():void{
-      // CSS styles: set per current state of component properties
-
       const windowState = this._stateManagmentService.getState(this.uniqueId, StateType.Window) as WindowState;
       this.currentWindowSizeState = this.windowMaximize;
       if(this.windowMaximize){
         if(windowState.pid == this.processId){
           this.setWindowToFullScreen(this.processId, windowState.z_index);
           const uid = `${this.processAppName}-${this.processId}`;
-          console.log(`${uid} raised the maximize event`);
           this._runningProcessService.addEventOriginator(uid);
           this._runningProcessService.maximizeWindowNotify.next();
         }
       }
       else if(!this.windowMaximize){
         if(windowState.pid == this.processId){
-
           this.windowWidth = `${String(windowState.width)}px`;
           this.windowHeight = `${String(windowState.height)}px`;
-          this.windowTransfrom =  `translate(${String(windowState.x_axis)}px, ${String(windowState.y_axis)}px)`;
-          this.windowZIndex =  windowState.z_index;
-
-          // this.currentStyles = {
-          //   'width': `${String(windowState.width)}px`, 
-          //   'height': `${String(windowState.height)}px`, 
-          //   'transform': `translate(${String(windowState.x_axis)}px, ${String(windowState.y_axis)}px)`,
-          //   'z-index': windowState.z_index
-          // };
+          this.windowTransform =  `translate(${String(windowState.x_axis)}px, ${String(windowState.y_axis)}px)`;
+          this.windowZIndex =   String(windowState.z_index);
         }
       }
-      this.windowMaximize = !this.windowMaximize;
 
+      this.windowMaximize = !this.windowMaximize;
     }
 
     setBtnFocus(pid:number):void{
@@ -244,27 +227,7 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
 
     setWindowToFullScreen(pid:number, z_index:number):void{
       if(this.processId == pid){
-
-        this.windowTransfrom =  'translate(0,0)';
-        this.windowWidth = '100%';
-        this.windowHeight = 'calc(100% - 40px)';
-        this.windowTop = '0';
-        this.windowLeft = '0';
-        this.windowRight = 0;
-        this.windowBottom = 0;
-        this.windowZIndex =  z_index;
-
-
-        // this.currentStyles = {
-        //   'transform': 'translate(0,0)',
-        //   'width': '100%',
-        //   'height': 'calc(100% - 40px)', //This accounts for the taskbar height
-        //   'top': '0',
-        //   'left': '0',
-        //   'right': '0',
-        //   'bottom': '0', 
-        //   'z-index': z_index
-        // };
+        this.windowZIndex =   String(z_index);
       }
     }
    
@@ -295,7 +258,6 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
     }
 
     onTitleBarDoubleClick():void{
-      // if window is currently in full screen and next state(windowMaximize == false)
       if(this.isWindowMaximizable){
         if(this.currentWindowSizeState && !this.windowMaximize){
           this.windowMaximize = false;
@@ -319,6 +281,10 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
         const windowState = this._stateManagmentService.getState(this.uniqueId, StateType.Window) as WindowState;
         windowState.x_axis= x_axis;
         windowState.y_axis= y_axis;
+
+        this.xAxisTmp = x_axis;
+        this.yAxisTmp = y_axis;
+        this.windowTransform =  `translate(${String(x_axis)}px , ${String(y_axis)}px)`;    
         this._stateManagmentService.addState(this.uniqueId, windowState, StateType.Window);
       }
     }
@@ -332,13 +298,36 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
       const width = Number(input.size.width);
 
       const windowState = this._stateManagmentService.getState(this.uniqueId, StateType.Window) as WindowState;
-      windowState.height= height;
       windowState.width= width;
+      windowState.height= height;
+
+
+      this.windowWidth = `${String(width)}px`;
+      this.windowHeight = `${String(height)}px`;
+
       this._stateManagmentService.addState(this.uniqueId, windowState, StateType.Window);
+    }
+    
+    generateCloseAnimationValues(x_axis:number, y_axis:number):void{
+      this.windowTransform0p =  `translate(${String(x_axis)}px , ${String(y_axis)}px)`;
+      this.windowTransform25p =  `translate(${String(x_axis - 25)}px , ${String(y_axis + 25)}px)`;
+      this.windowTransform50p =  `translate(${String(x_axis - 50)}px , ${String(y_axis + 50)}px)`;
+      this.windowTransform75p =  `translate(${String(x_axis - 75)}px , ${String(y_axis + 75)}px)`;
+      this.windowTransform100p =  `translate(${String(x_axis - 100)}px , ${String(y_axis + 100)}px)`;
+    }
+
+    generateHideAnimationValues(x_axis:number, y_axis:number ):void{
+      this.yAxis0p =  `translate(${String(x_axis)}px , ${String(y_axis)}px)`;
+      this.yAxis25p =  `translate(${String(x_axis)}px , ${String(y_axis + 25)}px)`;
+      this.yAxis50p =  `translate(${String(x_axis)}px , ${String(y_axis + 50)}px)`;
+      this.yAxis75p =  `translate(${String(x_axis)}px , ${String(y_axis + 75)}px)`;
+      this.yAxis100p =  `translate(${String(x_axis)}px , ${String(y_axis + 100)}px)`;
     }
 
     onCloseBtnClick():void{
-      this.windowOpen = false;
+      this.windowOpenCloseAction = 'close';
+      this.generateCloseAnimationValues(this.xAxisTmp, this.yAxisTmp);
+
       setTimeout(()=>{
         const processToClose = this._runningProcessService.getProcess(this.processId);
         this._stateManagmentService.removeState(this.uniqueId);
@@ -350,7 +339,7 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
     setFocusOnWindow(pid:number):void{
       /**
        * If you want to make a non-focusable element focusable, 
-       * you must add a tabindex attribute to it. And divs falls into the category non-focusable elements .
+       * you must add a tabindex attribute to it. And divs falls into the category of non-focusable elements .
        */
 
       this._runningProcessService.focusOutOtherProcessNotify.next(pid);
@@ -450,12 +439,11 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
           1. The constructor executes first
 
         2.For the Windows Component
-          1. The constructor executes firest
+          1. The constructor executes first
 
-          2. ngOnChange exexutes first
+          2. ngOnChange executes next
 
           3.  Then followed by ngOnInit
-      
       */
       this._sessionManagmentService.removeSession(tmpSessKey);
     }
