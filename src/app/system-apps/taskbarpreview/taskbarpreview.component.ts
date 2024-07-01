@@ -11,10 +11,10 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
       state('in', style({ opacity: 1 })),
       state('out', style({ opacity: 0 })),
       transition('* => in', [
-        animate('0.50s ease-in')
+        animate('0.30s ease-in')
       ]),
       transition('in => out', [
-        animate('0.50s ease-out')
+        animate('0.30s ease-out')
       ]),
     ])
   ]
@@ -37,7 +37,8 @@ export class TaskbarPreviewComponent implements OnChanges, AfterViewInit {
   }
 
   ngOnChanges(changes: SimpleChanges):void{
-    console.log('PREVIEW onCHANGES:',changes);
+    1
+    //console.log('PREVIEW onCHANGES:',changes);
     // console.log('this.name:',this.name);
     // console.log('this.fadeState:',this.fadeState);
   }
@@ -57,10 +58,10 @@ export class TaskbarPreviewComponent implements OnChanges, AfterViewInit {
     this.appInfo = (this.appInfo.length > limit) ? this.appInfo.substring(0, limit) + ellipsis : this.appInfo;
   }
 
-  onClosePreviewWindow():void{
-    console.log('I will implement this......later')
+  onClosePreviewWindow(pid:number):void{
+    const processToClose = this._runningProcessService.getProcess(pid);
+    this._runningProcessService.closeProcessNotify.next(processToClose);
   }
-
 
   keepTaskBarPreviewWindow():void{
     this._runningProcessService.keepPreviewWindowNotify.next();
@@ -68,6 +69,15 @@ export class TaskbarPreviewComponent implements OnChanges, AfterViewInit {
 
   hideTaskBarPreviewWindow():void{
     this._runningProcessService.hidePreviewWindowNotify.next();
+  }
+
+  showTaskBarPreviewContextMenu(evt:MouseEvent, pid:number):void{
+    console.log('I will implement the TaskBarPreview Context Window.........later');
+  }
+
+
+  setWindowToFocus(pid:number):void{
+    this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
   }
 
 }

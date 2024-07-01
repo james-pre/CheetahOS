@@ -1,6 +1,6 @@
 <cos-window [runningProcessID]="this.processId" [processAppIcon]="this.icon" [processAppName]="this.name" (click)="setTerminalWindowToFocus(this.processId)">
     <div class="terminal-container" tabIndex="-1" (keydown)="onKeyDownOnWindow($event)" (click)="focusOnInput()" #terminalCntnr>
-        <div class="terminal-output-section" #terminalOutput>
+        <div class="terminal-output-section" #terminalOutputCntnr>
             <div class="terminal-banner-container"  *ngIf="isBannerVisible">
                 <div class="terminal-banner-content">
                     {{banner}}
@@ -13,7 +13,7 @@
                 </div>
             </div>
     
-            <div class="terminal-command-output-container-main">
+            <div class="terminal-command-output-container-main" #terminalHistoryOutput>
                 <div class="terminal-command-output-container" *ngFor="let cmdHistory of commandHistory">
                     <div class="terminal-command-output" *ngIf="cmdHistory.getResponseCode === this.Success || cmdHistory.getResponseCode === this.Options">
                         <span class="prev-terminal-prompt terminal-prior ">{{terminalPrompt}}:{{cmdHistory.getCommand.trim()}}</span>

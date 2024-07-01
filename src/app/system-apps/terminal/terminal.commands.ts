@@ -11,14 +11,13 @@ export class TerminalCommands{
 
     private _triggerProcessService:TriggerProcessService;
     private _runningProcessService:RunningProcessService;
-    private _stateManagmentService:StateManagmentService;
+    
     private _appDirctory = new AppDirectory();
     private closingNotAllowed:string[] = ["system", "desktop", "filemanager", "taskbar", "startbutton","clock","taskbarentry"];
 
     constructor() { 
         this._triggerProcessService = TriggerProcessService.instance;
         this._runningProcessService = RunningProcessService.instance;
-        this._stateManagmentService = StateManagmentService.instance;
     }
 
     help(arg0:string[], arg1:string[],arg2:string):string{
@@ -177,7 +176,6 @@ All commands:
             if(this.closingNotAllowed.includes(processToClose.getProcessName)){
                 return `The app: ${processToClose.getProcessName} is not allowed to be closed`;
             }else{
-                this._stateManagmentService.removeState(`${processToClose.getProcessId}-${processToClose.getProcessId}`);
                 this._runningProcessService.closeProcessNotify.next(processToClose);
                 return `closing app, app name: ${processToClose.getProcessName}  app id: ${processToClose.getProcessId}`;
             }

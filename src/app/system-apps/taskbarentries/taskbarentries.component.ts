@@ -3,7 +3,6 @@ import { Subscription } from 'rxjs';
 import { MenuService } from 'src/app/shared/system-service/menu.services';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
-import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { FileInfo } from 'src/app/system-files/fileinfo';
@@ -19,7 +18,6 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _triggerProcessService:TriggerProcessService;
-  private _stateManagmentService:StateManagmentService;
   private _menuService:MenuService;
 
   private _processListChangeSub!: Subscription;
@@ -46,11 +44,10 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
   appProcessId = 0;
 
   constructor(processIdService:ProcessIDService,runningProcessService:RunningProcessService, menuService:MenuService,
-              triggerProcessService:TriggerProcessService, stateManagmentService:StateManagmentService) { 
+              triggerProcessService:TriggerProcessService) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this._triggerProcessService = triggerProcessService;
-    this._stateManagmentService = stateManagmentService;
     this._menuService = menuService;
 
     this.processId = this._processIdService.getNewProcessId();
@@ -192,7 +189,6 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
 
   closeApplication(proccess:Process[]):void{
     for(let i = 0; i <= proccess.length - 1; i++){
-      this._stateManagmentService.removeState(`${proccess[i].getProcessId}-${proccess[i].getProcessId}`);
       this._runningProcessService.closeProcessNotify.next(proccess[i]);
     }
   }

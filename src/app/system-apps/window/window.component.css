@@ -5,8 +5,8 @@
   background-color: #808080;
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 50%);
   position: absolute;
-  min-width: 24%;
-  min-height: 5%;
+  min-width: 25%;
+  min-height: 10%;
   /*max-width: 100%;  Set the width of the parent container */
   /*max-height: 100%;  Set the height of the parent container */
   top: 40%;
@@ -36,7 +36,7 @@
 
 .window-content-container{
   width: 100%;
-  min-height: 5%;
+  min-height: 10%;
   position: relative;
 }
 

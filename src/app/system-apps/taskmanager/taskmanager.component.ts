@@ -6,7 +6,6 @@ import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { Process } from 'src/app/system-files/process';
 import { SortingInterface } from './sorting.interface';
-import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 import { RefreshRates, RefreshRatesIntervals, TableColumns,DisplayViews } from './taskmanager.enum';
 import { NotificationService } from 'src/app/shared/system-service/notification.service';
 import { TaskBarPreviewImage } from '../taskbarpreview/taskbar.preview';
@@ -28,7 +27,6 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
-  private _stateManagmentService: StateManagmentService;
   private _notificationService:NotificationService;
   private _renderer: Renderer2;
 
@@ -97,11 +95,10 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
 
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService,
-     stateManagmentService: StateManagmentService, notificationService:NotificationService, renderer: Renderer2) { 
+               notificationService:NotificationService, renderer: Renderer2) { 
 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
-    this._stateManagmentService = stateManagmentService;
     this._notificationService = notificationService;
     this._renderer = renderer;
 
@@ -551,7 +548,6 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   onEndTaskBtnClick():void{
     const processToClose = this._runningProcessService.getProcess(this.processIdToClose);
     if(!this.closingNotAllowed.includes(processToClose.getProcessName)){
-      this._stateManagmentService.removeState(`${this.name}-${this.processId}`);
       this._runningProcessService.closeProcessNotify.next(processToClose);
     }else{
       //alert(`The app: ${processToClose.getProcessName} is not allowed to be closed`)

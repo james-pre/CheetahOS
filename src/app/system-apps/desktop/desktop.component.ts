@@ -12,7 +12,7 @@ import { FileInfo } from 'src/app/system-files/fileinfo';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 import { ScriptService } from 'src/app/shared/system-service/script.services';
 import { MenuService } from 'src/app/shared/system-service/menu.services';
-import { DeskTopMenuItem } from 'src/app/shared/system-component/menu/menu.item';
+import { DesktopMenu, DesktopMenuItem } from 'src/app/shared/system-component/menu/menu.item';
 
 declare let VANTA: { HALO: any; BIRDS: any;  WAVES: any;   GLOBE: any;  RINGS: any;};
 
@@ -73,6 +73,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   selectedFileFromTaskBar!:FileInfo;
   appToPreview = '';
   appToPreviewIcon = '';
+  previousDisplayedTaskbarPreview = '';
   removeTskBarPrevWindowFromDOMTimeoutId!: NodeJS.Timeout;
   hideTskBarPrevWindowTimeoutId!: NodeJS.Timeout;
 
@@ -108,7 +109,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     {icon:'', label: '', action: ()=> console.log() },
   ];
 
-  dskTopMenuItem:{ icon1: string; icon2: string; label: string; nest: DeskTopMenuItem[]; action: () => void; emptyline: boolean; }[] = []
+  deskTopMenu:DesktopMenu[] = []
 
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService,fileManagerServices:FileManagerService,
@@ -363,24 +364,24 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
 
-  buildViewByMenu():DeskTopMenuItem[]{
+  buildViewByMenu():DesktopMenuItem[]{
 
-    const smallIcon:DeskTopMenuItem={ icon:'osdrive/icons/circle.png', label:'Small icons',  action: this.viewBySmallIcon.bind(this),  variables:this.isSmallIcon, 
+    const smallIcon:DesktopMenuItem={ icon:'osdrive/icons/circle.png', label:'Small icons',  action: this.viewBySmallIcon.bind(this),  variables:this.isSmallIcon, 
       emptyline:false, styleOption:'A' }
 
-    const mediumIcon:DeskTopMenuItem={ icon:'osdrive/icons/circle.png', label:'Medium icons',  action: this.viewByMediumIcon.bind(this),  variables:this.isMediumIcon, 
+    const mediumIcon:DesktopMenuItem={ icon:'osdrive/icons/circle.png', label:'Medium icons',  action: this.viewByMediumIcon.bind(this),  variables:this.isMediumIcon, 
       emptyline:false, styleOption:'A' }
 
-    const largeIcon:DeskTopMenuItem={ icon:'osdrive/icons/circle.png', label:'Large icons', action: this.viewByLargeIcon.bind(this), variables:this.isLargeIcon,
+    const largeIcon:DesktopMenuItem={ icon:'osdrive/icons/circle.png', label:'Large icons', action: this.viewByLargeIcon.bind(this), variables:this.isLargeIcon,
       emptyline:true, styleOption:'A' }
 
-    const autoArrageIcon:DeskTopMenuItem={ icon:'osdrive/icons/chkmark32.png', label:'Auto arrange icons',  action: this.autoArrangeIcon.bind(this),  variables:this.autoArrangeIcons, 
+    const autoArrageIcon:DesktopMenuItem={ icon:'osdrive/icons/chkmark32.png', label:'Auto arrange icons',  action: this.autoArrangeIcon.bind(this),  variables:this.autoArrangeIcons, 
       emptyline:false, styleOption:'B' }
 
-    const autoAlign:DeskTopMenuItem={ icon:'osdrive/icons/chkmark32.png', label:'Align icons to grid',  action: this.autoAlignIcon.bind(this),  variables:this.autoAlignIcons, 
+    const autoAlign:DesktopMenuItem={ icon:'osdrive/icons/chkmark32.png', label:'Align icons to grid',  action: this.autoAlignIcon.bind(this),  variables:this.autoAlignIcons, 
       emptyline:true, styleOption:'B' }
 
-    const showDesktopIcons:DeskTopMenuItem={ icon:'osdrive/icons/chkmark32.png', label:'Show desktop icons',  action: this.showDesktopIcon.bind(this), variables:this.showDesktopIcons,
+    const showDesktopIcons:DesktopMenuItem={ icon:'osdrive/icons/chkmark32.png', label:'Show desktop icons',  action: this.showDesktopIcon.bind(this), variables:this.showDesktopIcons,
       emptyline:false,  styleOption:'B'}
 
     const viewByMenu = [smallIcon,mediumIcon,largeIcon, autoArrageIcon, autoAlign,showDesktopIcons];
@@ -388,18 +389,18 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     return viewByMenu;
   }
 
-  buildSortByMenu(): DeskTopMenuItem[]{
+  buildSortByMenu(): DesktopMenuItem[]{
 
-    const sortByName:DeskTopMenuItem={ icon:'osdrive/icons/circle.png', label:'Name',  action: this.sortByNameM.bind(this),  variables:this.isSortByName , 
+    const sortByName:DesktopMenuItem={ icon:'osdrive/icons/circle.png', label:'Name',  action: this.sortByNameM.bind(this),  variables:this.isSortByName , 
       emptyline:false, styleOption:'A' }
 
-    const sortBySize:DeskTopMenuItem={ icon:'osdrive/icons/circle.png', label:'Size',  action: this.sortBySizeM.bind(this),  variables:this.isSortBySize , 
+    const sortBySize:DesktopMenuItem={ icon:'osdrive/icons/circle.png', label:'Size',  action: this.sortBySizeM.bind(this),  variables:this.isSortBySize , 
       emptyline:false, styleOption:'A' }
 
-    const sortByItemType:DeskTopMenuItem={ icon:'osdrive/icons/circle.png', label:'Item type',  action: this.sortByItemTypeM.bind(this),  variables:this.isSortByItemType, 
+    const sortByItemType:DesktopMenuItem={ icon:'osdrive/icons/circle.png', label:'Item type',  action: this.sortByItemTypeM.bind(this),  variables:this.isSortByItemType, 
       emptyline:false, styleOption:'A' }
 
-    const sortByDateModified:DeskTopMenuItem={ icon:'osdrive/icons/circle.png', label:'Date modified',  action: this.sortByDateModifiedM.bind(this),  variables:this.isSortByDateModified, 
+    const sortByDateModified:DesktopMenuItem={ icon:'osdrive/icons/circle.png', label:'Date modified',  action: this.sortByDateModifiedM.bind(this),  variables:this.isSortByDateModified, 
       emptyline:false, styleOption:'A' }
 
     const sortByMenu = [sortByName, sortBySize, sortByItemType, sortByDateModified ]
@@ -408,14 +409,14 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
   getDesktopMenuData():void{
-    this.dskTopMenuItem = [
-          {icon1:'', icon2: 'osdrive/icons/arrow_next.png', label:'View', nest:this.buildViewByMenu(), action: ()=> console.log(), emptyline:false},
-        {icon1:'',  icon2:'osdrive/icons/arrow_next.png', label:'Sort by', nest:this.buildSortByMenu(), action: ()=> console.log(), emptyline:false},
-        {icon1:'',  icon2:'', label: 'Refresh', nest:[], action:this.refresh.bind(this), emptyline:true},
-        {icon1:'/osdrive/icons/terminal_48.png', icon2:'', label:'Open inTerminal', nest:[], action: this.openTerminal.bind(this), emptyline:false},
-        {icon1:'',  icon2:'', label:'Next Background', nest:[], action: this.nextBackground.bind(this), emptyline:false},
-        {icon1:'',  icon2:'', label:'Previous Background', nest:[], action: this.previousBackground.bind(this), emptyline:true},
-        {icon1:'',  icon2:'osdrive/icons/arrow_next.png', label:'New', nest:[], action: ()=> console.log(), emptyline:true}
+    this.deskTopMenu = [
+          {icon1:'',  icon2: 'osdrive/icons/arrow_next.png', label:'View', nest:this.buildViewByMenu(), action: ()=> console.log(), emptyline:false},
+          {icon1:'',  icon2:'osdrive/icons/arrow_next.png', label:'Sort by', nest:this.buildSortByMenu(), action: ()=> console.log(), emptyline:false},
+          {icon1:'',  icon2:'', label: 'Refresh', nest:[], action:this.refresh.bind(this), emptyline:true},
+          {icon1:'/osdrive/icons/terminal_48.png', icon2:'', label:'Open inTerminal', nest:[], action: this.openTerminal.bind(this), emptyline:false},
+          {icon1:'',  icon2:'', label:'Next Background', nest:[], action: this.nextBackground.bind(this), emptyline:false},
+          {icon1:'',  icon2:'', label:'Previous Background', nest:[], action: this.previousBackground.bind(this), emptyline:true},
+          {icon1:'',  icon2:'osdrive/icons/arrow_next.png', label:'New', nest:[], action: ()=> console.log(), emptyline:true}
       ]
   }
 
@@ -454,12 +455,12 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
     this.switchBetweenPinAndUnpin(isPinned);
     // first count, then show the cntxt menu
-    const proccessCount = this.countInstaceAndSetMenu();
+    const processCount = this.countInstaceAndSetMenu();
 
     this.removeOldTaskBarPreviewWindowNow();
     this.showTskBarCntxtMenu = true;
 
-    if(proccessCount == 0){
+    if(processCount == 0){
       this.tskBarCntxtMenuStyle = {
         'position':'absolute',
         'transform':`translate(${String(rect.x - 60)}px, ${String(rect.y - 68.5)}px)`,
@@ -476,6 +477,10 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
   hideTaskBarContextMenu():void{
     this.showTskBarCntxtMenu = false;
+  }
+
+  showTaskBarContextMenu():void{
+    this.showTskBarCntxtMenu = true;
   }
 
   switchBetweenPinAndUnpin(isAppPinned:boolean):void{
@@ -498,7 +503,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
   countInstaceAndSetMenu():number{
     const file = this.selectedFileFromTaskBar;
-    const proccessCount = this._runningProcessService.getProcesses()
+    const processCount = this._runningProcessService.getProcesses()
       .filter(p => p.getProcessName === file.getOpensWith).length;
 
     const rowZero = this.taskBarMenuData[0];
@@ -506,7 +511,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     rowZero.label = file.getOpensWith;
     this.taskBarMenuData[0] = rowZero;
 
-    if(proccessCount == 1){
+    if(processCount == 1){
       if(this.taskBarMenuData.length == 2){
         const menuEntry = {icon:'osdrive/icons/x_32.png', label: 'Close window', action:this.closeApplicationFromTaskBar.bind(this)};
         this.taskBarMenuData.push(menuEntry);
@@ -515,13 +520,13 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
         rowTwo.label = 'Close window';
         this.taskBarMenuData[2] = rowTwo;
       }
-    }else if(proccessCount > 1){
+    }else if(processCount > 1){
       const rowTwo = this.taskBarMenuData[2];
       rowTwo.label = 'Close all windows';
       this.taskBarMenuData[2] = rowTwo;
     }
 
-    return proccessCount;
+    return processCount;
   }
 
   openApplicationFromTaskBar():void{
@@ -555,13 +560,24 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     const rect = data[0] as DOMRect;
     const appName = data[1] as string;
     const iconPath = data[2] as string;
+
     this.appToPreview = appName;
     this.appToPreviewIcon = iconPath;
+    this.hideTaskBarContextMenu();
 
-    this.showTskBarPreviewWindow = true;
-    this.tskBarPreviewWindowState = 'in';
+    if(this.previousDisplayedTaskbarPreview !== appName){
+      this.showTskBarPreviewWindow = false;
+      this.previousDisplayedTaskbarPreview = appName;
 
-    this.clearTimeout();
+      setTimeout(()=>{
+        this.showTskBarPreviewWindow = true;
+        this.tskBarPreviewWindowState = 'in';
+      },400);
+    }else{
+      this.showTskBarPreviewWindow = true;
+      this.tskBarPreviewWindowState = 'in';
+      this.clearTimeout();
+    }
 
     this.tskBarPrevWindowStyle = {
       'position':'absolute',
@@ -573,12 +589,12 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   hideTaskBarPreviewWindow():void{
     this.hideTskBarPrevWindowTimeoutId = setTimeout(()=>{
       this.tskBarPreviewWindowState = 'out';
-    }, 200)
-  
+    }, 100)
+    
     this.removeTskBarPrevWindowFromDOMTimeoutId = setTimeout(()=>{
       this.showTskBarPreviewWindow = false;
-      this.hideTaskBarContextMenu();
-    }, 700)
+      //this.hideTaskBarContextMenu();
+    }, 300)
   }
 
   keepTaskBarPreviewWindow():void{

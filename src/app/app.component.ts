@@ -22,6 +22,7 @@ import { PhotoviewerComponent } from './system-apps/photoviewer/photoviewer.comp
 import { DialogComponent } from './shared/system-component/dialog/dialog.component';
 import { NotificationType } from './system-files/notification.type';
 import { NotificationService } from './shared/system-service/notification.service';
+import { StateManagmentService } from './shared/system-service/state.management.service';
 
 @Component({
   selector: 'cos-root',
@@ -43,6 +44,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   private _triggerProcessService:TriggerProcessService;
   private _sessionMangamentServices:SessionManagmentService;
   private _notificationServices:NotificationService;
+  private _stateManagmentService:StateManagmentService;
   private _componentRefView!:ViewRef;
   private _appDirectory:AppDirectory;
 
@@ -85,7 +87,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
 
 
   constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService,componentReferenceService:ComponentReferenceService, triggerProcessService:TriggerProcessService,
-    sessionMangamentServices:SessionManagmentService, notificationServices:NotificationService){
+    sessionMangamentServices:SessionManagmentService, notificationServices:NotificationService, stateManagmentService:StateManagmentService){
     this._processIdService = processIdService
     this.processId = this._processIdService.getNewProcessId()
 
@@ -94,6 +96,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
     this._triggerProcessService = triggerProcessService;
     this._sessionMangamentServices = sessionMangamentServices;
     this._notificationServices = notificationServices;
+    this._stateManagmentService = stateManagmentService;
 
     this._startProcessSub = this._triggerProcessService.startProcessNotify.subscribe((appName) =>{this.loadApps(appName)})
     this._appNotFoundSub = this._triggerProcessService.appNotFoundNotify.subscribe((appName) =>{this.showDialogMsgBox(NotificationType.Error,appName)})
@@ -169,12 +172,16 @@ export class AppComponent implements OnDestroy, AfterViewInit {
     const iVCntr  = this.itemViewContainer.indexOf(this._componentRefView);
     this.itemViewContainer.remove(iVCntr);
 
-    this._runningProcessService.removeProcess(eventData)
+    const uid = `${eventData.getProcessName}-${eventData.getProcessId}`;
+    this._stateManagmentService.removeState(uid);
+
+    this._runningProcessService.removeProcess(eventData);
+    this._runningProcessService.removeProcessImage(eventData.getProcessName, eventData.getProcessId);
+
     this._componentReferenceService.removeComponentReference(eventData.getProcessId);
     this._processIdService.removeProcessId(eventData.getProcessId);
     this.deleteEntryFromUserOpenedAppsAndSession(eventData);
 
-    //alert subscribers
     this._runningProcessService.processListChangeNotify.next()
   }
 

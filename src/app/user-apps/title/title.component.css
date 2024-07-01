@@ -3,5 +3,6 @@
     text-align: center;
     background-color: orange;
     height: 100%;
+    min-height: 78px;
     width: 100%;
 }
