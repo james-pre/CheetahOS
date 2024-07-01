@@ -46,6 +46,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   @ViewChild('sliderBtn', {static: true}) sliderBtn!: ElementRef;
 
   private _maximizeWindowSub!: Subscription;
+  private _minimizeWindowSub!: Subscription;
   
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
@@ -91,7 +92,8 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
     this.retrievePastSessionData();
 
     this._runningProcessService = runningProcessService;
-    this._maximizeWindowSub = this._runningProcessService.maximizeWindowNotify.subscribe(() =>{this.maximizeWindow();})
+    this._maximizeWindowSub = this._runningProcessService.maximizeWindowNotify.subscribe(() =>{this.maximizeWindow()});
+    this._minimizeWindowSub = this._runningProcessService.minimizeWindowNotify.subscribe((p) =>{this.minimizeWindow(p)})
     this._runningProcessService.addProcess(this.getComponentDetail());
   }
 
@@ -156,6 +158,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   ngOnDestroy():void{
     this.audioPlayer?.unload();
     this._maximizeWindowSub?.unsubscribe();
+    this._minimizeWindowSub?.unsubscribe(); 
   }
 
   showMenu(): void{
@@ -414,19 +417,29 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   }
 
   maximizeWindow():void{
-
     const uid = `${this.name}-${this.processId}`;
     const evtOriginator = this._runningProcessService.getEventOrginator();
 
     if(uid === evtOriginator){
-
       this._runningProcessService.removeEventOriginator();
       const mainWindow = document.getElementById('vanta');
       //window title and button bar, and windows taskbar height
       const pixelTosubtract = 30 + 40;
-      this.audioContainer.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0 ) - pixelTosubtract}px`;
-      this.audioContainer.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
 
+      this.audioContainer.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+      this.audioContainer.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0 ) - pixelTosubtract}px`;
+    }
+  }
+
+  minimizeWindow(arg:number[]):void{
+    const uid = `${this.name}-${this.processId}`;
+    const evtOriginator = this._runningProcessService.getEventOrginator();
+
+    if(uid === evtOriginator){
+      this._runningProcessService.removeEventOriginator();
+
+      this.audioContainer.nativeElement.style.width = `${arg[0]}px`;
+      this.audioContainer.nativeElement.style.height = `${arg[1]}px`;
     }
   }
 

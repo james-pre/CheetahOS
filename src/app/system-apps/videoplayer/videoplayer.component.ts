@@ -29,8 +29,10 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   @ViewChild('videowindow', {static: true}) videowindow!: ElementRef;
   @ViewChild('mainVideoCntnr', {static: true}) mainVideoCntnr!: ElementRef;
+  @ViewChild('videoCntnr', {static: true}) videoCntnr!: ElementRef;
 
   private _maximizeWindowSub!: Subscription;
+  private _minimizeWindowSub!: Subscription;
   
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
@@ -70,7 +72,8 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   
     this.retrievePastSessionData();
 
-    this._maximizeWindowSub = this._runningProcessService.maximizeWindowNotify.subscribe(() =>{this.maximizeWindow();})
+    this._maximizeWindowSub = this._runningProcessService.maximizeWindowNotify.subscribe(() =>{this.maximizeWindow()})
+    this._minimizeWindowSub = this._runningProcessService.minimizeWindowNotify.subscribe((p) =>{this.minmizeWindow(p)})
     this._runningProcessService.addProcess(this.getComponentDetail());
   }
 
@@ -120,13 +123,11 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
     this.storeAppState(appData);
 
     this._scriptService.loadScript("videojs","assets/videojs/video.min.js").then(() =>{
-
       this.player = videojs(this.videowindow.nativeElement, options, function onPlayerReady(){
         console.log('onPlayerReady:', "player is read");
       });
   
       //this.player.on('fullscreenchange', this.onFullscreenChange);
-
     })
 
     setTimeout(()=>{
@@ -140,10 +141,11 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
       this.player.dispose();
     }
     this._maximizeWindowSub?.unsubscribe();
+    this._minimizeWindowSub?.unsubscribe();
   }
 
   captureComponentImg():void{
-    htmlToImage.toPng(this.mainVideoCntnr.nativeElement).then(htmlImg =>{
+    htmlToImage.toPng(this.videowindow.nativeElement).then(htmlImg =>{
       //console.log('img data:',htmlImg);
 
       const cmpntImg:TaskBarPreviewImage = {
@@ -233,15 +235,25 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
     const evtOriginator = this._runningProcessService.getEventOrginator();
 
     if(uid === evtOriginator){
-
       this._runningProcessService.removeEventOriginator();
       const mainWindow = document.getElementById('vanta');
 
       //window title and button bar, and windows taskbar height, video top menu bar
-      // const pixelTosubtract = 30 + 40 + 25;
-      // this.mainVideoCntnr.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
-      // this.mainVideoCntnr.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+      const pixelTosubtract = 30 + 40;
+      this.videoCntnr.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+      this.videoCntnr.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
+    }
+  }
 
+  minmizeWindow(arg:number[]):void{
+    const uid = `${this.name}-${this.processId}`;
+    const evtOriginator = this._runningProcessService.getEventOrginator();
+
+    if(uid === evtOriginator){
+      this._runningProcessService.removeEventOriginator();
+
+      this.videoCntnr.nativeElement.style.width = `${arg[0]}px`;
+      this.videoCntnr.nativeElement.style.height = `${arg[1]}px`;
     }
   }
 

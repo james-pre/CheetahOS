@@ -181,10 +181,12 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
     setMaximizeAndUnMaximize():void{
       const windowState = this._stateManagmentService.getState(this.uniqueId, StateType.Window) as WindowState;
       this.currentWindowSizeState = this.windowMaximize;
+      const uid = `${this.processAppName}-${this.processId}`;
+
       if(this.windowMaximize){
         if(windowState.pid == this.processId){
           this.setWindowToFullScreen(this.processId, windowState.z_index);
-          const uid = `${this.processAppName}-${this.processId}`;
+
           this._runningProcessService.addEventOriginator(uid);
           this._runningProcessService.maximizeWindowNotify.next();
         }
@@ -195,6 +197,10 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
           this.windowHeight = `${String(windowState.height)}px`;
           this.windowTransform =  `translate(${String(windowState.x_axis)}px, ${String(windowState.y_axis)}px)`;
           this.windowZIndex =   String(windowState.z_index);
+
+          const windowTitleBarHeight = 30;
+          this._runningProcessService.addEventOriginator(uid);
+          this._runningProcessService.minimizeWindowNotify.next([windowState.width, windowState.height - windowTitleBarHeight]);
         }
       }
 

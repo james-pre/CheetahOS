@@ -22,6 +22,7 @@ export class RunningProcessService{
     focusOutOtherProcessNotify: Subject<number> = new Subject<number>();
     restoreOrMinimizeWindowNotify: Subject<number> = new Subject<number>();
     maximizeWindowNotify: Subject<void> = new Subject<void>();
+    minimizeWindowNotify: Subject<number[]> = new Subject<number[]>();
     showPreviewWindowNotify: Subject<unknown[]> = new Subject<unknown[]>();
     hidePreviewWindowNotify: Subject<void> = new Subject<void>();
     keepPreviewWindowNotify: Subject<void> = new Subject<void>();

@@ -23,11 +23,13 @@ import { TaskBarPreviewImage } from '../taskbarpreview/taskbar.preview';
 export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, OnDestroy{
 
   @ViewChild('terminalCntnr', {static: true}) terminalCntnr!: ElementRef;
-  @ViewChild('terminalOutput', {static: true}) terminalOutput!: ElementRef;
+  @ViewChild('terminalOutputCntnr', {static: true}) terminalOutputCntnr!: ElementRef;
+  @ViewChild('terminalHistoryOutput', {static: true}) terminalHistoryOutput!: ElementRef;
 
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _maximizeWindowSub!: Subscription;
+  private _minimizeWindowSub!: Subscription;
   private _formBuilder;
   private _terminaCommandsImpl!:TerminalCommands;
   private _stateManagmentService:StateManagmentService;
@@ -79,7 +81,8 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
 
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail()); 
-    this._maximizeWindowSub = this._runningProcessService.maximizeWindowNotify.subscribe(() =>{this.maximizeWindow();})
+    this._maximizeWindowSub = this._runningProcessService.maximizeWindowNotify.subscribe(() =>{this.maximizeWindow()})
+    this._minimizeWindowSub = this._runningProcessService.minimizeWindowNotify.subscribe((p) =>{this.minimizeWindow(p)})
   }
 
   ngOnInit():void{
@@ -102,6 +105,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   
   ngOnDestroy():void{
     this._maximizeWindowSub?.unsubscribe();
+    this._minimizeWindowSub?.unsubscribe();
   }
 
   captureComponentImg():void{
@@ -173,9 +177,9 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
 
     const interval =  setInterval(() => {
       try {
-        console.log('height:',this.terminalOutput.nativeElement.scrollHeight);
+        console.log('height:',this.terminalOutputCntnr.nativeElement.scrollHeight);
         if(this.scrollCounter < 2){
-          this.terminalOutput.nativeElement.scrollTop = this.terminalOutput.nativeElement.scrollHeight;
+          this.terminalOutputCntnr.nativeElement.scrollTop = this.terminalOutputCntnr.nativeElement.scrollHeight;
           this.scrollCounter++;
         }
         
@@ -265,6 +269,8 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
 
       if(inputCmd == "clear"){
         this.commandHistory = [];
+        this.isBannerVisible = false;
+        this.isWelcomeVisible = false;
       } 
 
       if(inputCmd == "curl"){
@@ -358,12 +364,36 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
     if(uid === evtOriginator){
       this._runningProcessService.removeEventOriginator();
       const mainWindow = document.getElementById('vanta');
-      //window title and button bar, and windows taskbar height
-      const pixelTosubtract = 30 + 40;
-      this.terminalCntnr.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
-      this.terminalCntnr.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+      //window title and button bar, terminal input section, windows taskbar height 
+      let pixelTosubtract = 30 + 25 + 40;
+      this.terminalOutputCntnr.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+      this.terminalOutputCntnr.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
+
+      if(this.isBannerVisible && this.isWelcomeVisible){
+        // bannerVisible (28) + welcomeVisible(27)
+        pixelTosubtract += 55;
+      }
+      this.terminalHistoryOutput.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+      this.terminalHistoryOutput.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
+
     }
   }
+
+  minimizeWindow(arg:number[]):void{
+    const uid = `${this.name}-${this.processId}`;
+    const evtOriginator = this._runningProcessService.getEventOrginator();
+
+    if(uid === evtOriginator){
+      this._runningProcessService.removeEventOriginator();
+
+      this.terminalOutputCntnr.nativeElement.style.width = `${arg[0]}px`;
+      this.terminalOutputCntnr.nativeElement.style.height = `${arg[1]}px`;
+
+      this.terminalHistoryOutput.nativeElement.style.width = `${arg[0]}px`;
+      this.terminalHistoryOutput.nativeElement.style.height = `${arg[1]}px`;
+    }
+  }
+
 
   setTerminalWindowToFocus(pid:number):void{
     this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
