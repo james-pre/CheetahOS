@@ -58,10 +58,10 @@ export class TaskbarPreviewComponent implements OnChanges, AfterViewInit {
     this.appInfo = (this.appInfo.length > limit) ? this.appInfo.substring(0, limit) + ellipsis : this.appInfo;
   }
 
-  onClosePreviewWindow():void{
-    console.log('I will implement this......later')
+  onClosePreviewWindow(pid:number):void{
+    const processToClose = this._runningProcessService.getProcess(pid);
+    this._runningProcessService.closeProcessNotify.next(processToClose);
   }
-
 
   keepTaskBarPreviewWindow():void{
     this._runningProcessService.keepPreviewWindowNotify.next();
@@ -69,6 +69,15 @@ export class TaskbarPreviewComponent implements OnChanges, AfterViewInit {
 
   hideTaskBarPreviewWindow():void{
     this._runningProcessService.hidePreviewWindowNotify.next();
+  }
+
+  showTaskBarPreviewContextMenu(evt:MouseEvent, pid:number):void{
+    console.log('I will implement the TaskBarPreview Context Window.........later');
+  }
+
+
+  setWindowToFocus(pid:number):void{
+    this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
   }
 
 }
