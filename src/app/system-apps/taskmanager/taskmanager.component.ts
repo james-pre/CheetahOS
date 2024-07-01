@@ -1,4 +1,4 @@
-import { Component, OnInit,OnDestroy, AfterViewInit, ViewChild, ElementRef, Renderer2, Input} from '@angular/core';
+import { Component, OnInit,OnDestroy, AfterViewInit, ViewChild, ElementRef, Renderer2} from '@angular/core';
 import { Subject, Subscription, interval, switchMap } from 'rxjs';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
@@ -7,11 +7,10 @@ import { ComponentType } from 'src/app/system-files/component.types';
 import { Process } from 'src/app/system-files/process';
 import { SortingInterface } from './sorting.interface';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
-import { FileInfo } from 'src/app/system-files/fileinfo';
 import { RefreshRates, RefreshRatesIntervals, TableColumns,DisplayViews } from './taskmanager.enum';
-import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
-// import { ResizableTableColumns } from '@validide/resizable-table-columns';
-// import { IStore } from 'resizable-options';
+import { NotificationService } from 'src/app/shared/system-service/notification.service';
+import { TaskBarPreviewImage } from '../taskbarpreview/taskbar.preview';
+import * as htmlToImage from 'html-to-image';
 
 
 @Component({
@@ -21,13 +20,8 @@ import { TriggerProcessService } from 'src/app/shared/system-service/trigger.pro
 })
 export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,AfterViewInit {
 
-   //acceess before it exists. So Angular is angry
-  // @ViewChild('cpuId',{ static: true }) cpuId!: ElementRef;
-  // @ViewChild('memroyId',{ static: true }) memroyId!: ElementRef;
-  // @ViewChild('diskId',{ static: true }) diskId!: ElementRef;
-  // @ViewChild('networkId',{ static: true }) networkId!: ElementRef;
-
-  @ViewChild('tskMgrTable') tskMgrTable!: ElementRef;
+  @ViewChild('tskManagerRootContainer') tskManagerRootContainer!: ElementRef; 
+  @ViewChild('tskMgrTable') tskMgrTable!: ElementRef;  
   @ViewChild('tskmgrTblCntnr') tskmgrTblCntnr!: ElementRef;
 
   private _maximizeWindowSub!: Subscription;
@@ -35,7 +29,7 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _stateManagmentService: StateManagmentService;
-  //private _triggerProcessService:TriggerProcessService;
+  private _notificationService:NotificationService;
   private _renderer: Renderer2;
 
   private _processListChangeSub!: Subscription;
@@ -65,19 +59,6 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   processNameColumnVisible = false;
   typeColumnVisible = false;
 
- 
-  hasWindow = true;
-  icon = 'osdrive/icons/taskmanger.png';
-  name = 'taskmanager';
-  processId = 0;
-  type = ComponentType.System;
-  displayName = 'Task Manager';
-
-  processes:Process[] =[];
-  closingNotAllowed:string[] = ["system", "desktop", "filemanager", "taskbar", "startbutton","clock","taskbarentry"];
-  groupedData: any = {};
-  selectedRefreshRate = 0;
-
   cntxtMenuStyle:Record<string, unknown> = {};
   thStyle:Record<string,unknown> = {};
   thStyle1:Record<string,unknown> = {};
@@ -93,6 +74,13 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   detailedView = DisplayViews.DETAILED_VIEW;
   viewOptions = '';
 
+  SECONDS_DELAY = 250
+
+  processes:Process[] =[];
+  closingNotAllowed:string[] = ["system", "desktop", "filemanager", "taskbar", "startbutton", "clock", "taskbarentry"];
+  groupedData: any = {};
+  selectedRefreshRate = 0;
+
   cpuUtil = 0;
   memUtil = 0;
   diskUtil = 0;
@@ -100,14 +88,21 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   gpuUtil = 0;
   powerUtil = 'Very low';
 
+  hasWindow = true;
+  icon = 'osdrive/icons/taskmanger.png';
+  name = 'taskmanager';
+  processId = 0;
+  type = ComponentType.System;
+  displayName = 'Task Manager';
+
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService,
-     stateManagmentService: StateManagmentService,triggerProcessService:TriggerProcessService, renderer: Renderer2) { 
+     stateManagmentService: StateManagmentService, notificationService:NotificationService, renderer: Renderer2) { 
 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this._stateManagmentService = stateManagmentService;
-    //this._triggerProcessService = triggerProcessService;
+    this._notificationService = notificationService;
     this._renderer = renderer;
 
     this.processId = this._processIdService.getNewProcessId()
@@ -145,17 +140,12 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     this.setTaskMangrWindowToFocus(this.processId); 
     this.hideContextMenu();
 
-    // const table = this.tskMgrTable.nativeElement as HTMLCollection;
-    // new ResizableTableColumns(table, null); table column resize is acting.....not right.
-
     this.applyDefaultColumnStyle();
     //Initial delay 1 seconds and interval countdown also 2 second
     this._taskmgrRefreshIntervalSub = interval(this.refreshRateInterval).subscribe(() => {
       this.generateLies();
       this.sortTable(this._sorting.column, false);
     });
-
- 
 
     this._chnageTaskmgrRefreshIntervalSub.pipe(
       switchMap( newRefreshRate => {
@@ -168,7 +158,24 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       this.generateLies();
       this.sortTable(this._sorting.column, false);
     });
+
+
+    setTimeout(()=>{
+      this.captureComponentImg();
+    },this.SECONDS_DELAY) 
   }
+
+  captureComponentImg():void{
+    htmlToImage.toPng(this.tskManagerRootContainer.nativeElement).then(htmlImg =>{
+      //console.log('img data:',htmlImg);
+
+      const cmpntImg:TaskBarPreviewImage = {
+        pid: this.processId,
+        imageData: htmlImg
+      }
+      this._runningProcessService.addProcessImage(this.name, cmpntImg);
+    })
+}
 
 
   isDescSorting(column: string): boolean {
@@ -329,6 +336,9 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
     const x = evt.clientX - rect.left;
     const y = evt.clientY - rect.top;
 
+    const uid = `${this.name}-${this.processId}`;
+    this._runningProcessService.addEventOriginator(uid);
+
     this.cntxtMenuStyle = {
       'display': 'block', 
       'width': '180px', 
@@ -337,7 +347,6 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       'opacity':1
     }
 
-    this._runningProcessService.responseToEventCount++;
     evt.preventDefault();
   }
 
@@ -527,17 +536,6 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   }
 
   onFewerDetailsBtnClick():void{
-    // const file:FileInfo = new FileInfo();
-    // file.setIconPath = '/osdrive/icons/taskmanger.png';
-    // file.setOpensWith = 'taskmanagermini';
-    // file.setFileType ='.png';
-
-    // const processToClose = this._runningProcessService.getProcess(this.processId);
-    // this._stateManagmentService.removeState(this.processId);
-    // this._triggerProcessService.startApplication(file);
-
-    // this._runningProcessService.closeProcessNotify.next(processToClose);
-
     this.viewOptions = DisplayViews.MINI_VIEW;
   }
 
@@ -556,7 +554,9 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
       this._stateManagmentService.removeState(`${this.name}-${this.processId}`);
       this._runningProcessService.closeProcessNotify.next(processToClose);
     }else{
-      alert(`The app: ${processToClose.getProcessName} is not allowed to be closed`)
+      //alert(`The app: ${processToClose.getProcessName} is not allowed to be closed`)
+      const msg = `The app:${processToClose.getProcessName} is not allowed to be closed`;
+      this._notificationService.InfoNotify.next(msg);
     }
   }
 
@@ -782,28 +782,33 @@ export class TaskmanagerComponent implements BaseComponent,OnInit,OnDestroy,Afte
   }
 
   maximizeWindow():void{
+    const uid = `${this.name}-${this.processId}`;
+    const evtOriginator = this._runningProcessService.getEventOrginator();
 
-    const mainWindow = document.getElementById('vanta'); 
+    if(uid === evtOriginator){
+      this._runningProcessService.removeEventOriginator();
+      const mainWindow = document.getElementById('vanta'); 
 
-    // console.log('mainWindow?.offsetHeight:',mainWindow?.offsetHeight);
-    // console.log('mainWindow?.offsetWidth:',mainWindow?.offsetWidth);
-
-    /*
-    -45 (tskmgr footer)
-    -30 (window title and button tab)
-    -20 (taskmgr nav buttons)
-    -3  (span)
-    -19 (tskmgr tabs)
-    -1px (body border solid px)
-    -40 (windows taskbar)
-    */
-    const pixelToSubtract = 45 + 30 + 20 + 3 + 19 + 1 + 40;
-    this.tskmgrTblCntnr.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelToSubtract}px`;
-    this.tskmgrTblCntnr.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
-
-
-    // this.tskMgrTable.nativeElement.style.height = `${mainWindow?.offsetHeight || 0 - 84}px`;
-    this.tskMgrTable.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+      // console.log('mainWindow?.offsetHeight:',mainWindow?.offsetHeight);
+      // console.log('mainWindow?.offsetWidth:',mainWindow?.offsetWidth);
+  
+      /*
+      -45 (tskmgr footer)
+      -30 (window title and button tab)
+      -20 (taskmgr nav buttons)
+      -3  (span)
+      -19 (tskmgr tabs)
+      -1px (body border solid px)
+      -40 (windows taskbar)
+      */
+      const pixelToSubtract = 45 + 30 + 20 + 3 + 19 + 1 + 40;
+      this.tskmgrTblCntnr.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelToSubtract}px`;
+      this.tskmgrTblCntnr.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+  
+  
+      // this.tskMgrTable.nativeElement.style.height = `${mainWindow?.offsetHeight || 0 - 84}px`;
+      this.tskMgrTable.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+    }
   }
 
   private getComponentDetail():Process{

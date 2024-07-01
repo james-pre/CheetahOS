@@ -19,7 +19,7 @@
           "options": {
             "allowedCommonJsDependencies": [
               "browserfs",
-              "'buffer'",
+              "buffer",
               "ini",
               "path",
               "js-dos"
@@ -35,27 +35,22 @@
               "src/osdrive",
               {
                 "glob": "**/*",
-                "input": "./node_modules/js-dos/dist",
+                "input": "src/assets/js-dos",
                 "output": "/"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets/ruffle",
+                "output": "/assets/ruffle"
               }
             ],
             "styles": [
               "src/styles.css",
               "src/css/videoplayer/video-js.min.css",
+              "src/css/quill/quill.snow.css",
               "node_modules/angular2-draggable/css/resizable.min.css"
             ],
-            "scripts": [
-              "node_modules/js-dos/dist/js-dos.js",
-              "./src/scripts/backgrounds/three.min.js",
-              "./src/scripts/backgrounds/vanta.waves.min.js",
-              "./src/scripts/backgrounds/vanta.halo.min.js",
-              "./src/scripts/backgrounds/vanta.globe.min.js",
-              "./src/scripts/backgrounds/vanta.birds.min.js",
-              "./src/scripts/backgrounds/vanta.rings.min.js",
-              "./src/scripts/videoplayer/video.min.js",
-              "./src/scripts/audioplayer/howler.min.js",
-              "./src/scripts/audioplayer/siriwave.umd.min.js"
-            ]
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -94,10 +89,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "CheetahOs:build:production"
+              "buildTarget": "CheetahOs:build:production"
             },
             "development": {
-              "browserTarget": "CheetahOs:build:development"
+              "buildTarget": "CheetahOs:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -105,7 +100,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "CheetahOs:build"
+            "buildTarget": "CheetahOs:build"
           }
         },
         "test": {

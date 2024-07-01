@@ -5,6 +5,8 @@ import { RunningProcessService } from 'src/app/shared/system-service/running.pro
 import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { Process } from 'src/app/system-files/process';
+import * as htmlToImage from 'html-to-image';
+import { TaskBarPreviewImage } from 'src/app/system-apps/taskbarpreview/taskbar.preview';
 
 @Component({
   selector:'cos-title',
@@ -14,11 +16,12 @@ import { Process } from 'src/app/system-files/process';
 
 export class TitleComponent implements BaseComponent, OnDestroy, AfterViewInit{
 
-  @ViewChild('ptag', {static: true}) ptag!: ElementRef;
+  @ViewChild('titleContent', {static: true}) titleContent!: ElementRef;
 
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _maximizeWindowSub!: Subscription;
+  SECONDS_DELAY = 250;
 
   hasWindow = true;
   icon = 'osdrive/Pictures/favicon_nice.png';
@@ -34,24 +37,49 @@ export class TitleComponent implements BaseComponent, OnDestroy, AfterViewInit{
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService.addProcess(this.getComponentDetail()); 
 
-    this._maximizeWindowSub = this._runningProcessService.maximizeWindowNotify.subscribe(() =>{this.maximizeWindow();})
+    this._maximizeWindowSub = this._runningProcessService.maximizeWindowNotify.subscribe(() =>{this.maximizeWindow()});
   }
 
 
   ngAfterViewInit(): void {
     this.setTitleWindowToFocus(this.processId); 
+
+    setTimeout(()=>{
+      this.captureComponentImg();
+    },this.SECONDS_DELAY) 
   }
 
   ngOnDestroy():void{
     this._maximizeWindowSub?.unsubscribe();
   }
 
+  captureComponentImg():void{
+    htmlToImage.toPng(this.titleContent.nativeElement).then(htmlImg =>{
+      //console.log('img data:',htmlImg);
+
+      const cmpntImg:TaskBarPreviewImage = {
+        pid: this.processId,
+        imageData: htmlImg
+      }
+      this._runningProcessService.addProcessImage(this.name, cmpntImg);
+    })
+  }
+
   maximizeWindow():void{
-    const mainWindow = document.getElementById('vanta');
-    //window title and button bar, and windows taskbar height
-    const pixelTosubtract = 30 + 40;
-    this.ptag.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
-    this.ptag.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+
+    const uid = `${this.name}-${this.processId}`;
+    const evtOriginator = this._runningProcessService.getEventOrginator();
+
+    if(uid === evtOriginator){
+
+      this._runningProcessService.removeEventOriginator();
+      const mainWindow = document.getElementById('vanta');
+      //window title and button bar, and windows taskbar height
+      const pixelTosubtract = 30 + 40;
+      this.titleContent.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
+      this.titleContent.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+
+    }
   }
 
   setTitleWindowToFocus(pid:number):void{

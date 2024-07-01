@@ -1,5 +1,4 @@
-import { Component, ElementRef, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
-import { FileService } from 'src/app/shared/system-service/file.service';
+import { Component, ElementRef, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
@@ -12,6 +11,9 @@ import { AppState, BaseState } from 'src/app/system-files/state/state.interface'
 import { StateType } from 'src/app/system-files/state/state.type';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
+import { ScriptService } from 'src/app/shared/system-service/script.services';
+import * as htmlToImage from 'html-to-image';
+import { TaskBarPreviewImage } from 'src/app/system-apps/taskbarpreview/taskbar.preview';
 
 
 @Component({
@@ -19,20 +21,21 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
   templateUrl: './ruffle.component.html',
   styleUrls: ['./ruffle.component.css']
 })
-export class RuffleComponent implements BaseComponent, OnInit, OnDestroy, AfterViewInit {
+export class RuffleComponent implements BaseComponent, OnInit, AfterViewInit {
   private rufflePlayer:any;
-  @ViewChild('ruffleWindow') ruffleWindow!: ElementRef; 
+  @ViewChild('ruffleContainer', { static: true }) ruffleContainer!: ElementRef;
 
-  private _fileService:FileService;
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _triggerProcessService:TriggerProcessService;
   private _stateManagmentService:StateManagmentService;
   private _sessionManagmentService: SessionManagmentService;
+  private _scriptService: ScriptService;
   private _fileInfo!:FileInfo;
   private _appState!:AppState;
   private gameSrc = '';
-  private SECONDS_DELAY = 1500;
+
+  SECONDS_DELAY = 250;
 
   name= 'ruffle';
   hasWindow = true;
@@ -42,13 +45,14 @@ export class RuffleComponent implements BaseComponent, OnInit, OnDestroy, AfterV
   type = ComponentType.User;
   displayName = 'Ruffle-EM';
 
-  constructor(fileService:FileService, processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService,
-    stateManagmentService: StateManagmentService, sessionManagmentService: SessionManagmentService) { 
-    this._fileService = fileService
+  constructor(processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService,
+    stateManagmentService: StateManagmentService, sessionManagmentService: SessionManagmentService, scriptService: ScriptService) { 
+    
     this._processIdService = processIdService;
     this._triggerProcessService = triggerProcessService;
     this._stateManagmentService = stateManagmentService;
     this._sessionManagmentService = sessionManagmentService;
+    this._scriptService = scriptService;
     this.processId = this._processIdService.getNewProcessId();
 
     this.retrievePastSessionData();
@@ -68,15 +72,16 @@ export class RuffleComponent implements BaseComponent, OnInit, OnDestroy, AfterV
     this.gameSrc = (this.gameSrc !=='')? 
     this.gameSrc : this.getGamesSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
 
-    this.rufflePlayer = (window as any).RufflePlayer.newest();
-    //console.log(' this.rufflePlayer', this.rufflePlayer);
-    this.loadSWF('ruffleWindow',this.gameSrc);
-    this.storeAppState(this.gameSrc);
+    this._scriptService.loadScript("ruffle","assets/ruffle/ruffle.js").then(()=>{
+      this.rufflePlayer = (window as any).RufflePlayer.newest();
+      this.loadSWF('ruffleWindow',this.gameSrc);
+      this.storeAppState(this.gameSrc);
+    });
 
-  }
 
-  ngOnDestroy(): void {
-    console.log('bye');
+    setTimeout(()=>{
+      this.captureComponentImg();
+    },this.SECONDS_DELAY) 
   }
 
 
@@ -86,14 +91,8 @@ export class RuffleComponent implements BaseComponent, OnInit, OnDestroy, AfterV
       return;
     }
 
-    const container = document.getElementById(elementId);
-    if (!container) {
-      console.error(`Element with id ${elementId} not found`);
-      return;
-    }
-
     const player = this.rufflePlayer.createPlayer();
-    container.appendChild(player);
+    this.ruffleContainer.nativeElement.appendChild(player);
     player.load(swfUrl);
   }
 
@@ -101,6 +100,18 @@ export class RuffleComponent implements BaseComponent, OnInit, OnDestroy, AfterV
   setRuffleWindowToFocus(pid:number):void{
     this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
   }
+
+  captureComponentImg():void{
+    htmlToImage.toPng(this.ruffleContainer.nativeElement).then(htmlImg =>{
+      //console.log('img data:',htmlImg);
+
+      const cmpntImg:TaskBarPreviewImage = {
+        pid: this.processId,
+        imageData: htmlImg
+      }
+      this._runningProcessService.addProcessImage(this.name, cmpntImg);
+    })
+}
 
   getGamesSrc(pathOne:string, pathTwo:string):string{
     let gameSrc = '';

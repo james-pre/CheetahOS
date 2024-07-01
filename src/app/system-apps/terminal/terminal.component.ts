@@ -12,6 +12,8 @@ import { AppState, BaseState } from 'src/app/system-files/state/state.interface'
 import { StateType } from 'src/app/system-files/state/state.type';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
+import * as htmlToImage from 'html-to-image';
+import { TaskBarPreviewImage } from '../taskbarpreview/taskbar.preview';
 
 @Component({
   selector: 'cos-terminal',
@@ -92,11 +94,27 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   ngAfterViewInit():void{
     this.setTerminalWindowToFocus(this.processId); 
     this.populateWelecomeMessageField();
+
+    setTimeout(()=>{
+      this.captureComponentImg();
+    },this.SECONDS_DELAY[1]) 
   }
   
   ngOnDestroy():void{
     this._maximizeWindowSub?.unsubscribe();
   }
+
+  captureComponentImg():void{
+    htmlToImage.toPng(this.terminalCntnr.nativeElement).then(htmlImg =>{
+      //console.log('img data:',htmlImg);
+
+      const cmpntImg:TaskBarPreviewImage = {
+        pid: this.processId,
+        imageData: htmlImg
+      }
+      this._runningProcessService.addProcessImage(this.name, cmpntImg);
+    })
+}
 
   getYear():number {
     return new Date().getFullYear();
@@ -334,11 +352,17 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   }
 
   maximizeWindow():void{
-    const mainWindow = document.getElementById('vanta');
-    //window title and button bar, and windows taskbar height
-    const pixelTosubtract = 30 + 40;
-    this.terminalCntnr.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
-    this.terminalCntnr.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+    const uid = `${this.name}-${this.processId}`;
+    const evtOriginator = this._runningProcessService.getEventOrginator();
+
+    if(uid === evtOriginator){
+      this._runningProcessService.removeEventOriginator();
+      const mainWindow = document.getElementById('vanta');
+      //window title and button bar, and windows taskbar height
+      const pixelTosubtract = 30 + 40;
+      this.terminalCntnr.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
+      this.terminalCntnr.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+    }
   }
 
   setTerminalWindowToFocus(pid:number):void{

@@ -13,6 +13,9 @@ import { AppState, BaseState } from 'src/app/system-files/state/state.interface'
 import { StateType } from 'src/app/system-files/state/state.type';
 import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
 import { Subscription } from 'rxjs';
+import { ScriptService } from 'src/app/shared/system-service/script.services';
+import * as htmlToImage from 'html-to-image';
+import { TaskBarPreviewImage } from '../taskbarpreview/taskbar.preview';
 // eslint-disable-next-line no-var
 declare var Howl:any;
 declare let SiriWave:any;
@@ -49,10 +52,12 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   private _triggerProcessService:TriggerProcessService;
   private _stateManagmentService:StateManagmentService;
   private _sessionManagmentService: SessionManagmentService;
+  private _scriptService: ScriptService;
   private _fileInfo!:FileInfo;
   private _consts:Constants = new Constants();
   private _appState!:AppState;
 
+  SECONDS_DELAY = 250;
   private audioSrc = '';
   private audioPlayer: any;
   private siriWave: any;
@@ -75,11 +80,12 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
  
   constructor(processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService,
-    stateManagmentService: StateManagmentService, sessionManagmentService: SessionManagmentService) { 
+    stateManagmentService: StateManagmentService, sessionManagmentService: SessionManagmentService, scriptService: ScriptService) { 
     this._processIdService = processIdService;
     this._triggerProcessService = triggerProcessService;
     this._stateManagmentService = stateManagmentService;
     this._sessionManagmentService= sessionManagmentService;
+    this._scriptService = scriptService;
     this.processId = this._processIdService.getNewProcessId();
     
     this.retrievePastSessionData();
@@ -92,18 +98,6 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   ngOnInit(): void {
     this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
-
-    this.siriWave = new SiriWave({
-      container: this.waveForm.nativeElement,
-      width: 640,
-      height: 480,
-      autostart: false,
-      cover: true,
-      speed: 0.03,
-      amplitude: 0.7,
-      frequency: 2
-    });
-    
   }
 
   ngAfterViewInit():void{  
@@ -112,18 +106,51 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
     this.audioSrc = (this.audioSrc !== '')? 
       this.audioSrc :this.getAudioSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
 
-    if(this.playList.length == 0){
-      this.loadHowlSingleTrackObjectAsync()
-          .then(howl => { this.audioPlayer = howl; })
-          .catch(error => { console.error('Error loading track:', error); });
+      this._scriptService.loadScript("howler","assets/howler/howler.min.js").then(()=>{
 
-      this.storeAppState(this.audioSrc);
-    }
+        this._scriptService.loadScript("siriwave","assets/howler/siriwave.umd.min.js").then(()=>{
+
+          this.siriWave = new SiriWave({
+            container: this.waveForm.nativeElement,
+            width: 640,
+            height: 480,
+            autostart: false,
+            cover: true,
+            speed: 0.03,
+            amplitude: 0.7,
+            frequency: 2
+          });
   
+          if(this.playList.length == 0){
+            this.loadHowlSingleTrackObjectAsync()
+                .then(howl => { this.audioPlayer = howl; })
+                .catch(error => { console.error('Error loading track:', error); });
+      
+            this.storeAppState(this.audioSrc);
+          }
+        });
+      });
+
+      setTimeout(()=>{
+        this.captureComponentImg();
+      },this.SECONDS_DELAY) 
+  
+
     // when i implement the playlist feature
     // if((this.audioSrc !== '/' && this.playList.length >= 1) || (this.audioSrc  === '/' && this.playList.length >= 1)){
     //   1
     // }
+  }
+
+  captureComponentImg():void{
+    htmlToImage.toPng(this.audioContainer.nativeElement).then(htmlImg =>{
+
+      const cmpntImg:TaskBarPreviewImage = {
+        pid: this.processId,
+        imageData: htmlImg
+      }
+      this._runningProcessService.addProcessImage(this.name, cmpntImg);
+    })
   }
 
   ngOnDestroy():void{
@@ -360,7 +387,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
         preload: false,
         autoSuspend: false,
         onend:()=>{
-          console.log('Finished!');
+          //console.log('Finished!');
           this.siriWave.canvas.style.opacity = 0;
           this.bar.nativeElement.style.display = 'block';
           this.pauseBtn.nativeElement.style.display = 'none';
@@ -369,11 +396,10 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
           this.siriWave.stop();
         },
         onload:()=>{
-          console.log('loaded!');
-            const duration =audioPlayer.duration();
-            this.duration = this.formatTime(duration);
-
-            resolve(audioPlayer);
+          //console.log('loaded!');
+          const duration =audioPlayer.duration();
+          this.duration = this.formatTime(duration);
+          resolve(audioPlayer);
         },
         onseek:()=>{
           // Start updating the progress of the track.
@@ -388,17 +414,25 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   }
 
   maximizeWindow():void{
-    const mainWindow = document.getElementById('vanta');
-    //window title and button bar, and windows taskbar height
-    const pixelTosubtract = 30 + 40;
-    this.audioContainer.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0 ) - pixelTosubtract}px`;
-    this.audioContainer.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+
+    const uid = `${this.name}-${this.processId}`;
+    const evtOriginator = this._runningProcessService.getEventOrginator();
+
+    if(uid === evtOriginator){
+
+      this._runningProcessService.removeEventOriginator();
+      const mainWindow = document.getElementById('vanta');
+      //window title and button bar, and windows taskbar height
+      const pixelTosubtract = 30 + 40;
+      this.audioContainer.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0 ) - pixelTosubtract}px`;
+      this.audioContainer.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+
+    }
   }
 
 
   getAudioSrc(pathOne:string, pathTwo:string):string{
     let audioSrc = '';
-
     if(this.checkForExt(pathOne,pathTwo)){
       audioSrc = '/' + this._fileInfo.getContentPath;
     }else{
@@ -422,7 +456,6 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   storeAppState(app_data:unknown):void{
     const uid = `${this.name}-${this.processId}`;
-
     this._appState = {
       pid: this.processId,
       app_data: app_data,
@@ -448,7 +481,6 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
       }
     }
   }
-
 
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type, this._triggerProcessService.getLastProcessTrigger)

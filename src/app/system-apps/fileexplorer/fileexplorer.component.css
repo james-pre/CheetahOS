@@ -100,8 +100,8 @@
 .view-tab-pane-top-cntnr{
     display: flex;
     width: 100%;
-    padding-top: 4px;
-    padding-bottom: 5px;
+    /* padding-top: 4px;
+    padding-bottom: 5px; */
     border-right: 0.5px solid #9d9d9d;
 }
 
@@ -176,11 +176,12 @@
 }
 
 .view-tab-pane-bottom{
+    position: relative;
     font-size: 10px;
     color: white;
     font-weight:300;
     text-align: center;
-    padding-top: 3px;
+    /* padding-top: 3px; */
 }
 /*----------------------------------------- Panes Control Ended---------------------------------*/
 
@@ -1139,4 +1140,30 @@ input::selection{
     border-color: #FFFFFF transparent transparent transparent; 
     left: 20px;
     transform: rotate(180deg);
+}
+
+.fx-information-tip-container{
+    display: none;
+    position: absolute;
+    z-index: 2;
+    width: fit-content;
+    border: 1px solid #5a5a5a;
+    background-color: #202020;
+}
+
+.fx-information-tip-item-container{
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+}
+
+.fx-information-tip-item{
+    z-index: 2;
+    padding: 2px 2px;
+    height: fit-content;
+    width: fit-content;
+    font-size: 11px;
+    font-weight: normal;
+    text-align: center;
+    color: white;
 }

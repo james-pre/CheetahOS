@@ -13,7 +13,8 @@
   left: 15%;
   transform: translate(-50%, -50%); /* Move the element back by 50% of its own width and height */
   outline: 1px hsl(0deg 0% 20%/70%);
-  overflow:hidden
+  overflow:hidden;
+  z-index: 2;
 }
 
 .header-container{

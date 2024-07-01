@@ -10,6 +10,7 @@ import { DesktopComponent } from './system-apps/desktop/desktop.component';
 import { TaskbarComponent } from './system-apps/taskbar/taskbar.component';
 import { ClockComponent } from './system-apps/clock/clock.component';
 import { StartbuttonComponent } from './system-apps/startbutton/startbutton.component';
+import { TaskbarPreviewComponent } from './system-apps/taskbarpreview/taskbarpreview.component';
 import { TaskbarentriesComponent } from './system-apps/taskbarentries/taskbarentries.component';
 import { TaskbarentryComponent } from './system-apps/taskbarentry/taskbarentry.component';
 import { FileexplorerComponent } from './system-apps/fileexplorer/fileexplorer.component';
@@ -25,6 +26,8 @@ import { TerminalComponent } from './system-apps/terminal/terminal.component';
 import { MenuComponent } from './shared/system-component/menu/menu.component';
 import { PhotoviewerComponent } from './system-apps/photoviewer/photoviewer.component';
 import { TexteditorComponent } from './system-apps/texteditor/texteditor.component';
+import { RuffleComponent } from './user-apps/ruffle/ruffle.component';
+import { DialogComponent } from './shared/system-component/dialog/dialog.component';
 
 import { SafeUrlPipe } from './shared/system-pipes/safe.resource.url.pipe';
 import { TruncatePipe } from './shared/system-pipes/string.shorten.pipe';
@@ -33,7 +36,7 @@ import { HighlightDirective } from './system-apps/window/window.btn.highlight.di
 import { TaskBarEntryHighlightDirective } from './system-apps/taskbarentries/taskbar.entry.highlight.directives';
 import { LongPressDirective } from './system-apps/audioplayer/long.press.directive';
 import { ColumnResizeDirective } from './system-apps/taskmanager/taskmanager.column-resize.directive';
-import { RuffleComponent } from './user-apps/ruffle/ruffle.component';
+
 
 
 
@@ -46,6 +49,7 @@ import { RuffleComponent } from './user-apps/ruffle/ruffle.component';
     TaskbarComponent,
     ClockComponent,
     StartbuttonComponent,
+    TaskbarPreviewComponent,
     TaskbarentriesComponent,
     TaskbarentryComponent,
     FileexplorerComponent,
@@ -69,7 +73,8 @@ import { RuffleComponent } from './user-apps/ruffle/ruffle.component';
     ColumnResizeDirective,
 
     SafeUrlPipe,
-    TruncatePipe
+    TruncatePipe,
+    DialogComponent
     
   ],
   imports: [

@@ -1,22 +1,35 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { DeskTopMenuItem, MenuItem } from './menu.item';
 
 @Component({
   selector: 'cos-menu',
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.css']
 })
-export class MenuComponent {
+export class MenuComponent implements OnChanges {
 
-  @Input() menuItems: { label: string, action: () => void }[] = [];
-  @Input() menuDictionary: { [key: string]: { name: string, action: () => void }[] } = {};
+  @Input() menuItems: MenuItem[] = [];
 
+  @Input() desktopMenuItems: {icon1: string, icon2: string, label: string, nest:DeskTopMenuItem[], action: () => void, emptyline:boolean }[] = [];
+
+  @Input() menuType = '';
+
+  menuOption = '';
+  fileExplrMngrMenuOption = "file-explorer-file-manager-menu";
+  tskBarMenuOption =  "taskbar-menu";
+  deskTopMenuOption =  "desktop-menu";
+  keys: string[] = [];
+
+  ngOnChanges(changes: SimpleChanges):void{
+    this.menuOption = this.menuType;
+  }
 
   onMenuItemClick(action: () => void): void {
     action();
   }
 
-  getKeys(obj: any): string[] {
-    return Object.keys(obj);
+  getKeys(obj: any):void{
+    this.keys = Object.keys(obj);
   }
 
 }
