@@ -73,6 +73,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   selectedFileFromTaskBar!:FileInfo;
   appToPreview = '';
   appToPreviewIcon = '';
+  previousDisplayedTaskbarPreview = '';
   removeTskBarPrevWindowFromDOMTimeoutId!: NodeJS.Timeout;
   hideTskBarPrevWindowTimeoutId!: NodeJS.Timeout;
 
@@ -454,12 +455,12 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
     this.switchBetweenPinAndUnpin(isPinned);
     // first count, then show the cntxt menu
-    const proccessCount = this.countInstaceAndSetMenu();
+    const processCount = this.countInstaceAndSetMenu();
 
     this.removeOldTaskBarPreviewWindowNow();
     this.showTskBarCntxtMenu = true;
 
-    if(proccessCount == 0){
+    if(processCount == 0){
       this.tskBarCntxtMenuStyle = {
         'position':'absolute',
         'transform':`translate(${String(rect.x - 60)}px, ${String(rect.y - 68.5)}px)`,
@@ -502,7 +503,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
   countInstaceAndSetMenu():number{
     const file = this.selectedFileFromTaskBar;
-    const proccessCount = this._runningProcessService.getProcesses()
+    const processCount = this._runningProcessService.getProcesses()
       .filter(p => p.getProcessName === file.getOpensWith).length;
 
     const rowZero = this.taskBarMenuData[0];
@@ -510,7 +511,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     rowZero.label = file.getOpensWith;
     this.taskBarMenuData[0] = rowZero;
 
-    if(proccessCount == 1){
+    if(processCount == 1){
       if(this.taskBarMenuData.length == 2){
         const menuEntry = {icon:'osdrive/icons/x_32.png', label: 'Close window', action:this.closeApplicationFromTaskBar.bind(this)};
         this.taskBarMenuData.push(menuEntry);
@@ -519,13 +520,13 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
         rowTwo.label = 'Close window';
         this.taskBarMenuData[2] = rowTwo;
       }
-    }else if(proccessCount > 1){
+    }else if(processCount > 1){
       const rowTwo = this.taskBarMenuData[2];
       rowTwo.label = 'Close all windows';
       this.taskBarMenuData[2] = rowTwo;
     }
 
-    return proccessCount;
+    return processCount;
   }
 
   openApplicationFromTaskBar():void{
@@ -559,14 +560,24 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     const rect = data[0] as DOMRect;
     const appName = data[1] as string;
     const iconPath = data[2] as string;
+
     this.appToPreview = appName;
     this.appToPreviewIcon = iconPath;
-
     this.hideTaskBarContextMenu();
-    this.showTskBarPreviewWindow = true;
-    this.tskBarPreviewWindowState = 'in';
 
-    this.clearTimeout();
+    if(this.previousDisplayedTaskbarPreview !== appName){
+      this.showTskBarPreviewWindow = false;
+      this.previousDisplayedTaskbarPreview = appName;
+
+      setTimeout(()=>{
+        this.showTskBarPreviewWindow = true;
+        this.tskBarPreviewWindowState = 'in';
+      },400);
+    }else{
+      this.showTskBarPreviewWindow = true;
+      this.tskBarPreviewWindowState = 'in';
+      this.clearTimeout();
+    }
 
     this.tskBarPrevWindowStyle = {
       'position':'absolute',
@@ -578,12 +589,12 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   hideTaskBarPreviewWindow():void{
     this.hideTskBarPrevWindowTimeoutId = setTimeout(()=>{
       this.tskBarPreviewWindowState = 'out';
-    }, 200)
-  
+    }, 100)
+    
     this.removeTskBarPrevWindowFromDOMTimeoutId = setTimeout(()=>{
       this.showTskBarPreviewWindow = false;
       //this.hideTaskBarContextMenu();
-    }, 700)
+    }, 300)
   }
 
   keepTaskBarPreviewWindow():void{

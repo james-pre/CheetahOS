@@ -11,10 +11,10 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
       state('in', style({ opacity: 1 })),
       state('out', style({ opacity: 0 })),
       transition('* => in', [
-        animate('0.50s ease-in')
+        animate('0.30s ease-in')
       ]),
       transition('in => out', [
-        animate('0.50s ease-out')
+        animate('0.30s ease-out')
       ]),
     ])
   ]
@@ -37,7 +37,8 @@ export class TaskbarPreviewComponent implements OnChanges, AfterViewInit {
   }
 
   ngOnChanges(changes: SimpleChanges):void{
-    console.log('PREVIEW onCHANGES:',changes);
+    1
+    //console.log('PREVIEW onCHANGES:',changes);
     // console.log('this.name:',this.name);
     // console.log('this.fadeState:',this.fadeState);
   }
