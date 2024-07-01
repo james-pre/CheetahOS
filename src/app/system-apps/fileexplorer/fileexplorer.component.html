@@ -395,7 +395,7 @@
                         </div>
                 
     
-                        <cos-menu [menuItems]="menuData" *ngIf="showCntxtMenu" [style]="fxIconCntxtMenuStyle" [menuType]="fileExplrMngrMenuOption"> </cos-menu>
+                        <cos-menu [generalMenu]="menuData" *ngIf="showCntxtMenu" [style]="fxIconCntxtMenuStyle" [menuType]="fileExplrMngrMenuOption"> </cos-menu>
     
                         <div class="fx-information-tip-container" id="fx-information-tip-{{this.processId}}"  *ngIf="showInformationTip">
                             <div class="fx-information-tip-item-container" *ngFor="let tip of fileInfoTipData;" >

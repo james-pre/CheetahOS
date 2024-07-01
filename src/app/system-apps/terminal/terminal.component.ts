@@ -177,7 +177,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
 
     const interval =  setInterval(() => {
       try {
-        console.log('height:',this.terminalOutputCntnr.nativeElement.scrollHeight);
+        //console.log('height:',this.terminalOutputCntnr.nativeElement.scrollHeight);
         if(this.scrollCounter < 2){
           this.terminalOutputCntnr.nativeElement.scrollTop = this.terminalOutputCntnr.nativeElement.scrollHeight;
           this.scrollCounter++;

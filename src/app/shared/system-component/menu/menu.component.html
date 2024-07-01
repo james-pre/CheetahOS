@@ -6,7 +6,7 @@
   <div class="dm-vertical-menu">
     <div class="dm-empty-line-container"></div>
 
-    <div lass="dm-vertical-menu-cntnr" *ngFor="let menuItem of menuItems; let i = index">
+    <div lass="dm-vertical-menu-cntnr" *ngFor="let menuItem of generalMenu; let i = index">
         <div class="dm-vertical-menu-item"  (click)="onMenuItemClick(menuItem.action)">
             <span class="span dm-head"> <figure class="dm-fig-cntxt-menu"> </figure></span>
             <span class="span dm-mid">{{menuItem.label}}</span>
@@ -26,7 +26,7 @@
   <div class="dm-vertical-menu">
     <div class="dm-empty-line-container"></div>
   
-    <div lass="dm-vertical-menu-cntnr" *ngFor="let menuItem of menuItems; let i = index">
+    <div lass="dm-vertical-menu-cntnr" *ngFor="let menuItem of generalMenu; let i = index">
         <div class="dm-vertical-menu-item"  (click)="onMenuItemClick(menuItem.action)">
             <div class="dm-tskbar-head"> <figure class="dm-tskbar-fig-cntxt-menu"><img *ngIf="menuItem.icon.length > 0" class="dm-tskbar-img-alt" [src]="menuItem.icon"/></figure></div>
             <div class="dm-tskbar-mid"><p class="dm-p">{{menuItem.label}}</p></div>
@@ -42,7 +42,7 @@
 <ng-template #dsktpMenu>
   <div class="dm-dsktp-vertical-menu">
     <div class="dm-dsktp-empty-line-container"></div>
-    <div class="dm-dsktp-vertical-sub-menu" *ngFor="let menuItem of desktopMenuItems" >
+    <div class="dm-dsktp-vertical-sub-menu" *ngFor="let menuItem of desktopMenu" >
       <div class="dm-dsktp-vertical-menu-item" (click)="onMenuItemClick(menuItem.action)">
         <div class="dm-dsktp-head"><figure class="dm-dsktp-figure"><img *ngIf="menuItem.icon1" class="dm-dsktp-img" [src]="menuItem.icon1"/></figure></div>
         <div class="dm-dsktp-mid"><p class="dm-dsktp-p"> {{menuItem.label}}</p></div>

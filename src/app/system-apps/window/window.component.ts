@@ -336,7 +336,6 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
 
       setTimeout(()=>{
         const processToClose = this._runningProcessService.getProcess(this.processId);
-        this._stateManagmentService.removeState(this.uniqueId);
         this._runningProcessService.closeProcessNotify.next(processToClose);
         this._runningProcessService.focusOnNextProcessNotify.next();
       },this.SECONDS_DELAY) ;
