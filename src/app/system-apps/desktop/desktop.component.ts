@@ -133,17 +133,15 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
   ngOnInit():void{
-    this._scriptService.loadScript("threejs","assets/backgrounds/three.min.js").then(() =>{
-      this._scriptService.loadScript("vanta-waves","assets/backgrounds/vanta.waves.min.js").then(() =>{
-        this._vantaEffect = VANTA.WAVES({
-          el: '#vanta',
-          color:this.defaultColor, //this._numSequence,
-          waveHeight:20,
-          shininess: 50,
-          waveSpeed:0.5,
-          zoom:0.75,     
-        });
-      })
+    this._scriptService.loadScript("vanta-waves","assets/backgrounds/vanta.waves.min.js").then(() =>{
+      this._vantaEffect = VANTA.WAVES({
+        el: '#vanta',
+        color:this.defaultColor, //this._numSequence,
+        waveHeight:20,
+        shininess: 50,
+        waveSpeed:0.5,
+        zoom:0.75,     
+      });
     })
 
     this.getDesktopMenuData();
@@ -156,9 +154,9 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
   loadOtherBackgrounds():void{
-    const names:string[] = ["halo", "globe", "birds", "rings"]
-    const bkgrounds:string[] = ["assets/backgrounds/vanta.halo.min.js","assets/backgrounds/vanta.globe.min.js",
-                          "assets/backgrounds/vanta.birds.min.js", "assets/backgrounds/vanta.rings.min.js"];
+    const names:string[] = ["rings","halo", "globe", "birds"]
+    const bkgrounds:string[] = [ "assets/backgrounds/vanta.rings.min.js","assets/backgrounds/vanta.halo.min.js","assets/backgrounds/vanta.globe.min.js",
+                          "assets/backgrounds/vanta.birds.min.js"];
         
     for(let i =0; i <= bkgrounds.length - 1; i++){
       this._scriptService.loadScript(names[i], bkgrounds[i]);
