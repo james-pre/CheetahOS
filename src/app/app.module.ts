@@ -3,6 +3,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { AngularDraggableModule } from 'angular2-draggable';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule } from '@angular/forms';
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
 import { AppComponent } from './app.component';
 import { TitleComponent } from './user-apps/title/title.component';
@@ -28,6 +30,8 @@ import { PhotoviewerComponent } from './system-apps/photoviewer/photoviewer.comp
 import { TexteditorComponent } from './system-apps/texteditor/texteditor.component';
 import { RuffleComponent } from './user-apps/ruffle/ruffle.component';
 import { DialogComponent } from './shared/system-component/dialog/dialog.component';
+import { CodeeditorComponent } from './user-apps/codeeditor/codeeditor.component';
+
 
 import { SafeUrlPipe } from './shared/system-pipes/safe.resource.url.pipe';
 import { TruncatePipe } from './shared/system-pipes/string.shorten.pipe';
@@ -66,6 +70,8 @@ import { ColumnResizeDirective } from './system-apps/taskmanager/taskmanager.col
     PhotoviewerComponent,
     TexteditorComponent,
     RuffleComponent,
+    DialogComponent,
+    CodeeditorComponent,
 
     HighlightDirective,
     TaskBarEntryHighlightDirective,
@@ -73,8 +79,7 @@ import { ColumnResizeDirective } from './system-apps/taskmanager/taskmanager.col
     ColumnResizeDirective,
 
     SafeUrlPipe,
-    TruncatePipe,
-    DialogComponent
+    TruncatePipe
     
   ],
   imports: [
@@ -82,6 +87,8 @@ import { ColumnResizeDirective } from './system-apps/taskmanager/taskmanager.col
     AngularDraggableModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
+    FormsModule,
+    MonacoEditorModule.forRoot(), // use forRoot() in main app module only.
   ],
   providers: [],
   bootstrap: [AppComponent]
