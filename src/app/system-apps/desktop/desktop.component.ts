@@ -1,4 +1,4 @@
-import { AfterViewInit, OnInit,OnDestroy, Component} from '@angular/core';
+import { AfterViewInit, OnInit,OnDestroy, Component, ElementRef, ViewChild} from '@angular/core';
 import { Subscription} from 'rxjs';
 import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
@@ -13,6 +13,7 @@ import { TriggerProcessService } from 'src/app/shared/system-service/trigger.pro
 import { ScriptService } from 'src/app/shared/system-service/script.services';
 import { MenuService } from 'src/app/shared/system-service/menu.services';
 import { DesktopMenu, DesktopMenuItem } from 'src/app/shared/system-component/menu/menu.item';
+import * as htmlToImage from 'html-to-image';
 
 declare let VANTA: { HALO: any; BIRDS: any;  WAVES: any;   GLOBE: any;  RINGS: any;};
 
@@ -22,6 +23,8 @@ declare let VANTA: { HALO: any; BIRDS: any;  WAVES: any;   GLOBE: any;  RINGS: a
   styleUrls: ['./desktop.component.css']
 })
 export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
+
+  @ViewChild('desktopContainer', {static: true}) desktopContainer!: ElementRef; 
 
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
@@ -221,6 +224,19 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     }
   }
 
+
+  captureComponentImg():void{
+    htmlToImage.toPng(this.desktopContainer.nativeElement).then(htmlImg =>{
+      //console.log('img data:',htmlImg);
+
+      // const cmpntImg:TaskBarPreviewImage = {
+      //   pid: this.processId,
+      //   imageData: htmlImg
+      // }
+      // this._runningProcessService.addProcessImage(this.name, cmpntImg);
+    })
+  }
+
   hideContextMenu():void{
     this.showDesktopCntxtMenu = false;
     this.showTskBarCntxtMenu = false;
@@ -406,15 +422,30 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     return sortByMenu
   }
 
+  buildNewMenu(): DesktopMenuItem[]{
+
+    const sortByName:DesktopMenuItem={ icon:'osdrive/icons/empty_folder.ico', label:'Folder',  action: this.sortByNameM.bind(this),  variables:true , 
+      emptyline:false, styleOption:'C' }
+
+    const sortBySize:DesktopMenuItem={ icon:'osdrive/icons/text-editor_48.png', label:'Rich Text',  action: this.sortBySizeM.bind(this),  variables:true , 
+      emptyline:false, styleOption:'C' }
+
+    const sortByMenu = [sortByName, sortBySize]
+
+    return sortByMenu
+  }
+
   getDesktopMenuData():void{
     this.deskTopMenu = [
           {icon1:'',  icon2: 'osdrive/icons/arrow_next.png', label:'View', nest:this.buildViewByMenu(), action: ()=> console.log(), emptyline:false},
           {icon1:'',  icon2:'osdrive/icons/arrow_next.png', label:'Sort by', nest:this.buildSortByMenu(), action: ()=> console.log(), emptyline:false},
           {icon1:'',  icon2:'', label: 'Refresh', nest:[], action:this.refresh.bind(this), emptyline:true},
-          {icon1:'/osdrive/icons/terminal_48.png', icon2:'', label:'Open inTerminal', nest:[], action: this.openTerminal.bind(this), emptyline:false},
+          {icon1:'/osdrive/icons/terminal_48.png', icon2:'', label:'Open in Terminal', nest:[], action: this.openTerminal.bind(this), emptyline:false},
+          {icon1:'/osdrive/icons/camera_48.png', icon2:'', label:'Screen Shot', nest:[], action: this.captureComponentImg.bind(this), emptyline:false},
           {icon1:'',  icon2:'', label:'Next Background', nest:[], action: this.nextBackground.bind(this), emptyline:false},
           {icon1:'',  icon2:'', label:'Previous Background', nest:[], action: this.previousBackground.bind(this), emptyline:true},
-          {icon1:'',  icon2:'osdrive/icons/arrow_next.png', label:'New', nest:[], action: ()=> console.log(), emptyline:true}
+          {icon1:'',  icon2:'osdrive/icons/arrow_next.png', label:'New', nest:this.buildNewMenu(), action: ()=> console.log(), emptyline:true},
+          {icon1:'',  icon2:'', label:'Many Thanks', nest:[], action: ()=> console.log(), emptyline:false}
       ]
   }
 

@@ -42,6 +42,7 @@
 <ng-template #dsktpMenu>
   <div class="dm-dsktp-vertical-menu">
     <div class="dm-dsktp-empty-line-container"></div>
+
     <div class="dm-dsktp-vertical-sub-menu" *ngFor="let menuItem of desktopMenu" >
       <div class="dm-dsktp-vertical-menu-item" (click)="onMenuItemClick(menuItem.action)">
         <div class="dm-dsktp-head"><figure class="dm-dsktp-figure"><img *ngIf="menuItem.icon1" class="dm-dsktp-img" [src]="menuItem.icon1"/></figure></div>
@@ -53,8 +54,12 @@
           <div *ngFor="let item of menuItem.nest" (click)="onMenuItemClick(item.action)">
             <div class="dm-dsktp-vertical-menu-item">
               <div class="dm-dsktp-head"><figure [ngClass]=" item.styleOption === 'A' ?'dm-dsktp-figure-alt' : 'dm-dsktp-figure-alt2'">
-                                         <img *ngIf="item.variables" [ngClass]=" item.styleOption === 'A' ?'dm-dsktp-img-alt' : 'dm-dsktp-img-alt2'" [src]="item.icon"/></figure></div>
-              <div class="dm-dsktp-mid">{{item.label}}</div>
+
+                                          <img *ngIf="item.variables" [ngClass]=" item.styleOption === 'A' ?'dm-dsktp-img-alt' : 'dm-dsktp-img-alt2' " [src]="item.icon"/>
+                                        </figure>
+              </div>
+              <div class="dm-dsktp-mid" *ngIf="item.styleOption === 'A' || item.styleOption === 'B'">{{item.label}}</div>
+              <div class="dm-dsktp-mid"  *ngIf="item.styleOption === 'C'" ><p class="dm-dsktp-p"> {{item.label}}</p></div>
               <div class="dm-dsktp-tail"><figure class="dm-dsktp-figure"></figure></div>
             </div>
     
@@ -69,7 +74,7 @@
       <div *ngIf="menuItem.emptyline" class="dm-dsktp-line-container"><div class="dm-dsktp-line"></div></div>
       <div *ngIf="menuItem.emptyline" class="dm-dsktp-empty-line-container"></div>
     </div>
-    <div class="dm-dsktp-empty-line-container"></div>
+    <div style="position: relative; z-index:2; top: 248px;" class="dm-dsktp-empty-line-container"></div>
   </div>
 </ng-template>
 
