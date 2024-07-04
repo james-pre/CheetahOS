@@ -424,13 +424,16 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
   buildNewMenu(): DesktopMenuItem[]{
 
-    const sortByName:DesktopMenuItem={ icon:'osdrive/icons/empty_folder.ico', label:'Folder',  action: this.sortByNameM.bind(this),  variables:true , 
+    const newFolder:DesktopMenuItem={ icon:'osdrive/icons/empty_folder.ico', label:'Folder',  action: this.sortByNameM.bind(this),  variables:true , 
       emptyline:false, styleOption:'C' }
 
-    const sortBySize:DesktopMenuItem={ icon:'osdrive/icons/text-editor_48.png', label:'Rich Text',  action: this.sortBySizeM.bind(this),  variables:true , 
+    const textEditor:DesktopMenuItem={ icon:'osdrive/icons/text-editor_48.png', label:'Rich Text',  action: this.sortBySizeM.bind(this),  variables:true , 
       emptyline:false, styleOption:'C' }
 
-    const sortByMenu = [sortByName, sortBySize]
+    const codeEditor:DesktopMenuItem={ icon:'osdrive/icons/vs-code_64.png', label:'Code Editor',  action: this.sortBySizeM.bind(this),  variables:true , 
+        emptyline:false, styleOption:'C' }
+
+    const sortByMenu = [newFolder, textEditor, codeEditor ]
 
     return sortByMenu
   }
