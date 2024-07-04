@@ -42,6 +42,11 @@
                 "glob": "**/*",
                 "input": "src/assets/ruffle",
                 "output": "/assets/ruffle"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets/pdf",
+                "output": "/assets/pdf"
               }
             ],
             "styles": [
