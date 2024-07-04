@@ -31,6 +31,7 @@ import { TexteditorComponent } from './system-apps/texteditor/texteditor.compone
 import { RuffleComponent } from './user-apps/ruffle/ruffle.component';
 import { DialogComponent } from './shared/system-component/dialog/dialog.component';
 import { CodeeditorComponent } from './user-apps/codeeditor/codeeditor.component';
+import { PropertiesComponent } from './shared/system-component/properties/properties.component';
 
 
 import { SafeUrlPipe } from './shared/system-pipes/safe.resource.url.pipe';
@@ -69,9 +70,11 @@ import { ColumnResizeDirective } from './system-apps/taskmanager/taskmanager.col
     MenuComponent,
     PhotoviewerComponent,
     TexteditorComponent,
+    PropertiesComponent,
     RuffleComponent,
     DialogComponent,
     CodeeditorComponent,
+ 
 
     HighlightDirective,
     TaskBarEntryHighlightDirective,

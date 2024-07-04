@@ -119,9 +119,11 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
 
   menuData = [
     {icon:'', label: 'Open', action: this.onTriggerRunProcess.bind(this) },
+    {icon:'', label: 'Open in new window', action: this.doNothing.bind(this) },
     {icon:'', label: 'Pin to Start', action: this.doNothing.bind(this) },
     {icon:'', label: 'Delete', action: this.onDeleteFile.bind(this) },
-    {icon:'', label: 'Rename', action: this.onRenameFileTxtBoxShow.bind(this) }
+    {icon:'', label: 'Rename', action: this.onRenameFileTxtBoxShow.bind(this) },
+    {icon:'', label: 'Properties', action: this.doNothing.bind(this) }
   ];
   fileExplrMngrMenuOption = "file-explorer-file-manager-menu";
 
