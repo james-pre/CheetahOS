@@ -1,4 +1,4 @@
- <main id="vanta" class="main-desktop" (contextmenu)="showDesktopContextMenu($event)" (click)="hideContextMenu()"> 
+ <main id="vanta" class="main-desktop"  (contextmenu)="showDesktopContextMenu($event)" (click)="hideContextMenu()" #desktopContainer> 
 
     <cos-menu [desktopMenu]="deskTopMenu" *ngIf="showDesktopCntxtMenu" [style]="dskTopCntxtMenuStyle" [menuType]="deskTopMenuOption"> </cos-menu>
     <cos-taskbarpreview  [fadeState]="tskBarPreviewWindowState" [name]="appToPreview" [icon]="appToPreviewIcon" *ngIf="showTskBarPreviewWindow"  [ngStyle]="tskBarPrevWindowStyle">  </cos-taskbarpreview>

@@ -93,7 +93,7 @@ export class PhotoviewerComponent implements BaseComponent, OnInit, OnDestroy, A
     if(this.imageList.length > 0){
         this.currentImg = this.imageList[0];
     }else{
-      this.currentImg = this.picSrc;
+      this.currentImg = this.picSrc || this.defaultImg;
     }
 
     const appData = (this.imageList.length > 0)? this.imageList : this.picSrc;

@@ -249,7 +249,8 @@ span.dm-tail{
 .dm-dsktp-figure{
     align-items: center;
     display:inline-flex;
-    min-width: 18px;
+    width: 18px;
+    height: 18px;
 }
   
 .dm-dsktp-img{
@@ -271,7 +272,8 @@ span.dm-tail{
     position: relative;
     align-items: center;
     display: inline-flex;
-    min-width: 18px;
+    width: 18px;
+    height: 18px;
     top: -25%;
     left: 35%;
 }
