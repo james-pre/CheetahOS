@@ -198,6 +198,72 @@ export class FileService{
         });
     }
 
+    public async createFolderAsync(directory:string, fileName:string):Promise<void>{
+        new Promise<void>((resolve, reject) =>{
+
+           this._fileSystem.exists(`${directory}/${fileName}`, (err) =>{
+                if(err){
+                    console.log('createFolderAsync Error: folder already exists',err);
+                }else{
+                    this._fileSystem.mkdir(`${directory}/${fileName}`,'0777',(err) =>{  
+                        if(err){
+                            console.log('createFolderAsync Error: folder creation',err);
+                            reject(err);
+                        }
+                        resolve();
+                    });
+                }
+             });
+        }).then(()=>{
+            //Send update notification
+            this.dirFilesUpdateNotify.next();
+        });
+    }
+
+    public async renameFolderAsync(directory:string, oldfileName:string, newFileName:string):Promise<void>{
+        new Promise<void>((resolve, reject) =>{
+
+           this._fileSystem.exists(`${directory}/${newFileName}`, (err) =>{
+                if(err){
+                    console.log('renameFolderAsync Error: folder already exists',err);
+                }else{
+                    this._fileSystem.rename(`${directory}/${oldfileName}`,`${directory}/${newFileName}`,(err) =>{  
+                        if(err){
+                            console.log('renameFolderAsync Error: folder rename',err);
+                            reject(err);
+                        }
+                        resolve();
+                    });
+                }
+             });
+        }).then(()=>{
+            //Send update notification
+            this.dirFilesUpdateNotify.next();
+        });
+    }
+
+
+    public async deleteFolderAsync(directory:string, fileName:string):Promise<void>{
+        new Promise<void>((resolve, reject) =>{
+           this._fileSystem.exists(`${directory}/${fileName}`, (err) =>{
+                if(err){
+                    this._fileSystem.rmdir(`${directory}/${fileName}`,(err) =>{  
+                        if(err){
+                            console.log('deleteFolderAsync Error: folder delete failed',err);
+                            reject(err);
+                        }
+                        resolve();
+                    });
+                }else{
+                    console.log('deleteFolderAsync Error: folder doesn\'t exists',err);
+                }
+             });
+        }).then(()=>{
+            //Send update notification
+            this.dirFilesUpdateNotify.next();
+        });
+    }
+
 
     public async getExtraFileMetaDataAsync(path: string) {
         await this.initBrowserFsAsync();
@@ -248,13 +314,23 @@ export class FileService{
                     console.log('getImageFileAsync error:',err)
                     reject(err)
                 }
+
+                //console.log('stringData:', stringData.substring(0, 20));
+                // if(stringData.includes('\x00') || stringData.includes('\u0000')){
+                //     resolve(new ShortCut(path, basename(path, extname(path)),'',basename(path, extname(path)),''));
+                // }
+
                 const stringData = data as string
 
-                if(stringData.includes('\x00') || stringData.includes('\u0000')){
-                    resolve(new ShortCut(path, basename(path, extname(path)),'',basename(path, extname(path)),''));
+                if(this.isUtf8Encoded(stringData)){
+                    if(stringData.substring(0, 10) == 'data:image'){
+                        resolve(new ShortCut(stringData, basename(path, extname(path)),'',stringData,''));
+                    }else{
+                        resolve(new ShortCut(path, basename(path, extname(path)),'',basename(path, extname(path)),''));
+                    }
+                }else{
+                    resolve(new ShortCut(stringData, basename(path, extname(path)),'',stringData,''));
                 }
-                    
-                resolve(new ShortCut(stringData, basename(path, extname(path)),'',basename(path, extname(path)),''));
             });
         });
     }
@@ -310,6 +386,31 @@ export class FileService{
                     });
                 }
             })
+         }).then(()=>{
+            //Send update notification
+            this.dirFilesUpdateNotify.next();
+        });
+    }
+
+    public async writeFileAsync(directory:string, file:FileInfo):Promise<void>{
+        new Promise<void>((resolve, reject) =>{
+            this._fileSystem.writeFile(`${directory}/${file.getFileName}`, file.getContentPath, {flag: 'wx'}, (err) =>{  
+                if(err?.code === 'EEXIST' ){
+                    console.log('writeFileAsync Error: file already exists',err);
+
+                    const itrName = this.iterateFileName(`${directory}/${file.getFileName}`);
+                    this._fileSystem.writeFile(itrName,file.getContentPath,(err) =>{  
+                        if(err){
+                            console.log('writeFileAsync Iterate Error:',err);
+                            reject(err);
+                        }
+                        resolve();
+                    });
+                }else{
+                    this._fileExistsMap.set(`${directory}/${file.getFileName}`,0);
+                    resolve();
+                }
+            });
          }).then(()=>{
             //Send update notification
             this.dirFilesUpdateNotify.next();
@@ -400,7 +501,19 @@ export class FileService{
         return base64String;
     }
 
-    private changeFolderIcon(fileName:string, iconPath:string):string{
+    public isUtf8Encoded(data: string): boolean {
+        try {
+          const encoder = new TextEncoder();
+          const bytes = encoder.encode(data);
+          const decoder = new TextDecoder('utf-8', { fatal: true });
+          decoder.decode(bytes);
+          return true;
+        } catch (error) {
+          return false;
+        }
+      }
+
+    public changeFolderIcon(fileName:string, iconPath:string):string{
 
         if(fileName === 'Music'){
             return '/osdrive/icons/music_folder.ico';

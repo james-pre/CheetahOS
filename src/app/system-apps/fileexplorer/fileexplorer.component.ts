@@ -90,6 +90,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   olClassName = 'ol-icon-size-view';
 
   files:FileInfo[] = [];
+   _fileInfo!:FileInfo;
   prevPathEntries:string[] = [];
   nextPathEntries:string[] = [];
   recentPathEntries:string[] = [];
@@ -167,6 +168,12 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   }
 
   ngOnInit():void{
+    this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
+
+    if(this._fileInfo){
+      this.directory = this._fileInfo.getCurrentPath;
+    }
+
     this.renameForm = this._formBuilder.nonNullable.group({
       renameInput: '',
     });
@@ -882,7 +889,6 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   setFileExplorerWindowToFocus(pid: number):void {
     this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
   }
-
 
   sortIcons(sortBy:string): void {
     if(sortBy === "Size"){

@@ -14,13 +14,28 @@ import { ScriptService } from 'src/app/shared/system-service/script.services';
 import { MenuService } from 'src/app/shared/system-service/menu.services';
 import { DesktopMenu, DesktopMenuItem } from 'src/app/shared/system-component/menu/menu.item';
 import * as htmlToImage from 'html-to-image';
+import { FileService } from 'src/app/shared/system-service/file.service';
+import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
 
 declare let VANTA: { HALO: any; BIRDS: any;  WAVES: any;   GLOBE: any;  RINGS: any;};
 
 @Component({
   selector: 'cos-desktop',
   templateUrl: './desktop.component.html',
-  styleUrls: ['./desktop.component.css']
+  styleUrls: ['./desktop.component.css'],
+  animations: [
+    trigger('slideStatusAnimation', [
+      state('slideOut', style({ right: '-200px' })),
+      state('slideIn', style({ right: '2px' })),
+
+      transition('* => slideIn', [
+        animate('1s ease-in')
+      ]),
+      transition('slideIn => slideOut', [
+        animate('2s ease-out')
+      ]),
+    ])
+  ]
 })
 export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
@@ -29,6 +44,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _fileManagerServices:FileManagerService;
+  private _fileService:FileService;
   private _triggerProcessService:TriggerProcessService;
   private _scriptService: ScriptService;
   private _menuService: MenuService;
@@ -63,6 +79,9 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   autoAlignIcons = true;
   autoArrangeIcons = true;
   showDesktopIcons = true;
+  showDesktopScreenShotPreview = false;
+  dsktpPrevImg = '';
+  slideState = 'slideIn';
 
   dskTopCntxtMenuStyle:Record<string, unknown> = {};
   tskBarCntxtMenuStyle:Record<string, unknown> = {};
@@ -116,13 +135,14 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService,fileManagerServices:FileManagerService,
-              triggerProcessService:TriggerProcessService, scriptService: ScriptService, menuService: MenuService) { 
+              triggerProcessService:TriggerProcessService, scriptService: ScriptService, menuService: MenuService, fileService:FileService) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this._fileManagerServices = fileManagerServices;
     this._triggerProcessService = triggerProcessService;
     this._scriptService = scriptService;
     this._menuService = menuService;
+    this._fileService = fileService;
 
     this._showTaskBarMenuSub = this._menuService.showTaskBarMenu.subscribe((p) => { this.onShowTaskBarContextMenu(p)});
     this._showTaskBarPreviewWindowSub = this._runningProcessService.showPreviewWindowNotify.subscribe((p) => { this.showTaskBarPreviewWindow(p)});
@@ -138,7 +158,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   ngOnInit():void{
     this._scriptService.loadScript("vanta-waves","assets/backgrounds/vanta.waves.min.js").then(() =>{
       this._vantaEffect = VANTA.WAVES({
-        el: '#vanta',
+        el: this.desktopContainer.nativeElement,
         color:this.defaultColor, //this._numSequence,
         waveHeight:20,
         shininess: 50,
@@ -226,15 +246,42 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
 
   captureComponentImg():void{
+    const directory ='/osdrive/Desktop';
     htmlToImage.toPng(this.desktopContainer.nativeElement).then(htmlImg =>{
       //console.log('img data:',htmlImg);
 
-      // const cmpntImg:TaskBarPreviewImage = {
-      //   pid: this.processId,
-      //   imageData: htmlImg
-      // }
-      // this._runningProcessService.addProcessImage(this.name, cmpntImg);
+      const screenShot:FileInfo = new FileInfo();
+      screenShot.setFileName = 'screen_shot.png'
+      screenShot.setCurrentPath = `${directory}/screen_shot.png`;
+      screenShot.setFileType = '.png';
+      screenShot.setOpensWith = 'photoviewer';
+      screenShot.setIconPath = '/osdrive/icons/photos_48.png';
+      screenShot.setContentPath = htmlImg;
+      screenShot.setIconPath = htmlImg;
+
+      this.showDesktopScreenShotPreview = true;
+      this.dsktpPrevImg = htmlImg;
+
+      const img = new Image();
+      img.src = htmlImg;
+      document.body.appendChild(img);
+
+      setTimeout(()=>{
+        this.slideState = 'slideOut';
+        this._fileService.writeFileAsync(directory, screenShot);
+      },4000);
+
+      setTimeout(()=>{
+        this.showDesktopScreenShotPreview = false;
+      },6000);
+
     })
+  }
+
+  createFolder():void{
+    const directory ='/osdrive/Desktop';
+    const folderName = 'New Folder';
+    this._fileService.createFolderAsync(directory, folderName);
   }
 
   hideContextMenu():void{
@@ -424,7 +471,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
   buildNewMenu(): DesktopMenuItem[]{
 
-    const newFolder:DesktopMenuItem={ icon:'osdrive/icons/empty_folder.ico', label:'Folder',  action: this.sortByNameM.bind(this),  variables:true , 
+    const newFolder:DesktopMenuItem={ icon:'osdrive/icons/empty_folder.ico', label:'Folder',  action: this.createFolder.bind(this),  variables:true , 
       emptyline:false, styleOption:'C' }
 
     const textEditor:DesktopMenuItem={ icon:'osdrive/icons/text-editor_48.png', label:'Rich Text',  action: this.sortBySizeM.bind(this),  variables:true , 
