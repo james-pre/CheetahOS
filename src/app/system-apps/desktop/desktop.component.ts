@@ -485,7 +485,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     const textEditor:DesktopMenuItem={ icon:'osdrive/icons/text-editor_48.png', label:'Rich Text',  action: this.openTextEditor.bind(this),  variables:true , 
       emptyline:false, styleOption:'C' }
 
-    const codeEditor:DesktopMenuItem={ icon:'osdrive/icons/vs-code_64.png', label:'Code Editor',  action: this.openCodeEditor.bind(this),  variables:true , 
+    const codeEditor:DesktopMenuItem={ icon:'osdrive/icons/vs-code_48.png', label:'Code Editor',  action: this.openCodeEditor.bind(this),  variables:true , 
         emptyline:false, styleOption:'C' }
 
     const sortByMenu = [newFolder, textEditor, codeEditor ]
