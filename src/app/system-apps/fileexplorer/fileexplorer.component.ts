@@ -171,7 +171,9 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
     this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
 
     if(this._fileInfo){
-      this.directory = this._fileInfo.getCurrentPath;
+      // is this a URL or and Actual Folder
+      if(this._fileInfo.getOpensWith === 'fileexplorer' && !this._fileInfo.getIsFile) //Actual Folder
+         this.directory = this._fileInfo.getCurrentPath;
     }
 
     this.renameForm = this._formBuilder.nonNullable.group({

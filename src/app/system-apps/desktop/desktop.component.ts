@@ -158,7 +158,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   ngOnInit():void{
     this._scriptService.loadScript("vanta-waves","assets/backgrounds/vanta.waves.min.js").then(() =>{
       this._vantaEffect = VANTA.WAVES({
-        el: this.desktopContainer.nativeElement,
+        el: '#vanta',
         color:this.defaultColor, //this._numSequence,
         waveHeight:20,
         shininess: 50,
@@ -260,11 +260,12 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
       screenShot.setIconPath = htmlImg;
 
       this.showDesktopScreenShotPreview = true;
+      this.slideState = 'slideIn';
       this.dsktpPrevImg = htmlImg;
 
-      const img = new Image();
-      img.src = htmlImg;
-      document.body.appendChild(img);
+      // const img = new Image();
+      // img.src = htmlImg;
+      // document.body.appendChild(img);
 
       setTimeout(()=>{
         this.slideState = 'slideOut';

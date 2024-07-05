@@ -242,7 +242,6 @@ export class FileService{
         });
     }
 
-
     public async deleteFolderAsync(directory:string, fileName:string):Promise<void>{
         new Promise<void>((resolve, reject) =>{
            this._fileSystem.exists(`${directory}/${fileName}`, (err) =>{
@@ -263,7 +262,6 @@ export class FileService{
             this.dirFilesUpdateNotify.next();
         });
     }
-
 
     public async getExtraFileMetaDataAsync(path: string) {
         await this.initBrowserFsAsync();
@@ -366,7 +364,7 @@ export class FileService{
                 fileReader.readAsDataURL(file);
 
                 fileReader.onload = (evt) =>{
-    
+                    
                     this._fileSystem.writeFile(`${directory}/${file.name}`,evt.target?.result, {flag: 'wx'}, (err) =>{  
                         if(err?.code === 'EEXIST' ){
                             console.log('writeFileAsync Error: file already exists',err);
