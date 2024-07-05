@@ -913,7 +913,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
 
     const rect =  this.fileExplrCntntCntnr.nativeElement.getBoundingClientRect();
     const x = (evt.clientX - rect.left) - 15;
-    const y = (evt.clientY - rect.top) - 10;
+    const y = (evt.clientY - rect.top) + 10;
 
     setTimeout(()=>{
       const infoTip = document.getElementById(`fx-information-tip-${this.processId}`) as HTMLDivElement;
@@ -921,6 +921,9 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
         setTimeout(()=>{ 
           infoTip.style.display = 'block';
           infoTip.style.transform = `translate(${String(x)}px, ${String(y)}px)`;
+          infoTip.style.position = 'absolute';
+          infoTip.style.zIndex = '3';
+
 
           this.setInformationTipInfo(file);
 

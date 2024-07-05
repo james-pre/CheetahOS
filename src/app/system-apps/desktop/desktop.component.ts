@@ -246,16 +246,13 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
 
   captureComponentImg():void{
-    const directory ='/osdrive/Desktop';
+    const directory ='/osdrive/Documents/Screen Shots';
     htmlToImage.toPng(this.desktopContainer.nativeElement).then(htmlImg =>{
       //console.log('img data:',htmlImg);
 
       const screenShot:FileInfo = new FileInfo();
       screenShot.setFileName = 'screen_shot.png'
       screenShot.setCurrentPath = `${directory}/screen_shot.png`;
-      screenShot.setFileType = '.png';
-      screenShot.setOpensWith = 'photoviewer';
-      screenShot.setIconPath = '/osdrive/icons/photos_48.png';
       screenShot.setContentPath = htmlImg;
       screenShot.setIconPath = htmlImg;
 
