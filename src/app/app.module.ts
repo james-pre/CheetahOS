@@ -27,10 +27,10 @@ import { AudioPlayerComponent } from './system-apps/audioplayer/audioplayer.comp
 import { TerminalComponent } from './system-apps/terminal/terminal.component';
 import { MenuComponent } from './shared/system-component/menu/menu.component';
 import { PhotoviewerComponent } from './system-apps/photoviewer/photoviewer.component';
-import { TexteditorComponent } from './system-apps/texteditor/texteditor.component';
+import { TextEditorComponent } from './system-apps/texteditor/texteditor.component';
 import { RuffleComponent } from './user-apps/ruffle/ruffle.component';
 import { DialogComponent } from './shared/system-component/dialog/dialog.component';
-import { CodeeditorComponent } from './user-apps/codeeditor/codeeditor.component';
+import { CodeEditorComponent } from './user-apps/codeeditor/codeeditor.component';
 import { PropertiesComponent } from './shared/system-component/properties/properties.component';
 
 
@@ -69,11 +69,11 @@ import { ColumnResizeDirective } from './system-apps/taskmanager/taskmanager.col
     TerminalComponent,
     MenuComponent,
     PhotoviewerComponent,
-    TexteditorComponent,
+    TextEditorComponent,
     PropertiesComponent,
     RuffleComponent,
     DialogComponent,
-    CodeeditorComponent,
+    CodeEditorComponent,
  
 
     HighlightDirective,

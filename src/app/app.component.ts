@@ -1,18 +1,24 @@
 import {Component,ViewChild, ViewContainerRef, ViewRef, OnDestroy, Type, AfterViewInit} from '@angular/core';
-import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
-import { ComponentType } from './system-files/component.types';
-import { RunningProcessService } from './shared/system-service/running.process.service';
-import { Process } from './system-files/process';
-import { ComponentReferenceService } from './shared/system-service/component.reference.service';
 import { Subscription } from 'rxjs';
+
+import { ProcessIDService } from 'src/app/shared/system-service/process.id.service';
+import { RunningProcessService } from './shared/system-service/running.process.service';
+import { ComponentReferenceService } from './shared/system-service/component.reference.service';
 import { TriggerProcessService } from './shared/system-service/trigger.process.service';
+import { SessionManagmentService } from './shared/system-service/session.management.service';
+import { NotificationService } from './shared/system-service/notification.service';
+import { StateManagmentService } from './shared/system-service/state.management.service';
+
+import { ComponentType } from './system-files/component.types';
+import { NotificationType } from './system-files/notification.type';
+import { Process } from './system-files/process';
+import { AppDirectory } from './system-files/app.directory';
+
 import { BaseComponent } from './system-base/base/base.component';
 import { TitleComponent } from './user-apps/title/title.component';
 import { GreetingComponent } from './user-apps/greeting/greeting.component';
 import { FileexplorerComponent } from './system-apps/fileexplorer/fileexplorer.component';
 import { TaskmanagerComponent } from './system-apps/taskmanager/taskmanager.component';
-import { SessionManagmentService } from './shared/system-service/session.management.service';
-import { AppDirectory } from './system-files/app.directory';
 import { JsdosComponent } from './user-apps/jsdos/jsdos.component';
 import { VideoPlayerComponent } from './system-apps/videoplayer/videoplayer.component';
 import { AudioPlayerComponent } from './system-apps/audioplayer/audioplayer.component';
@@ -20,9 +26,8 @@ import { TerminalComponent } from './system-apps/terminal/terminal.component';
 import { RuffleComponent } from './user-apps/ruffle/ruffle.component';
 import { PhotoviewerComponent } from './system-apps/photoviewer/photoviewer.component';
 import { DialogComponent } from './shared/system-component/dialog/dialog.component';
-import { NotificationType } from './system-files/notification.type';
-import { NotificationService } from './shared/system-service/notification.service';
-import { StateManagmentService } from './shared/system-service/state.management.service';
+import { TextEditorComponent } from './system-apps/texteditor/texteditor.component';
+import { CodeEditorComponent } from './user-apps/codeeditor/codeeditor.component';
 
 @Component({
   selector: 'cos-root',
@@ -78,11 +83,14 @@ export class AppComponent implements OnDestroy, AfterViewInit {
     {type: TerminalComponent},
     // {type: TaskmanagerMiniComponent},
     {type: VideoPlayerComponent},
-    {type: RuffleComponent},
     {type: PhotoviewerComponent},
+    {type: TextEditorComponent},
     {type: TitleComponent},
     {type: GreetingComponent},
-    {type: JsdosComponent}
+    {type: JsdosComponent},
+    {type: RuffleComponent},
+
+    {type: CodeEditorComponent},
   ];
 
 
@@ -112,6 +120,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
 
   ngOnDestroy():void{
     this._closeProcessSub?.unsubscribe();
+    this._closeMsgDialogSub?.unsubscribe();
     this._startProcessSub?.unsubscribe();
     this._appNotFoundSub?.unsubscribe();
     this._appIsRunningSub?.unsubscribe();

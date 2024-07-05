@@ -15,7 +15,7 @@ import { MenuService } from 'src/app/shared/system-service/menu.services';
 import { DesktopMenu, DesktopMenuItem } from 'src/app/shared/system-component/menu/menu.item';
 import * as htmlToImage from 'html-to-image';
 import { FileService } from 'src/app/shared/system-service/file.service';
-import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 declare let VANTA: { HALO: any; BIRDS: any;  WAVES: any;   GLOBE: any;  RINGS: any;};
 
@@ -107,6 +107,8 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   displayName = '';
 
   terminalApp ="terminal";
+  textEditorApp ="texteditor";
+  codeEditorApp ="codeeditor";
 
   waveBkgrnd:WAVE =  {el:'#vanta'}
   ringsBkgrnd:RINGS =  {el:'#vanta'}
@@ -187,7 +189,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
   changeAnimationColor():void{
-  
+
     this.CURRENT_DEG = (this.CURRENT_DEG > this.MAX_DEG) ? this.MIN_DEG : this.CURRENT_DEG + 1;
 
     console.log('nextColor:', Number(this.nextColor.changeHue('#4f32c2',this.CURRENT_DEG)?.replace('#','0x')))
@@ -415,6 +417,14 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     this.openApplication(this.terminalApp);
   }
 
+  openTextEditor():void{
+    this.openApplication(this.textEditorApp);
+  }
+
+  openCodeEditor():void{
+    this.openApplication(this.codeEditorApp);
+  }
+
   openApplication(arg0:string):void{
     const file = new FileInfo()
     file.setOpensWith = arg0;
@@ -472,10 +482,10 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     const newFolder:DesktopMenuItem={ icon:'osdrive/icons/empty_folder.ico', label:'Folder',  action: this.createFolder.bind(this),  variables:true , 
       emptyline:false, styleOption:'C' }
 
-    const textEditor:DesktopMenuItem={ icon:'osdrive/icons/text-editor_48.png', label:'Rich Text',  action: this.sortBySizeM.bind(this),  variables:true , 
+    const textEditor:DesktopMenuItem={ icon:'osdrive/icons/text-editor_48.png', label:'Rich Text',  action: this.openTextEditor.bind(this),  variables:true , 
       emptyline:false, styleOption:'C' }
 
-    const codeEditor:DesktopMenuItem={ icon:'osdrive/icons/vs-code_64.png', label:'Code Editor',  action: this.sortBySizeM.bind(this),  variables:true , 
+    const codeEditor:DesktopMenuItem={ icon:'osdrive/icons/vs-code_64.png', label:'Code Editor',  action: this.openCodeEditor.bind(this),  variables:true , 
         emptyline:false, styleOption:'C' }
 
     const sortByMenu = [newFolder, textEditor, codeEditor ]

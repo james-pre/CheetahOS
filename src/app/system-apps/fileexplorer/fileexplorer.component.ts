@@ -942,7 +942,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
 
   setInformationTipInfo(file:FileInfo):void{
 
-    console.log('file:',file);
+    //console.log('file:',file);
 
     const infoTipFields = ['Author:', 'Item type:','Date created:','Date modified:', 'Dimesions:', 'General', 'Size:','Type:'];
     const fileAuthor = 'Relampago Del Catatumbo';

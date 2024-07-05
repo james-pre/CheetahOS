@@ -17,8 +17,8 @@ import { ScriptService } from 'src/app/shared/system-service/script.services';
 import * as htmlToImage from 'html-to-image';
 import { TaskBarPreviewImage } from '../taskbarpreview/taskbar.preview';
 // eslint-disable-next-line no-var
-declare var Howl:any;
-declare let SiriWave:any;
+declare const Howl:any;
+declare const SiriWave:any;
 
 
 @Component({
