@@ -141,17 +141,23 @@ export class FileService{
                 this._fileInfo.setOpensWith = 'audioplayer';
                 this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
                 this._fileInfo.setSize = fileMetaData.getSize;
-            }
-             else if(extension == '.txt' || extension == '.properties'){
+            }else if(extension == '.txt' || extension == '.properties'){
                 this._fileInfo.setIconPath = '/osdrive/icons/file.ico';
                 this._fileInfo.setCurrentPath = path;
                 this._fileInfo.setFileType = extname(path);
                 this._fileInfo.setFileName = basename(path, extname(path));
-                this._fileInfo.setOpensWith = 'textopener';
+                this._fileInfo.setOpensWith = 'texteditor';
                 this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
                 this._fileInfo.setSize = fileMetaData.getSize;
-            }
-            else if(extension == '.jsdos'){
+            }else if(extension == '.md'){
+                this._fileInfo.setIconPath = '/osdrive/icons/markdown-file_50.png';
+                this._fileInfo.setCurrentPath = path;
+                this._fileInfo.setFileType = extname(path);
+                this._fileInfo.setFileName = basename(path, extname(path));
+                this._fileInfo.setOpensWith = 'markdownviewer';
+                this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
+                this._fileInfo.setSize = fileMetaData.getSize;
+            }else if(extension == '.jsdos'){
                 this._fileInfo.setIconPath = '/osdrive/icons/emulator-2.png';
                 this._fileInfo.setCurrentPath = path;
                 this._fileInfo.setFileType = extname(path);

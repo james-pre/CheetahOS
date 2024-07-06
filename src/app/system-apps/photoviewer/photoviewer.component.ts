@@ -21,7 +21,7 @@ import { TaskBarPreviewImage } from '../taskbarpreview/taskbar.preview';
   templateUrl: './photoviewer.component.html',
   styleUrls: ['./photoviewer.component.css']
 })
-export class PhotoviewerComponent implements BaseComponent, OnInit, OnDestroy, AfterViewInit {
+export class PhotoViewerComponent implements BaseComponent, OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild('photoContainer', {static: true}) photoContainer!: ElementRef; 
 

@@ -17,17 +17,18 @@ import { AppDirectory } from './system-files/app.directory';
 import { BaseComponent } from './system-base/base/base.component';
 import { TitleComponent } from './user-apps/title/title.component';
 import { GreetingComponent } from './user-apps/greeting/greeting.component';
-import { FileexplorerComponent } from './system-apps/fileexplorer/fileexplorer.component';
+import { FileExplorerComponent } from './system-apps/fileexplorer/fileexplorer.component';
 import { TaskmanagerComponent } from './system-apps/taskmanager/taskmanager.component';
-import { JsdosComponent } from './user-apps/jsdos/jsdos.component';
+import { JSdosComponent } from './user-apps/jsdos/jsdos.component';
 import { VideoPlayerComponent } from './system-apps/videoplayer/videoplayer.component';
 import { AudioPlayerComponent } from './system-apps/audioplayer/audioplayer.component';
 import { TerminalComponent } from './system-apps/terminal/terminal.component';
 import { RuffleComponent } from './user-apps/ruffle/ruffle.component';
-import { PhotoviewerComponent } from './system-apps/photoviewer/photoviewer.component';
+import { PhotoViewerComponent } from './system-apps/photoviewer/photoviewer.component';
 import { DialogComponent } from './shared/system-component/dialog/dialog.component';
 import { TextEditorComponent } from './system-apps/texteditor/texteditor.component';
 import { CodeEditorComponent } from './user-apps/codeeditor/codeeditor.component';
+import { MarkDownViewerComponent } from './user-apps/markdownviewer/markdownviewer.component';
 
 @Component({
   selector: 'cos-root',
@@ -78,16 +79,16 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   //appname
   private apps: {type: Type<BaseComponent>}[] =[
     {type: AudioPlayerComponent},
-    {type: FileexplorerComponent},
+    {type: FileExplorerComponent},
     {type: TaskmanagerComponent},
     {type: TerminalComponent},
     // {type: TaskmanagerMiniComponent},
     {type: VideoPlayerComponent},
-    {type: PhotoviewerComponent},
+    {type: PhotoViewerComponent},
     {type: TextEditorComponent},
     {type: TitleComponent},
     {type: GreetingComponent},
-    {type: JsdosComponent},
+    {type: JSdosComponent},
     {type: RuffleComponent},
 
     {type: CodeEditorComponent},

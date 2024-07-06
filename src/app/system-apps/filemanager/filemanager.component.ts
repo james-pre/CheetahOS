@@ -18,7 +18,7 @@ import { MenuService } from 'src/app/shared/system-service/menu.services';
   templateUrl: './filemanager.component.html',
   styleUrls: ['./filemanager.component.css']
 })
-export class FilemanagerComponent implements BaseComponent, OnInit, AfterViewInit, OnDestroy {
+export class FileManagerComponent implements BaseComponent, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('myBounds', {static: true}) myBounds!: ElementRef;
   
   private _processIdService:ProcessIDService;
@@ -275,7 +275,7 @@ export class FilemanagerComponent implements BaseComponent, OnInit, AfterViewIni
     // const transX = matrix.m41;
     // const transY = matrix.m42;
 
-    console.log('TODO:FilemanagerComponent, Upgrade the basic state tracking/management logic:',transform);
+    console.log('TODO:FileManagerComponent, Upgrade the basic state tracking/management logic:',transform);
   }
 
   onMouseEnter(id:number):void{

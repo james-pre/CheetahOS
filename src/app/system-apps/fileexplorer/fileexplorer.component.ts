@@ -28,7 +28,7 @@ import { TaskBarPreviewImage } from '../taskbarpreview/taskbar.preview';
   encapsulation: ViewEncapsulation.None,
 })
 
-export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewInit, OnDestroy {
+export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fileExplorerMainContainer', {static: true}) fileExplrMainCntnr!: ElementRef; 
   @ViewChild('fileExplorerRootContainer', {static: true}) fileExplorerRootContainer!: ElementRef; 
   @ViewChild('fileExplorerContentContainer', {static: true}) fileExplrCntntCntnr!: ElementRef;

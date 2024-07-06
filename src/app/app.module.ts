@@ -11,28 +11,28 @@ import { TitleComponent } from './user-apps/title/title.component';
 import { DesktopComponent } from './system-apps/desktop/desktop.component';
 import { TaskbarComponent } from './system-apps/taskbar/taskbar.component';
 import { ClockComponent } from './system-apps/clock/clock.component';
-import { StartbuttonComponent } from './system-apps/startbutton/startbutton.component';
-import { TaskbarPreviewComponent } from './system-apps/taskbarpreview/taskbarpreview.component';
-import { TaskbarentriesComponent } from './system-apps/taskbarentries/taskbarentries.component';
-import { TaskbarentryComponent } from './system-apps/taskbarentry/taskbarentry.component';
-import { FileexplorerComponent } from './system-apps/fileexplorer/fileexplorer.component';
+import { StartButtonComponent } from './system-apps/startbutton/startbutton.component';
+import { TaskBarPreviewComponent } from './system-apps/taskbarpreview/taskbarpreview.component';
+import { TaskBarEntriesComponent } from './system-apps/taskbarentries/taskbarentries.component';
+import { TaskBarEntryComponent } from './system-apps/taskbarentry/taskbarentry.component';
+import { FileExplorerComponent } from './system-apps/fileexplorer/fileexplorer.component';
 import { WindowComponent } from './system-apps/window/window.component';
-import { FilemanagerComponent } from './system-apps/filemanager/filemanager.component';
+import { FileManagerComponent } from './system-apps/filemanager/filemanager.component';
 import { GreetingComponent } from './user-apps/greeting/greeting.component';
 import { TaskmanagerComponent } from './system-apps/taskmanager/taskmanager.component';
 import { TaskmanagerMiniComponent } from './system-apps/taskmanager/taskmanager.mini.component';
-import { JsdosComponent } from './user-apps/jsdos/jsdos.component';
+import { JSdosComponent } from './user-apps/jsdos/jsdos.component';
 import { VideoPlayerComponent } from './system-apps/videoplayer/videoplayer.component';
 import { AudioPlayerComponent } from './system-apps/audioplayer/audioplayer.component';
 import { TerminalComponent } from './system-apps/terminal/terminal.component';
 import { MenuComponent } from './shared/system-component/menu/menu.component';
-import { PhotoviewerComponent } from './system-apps/photoviewer/photoviewer.component';
+import { PhotoViewerComponent } from './system-apps/photoviewer/photoviewer.component';
 import { TextEditorComponent } from './system-apps/texteditor/texteditor.component';
 import { RuffleComponent } from './user-apps/ruffle/ruffle.component';
 import { DialogComponent } from './shared/system-component/dialog/dialog.component';
 import { CodeEditorComponent } from './user-apps/codeeditor/codeeditor.component';
-import { PropertiesComponent } from './shared/system-component/properties/properties.component';
-
+import { PropertiesComponent } from './shared/system-component/properties/properties.component'; 
+import { MarkDownViewerComponent } from './user-apps/markdownviewer/markdownviewer.component';
 
 import { SafeUrlPipe } from './shared/system-pipes/safe.resource.url.pipe';
 import { TruncatePipe } from './shared/system-pipes/string.shorten.pipe';
@@ -43,9 +43,6 @@ import { LongPressDirective } from './system-apps/audioplayer/long.press.directi
 import { ColumnResizeDirective } from './system-apps/taskmanager/taskmanager.column-resize.directive';
 
 
-
-
-
 @NgModule({
   declarations: [
     TitleComponent,
@@ -53,27 +50,28 @@ import { ColumnResizeDirective } from './system-apps/taskmanager/taskmanager.col
     DesktopComponent,
     TaskbarComponent,
     ClockComponent,
-    StartbuttonComponent,
-    TaskbarPreviewComponent,
-    TaskbarentriesComponent,
-    TaskbarentryComponent,
-    FileexplorerComponent,
+    StartButtonComponent,
+    TaskBarPreviewComponent,
+    TaskBarEntriesComponent,
+    TaskBarEntryComponent,
+    FileExplorerComponent,
     WindowComponent,
-    FilemanagerComponent,
+    FileManagerComponent,
     GreetingComponent,
     TaskmanagerComponent,
     TaskmanagerMiniComponent,
-    JsdosComponent,
+    JSdosComponent,
     VideoPlayerComponent,
     AudioPlayerComponent,
     TerminalComponent,
     MenuComponent,
-    PhotoviewerComponent,
+    PhotoViewerComponent,
     TextEditorComponent,
     PropertiesComponent,
     RuffleComponent,
     DialogComponent,
     CodeEditorComponent,
+    MarkDownViewerComponent,
  
 
     HighlightDirective,

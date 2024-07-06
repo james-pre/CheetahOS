@@ -19,7 +19,7 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
     ])
   ]
 })
-export class TaskbarPreviewComponent implements OnChanges, AfterViewInit {
+export class TaskBarPreviewComponent implements OnChanges, AfterViewInit {
 
   private _runningProcessService:RunningProcessService;
 

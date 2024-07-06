@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FileexplorerComponent } from './fileexplorer.component';
+import { FileExplorerComponent } from './fileexplorer.component';
 
-describe('FileexplorerComponent', () => {
-  let component: FileexplorerComponent;
-  let fixture: ComponentFixture<FileexplorerComponent>;
+describe('FileExplorerComponent', () => {
+  let component: FileExplorerComponent;
+  let fixture: ComponentFixture<FileExplorerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FileexplorerComponent ]
+      declarations: [ FileExplorerComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(FileexplorerComponent);
+    fixture = TestBed.createComponent(FileExplorerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
