@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { JSdosComponent } from './jsdos.component';
+import { MarkDownViewerComponent } from './markdownviewer.component';
 
-describe('JSdosComponent', () => {
-  let component: JSdosComponent;
-  let fixture: ComponentFixture<JSdosComponent>;
+describe('MarkDownViewerComponent', () => {
+  let component: MarkDownViewerComponent;
+  let fixture: ComponentFixture<MarkDownViewerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ JSdosComponent ]
+      imports: [MarkDownViewerComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(JSdosComponent);
+    fixture = TestBed.createComponent(MarkDownViewerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PhotoviewerComponent } from './photoviewer.component';
+import { PhotoViewerComponent } from './photoviewer.component';
 
-describe('PhotoviewerComponent', () => {
-  let component: PhotoviewerComponent;
-  let fixture: ComponentFixture<PhotoviewerComponent>;
+describe('PhotoViewerComponent', () => {
+  let component: PhotoViewerComponent;
+  let fixture: ComponentFixture<PhotoViewerComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [PhotoviewerComponent]
+      declarations: [PhotoViewerComponent]
     });
-    fixture = TestBed.createComponent(PhotoviewerComponent);
+    fixture = TestBed.createComponent(PhotoViewerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

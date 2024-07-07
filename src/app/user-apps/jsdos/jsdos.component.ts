@@ -27,7 +27,7 @@ declare const emulators:Emulators
   templateUrl: './jsdos.component.html',
   styleUrls: ['./jsdos.component.css']
 })
-export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterViewInit {
+export class JSdosComponent implements BaseComponent, OnInit, OnDestroy, AfterViewInit {
   @ViewChild('doswindow') dosWindow!: ElementRef; 
 
   private _fileService:FileService;
@@ -37,6 +37,7 @@ export class JsdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
   private _stateManagmentService:StateManagmentService;
   private _sessionManagmentService: SessionManagmentService;
   private _scriptService: ScriptService;
+  
   private _ci!: CommandInterface;
   private _fileInfo!:FileInfo;
   private _appState!:AppState;

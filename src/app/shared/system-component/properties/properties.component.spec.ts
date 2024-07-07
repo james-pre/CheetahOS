@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { JSdosComponent } from './jsdos.component';
+import { PropertiesComponent } from './properties.component';
 
-describe('JSdosComponent', () => {
-  let component: JSdosComponent;
-  let fixture: ComponentFixture<JSdosComponent>;
+describe('PropertiesComponent', () => {
+  let component: PropertiesComponent;
+  let fixture: ComponentFixture<PropertiesComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ JSdosComponent ]
+      imports: [PropertiesComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(JSdosComponent);
+    fixture = TestBed.createComponent(PropertiesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -9,7 +9,7 @@ import { Process } from 'src/app/system-files/process';
   templateUrl: './startbutton.component.html',
   styleUrls: ['./startbutton.component.css']
 })
-export class StartbuttonComponent implements OnInit {
+export class StartButtonComponent implements OnInit {
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
 

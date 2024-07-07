@@ -18,7 +18,7 @@ import { MenuService } from 'src/app/shared/system-service/menu.services';
   templateUrl: './filemanager.component.html',
   styleUrls: ['./filemanager.component.css']
 })
-export class FilemanagerComponent implements BaseComponent, OnInit, AfterViewInit, OnDestroy {
+export class FileManagerComponent implements BaseComponent, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('myBounds', {static: true}) myBounds!: ElementRef;
   
   private _processIdService:ProcessIDService;
@@ -77,7 +77,8 @@ export class FilemanagerComponent implements BaseComponent, OnInit, AfterViewIni
     {icon:'', label: 'Pin to Start', action: this.doNothing.bind(this) },
     {icon:'', label: 'Pin to Taskbar', action: this.pinIconToTaskBar.bind(this) },
     {icon:'', label: 'Delete', action: this.onDeleteFile.bind(this) },
-    {icon:'', label: 'Rename', action: this.onRenameFileTxtBoxShow.bind(this) }
+    {icon:'', label: 'Rename', action: this.onRenameFileTxtBoxShow.bind(this) },
+    {icon:'', label: 'Properties', action: this.doNothing.bind(this) }
   ];
   
   fileExplrMngrMenuOption = "file-explorer-file-manager-menu";
@@ -132,6 +133,7 @@ export class FilemanagerComponent implements BaseComponent, OnInit, AfterViewIni
   async onDrop(event:DragEvent):Promise<void>{
     event.preventDefault();
     let droppedFiles:File[] = [];
+
     if(event?.dataTransfer?.files){
         // eslint-disable-next-line no-unsafe-optional-chaining
         droppedFiles  = [...event?.dataTransfer?.files];
@@ -159,14 +161,21 @@ export class FilemanagerComponent implements BaseComponent, OnInit, AfterViewIni
   async runProcess(file:FileInfo):Promise<void>{
 
     console.log('filemanager-runProcess:',file)
+    this._triggerProcessService.startApplication(file);
+    this.btnStyleAndValuesReset();
+    
     // console.log('what was clicked:',file.getFileName +'-----' + file.getOpensWith +'---'+ file.getCurrentPath +'----'+ file.getIcon) TBD
-    if((file.getOpensWith === 'fileexplorer' && file.getFileName !== 'fileexplorer') && file.getFileType ==='folder'){
-        this.directory = file.getCurrentPath;
-        await this.loadFilesInfoAsync();
-    }else{
-        this._triggerProcessService.startApplication(file);
-        this.btnStyleAndValuesReset();
-    }
+    // if((file.getOpensWith === 'fileexplorer' && file.getFileName !== 'fileexplorer') && file.getFileType ==='folder'){
+    //     //this.directory = file.getCurrentPath;
+    //    // await this.loadFilesInfoAsync();
+
+    //    this._triggerProcessService.startApplication(file);
+    //    this.btnStyleAndValuesReset();
+
+    // }else{
+    //     this._triggerProcessService.startApplication(file);
+    //     this.btnStyleAndValuesReset();
+    // }
   }
 
   onBtnClick(id:number):void{
@@ -266,7 +275,7 @@ export class FilemanagerComponent implements BaseComponent, OnInit, AfterViewIni
     // const transX = matrix.m41;
     // const transY = matrix.m42;
 
-    console.log('TODO:FilemanagerComponent, Upgrade the basic state tracking/management logic:',transform);
+    console.log('TODO:FileManagerComponent, Upgrade the basic state tracking/management logic:',transform);
   }
 
   onMouseEnter(id:number):void{

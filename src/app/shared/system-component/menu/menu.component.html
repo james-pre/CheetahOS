@@ -13,9 +13,9 @@
             <span class="span dm-tail"> <figure class="dm-fig-cntxt-menu"> </figure> </span>
         </div>
 
-        <div class="dm-empty-line-container" *ngIf="i === 2"></div>
-        <div class="dm-line-container" *ngIf="i  === 2"><div class="dm-line"></div></div>
-        <div class="dm-empty-line-container" *ngIf="i === 2"></div>
+        <div class="dm-empty-line-container" *ngIf="i === 2 || i === 4"></div>
+        <div class="dm-line-container" *ngIf="i === 2 || i === 4"><div class="dm-line"></div></div>
+        <div class="dm-empty-line-container" *ngIf="i === 2 || i === 4"></div>
     </div>
 
     <div class="dm-empty-line-container"></div>
@@ -74,7 +74,7 @@
       <div *ngIf="menuItem.emptyline" class="dm-dsktp-line-container"><div class="dm-dsktp-line"></div></div>
       <div *ngIf="menuItem.emptyline" class="dm-dsktp-empty-line-container"></div>
     </div>
-    <div style="position: relative; z-index:2; top: 248px;" class="dm-dsktp-empty-line-container"></div>
+    <div style="position: relative; z-index:1; top: 248px;" class="dm-dsktp-empty-line-container"></div>
   </div>
 </ng-template>
 

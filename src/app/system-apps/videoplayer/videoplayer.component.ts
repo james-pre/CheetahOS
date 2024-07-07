@@ -16,8 +16,7 @@ import { Subscription } from 'rxjs';
 import { ScriptService } from 'src/app/shared/system-service/script.services';
 import * as htmlToImage from 'html-to-image';
 import { TaskBarPreviewImage } from '../taskbarpreview/taskbar.preview';
-// eslint-disable-next-line no-var
-declare var videojs: (arg0: any, arg1: object, arg2: () => void) => any;
+declare const videojs: (arg0: any, arg1: object, arg2: () => void) => any;
 
 
 @Component({

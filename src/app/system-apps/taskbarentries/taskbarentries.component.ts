@@ -13,7 +13,7 @@ import { Process } from 'src/app/system-files/process';
   templateUrl: './taskbarentries.component.html',
   styleUrls: ['./taskbarentries.component.css']
 })
-export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
+export class TaskBarEntriesComponent implements AfterViewInit, OnDestroy {
 
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
@@ -230,7 +230,7 @@ export class TaskbarentriesComponent implements AfterViewInit, OnDestroy {
   }
 
   onMouseEnter(appName:string, iconPath:string, caller:string):void{
-    const prefix = (caller == "pinned")? 'tskbar': 'tskbar-UnPinned';
+    const prefix = (caller === "pinned")? 'tskbar': 'tskbar-UnPinned';
     const liElemnt = document.getElementById(`${prefix}-${appName}`) as HTMLElement;
     const rect =  liElemnt.getBoundingClientRect();
     const data:unknown[] = [rect, appName, iconPath];

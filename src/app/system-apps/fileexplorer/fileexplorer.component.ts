@@ -28,7 +28,7 @@ import { TaskBarPreviewImage } from '../taskbarpreview/taskbar.preview';
   encapsulation: ViewEncapsulation.None,
 })
 
-export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewInit, OnDestroy {
+export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fileExplorerMainContainer', {static: true}) fileExplrMainCntnr!: ElementRef; 
   @ViewChild('fileExplorerRootContainer', {static: true}) fileExplorerRootContainer!: ElementRef; 
   @ViewChild('fileExplorerContentContainer', {static: true}) fileExplrCntntCntnr!: ElementRef;
@@ -90,6 +90,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   olClassName = 'ol-icon-size-view';
 
   files:FileInfo[] = [];
+   _fileInfo!:FileInfo;
   prevPathEntries:string[] = [];
   nextPathEntries:string[] = [];
   recentPathEntries:string[] = [];
@@ -119,9 +120,11 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
 
   menuData = [
     {icon:'', label: 'Open', action: this.onTriggerRunProcess.bind(this) },
+    {icon:'', label: 'Open in new window', action: this.doNothing.bind(this) },
     {icon:'', label: 'Pin to Start', action: this.doNothing.bind(this) },
     {icon:'', label: 'Delete', action: this.onDeleteFile.bind(this) },
-    {icon:'', label: 'Rename', action: this.onRenameFileTxtBoxShow.bind(this) }
+    {icon:'', label: 'Rename', action: this.onRenameFileTxtBoxShow.bind(this) },
+    {icon:'', label: 'Properties', action: this.doNothing.bind(this) }
   ];
   fileExplrMngrMenuOption = "file-explorer-file-manager-menu";
 
@@ -165,6 +168,14 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
   }
 
   ngOnInit():void{
+    this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
+
+    if(this._fileInfo){
+      // is this a URL or and Actual Folder
+      if(this._fileInfo.getOpensWith === 'fileexplorer' && !this._fileInfo.getIsFile) //Actual Folder
+         this.directory = this._fileInfo.getCurrentPath;
+    }
+
     this.renameForm = this._formBuilder.nonNullable.group({
       renameInput: '',
     });
@@ -881,7 +892,6 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
     this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
   }
 
-
   sortIcons(sortBy:string): void {
     if(sortBy === "Size"){
       this.files = this.files.sort((objA, objB) => objB.getSize - objA.getSize);
@@ -903,7 +913,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
 
     const rect =  this.fileExplrCntntCntnr.nativeElement.getBoundingClientRect();
     const x = (evt.clientX - rect.left) - 15;
-    const y = (evt.clientY - rect.top) - 10;
+    const y = (evt.clientY - rect.top) + 10;
 
     setTimeout(()=>{
       const infoTip = document.getElementById(`fx-information-tip-${this.processId}`) as HTMLDivElement;
@@ -911,6 +921,9 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
         setTimeout(()=>{ 
           infoTip.style.display = 'block';
           infoTip.style.transform = `translate(${String(x)}px, ${String(y)}px)`;
+          infoTip.style.position = 'absolute';
+          infoTip.style.zIndex = '3';
+
 
           this.setInformationTipInfo(file);
 
@@ -929,7 +942,7 @@ export class FileexplorerComponent implements BaseComponent, OnInit, AfterViewIn
 
   setInformationTipInfo(file:FileInfo):void{
 
-    console.log('file:',file);
+    //console.log('file:',file);
 
     const infoTipFields = ['Author:', 'Item type:','Date created:','Date modified:', 'Dimesions:', 'General', 'Size:','Type:'];
     const fileAuthor = 'Relampago Del Catatumbo';

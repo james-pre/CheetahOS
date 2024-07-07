@@ -6,7 +6,7 @@ import { ComponentType } from 'src/app/system-files/component.types';
   templateUrl: './taskbarentry.component.html',
   styleUrls: ['./taskbarentry.component.css']
 })
-export class TaskbarentryComponent implements OnInit {
+export class TaskBarEntryComponent implements OnInit {
 
   @Input() taskBarIconImgUrl = ''
   @Input() taskBarIconName = ''

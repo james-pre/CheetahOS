@@ -50,12 +50,10 @@ span{
 }
 
 span.dm-head{
-    /* max-width: 25%; */
     padding-left: 4px;
 }
 
 span.dm-mid{
-    /* min-width: 50%; */
     padding: 0 4px;
     color: white; /* Black text color */
     text-align: left;
@@ -64,8 +62,7 @@ span.dm-mid{
 }
 
 span.dm-tail{
-    /* max-width: 25%; */
-    padding-left: 78px;
+    padding-left: 47px;
 }
 
 .dm-fig-cntxt-menu{

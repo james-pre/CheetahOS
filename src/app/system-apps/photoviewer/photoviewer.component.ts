@@ -21,7 +21,7 @@ import { TaskBarPreviewImage } from '../taskbarpreview/taskbar.preview';
   templateUrl: './photoviewer.component.html',
   styleUrls: ['./photoviewer.component.css']
 })
-export class PhotoviewerComponent implements BaseComponent, OnInit, OnDestroy, AfterViewInit {
+export class PhotoViewerComponent implements BaseComponent, OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild('photoContainer', {static: true}) photoContainer!: ElementRef; 
 
@@ -165,15 +165,17 @@ export class PhotoviewerComponent implements BaseComponent, OnInit, OnDestroy, A
   async getCurrentPicturePathAndSearchForOthers():Promise<void>{
     // if stuff was reutrned from session, then use it.
     if(this.imageList.length == 0){
-      // else, go fetch.
-      const dirPath = dirname(this.picSrc);
-      //console.log('dirPath:', dirPath);
-      const pathList:string[] = await this._fileService.getFilesFromDirectoryAsync(dirPath) as string[];
+      if(this.picSrc.substring(0, 10) !== 'data:image'){
+        // else, go fetch.
+        const dirPath = dirname(this.picSrc);
+        //console.log('dirPath:', dirPath);
+        const pathList:string[] = await this._fileService.getFilesFromDirectoryAsync(dirPath) as string[];
 
-      //check for images
-      for(let i = 0; i <= pathList.length - 1; i++){
-        if(this._consts.IMAGE_FILE_EXTENSIONS.includes(extname(pathList[i]))){
-          this.imageList.push(`${dirPath}/${pathList[i]}`);
+        //check for images
+        for(let i = 0; i <= pathList.length - 1; i++){
+          if(this._consts.IMAGE_FILE_EXTENSIONS.includes(extname(pathList[i]))){
+            this.imageList.push(`${dirPath}/${pathList[i]}`);
+          }
         }
       }
     }
@@ -185,8 +187,10 @@ export class PhotoviewerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   getPictureSrc(pathOne:string, pathTwo:string):string{
     let pictureSrc = '';
-
-    if(this.checkForExt(pathOne,pathTwo)){
+    
+    if(pathOne.substring(0, 10) === 'data:image'){
+      return pathOne;
+    }else if(this.checkForExt(pathOne,pathTwo)){
       pictureSrc = '/' + this._fileInfo.getContentPath;
     }else{
       pictureSrc =  this._fileInfo.getCurrentPath;

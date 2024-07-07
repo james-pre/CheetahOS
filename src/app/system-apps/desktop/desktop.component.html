@@ -1,5 +1,9 @@
- <main id="vanta" class="main-desktop"  (contextmenu)="showDesktopContextMenu($event)" (click)="hideContextMenu()" #desktopContainer> 
+ <main class="main-desktop" id="vanta"  (contextmenu)="showDesktopContextMenu($event)" (click)="hideContextMenu()" #desktopContainer> 
 
+    <div [@slideStatusAnimation]="slideState" class="dsktp-screen-preview-container"  *ngIf="showDesktopScreenShotPreview">
+        <img [src]="dsktpPrevImg"/>
+    </div>
+    
     <cos-menu [desktopMenu]="deskTopMenu" *ngIf="showDesktopCntxtMenu" [style]="dskTopCntxtMenuStyle" [menuType]="deskTopMenuOption"> </cos-menu>
     <cos-taskbarpreview  [fadeState]="tskBarPreviewWindowState" [name]="appToPreview" [icon]="appToPreviewIcon" *ngIf="showTskBarPreviewWindow"  [ngStyle]="tskBarPrevWindowStyle">  </cos-taskbarpreview>
     <cos-menu [generalMenu]="taskBarMenuData" *ngIf="showTskBarCntxtMenu" [style]="tskBarCntxtMenuStyle" [menuType]="tskBarMenuOption"> </cos-menu>
