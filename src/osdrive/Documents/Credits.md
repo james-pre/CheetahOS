@@ -4,7 +4,14 @@ ___________________________________________
 ```
   We are giants because we stand on the shoulder of those who came before us.
   A heart felt thanks to all the devs who's tools are instrumental in making this project possible.
-  
+  And to Dustin Brett who gave a much needed how-to guide.
+
+
+## Tutorial
+```
+___________________________________________
+```
+- [Dustin Brett - ReactOs](https://www.youtube.com/watch?v=S-rF5rkhaJ0&list=PLM88opVjBuU7xSRoHhs3hZBz3JmHHBMMN&index=1)
 
 ## Frameworks
 ```
@@ -32,18 +39,18 @@ ___________________________________________
 - [angular2-draggable](https://github.com/xieziyu/angular2-draggable)
 - [Vanta.js](https://github.com/tengbao/vanta)
 
-
 ## App Libraries
 ```
 ___________________________________________
 ```
 - [js-dos](https://github.com/caiiiycuk/js-dos)
 - [Ruffle](https://github.com/ruffle-rs/ruffle)
-- [Marked](https://github.com/markedjs/marked)
-- [Monaco Editor](https://github.com/microsoft/monaco-editor)
+- [Marked.js](https://github.com/markedjs/marked)
+- [Monaco Editor](https://github.com/miki995/ngx-monaco-editor-v2#readme)
 - [PDF.js](https://github.com/mozilla/pdf.js)
 - [Video.js](https://github.com/videojs/video.js)
-- [Quill](https://github.com/slab/quill/)
+- [Howler.js](https://github.com/goldfire/howler.js)
+- [Quill.js](https://github.com/slab/quill/)
 - [Print.js](https://github.com/crabbly/print.js)
 
 ## Services
