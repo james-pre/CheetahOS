@@ -17,6 +17,7 @@ import { ScriptService } from 'src/app/shared/system-service/script.services';
 import { FileService } from 'src/app/shared/system-service/file.service';
 import { FileInfo } from 'src/app/system-files/fileinfo';
 import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 declare const marked:any;
 
 @Component({
@@ -37,12 +38,14 @@ export class MarkDownViewerComponent implements BaseComponent,  OnDestroy, After
   private _scriptService: ScriptService;
   private _fileService:FileService;
 
+  private _sanitizer: DomSanitizer;
   private _renderer: Renderer2;
 
   private _fileInfo!:FileInfo;
   private _appState!:AppState;
   private _maximizeWindowSub!: Subscription;
   private fileSrc = '';
+  mkdDwnHtml:SafeHtml = '';
 
   SECONDS_DELAY = 250;
 
@@ -55,7 +58,8 @@ export class MarkDownViewerComponent implements BaseComponent,  OnDestroy, After
 
 
   constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService,
-                stateManagmentService:StateManagmentService, scriptService: ScriptService,fileService:FileService, sessionManagmentService: SessionManagmentService, renderer: Renderer2){
+                stateManagmentService:StateManagmentService, scriptService: ScriptService,fileService:FileService, 
+                sessionManagmentService: SessionManagmentService, renderer: Renderer2, sanitizer: DomSanitizer){
     this._processIdService = processIdService
     this._runningProcessService = runningProcessService;
     this._stateManagmentService = stateManagmentService;
@@ -64,6 +68,7 @@ export class MarkDownViewerComponent implements BaseComponent,  OnDestroy, After
     this._scriptService = scriptService;
     this._fileService = fileService;
     this._renderer = renderer;
+    this._sanitizer = sanitizer
 
     this.processId = this._processIdService.getNewProcessId();
 
@@ -86,14 +91,13 @@ export class MarkDownViewerComponent implements BaseComponent,  OnDestroy, After
     this._scriptService.loadScript("markedjs","assets/marked/marked.min.js").then(async() =>{  
      const mkd = marked.setOptions({
         gfm: true,
-        pedantic: false,
         breaks: true
       });
 
       const textCntnt = await this._fileService.readTextFileAsync(this.fileSrc);
-      console.log('htmlCntnt:', textCntnt);
-      this._renderer.setProperty(this.markDownContent.nativeElement, 'innerHTML', mkd(textCntnt));
-      console.log('mkd(htmlCntnt):', mkd(textCntnt));
+      const htmlCntnt = mkd(textCntnt);
+      const safeHtmlCntnt = this._sanitizer.bypassSecurityTrustHtml(htmlCntnt);
+      this.mkdDwnHtml = safeHtmlCntnt;
       this.storeAppState(this.fileSrc);
     })
 

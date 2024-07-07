@@ -1,71 +1,61 @@
 # Credits
-
+```
+___________________________________________
+```
   We are giants because we stand on the shoulder of those who came before us.
-  A heart felt thanks to all the devs who's tools are instrumental to making this project possible.
-1. James Madison
-2. James Monroe
-3. John Quincy Adams
+  A heart felt thanks to all the devs who's tools are instrumental in making this project possible.
+  And to Dustin Brett who gave a much needed how-to guide.
 
-- George Washington
-* John Adams
-+ Thomas Jefferson
 
+## Tutorial
 ```
-1. git status
-2. git add
-3. git commit
+___________________________________________
 ```
+- [Dustin Brett - ReactOs](https://www.youtube.com/watch?v=S-rF5rkhaJ0&list=PLM88opVjBuU7xSRoHhs3hZBz3JmHHBMMN&index=1)
 
-The background color is `#ffffff` for light mode and `#000000` for dark mode.
+## Frameworks
+```
+___________________________________________
+```
+- [Angular](https://github.com/angular/angular)
+- [TypeScript](https://github.com/microsoft/TypeScript)
 
-Building a Dektop environment in the web browser
+## Tools
+```
+___________________________________________
+```
+- [Jest](https://github.com/facebook/jest)
+- [ESLint](https://github.com/eslint/eslint)
+- [Prettier](https://github.com/prettier/prettier)
+- [Husky](https://github.com/typicode/husky)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.0.
+## System Libraries
+```
+___________________________________________
+```
+- [BrowserFS](https://github.com/jvilk/BrowserFS)
+- [ini](https://github.com/npm/ini)
+- [html-to-image](https://github.com/bubkoo/html-to-image)
+- [angular2-draggable](https://github.com/xieziyu/angular2-draggable)
+- [Vanta.js](https://github.com/tengbao/vanta)
 
-## Development server
+## App Libraries
+```
+___________________________________________
+```
+- [js-dos](https://github.com/caiiiycuk/js-dos)
+- [Ruffle](https://github.com/ruffle-rs/ruffle)
+- [Marked.js](https://github.com/markedjs/marked)
+- [Monaco Editor](https://github.com/miki995/ngx-monaco-editor-v2#readme)
+- [PDF.js](https://github.com/mozilla/pdf.js)
+- [Video.js](https://github.com/videojs/video.js)
+- [Howler.js](https://github.com/goldfire/howler.js)
+- [Quill.js](https://github.com/slab/quill/)
+- [Print.js](https://github.com/crabbly/print.js)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
-
-## Code setup
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-Run `npm run build` to generate the filesystem(osdrive.json). Once the filesystem is created, update the file by placing all the auto generated content within the tag {"osdrive": .................}.
-
-It should look like this {"osdrive":{"Desktop":{"audioplayer.url":null,"fileexplorer.url":null,"heat.url":null,"hello.url":null,"taskmanager.url":null,"terminal.url":null,"videoplayer.url":null}}}
-
-***Note - npm will throw an error that it is unable to find make_http_index.js. All you have to do, is to got `CheetahOs/node_modules/browserfs/dist/scripts folder` and make a copy of `make_xhrfs_index.js` and rename it to `make_http_index.js`
-
-***Note Some other error might occur in browserfs as a result of missing libs.
-
-We are not utilizing the DropBox feature, so we can comment it out
-comment out this line `/// <reference types="dropboxjs" />` change it to `/* /// <reference types="dropboxjs" />*/`
-
-|---> Cannot find namespace `Dropbox`: replace reference to `Dropbox` with `any`. like `client: Dropbox.Client; --> client: any;`
-
-|---> Cannot find namespace `NodeBuffer` : replace reference to `NodeBuffer` with `any`. like `client: buffer: NodeBuffer; --> buffer: any;`
-
-|---> Property `put` in type `IndexedDBRWTransaction` is not assignable to the same property in base type 'AsyncKeyValueRWTransaction'.
-
- |---> change `(key: string, data: Buffer, overwrite: boolean, cb: BFSCallback<boolean>)`  to `(key: string, data: Buffer, overwrite: boolean, cb: any)`
-
-|---> Type `Stats` is missing the following properties from type `StatsBase<number>: atimeMs, mtimeMs, ctimeMs, birthtimeMs`
-
- |---> add this line of code:`atimeMs: number; mtimeMs: number; ctimeMs: number; birthtimeMs: number;`
-
-## Code scaffolding
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Services
+```
+___________________________________________
+```
+- [ntp.js](http://www.ntpjs.org/)
+- [Astronomy Picture of the Day](https://apod.nasa.gov/apod/)

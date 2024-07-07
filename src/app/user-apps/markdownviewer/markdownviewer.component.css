@@ -10,6 +10,41 @@
     white-space: pre;
     text-align: left;
     overflow: auto;
-    background-color: white ;
-    margin: 10px 10px;
+    background-color: #f9f9f9;
+    box-sizing: border-box;
+    font-size: 16px;
+    line-height: 1.5;
+    padding: 10px 10px;
+}
+
+.markdown-content h1,h2{
+
+    border-bottom: 1px solid #ccc;
+    margin: 5px 0;
+}
+
+
+.markdown-content nav{
+
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    margin-right: 10px;
+}
+
+
+.markdown-content > ul{
+
+    font-size: 14px;
+    list-style-type: none;
+    margin: 5px 0;
+    padding: 0;
+    position: sticky;
+    top: 5px;
+}
+
+.markdown-content > ul > li{
+
+    min-width: 125px;
+    padding: 0 15px;
 }
