@@ -451,6 +451,27 @@ export class FileService{
         });
     }
 
+
+    public async readTextFileAsync(path:string): Promise<string> {
+        if (!path) {
+            console.error('readTextFileAsync error: Path must not be empty');
+            return Promise.reject(new Error('Path must not be empty'));
+        }
+
+        await this.initBrowserFsAsync();
+
+       return new Promise((resolve, reject) =>{
+            this._fileSystem.readFile(path,(err, contents = Buffer.from('')) =>{
+                if(err){
+                    console.log('readTextFileAsync error:',err)
+                    reject(err)
+                }else{
+                    resolve(contents.toString());
+                }
+            });
+        });
+    }
+
     public async deleteFileAsync(path:string): Promise<void> {
         await this.initBrowserFsAsync();
 

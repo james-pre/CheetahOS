@@ -65,7 +65,6 @@ export class RuffleComponent implements BaseComponent, OnInit, AfterViewInit {
     this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
   }
 
-
   async ngAfterViewInit() {
     this.setRuffleWindowToFocus(this.processId); 
 
@@ -81,7 +80,7 @@ export class RuffleComponent implements BaseComponent, OnInit, AfterViewInit {
 
     setTimeout(()=>{
       this.captureComponentImg();
-    },this.SECONDS_DELAY) 
+    },this.SECONDS_DELAY);
   }
 
 

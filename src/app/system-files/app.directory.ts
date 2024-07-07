@@ -21,7 +21,7 @@ export class AppDirectory {
     }
 
     private fetchUserApp(): string[]{
-        this._userProcessList = ["hello","greeting", "jsdos","ruffle","codeeditor"];
+        this._userProcessList = ["hello","greeting", "jsdos","ruffle","codeeditor","markdownviewer"];
         return this._userProcessList;
     }
 

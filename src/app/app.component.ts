@@ -90,8 +90,8 @@ export class AppComponent implements OnDestroy, AfterViewInit {
     {type: GreetingComponent},
     {type: JSdosComponent},
     {type: RuffleComponent},
-
     {type: CodeEditorComponent},
+    {type: MarkDownViewerComponent},
   ];
 
 

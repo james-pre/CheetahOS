@@ -119,6 +119,6 @@ export class CodeEditorComponent  implements BaseComponent,  OnDestroy, AfterVie
 
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type, this._triggerProcessService.getLastProcessTrigger)
-    }
+  }
 
 }

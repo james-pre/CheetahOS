@@ -37,6 +37,7 @@ export class JSdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
   private _stateManagmentService:StateManagmentService;
   private _sessionManagmentService: SessionManagmentService;
   private _scriptService: ScriptService;
+  
   private _ci!: CommandInterface;
   private _fileInfo!:FileInfo;
   private _appState!:AppState;

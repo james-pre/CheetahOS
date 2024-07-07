@@ -109,6 +109,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   terminalApp ="terminal";
   textEditorApp ="texteditor";
   codeEditorApp ="codeeditor";
+  markDownViewerApp ="markdownviewer";
 
   waveBkgrnd:WAVE =  {el:'#vanta'}
   ringsBkgrnd:RINGS =  {el:'#vanta'}
@@ -425,9 +426,19 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     this.openApplication(this.codeEditorApp);
   }
 
+  openMarkDownViewer():void{
+    this.openApplication(this.markDownViewerApp);
+  }
+
   openApplication(arg0:string):void{
-    const file = new FileInfo()
+    const file = new FileInfo();
+
     file.setOpensWith = arg0;
+
+    if(arg0 ==  this.markDownViewerApp){
+      file.setCurrentPath = 'osdrive/Desktop';
+      file.setContentPath = 'osdrive/Documents/Credits.md';
+    }
 
     this._triggerProcessService.startApplication(file);
   }
@@ -503,7 +514,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
           {icon1:'',  icon2:'', label:'Next Background', nest:[], action: this.nextBackground.bind(this), emptyline:false},
           {icon1:'',  icon2:'', label:'Previous Background', nest:[], action: this.previousBackground.bind(this), emptyline:true},
           {icon1:'',  icon2:'osdrive/icons/arrow_next.png', label:'New', nest:this.buildNewMenu(), action: ()=> console.log(), emptyline:true},
-          {icon1:'',  icon2:'', label:'Many Thanks', nest:[], action: ()=> console.log(), emptyline:false}
+          {icon1:'',  icon2:'', label:'Many Thanks', nest:[], action: this.openMarkDownViewer.bind(this), emptyline:false}
       ]
   }
 
