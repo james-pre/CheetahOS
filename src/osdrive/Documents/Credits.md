@@ -2,7 +2,7 @@
 ```
 ________________________________________________________
 ```
-  A heart felt thanks to all the devs who's tools are instrumental in making this project possible.
+  A heart felt thanks to all the devs who's tools were instrumental in making this project possible.
   And to Dustin Brett who gave a much needed how-to guide.
 
 
@@ -51,10 +51,3 @@ ________________________________________________________
 - [Howler.js](https://github.com/goldfire/howler.js)
 - [Quill.js](https://github.com/slab/quill/)
 - [Print.js](https://github.com/crabbly/print.js)
-
-## Services
-```
-________________________________________________________
-```
-- [ntp.js](http://www.ntpjs.org/)
-- [Astronomy Picture of the Day](https://apod.nasa.gov/apod/)
