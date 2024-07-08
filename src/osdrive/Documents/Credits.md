@@ -1,28 +1,27 @@
 # Credits
 ```
-___________________________________________
+________________________________________________________
 ```
-  We are giants because we stand on the shoulder of those who came before us.
   A heart felt thanks to all the devs who's tools are instrumental in making this project possible.
   And to Dustin Brett who gave a much needed how-to guide.
 
 
 ## Tutorial
 ```
-___________________________________________
+________________________________________________________
 ```
 - [Dustin Brett - ReactOs](https://www.youtube.com/watch?v=S-rF5rkhaJ0&list=PLM88opVjBuU7xSRoHhs3hZBz3JmHHBMMN&index=1)
 
 ## Frameworks
 ```
-___________________________________________
+________________________________________________________
 ```
 - [Angular](https://github.com/angular/angular)
 - [TypeScript](https://github.com/microsoft/TypeScript)
 
 ## Tools
 ```
-___________________________________________
+________________________________________________________
 ```
 - [Jest](https://github.com/facebook/jest)
 - [ESLint](https://github.com/eslint/eslint)
@@ -31,7 +30,7 @@ ___________________________________________
 
 ## System Libraries
 ```
-___________________________________________
+________________________________________________________
 ```
 - [BrowserFS](https://github.com/jvilk/BrowserFS)
 - [ini](https://github.com/npm/ini)
@@ -41,7 +40,7 @@ ___________________________________________
 
 ## App Libraries
 ```
-___________________________________________
+________________________________________________________
 ```
 - [js-dos](https://github.com/caiiiycuk/js-dos)
 - [Ruffle](https://github.com/ruffle-rs/ruffle)
@@ -55,7 +54,7 @@ ___________________________________________
 
 ## Services
 ```
-___________________________________________
+________________________________________________________
 ```
 - [ntp.js](http://www.ntpjs.org/)
 - [Astronomy Picture of the Day](https://apod.nasa.gov/apod/)
