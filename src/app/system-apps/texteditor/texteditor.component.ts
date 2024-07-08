@@ -3,14 +3,22 @@ import { ProcessIDService } from 'src/app/shared/system-service/process.id.servi
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { StateManagmentService } from 'src/app/shared/system-service/state.management.service';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
+import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
+import { FileService } from 'src/app/shared/system-service/file.service';
+import { ScriptService } from 'src/app/shared/system-service/script.services';
+
 import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { Process } from 'src/app/system-files/process';
-
-import * as htmlToImage from 'html-to-image';
+import { FileInfo } from 'src/app/system-files/fileinfo';
+import { AppState, BaseState } from 'src/app/system-files/state/state.interface';
+import { StateType } from 'src/app/system-files/state/state.type';
 import { TaskBarPreviewImage } from '../taskbarpreview/taskbar.preview';
+
+import {extname} from 'path';
+import * as htmlToImage from 'html-to-image';
 import { Subscription } from 'rxjs';
-import { ScriptService } from 'src/app/shared/system-service/script.services';
+
 declare const Quill:any;
 
 @Component({
@@ -27,13 +35,18 @@ export class TextEditorComponent  implements BaseComponent, OnDestroy, AfterView
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _stateManagmentService:StateManagmentService;
+  private _sessionManagmentService: SessionManagmentService;
   private _triggerProcessService:TriggerProcessService;
   private _scriptService: ScriptService;
+  private _fileService:FileService;
 
+  private _fileInfo!:FileInfo;
+  private _appState!:AppState;
   private _maximizeWindowSub!: Subscription;
-  SECONDS_DELAY = 250;
+  private fileSrc = '';
   private quill: any;
 
+  SECONDS_DELAY = 250;
 
   hasWindow = true;
   icon = 'osdrive/icons/text-editor_48.png';
@@ -43,26 +56,33 @@ export class TextEditorComponent  implements BaseComponent, OnDestroy, AfterView
   displayName = '';
 
 
-  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService,
-              stateManagmentService:StateManagmentService,  scriptService: ScriptService){
+  constructor(processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService,
+              fileService:FileService,  sessionManagmentService: SessionManagmentService,  stateManagmentService:StateManagmentService, 
+              scriptService: ScriptService){
+
     this._processIdService = processIdService
     this.processId = this._processIdService.getNewProcessId()
     this._runningProcessService = runningProcessService;
     this._stateManagmentService = stateManagmentService;
     this._triggerProcessService = triggerProcessService;
+    this._sessionManagmentService = sessionManagmentService;
     this._scriptService = scriptService;
+    this._fileService = fileService;
 
 
     this._runningProcessService.addProcess(this.getComponentDetail());
   }
 
-  ngOnInit(): void {
-    1
+  ngOnInit():void{
+    this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
   }
+
 
   ngAfterViewInit(): void {
     this.setTextEditorWindowToFocus(this.processId); 
 
+    this.fileSrc = (this.fileSrc !=='')? 
+    this.fileSrc : this.getFileSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
 
     const options = {
       debug: 'info',
@@ -72,10 +92,16 @@ export class TextEditorComponent  implements BaseComponent, OnDestroy, AfterView
       placeholder: 'Compose an epic...',
       theme: 'snow'
     };
-    this._scriptService.loadScript("quilljs","assets/quill/quill.js").then(() =>{
+    this._scriptService.loadScript("quilljs","assets/quill/quill.js").then( async() =>{
   
+      const textCntnt = await this._fileService.readTextFileAsync(this.fileSrc);
+      const index = 0;
+
       this.quill = new Quill(this.editorContainer.nativeElement, options)
-      //this.player.on('fullscreenchange', this.onFullscreenChange);
+      this.quill.insertText(index, textCntnt, {
+        color: '#ffff00',
+        italic: false,
+      });
     })
 
     setTimeout(()=>{
@@ -118,6 +144,60 @@ export class TextEditorComponent  implements BaseComponent, OnDestroy, AfterView
 
   setTextEditorWindowToFocus(pid:number):void{
     this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
+  }
+
+  getFileSrc(pathOne:string, pathTwo:string):string{
+    let fileSrc = '';
+
+    if(this.checkForExt(pathOne,pathTwo)){
+      fileSrc = '/' + this._fileInfo.getContentPath;
+    }else{
+      fileSrc =  this._fileInfo.getCurrentPath;
+    }
+
+    return fileSrc;
+  }
+
+  checkForExt(contentPath:string, currentPath:string):boolean{
+    const contentExt = extname(contentPath);
+    const currentPathExt = extname(currentPath);
+    const ext = ".txt";
+    let res = false;
+
+    if(contentExt != '' && contentExt == ext){
+      res = true;
+    }else if( currentPathExt == ext){
+      res = false;
+    }
+    return res;
+  }
+
+  storeAppState(app_data:unknown):void{
+    const uid = `${this.name}-${this.processId}`;
+
+    this._appState = {
+      pid: this.processId,
+      app_data: app_data as string,
+      app_name: this.name,
+      unique_id: uid
+    }
+
+    this._stateManagmentService.addState(uid, this._appState, StateType.App);
+  }
+
+  retrievePastSessionData():void{
+    const pickUpKey = this._sessionManagmentService._pickUpKey;
+    if(this._sessionManagmentService.hasTempSession(pickUpKey)){
+      const tmpSessKey = this._sessionManagmentService.getTempSession(pickUpKey) || ''; 
+      const retrievedSessionData = this._sessionManagmentService.getSession(tmpSessKey) as BaseState[];
+
+      if(retrievedSessionData !== undefined){
+        const appSessionData = retrievedSessionData[0] as AppState;
+        if(appSessionData !== undefined  && appSessionData.app_data != ''){
+          this.fileSrc = appSessionData.app_data as string;
+        }
+      }
+    }
   }
 
 
