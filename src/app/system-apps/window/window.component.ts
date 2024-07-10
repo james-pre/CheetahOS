@@ -9,6 +9,9 @@ import {openCloseAnimation, hideShowAnimation, minimizeMaximizeAnimation} from '
 import { StateType } from 'src/app/system-files/state/state.type';
 import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
 
+import * as htmlToImage from 'html-to-image';
+import { TaskBarPreviewImage } from 'src/app/system-apps/taskbarpreview/taskbar.preview';
+
  @Component({
    selector: 'cos-window',
    templateUrl: './window.component.html',
@@ -34,6 +37,7 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
    private _focusOutOtherProcessSub!:Subscription;
 
   SECONDS_DELAY = 350;
+  WINDOW_CAPTURE_SECONDS_DELAY = 5000;
 
 
   windowHide = false;
@@ -140,6 +144,11 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
 
       //tell angular to run additional detection cycle after 
       this.changeDetectorRef.detectChanges();
+
+      setTimeout(()=>{
+        this.captureComponentImg();
+      },this.WINDOW_CAPTURE_SECONDS_DELAY);
+  
     }
 
     ngOnChanges(changes: SimpleChanges):void{
@@ -150,6 +159,18 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
 
       this.displayName = this.processAppName;
       this.icon = this.processAppIcon;
+    }
+
+
+    captureComponentImg():void{
+      htmlToImage.toPng(this.divWindow.nativeElement).then(htmlImg =>{
+  
+        const cmpntImg:TaskBarPreviewImage = {
+          pid: this.processId,
+          imageData: htmlImg
+        }
+        this._runningProcessService.addProcessImage(this.name, cmpntImg);
+      })
     }
 
 
