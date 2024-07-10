@@ -145,9 +145,9 @@ import { TaskBarPreviewImage } from 'src/app/system-apps/taskbarpreview/taskbar.
       //tell angular to run additional detection cycle after 
       this.changeDetectorRef.detectChanges();
 
-      setTimeout(()=>{
-        this.captureComponentImg();
-      },this.WINDOW_CAPTURE_SECONDS_DELAY);
+      //setTimeout(()=>{ /**When i get this working as it should, i will remove the other capture methods */
+      //  this.captureComponentImg();
+      //},this.WINDOW_CAPTURE_SECONDS_DELAY);
   
     }
 
