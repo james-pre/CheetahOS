@@ -1,35 +1,51 @@
 <cos-window [runningProcessID]="this.processId" [processAppIcon]="this.icon" [processAppName]="this.name" (click)="setTerminalWindowToFocus(this.processId)">
     <div class="terminal-container" tabIndex="-1" (keydown)="onKeyDownOnWindow($event)" (click)="focusOnInput()" #terminalCntnr>
         <div class="terminal-output-section" #terminalOutputCntnr>
-            <div class="terminal-banner-container"  *ngIf="isBannerVisible">
-                <div class="terminal-banner-content">
-                    {{banner}}
+            <ng-container  *ngIf="isBannerVisible">
+                <div class="terminal-banner-container" >
+                    <div class="terminal-banner-content">
+                        {{banner}}
+                    </div>
                 </div>
-            </div>
+            </ng-container>
+
+            <ng-container  *ngIf="isWelcomeVisible">
+                <div class="terminal-welcome-message-container" >
+                    <div class="terminal-welcome-message-content">
+                            {{welcomeMessage}}
+                    </div>
+                </div>
+            </ng-container>
+
     
-            <div class="terminal-welcome-message-container" *ngIf="isWelcomeVisible">
-                <div class="terminal-welcome-message-content">
-                        {{welcomeMessage}}
-                </div>
-            </div>
+
     
             <div class="terminal-command-output-container-main" #terminalHistoryOutput>
-                <div class="terminal-command-output-container" *ngFor="let cmdHistory of commandHistory">
-                    <div class="terminal-command-output" *ngIf="cmdHistory.getResponseCode === this.Success || cmdHistory.getResponseCode === this.Options">
-                        <span class="prev-terminal-prompt terminal-prior ">{{terminalPrompt}}:{{cmdHistory.getCommand.trim()}}</span>
-                        <div class="prev-terminal-output">{{cmdHistory.getCommandOutput.trim()}}</div>
+                <ng-container  *ngFor="let cmdHistory of commandHistory"> 
+                    <div class="terminal-command-output-container">
+                        <ng-container *ngIf="cmdHistory.getResponseCode === this.Success || cmdHistory.getResponseCode === this.Options">
+                            <div class="terminal-command-output">
+                                <span class="prev-terminal-prompt terminal-prior ">{{terminalPrompt}}:{{cmdHistory.getCommand.trim()}}</span>
+                                <div class="prev-terminal-output">{{cmdHistory.getCommandOutput.trim()}}</div>
+                            </div>
+                        </ng-container>
+
+                        <ng-container *ngIf="cmdHistory.getResponseCode === this.Fail">
+                            <div class="terminal-command-output">
+                                <span class="prev-terminal-prompt terminal-prior">{{terminalPrompt}}:{{cmdHistory.getCommand.trim()}}</span>
+                                <div class="prev-terminal-output terminal-error">{{cmdHistory.getCommandOutput.trim()}}</div>
+                            </div>
+                        </ng-container>
+
+                        <ng-container *ngIf="cmdHistory.getResponseCode === this.Warning">
+                            <div class="terminal-command-output">
+                                <span class="prev-terminal-prompt terminal-prior">{{terminalPrompt}}:{{cmdHistory.getCommand.trim()}}</span>
+                                <div class="prev-terminal-output terminal-warning">{{cmdHistory.getCommandOutput.trim()}}</div>
+                            </div>
+                        </ng-container>
+
                     </div>
-    
-                    <div class="terminal-command-output" *ngIf="cmdHistory.getResponseCode === this.Fail">
-                        <span class="prev-terminal-prompt terminal-prior">{{terminalPrompt}}:{{cmdHistory.getCommand.trim()}}</span>
-                        <div class="prev-terminal-output terminal-error">{{cmdHistory.getCommandOutput.trim()}}</div>
-                    </div>
-    
-                    <div class="terminal-command-output" *ngIf="cmdHistory.getResponseCode === this.Warning">
-                        <span class="prev-terminal-prompt terminal-prior">{{terminalPrompt}}:{{cmdHistory.getCommand.trim()}}</span>
-                        <div class="prev-terminal-output terminal-warning">{{cmdHistory.getCommandOutput.trim()}}</div>
-                    </div>
-                </div>
+                </ng-container>
             </div>
         </div>
         <div class="terminal-input-section">
