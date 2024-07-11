@@ -4,6 +4,8 @@ import { TriggerProcessService } from "src/app/shared/system-service/trigger.pro
 import { FileInfo } from "src/app/system-files/fileinfo";
 import { RunningProcessService } from "src/app/shared/system-service/running.process.service";
 import { StateManagmentService } from "src/app/shared/system-service/state.management.service";
+import { FileService } from "src/app/shared/system-service/file.service";
+import { FileEntry } from 'src/app/system-files/fileentry';
 
 
 
@@ -11,13 +13,17 @@ export class TerminalCommands{
 
     private _triggerProcessService:TriggerProcessService;
     private _runningProcessService:RunningProcessService;
+    private _fileService:FileService;
+    private _directoryFilesEntires!:FileEntry[];
     
     private _appDirctory = new AppDirectory();
     private closingNotAllowed:string[] = ["system", "desktop", "filemanager", "taskbar", "startbutton","clock","taskbarentry"];
+    private files:FileInfo[] = [];
 
     constructor() { 
         this._triggerProcessService = TriggerProcessService.instance;
         this._runningProcessService = RunningProcessService.instance;
+        this._fileService = FileService.instace;
     }
 
     help(arg0:string[], arg1:string[],arg2:string):string{
@@ -219,4 +225,60 @@ All commands:
         }
         return strArr.join("");
     }
+
+    async ls(arg0:string, arg1:string):Promise<string[]>{
+
+        console.log('arg0:',arg0);
+        console.log('arg1:',arg1);
+
+
+        let directory = '/osdrive/';
+
+        if(arg0 !== undefined)
+            directory = arg0;
+
+        const result = await this.loadFilesInfoAsync(directory).then(()=>{
+
+            if(arg1 == undefined || arg1 == ''){
+                const result:string[] = [];
+
+                this.files.forEach(file => {
+
+                    console.log('file.getFileName:',file.getFileName);
+                    result.push(file.getFileName);
+                });
+
+                //console.log('result.join(\'\'):',result.join(' '));
+
+
+                return result;
+
+            }
+
+            if(arg1 == ' -l' || arg1 == ' -lr' || arg1 == ' -lrt' || arg1 == ' -lt') {
+                console.log('hello world');
+
+                return ''
+            }
+            return '';
+
+        })
+        return result || [''];
+    }
+
+
+    private async loadFilesInfoAsync(directory:string):Promise<void>{
+        this.files = [];
+        this._fileService.resetDirectoryFiles();
+        const dirFileEntries  = await this._fileService.getFilesFromDirectoryAsync(directory) as [];
+        this._directoryFilesEntires = this._fileService.getFileEntriesFromDirectory(dirFileEntries,directory);
+    
+        for(let i = 0; i < dirFileEntries.length; i++){
+          const fileEntry = this._directoryFilesEntires[i];
+          const fileInfo = await this._fileService.getFileInfoAsync(fileEntry.getPath);
+    
+          this.files.push(fileInfo)
+        }
+      }
+    
 }

@@ -55,7 +55,8 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   terminalPrompt = ">";
   commandHistory:TerminalCommand[] = [];
   echoCommands:string[] = ["close", "curl","date", "help","hostname", "list", "open", "version", "whoami", "weather","pwd"];
-  utilityCommands:string[] = ["clear", "all", "dir", "cd", "download" ];
+  utilityCommands:string[] = ["clear", "all", "dir", "cd","ls", "download" ];
+  generatedArguments:string[] = [];
   allCommands:string[] = [];
   
 
@@ -220,8 +221,61 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
     }
 
     if(evt.key == "Tab"){
-      const terminalCmd = this.terminalForm.value.terminalCmd as string;
-      this.terminalForm.setValue({terminalCmd: this.getAutoCompelete(terminalCmd)});
+      const cmdString = this.terminalForm.value.terminalCmd as string;
+      const cmd_split = cmdString.split(" ");
+
+      const rootCmd = cmd_split[0];
+      const rootArg = cmd_split[1];
+
+      console.log('rootCmd:',rootCmd);
+
+      /**
+       * the command part of the command string, can not be undefined, must have a length greater than 0, and cannot contain space
+       */
+      if(rootCmd !== undefined && rootCmd.length > 0 && !rootCmd.includes(" ")){
+        if(!this.allCommands.includes(rootCmd)){
+
+          const autoCmpltReslt = this.getAutoCompelete(rootCmd, this.allCommands);
+
+          if(autoCmpltReslt.length == 1){
+            this.terminalForm.setValue({terminalCmd: autoCmpltReslt[0]});
+          }else{
+            const terminalCommand = new TerminalCommand(cmdString, 0, " ");
+            terminalCommand.setResponseCode = this.Options;
+            terminalCommand.setCommandOutput = autoCmpltReslt.join(" ");
+            this.commandHistory.push(terminalCommand);
+          }
+
+        }
+      }
+
+      console.log('rootArg:',rootArg);
+      /**
+       * the argument part of the command string, can not be undefined, must have a length greater than 0, and cannot contain space
+       */
+      if(rootArg !== undefined && rootArg.length > 0 && !rootArg.includes(" ")){
+
+        // if(!this.generatedArguments.includes(rootArg)){
+        //   this.terminalForm.setValue({terminalCmd:`${rootCmd} ${this.getAutoCompelete(rootArg, this.generatedArguments)}`});
+        // }
+
+        if(!this.generatedArguments.includes(rootArg)){
+
+          const autoCmpltReslt = this.getAutoCompelete(rootArg, this.generatedArguments);
+
+          if(autoCmpltReslt.length == 1){
+            this.terminalForm.setValue({terminalCmd: autoCmpltReslt[0]});
+          }else{
+            const terminalCommand = new TerminalCommand(cmdString, 0, " ");
+            terminalCommand.setResponseCode = this.Options;
+            terminalCommand.setCommandOutput = autoCmpltReslt.join(" ");
+            this.commandHistory.push(terminalCommand);
+          }
+
+        }
+      }
+
+      
       evt.preventDefault();
     }
   }
@@ -338,6 +392,18 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
         terminalCmd.setCommandOutput = 'command not yet implemented :)';
       } 
 
+      if(inputCmd == "ls"){
+        const result = this._terminaCommandsImpl.ls(cmd_split[1], cmd_split[2]);
+        terminalCmd.setResponseCode = this.Success;
+        //const allCopy = [...this.allCommands];
+        const data = await result;
+
+        console.log('data:', data)
+        terminalCmd.setCommandOutput = data.join(' ');
+        this.generatedArguments = [...data];
+
+        console.log('this.allComm')
+      } 
       
     }else{
       terminalCmd.setResponseCode = this.Fail;
@@ -348,13 +414,15 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
     this.storeAppState();
   }
 
-  getAutoCompelete(arg: string): string{
-    const matchingCommand = this.allCommands.filter((x) => x.startsWith(arg))
-    if(matchingCommand.length == 0)
-        return '';
-    else {
-      return  matchingCommand.join(" ");
-    }
+  /***
+   * arg0: what is being searched for
+   * arg1: Where x is being search in
+   */
+  getAutoCompelete(arg0:string, arg1:string[]): string[]{
+    // eslint-disable-next-line prefer-const
+    let matchingCommand =  arg1.filter((x) => x.startsWith(arg0.trim()));
+
+    return (matchingCommand.length > 0) ? matchingCommand : [];
   }
 
   maximizeWindow():void{
