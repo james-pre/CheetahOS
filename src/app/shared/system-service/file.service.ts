@@ -89,6 +89,7 @@ export class FileService{
                      console.log('checkIfFileOrFolderExistsAsync :Already exists',exits);
                      resolve(true)
                  }else{
+                    console.log('checkIfFileOrFolderExistsAsync :Does not exists',exits);
                     resolve(false)
                  }
             });

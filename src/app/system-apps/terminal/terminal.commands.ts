@@ -19,6 +19,7 @@ export class TerminalCommands{
     private _appDirctory = new AppDirectory();
     private closingNotAllowed:string[] = ["system", "desktop", "filemanager", "taskbar", "startbutton","clock","taskbarentry"];
     private files:FileInfo[] = [];
+    private navHistory:string[] = ['/osdrive/'];
     private readonly defaultDirectory = '/osdrive';
     private currentDirectory = '/osdrive/';
 
@@ -271,8 +272,12 @@ All commands:
     async cd(arg0:string):Promise<string>{
 
         console.log('arg0:',arg0);
-
         let directory = ''
+
+        if(arg0 == '..'){
+
+        }
+
         if(!arg0.includes(this.defaultDirectory))
             directory = `${this.defaultDirectory}/${arg0}`;
 
@@ -280,6 +285,7 @@ All commands:
         const result = await this._fileService.checkIfFileOrFolderExistsAsync(directory);
 
         if(result){
+            this.navHistory.push(directory);
             this.currentDirectory = directory;
             return '';
         }else{
