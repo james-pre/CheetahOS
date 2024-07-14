@@ -222,10 +222,10 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
 
     if(evt.key == "Tab"){
       const cmdString = this.terminalForm.value.terminalCmd as string;
-      const cmd_split = cmdString.split(" ");
+      const cmdStringArr = cmdString.split(" ");
 
-      const rootCmd = cmd_split[0];
-      const rootArg = cmd_split[1];
+      const rootCmd = cmdStringArr[0];
+      const rootArg = cmdStringArr[1];
 
       console.log('rootCmd:',rootCmd);
 
@@ -237,7 +237,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
 
           const autoCmpltReslt = this.getAutoCompelete(rootCmd, this.allCommands);
 
-          if(autoCmpltReslt.length == 1){
+          if(autoCmpltReslt.length <= 1){
             this.terminalForm.setValue({terminalCmd: autoCmpltReslt[0]});
           }else{
             const terminalCommand = new TerminalCommand(cmdString, 0, " ");
@@ -263,8 +263,8 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
 
           const autoCmpltReslt = this.getAutoCompelete(rootArg, this.generatedArguments);
 
-          if(autoCmpltReslt.length == 1){
-            this.terminalForm.setValue({terminalCmd: autoCmpltReslt[0]});
+          if(autoCmpltReslt.length <= 1){
+            this.terminalForm.setValue({terminalCmd: `${rootCmd} ${autoCmpltReslt[0]}`});
           }else{
             const terminalCommand = new TerminalCommand(cmdString, 0, " ");
             terminalCommand.setResponseCode = this.Options;
@@ -298,109 +298,107 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
     }
   }
 
-  isEchoCommand(arg: string): boolean {
-    if(this.echoCommands.includes(arg))
+  isInAllCommands(arg: string): boolean {
+    if(this.allCommands.includes(arg))
       return true;
     else
     return  false
   }
 
-  isUtilityCommand(arg:string):boolean{
-    if(this.utilityCommands.includes(arg))
-      return true;
-   else
-      return false;
-  }
-
   isValidCommand(arg: string): boolean{
-    return this.isEchoCommand(arg) || this.isUtilityCommand(arg);
+    return this.isInAllCommands(arg)
   }
 
   async processCommand(terminalCmd:TerminalCommand):Promise<void>{
-    const cmd_split = terminalCmd.getCommand.split(" ");
-    const inputCmd = cmd_split[0].toLowerCase();
-    if(this.isValidCommand(inputCmd)){
+    const cmdStringArr = terminalCmd.getCommand.split(" ");
+    const rootCmd = cmdStringArr[0].toLowerCase();
+    if(this.isValidCommand(rootCmd)){
 
-      if(inputCmd == "clear"){
+      if(rootCmd == "clear"){
         this.commandHistory = [];
         this.isBannerVisible = false;
         this.isWelcomeVisible = false;
       } 
 
-      if(inputCmd == "curl"){
-        const result = this._terminaCommandsImpl.curl(cmd_split);
-        terminalCmd.setResponseCode = this.Success;
-        terminalCmd.setCommandOutput = await result;
-      } 
-
-      if(inputCmd == "close"){
-        const result = this._terminaCommandsImpl.close(cmd_split[1], cmd_split[2]);
+      if(rootCmd == "curl"){
+        const result = await this._terminaCommandsImpl.curl(cmdStringArr);
         terminalCmd.setResponseCode = this.Success;
         terminalCmd.setCommandOutput = result;
       } 
 
-      if(inputCmd == "date"){
+      if(rootCmd == "close"){
+        const result = this._terminaCommandsImpl.close(cmdStringArr[1], cmdStringArr[2]);
+        terminalCmd.setResponseCode = this.Success;
+        terminalCmd.setCommandOutput = result;
+      } 
+
+      if(rootCmd == "date"){
         const result = this._terminaCommandsImpl.date();
         terminalCmd.setResponseCode = this.Success;
         terminalCmd.setCommandOutput = result;
       } 
 
-      if(inputCmd == "download"){
-        this._terminaCommandsImpl.download(cmd_split[1], cmd_split[2]);
+      if(rootCmd == "download"){
+        this._terminaCommandsImpl.download(cmdStringArr[1], cmdStringArr[2]);
         terminalCmd.setResponseCode = this.Success;
         terminalCmd.setCommandOutput = 'downloading ..';
       } 
 
-      if(inputCmd == "help"){
-        const result = this._terminaCommandsImpl.help(this.echoCommands, this.utilityCommands, cmd_split[1]);
+      if(rootCmd == "help"){
+        const result = this._terminaCommandsImpl.help(this.echoCommands, this.utilityCommands, cmdStringArr[1]);
         terminalCmd.setResponseCode = this.Success;
         terminalCmd.setCommandOutput = result;
       } 
 
-      if(inputCmd == "open"){
-        const result = this._terminaCommandsImpl.open(cmd_split[1], cmd_split[2]);
+      if(rootCmd == "open"){
+        const result = this._terminaCommandsImpl.open(cmdStringArr[1], cmdStringArr[2]);
         terminalCmd.setResponseCode = this.Success;
         terminalCmd.setCommandOutput = result;
       } 
 
-      if(inputCmd == "version"){
+      if(rootCmd == "version"){
         const result = this._terminaCommandsImpl.version(this.versionNum);
         terminalCmd.setResponseCode = this.Success;
         terminalCmd.setCommandOutput = result;
       } 
 
-      if(inputCmd == "whoami"){
+      if(rootCmd == "whoami"){
         const result = this._terminaCommandsImpl.whoami();
         terminalCmd.setResponseCode = this.Success;
         terminalCmd.setCommandOutput = result;
       } 
 
-      if(inputCmd == "weather"){
-        const result = this._terminaCommandsImpl.weather(cmd_split[1]);
-        terminalCmd.setResponseCode = this.Success;
-        terminalCmd.setCommandOutput = await result;
-      } 
-
-      if(inputCmd == "list"){
-        const result = this._terminaCommandsImpl.list(cmd_split[1], cmd_split[2]);
+      if(rootCmd == "weather"){
+        const result = await this._terminaCommandsImpl.weather(cmdStringArr[1]);
         terminalCmd.setResponseCode = this.Success;
         terminalCmd.setCommandOutput = result;
       } 
 
-      if(inputCmd == "cd" || inputCmd == "dir" || inputCmd == "pwd"){
-        terminalCmd.setResponseCode = this.Warning;
-        terminalCmd.setCommandOutput = 'command not yet implemented :)';
+      if(rootCmd == "list"){
+        const result = this._terminaCommandsImpl.list(cmdStringArr[1], cmdStringArr[2]);
+        terminalCmd.setResponseCode = this.Success;
+        terminalCmd.setCommandOutput = result;
       } 
 
-      if(inputCmd == "ls"){
-        const result = this._terminaCommandsImpl.ls(cmd_split[1], cmd_split[2]);
+      if(rootCmd == "pwd"){
+        const result = this._terminaCommandsImpl.pwd();
         terminalCmd.setResponseCode = this.Success;
-        //const allCopy = [...this.allCommands];
-        const data = await result;
+        terminalCmd.setCommandOutput = result;
+      } 
 
-        console.log('data:', data)
-        terminalCmd.setCommandOutput = data.join(' ');
-        this.generatedArguments = [...data];
+      if(rootCmd == "cd"){
+        const result = await this._terminaCommandsImpl.cd(cmdStringArr[1]);
+        terminalCmd.setResponseCode = this.Success;
+        terminalCmd.setCommandOutput = result;
+      } 
+
+      if(rootCmd == "ls"){
+        const result = await this._terminaCommandsImpl.ls(cmdStringArr[1]);
+        terminalCmd.setResponseCode = this.Success;
+
+        console.log('ls result:', result)
+        terminalCmd.setCommandOutput = result.join(' ');
+        this.generatedArguments = [...result];
 
         console.log('this.allComm')
       } 

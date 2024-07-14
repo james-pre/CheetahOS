@@ -19,6 +19,8 @@ export class TerminalCommands{
     private _appDirctory = new AppDirectory();
     private closingNotAllowed:string[] = ["system", "desktop", "filemanager", "taskbar", "startbutton","clock","taskbarentry"];
     private files:FileInfo[] = [];
+    private readonly defaultDirectory = '/osdrive';
+    private currentDirectory = '/osdrive/';
 
     constructor() { 
         this._triggerProcessService = TriggerProcessService.instance;
@@ -27,11 +29,19 @@ export class TerminalCommands{
     }
 
     help(arg0:string[], arg1:string[],arg2:string):string{
-        const cmdList =  [...arg0, ...arg1]
+        const cmdList =  [...arg0, ...arg1];
+        const numPerLine = 10;
 
-        if(arg2 == undefined || arg2.length == 0)
-            return  'Available commands:' + cmdList.join(', ');
+        if(arg2 == undefined || arg2.length == 0){
+            const result:string[] = ['Available commands:'];
+            for(let i = 0; i <= cmdList.length - 1; i += numPerLine){
+                const chunk = cmdList.slice(i, i + numPerLine);
+                result.push(...chunk)
+                result.push('\n');
+            }
 
+            return result.join(' ');
+        }
 
         if(arg2 == "-verbose"){
             const verbose = `
@@ -46,13 +56,13 @@ close --app <pid>        closes app <pid>
 clear                    clears the terminal output and all previous command
 curl                     query Api's, and transfer data to and from servers
 download <uri> <name>    download from the internet by providing a urls
-dir                      list files and folder in the present directory
+ls                       list files and folder in the present directory
 cd                       change directory
 list --apps -i           get a list of all installed apps
 list --apps -a           get a list of all running apps
 
 All commands:
-    clear, close, curl, cd, download, date, dir, list, help, version, open, weaather
+    clear, close, curl, cd, download, date, ls, list, help, hostname, open, pwd, version, weather
     whoami
         `;
     
@@ -226,20 +236,17 @@ All commands:
         return strArr.join("");
     }
 
-    async ls(arg0:string, arg1:string):Promise<string[]>{
+    pwd():string{
+        return this.currentDirectory;
+    }
+
+    async ls(arg0:string):Promise<string[]>{
 
         console.log('arg0:',arg0);
-        console.log('arg1:',arg1);
 
+        const result = await this.loadFilesInfoAsync(this.currentDirectory).then(()=>{
 
-        let directory = '/osdrive/';
-
-        if(arg0 !== undefined)
-            directory = arg0;
-
-        const result = await this.loadFilesInfoAsync(directory).then(()=>{
-
-            if(arg1 == undefined || arg1 == ''){
+            if(arg0 == undefined || arg0 == ''){
                 const result:string[] = [];
 
                 this.files.forEach(file => {
@@ -249,21 +256,36 @@ All commands:
                 });
 
                 //console.log('result.join(\'\'):',result.join(' '));
-
-
                 return result;
-
             }
 
-            if(arg1 == ' -l' || arg1 == ' -lr' || arg1 == ' -lrt' || arg1 == ' -lt') {
+            if(arg0 == ' -l' || arg0 == ' -lr' || arg0 == ' -lrt' || arg0 == ' -lt') {
                 console.log('hello world');
-
                 return ''
             }
             return '';
-
         })
-        return result || [''];
+        return result || [];
+    }
+
+    async cd(arg0:string):Promise<string>{
+
+        console.log('arg0:',arg0);
+
+        let directory = ''
+        if(!arg0.includes(this.defaultDirectory))
+            directory = `${this.defaultDirectory}/${arg0}`;
+
+        console.log('directory:',directory);
+        const result = await this._fileService.checkIfFileOrFolderExistsAsync(directory);
+
+        if(result){
+            this.currentDirectory = directory;
+            return '';
+        }else{
+            return 'No such file or directory'
+        }
+
     }
 
 

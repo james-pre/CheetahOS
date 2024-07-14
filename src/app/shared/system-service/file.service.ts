@@ -82,6 +82,19 @@ export class FileService{
         });
     }
 
+    public async checkIfFileOrFolderExistsAsync(dirPath:string):Promise<boolean>{
+        return new Promise<boolean>((resolve) =>{
+            this._fileSystem.exists(`${dirPath}`, (exits) =>{
+                 if(exits){
+                     console.log('checkIfFileOrFolderExistsAsync :Already exists',exits);
+                     resolve(true)
+                 }else{
+                    resolve(false)
+                 }
+            });
+        })
+    }
+
     public async getFileInfoAsync(path:string):Promise<FileInfo>{
         const extension = extname(path);
         this._fileInfo = new FileInfo();
@@ -186,6 +199,28 @@ export class FileService{
         return this._fileInfo;
     }
 
+    public async createFolderAsync(directory:string, fileName:string):Promise<void>{
+        new Promise<void>((resolve, reject) =>{
+
+           this._fileSystem.exists(`${directory}/${fileName}`, (exists) =>{
+                if(exists){
+                    console.log('createFolderAsync: folder already exists',exists);
+                }else{
+                    this._fileSystem.mkdir(`${directory}/${fileName}`,'0777',(err) =>{  
+                        if(err){
+                            console.log('createFolderAsync Error: folder creation',err);
+                            reject(err);
+                        }
+                        resolve();
+                    });
+                }
+             });
+        }).then(()=>{
+            //Send update notification
+            this.dirFilesUpdateNotify.next();
+        });
+    }
+
     public async getFolderAsync(path: string) {
         await this.initBrowserFsAsync();
 
@@ -201,28 +236,6 @@ export class FileService{
                 const opensWith ='fileexplorer'
                 resolve(new ShortCut(iconFile, basename(path, extname(path)),fileType,basename(path, extname(path)) ,opensWith ));
             });
-        });
-    }
-
-    public async createFolderAsync(directory:string, fileName:string):Promise<void>{
-        new Promise<void>((resolve, reject) =>{
-
-           this._fileSystem.exists(`${directory}/${fileName}`, (err) =>{
-                if(err){
-                    console.log('createFolderAsync Error: folder already exists',err);
-                }else{
-                    this._fileSystem.mkdir(`${directory}/${fileName}`,'0777',(err) =>{  
-                        if(err){
-                            console.log('createFolderAsync Error: folder creation',err);
-                            reject(err);
-                        }
-                        resolve();
-                    });
-                }
-             });
-        }).then(()=>{
-            //Send update notification
-            this.dirFilesUpdateNotify.next();
         });
     }
 
@@ -450,7 +463,6 @@ export class FileService{
             });
         });
     }
-
 
     public async readTextFileAsync(path:string): Promise<string> {
         if (!path) {
