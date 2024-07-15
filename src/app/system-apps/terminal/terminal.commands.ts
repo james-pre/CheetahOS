@@ -20,8 +20,8 @@ export class TerminalCommands{
     private closingNotAllowed:string[] = ["system", "desktop", "filemanager", "taskbar", "startbutton","clock","taskbarentry"];
     private files:FileInfo[] = [];
     private navHistory:string[] = ['/osdrive/'];
-    private readonly defaultDirectory = '/osdrive';
-    private currentDirectory = '/osdrive/';
+    private readonly defaultDirectoryPath = '/osdrive';
+    private currentDirectoryPath = '/osdrive';
 
     constructor() { 
         this._triggerProcessService = TriggerProcessService.instance;
@@ -238,14 +238,14 @@ All commands:
     }
 
     pwd():string{
-        return this.currentDirectory;
+        return this.currentDirectoryPath;
     }
 
     async ls(arg0:string):Promise<string[]>{
 
         console.log('arg0:',arg0);
 
-        const result = await this.loadFilesInfoAsync(this.currentDirectory).then(()=>{
+        const result = await this.loadFilesInfoAsync(this.currentDirectoryPath).then(()=>{
 
             if(arg0 == undefined || arg0 == ''){
                 const result:string[] = [];
@@ -269,29 +269,69 @@ All commands:
         return result || [];
     }
 
-    async cd(arg0:string):Promise<string>{
+    async cd(arg0:string , key = 'df'):Promise<{type: string;  result: any;}>{
 
         console.log('arg0:',arg0);
         let directory = ''
+        const filePathRegex = /(\.\/|\.\.\/|\/)([a-zA-Z0-9_-]+\/?)+/;
 
-        if(arg0 == '..'){
-
+        if(arg0 == '..' || arg0 == '../'){
+            if(this.navHistory.length == 1){
+               this.currentDirectoryPath = directory = this.navHistory[0];
+            }else if(this.navHistory.length > 1){
+                //simply go up a level
+                let priorPath = this.navHistory.pop() || '';
+                if(priorPath === this.currentDirectoryPath){
+                    priorPath= this.navHistory.pop() || '';
+                    console.log('priorPath:',priorPath);
+                    this.currentDirectoryPath = priorPath;
+                }
+            }
         }
 
-        if(!arg0.includes(this.defaultDirectory))
-            directory = `${this.defaultDirectory}/${arg0}`;
+        if(filePathRegex.test(arg0)){
 
-        console.log('directory:',directory);
+           const cmdArg = arg0.split('/');
+            console.log('directory:',directory);
+        }else{
+            if(!arg0.includes(this.defaultDirectoryPath))
+                directory = `${this.currentDirectoryPath}/${arg0}`;
+            console.log('directory:',directory);
+        }
+
         const result = await this._fileService.checkIfFileOrFolderExistsAsync(directory);
 
         if(result){
             this.navHistory.push(directory);
-            this.currentDirectory = directory;
-            return '';
+
+            console.log('this.navHistory:',this.navHistory);
+            this.currentDirectoryPath = directory;
+
+            const fetchedFiles = await this.loadFilesInfoAsync(this.currentDirectoryPath).then(()=>{
+                const files:string[] = [];
+                this.files.forEach(file => {
+                    files.push(file.getFileName);
+                });
+
+                return {type:'string[]', result:files}
+            })
+            return fetchedFiles
         }else{
-            return 'No such file or directory'
+            return {type:'string', result:'No such file or directory'}
         }
 
+    }
+
+    async mkdir(arg0:string):Promise<void>{
+        1
+    }
+
+    async mv(arg0:string):Promise<void>{
+        1
+    }
+
+    async cp(arg0:string):Promise<void>{
+        1
     }
 
 

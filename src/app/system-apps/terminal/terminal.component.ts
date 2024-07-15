@@ -259,7 +259,9 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
         //   this.terminalForm.setValue({terminalCmd:`${rootCmd} ${this.getAutoCompelete(rootArg, this.generatedArguments)}`});
         // }
 
-        if(!this.generatedArguments.includes(rootArg)){
+        if(rootCmd == "cd"){
+
+        }else if(rootCmd !== "cd" && !this.generatedArguments.includes(rootArg)){
 
           const autoCmpltReslt = this.getAutoCompelete(rootArg, this.generatedArguments);
 
@@ -387,9 +389,17 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       } 
 
       if(rootCmd == "cd"){
+        const str = 'string';
+        const strArr = 'string[]';
         const result = await this._terminaCommandsImpl.cd(cmdStringArr[1]);
         terminalCmd.setResponseCode = this.Success;
-        terminalCmd.setCommandOutput = result;
+
+        if(result.type === str)
+          terminalCmd.setCommandOutput = result.result;
+        else{
+          this.generatedArguments = [];
+          this.generatedArguments = [...result.result as string[]];
+        }
       } 
 
       if(rootCmd == "ls"){
@@ -399,8 +409,6 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
         console.log('ls result:', result)
         terminalCmd.setCommandOutput = result.join(' ');
         this.generatedArguments = [...result];
-
-        console.log('this.allComm')
       } 
       
     }else{
