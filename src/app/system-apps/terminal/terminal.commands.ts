@@ -270,16 +270,11 @@ All commands:
         return result || [];
     }
 
-    async cd(arg0:string):Promise<{type: string;  result: any;}>{
+    async cd(arg0:string, key='dft'):Promise<{type: string;  result: any;}>{
 
         console.log('arg0:',arg0);
         let directory = ''
         const filePathRegex = /^(\.\.\/)+([a-zA-Z0-9_-]+\/?)*$|^(\.\/|\/)([a-zA-Z0-9_-]+\/?)+$|^\.\.$|^\.\.\/$/;
-
-
-        // if(arg0 == '..' || arg0 == '../'){
-        //     directory = this.cd_move_up(['..']);
-        // }
 
         if(filePathRegex.test(arg0)){
 
@@ -301,6 +296,13 @@ All commands:
         }
 
         const result = await this._fileService.checkIfFileOrFolderExistsAsync(directory);
+
+
+        if(key == 'Tab'){
+
+        }else if(key == 'Enter'){
+
+        }
 
         if(result){
             this.navHistory.push(directory);
@@ -336,9 +338,14 @@ All commands:
                 let priorPath = this.navHistory[curPathPtr] || '';
                 if(priorPath === this.currentDirectoryPath){
                    curPathPtr = curPathPtr - 1;
-                    priorPath= this.navHistory[curPathPtr] || '';
-                    console.log('priorPath:',priorPath);
-                    directory = priorPath;
+                   if(curPathPtr <= 0)
+                        directory = this.navHistory[0];
+                   else{
+                        priorPath= this.navHistory[curPathPtr] || '';
+                        console.log('priorPath:',priorPath);
+                        directory = priorPath;
+                    }
+
                 }
             });
         }
