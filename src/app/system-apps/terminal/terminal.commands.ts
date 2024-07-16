@@ -22,6 +22,7 @@ export class TerminalCommands{
     private navHistory:string[] = ['/osdrive/'];
     private readonly defaultDirectoryPath = '/osdrive';
     private currentDirectoryPath = '/osdrive';
+    private pathPtr = 0;
 
     constructor() { 
         this._triggerProcessService = TriggerProcessService.instance;
@@ -269,30 +270,30 @@ All commands:
         return result || [];
     }
 
-    async cd(arg0:string , key = 'df'):Promise<{type: string;  result: any;}>{
+    async cd(arg0:string):Promise<{type: string;  result: any;}>{
 
         console.log('arg0:',arg0);
         let directory = ''
-        const filePathRegex = /(\.\/|\.\.\/|\/)([a-zA-Z0-9_-]+\/?)+/;
+        const filePathRegex = /^(\.\.\/)+([a-zA-Z0-9_-]+\/?)*$|^(\.\/|\/)([a-zA-Z0-9_-]+\/?)+$|^\.\.$|^\.\.\/$/;
 
-        if(arg0 == '..' || arg0 == '../'){
-            if(this.navHistory.length == 1){
-               this.currentDirectoryPath = directory = this.navHistory[0];
-            }else if(this.navHistory.length > 1){
-                //simply go up a level
-                let priorPath = this.navHistory.pop() || '';
-                if(priorPath === this.currentDirectoryPath){
-                    priorPath= this.navHistory.pop() || '';
-                    console.log('priorPath:',priorPath);
-                    this.currentDirectoryPath = priorPath;
-                }
-            }
-        }
+
+        // if(arg0 == '..' || arg0 == '../'){
+        //     directory = this.cd_move_up(['..']);
+        // }
 
         if(filePathRegex.test(arg0)){
 
            const cmdArg = arg0.split('/');
-            console.log('directory:',directory);
+           const moveUps = (cmdArg.length > 1)? cmdArg.filter(x => x == "..") : ['..'] ;
+           const impliedPath = this.cd_move_up(moveUps);
+           const explicitPath = arg0.split("../").filter(x => x !== "");
+
+           
+           directory = `${impliedPath}/${explicitPath}`;
+
+           console.log('impliedPath:',impliedPath);
+           console.log('explicitPath:',explicitPath);
+           console.log('directory:',directory);
         }else{
             if(!arg0.includes(this.defaultDirectoryPath))
                 directory = `${this.currentDirectoryPath}/${arg0}`;
@@ -303,6 +304,7 @@ All commands:
 
         if(result){
             this.navHistory.push(directory);
+            this.pathPtr++;
 
             console.log('this.navHistory:',this.navHistory);
             this.currentDirectoryPath = directory;
@@ -321,6 +323,30 @@ All commands:
         }
 
     }
+
+    cd_move_up(arg0:string[]):string{
+        let directory = '';
+        let curPathPtr = 0;
+        if(this.navHistory.length == 1){
+            directory = this.navHistory[0];
+         }else if(this.navHistory.length > 1){
+             //simply go up a level
+             curPathPtr = this.pathPtr;
+             arg0.forEach(() => {
+                let priorPath = this.navHistory[curPathPtr] || '';
+                if(priorPath === this.currentDirectoryPath){
+                   curPathPtr = curPathPtr - 1;
+                    priorPath= this.navHistory[curPathPtr] || '';
+                    console.log('priorPath:',priorPath);
+                    directory = priorPath;
+                }
+            });
+        }
+
+        return directory;
+    }
+
+
 
     async mkdir(arg0:string):Promise<void>{
         1
