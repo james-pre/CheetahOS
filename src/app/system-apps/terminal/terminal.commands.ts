@@ -270,10 +270,11 @@ All commands:
         return result || [];
     }
 
-    async cd(arg0:string, key='dft'):Promise<{type: string;  result: any;}>{
+    async cd(arg0:string):Promise<{type: string;  result: any;}>{
 
         console.log('arg0:',arg0);
         let directory = ''
+
         const filePathRegex = /^(\.\.\/)+([a-zA-Z0-9_-]+\/?)*$|^(\.\/|\/)([a-zA-Z0-9_-]+\/?)+$|^\.\.$|^\.\.\/$/;
 
         if(filePathRegex.test(arg0)){
@@ -297,14 +298,14 @@ All commands:
 
         const result = await this._fileService.checkIfFileOrFolderExistsAsync(directory);
 
-
-        if(key == 'Tab'){
-
-        }else if(key == 'Enter'){
-
-        }
-
         if(result){
+            // if(key == 'Tab'){
+
+            // }else if(key == 'Enter'){
+    
+            // }
+
+
             this.navHistory.push(directory);
             this.pathPtr++;
 
@@ -329,29 +330,75 @@ All commands:
     cd_move_up(arg0:string[]):string{
         let directory = '';
         let curPathPtr = 0;
-        if(this.navHistory.length == 1){
-            directory = this.navHistory[0];
-         }else if(this.navHistory.length > 1){
-             //simply go up a level
-             curPathPtr = this.pathPtr;
-             arg0.forEach(() => {
-                let priorPath = this.navHistory[curPathPtr] || '';
-                if(priorPath === this.currentDirectoryPath){
-                   curPathPtr = curPathPtr - 1;
-                   if(curPathPtr <= 0)
-                        directory = this.navHistory[0];
-                   else{
-                        priorPath= this.navHistory[curPathPtr] || '';
-                        console.log('priorPath:',priorPath);
-                        directory = priorPath;
-                    }
+        const traversedPath = this.currentDirectoryPath.split('/');
+        traversedPath.shift();
+        
+        if(traversedPath.length == 1){
+            directory = traversedPath[0];
+         }else if(traversedPath.length > 1){
+             // first, remove the current location, because it is where you currently are in the directory
+             const curLocation = traversedPath.pop();
+             console.log(`curLocation:${curLocation}    ==    this.currentDirectoryPath:${this.currentDirectoryPath}`);
 
+             curPathPtr = traversedPath.length;
+             arg0.forEach(() => {
+                let priorDirectory = traversedPath[curPathPtr];
+                if(curPathPtr <= 0)
+                    directory = traversedPath[0];
+               else{
+                    priorDirectory= traversedPath[curPathPtr];
+                    console.log('priorDirectory:',priorDirectory);
+                    directory = priorDirectory;
                 }
+
+                curPathPtr--;
             });
+        }
+
+        if(traversedPath.length > 1){
+            let tmp = '';
+            for(const el of traversedPath ){
+                if(el !== directory){
+                    tmp += '/'+ el;
+                }else{
+                    tmp += '/'+ directory;
+                    break;
+                }
+            }
+            directory = tmp;
         }
 
         return directory;
     }
+
+
+
+    // cd_move_up_cpy(arg0:string[]):string{
+    //     let directory = '';
+    //     let curPathPtr = 0;
+    //     if(this.navHistory.length == 1){
+    //         directory = this.navHistory[0];
+    //      }else if(this.navHistory.length > 1){
+    //          //simply go up a level
+    //          curPathPtr = this.pathPtr;
+    //          arg0.forEach(() => {
+    //             let priorPath = this.navHistory[curPathPtr] || '';
+    //             if(priorPath === this.currentDirectoryPath){
+    //                curPathPtr = curPathPtr - 1;
+    //                if(curPathPtr <= 0)
+    //                     directory = this.navHistory[0];
+    //                else{
+    //                     priorPath= this.navHistory[curPathPtr] || '';
+    //                     console.log('priorPath:',priorPath);
+    //                     directory = priorPath;
+    //                 }
+
+    //             }
+    //         });
+    //     }
+
+    //     return directory;
+    // }
 
 
 
