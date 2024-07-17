@@ -19,10 +19,8 @@ export class TerminalCommands{
     private _appDirctory = new AppDirectory();
     private closingNotAllowed:string[] = ["system", "desktop", "filemanager", "taskbar", "startbutton","clock","taskbarentry"];
     private files:FileInfo[] = [];
-    private navHistory:string[] = ['/osdrive/'];
     private readonly defaultDirectoryPath = '/osdrive';
     private currentDirectoryPath = '/osdrive';
-    private pathPtr = 0;
 
     constructor() { 
         this._triggerProcessService = TriggerProcessService.instance;
@@ -302,17 +300,10 @@ All commands:
             // if(key == 'Tab'){
 
             // }else if(key == 'Enter'){
-    
+            //     this.currentDirectoryPath = directory;
             // }
 
-
-            this.navHistory.push(directory);
-            this.pathPtr++;
-
-            console.log('this.navHistory:',this.navHistory);
-            this.currentDirectoryPath = directory;
-
-            const fetchedFiles = await this.loadFilesInfoAsync(this.currentDirectoryPath).then(()=>{
+            const fetchedFiles = await this.loadFilesInfoAsync(directory).then(()=>{
                 const files:string[] = [];
                 this.files.forEach(file => {
                     files.push(file.getFileName);
@@ -329,7 +320,8 @@ All commands:
 
     cd_move_up(arg0:string[]):string{
         let directory = '';
-        let curPathPtr = 0;
+        let dirPath = '';
+        let cnt = 0;
         const traversedPath = this.currentDirectoryPath.split('/');
         traversedPath.shift();
         
@@ -337,38 +329,53 @@ All commands:
             directory = traversedPath[0];
          }else if(traversedPath.length > 1){
              // first, remove the current location, because it is where you currently are in the directory
-             const curLocation = traversedPath.pop();
-             console.log(`curLocation:${curLocation}    ==    this.currentDirectoryPath:${this.currentDirectoryPath}`);
+             const curDirectory = traversedPath.pop();
+             console.log(` cd_move_up curLocation:${curDirectory}    ==    this.currentDirectoryPath:${this.currentDirectoryPath}`);
 
-             curPathPtr = traversedPath.length;
-             arg0.forEach(() => {
-                let priorDirectory = traversedPath[curPathPtr];
-                if(curPathPtr <= 0)
-                    directory = traversedPath[0];
-               else{
-                    priorDirectory= traversedPath[curPathPtr];
-                    console.log('priorDirectory:',priorDirectory);
+             cnt = traversedPath.length - 1;
+             for(const el of arg0){
+                let priorDirectory = '';
+                if(cnt <= 0){
+                    directory = `/${traversedPath[0]}`;
+                    break;
+                }else{
+                    priorDirectory= traversedPath[cnt];
+                    console.log('cd_move_up priorDirectory:',priorDirectory);
                     directory = priorDirectory;
                 }
 
-                curPathPtr--;
-            });
+                cnt--;
+            }
+
+            //  arg0.forEach(() => {
+            //     let priorDirectory = traversedPath[curPathPtr];
+            //     if(curPathPtr <= 0)
+            //         directory = `/${traversedPath[0]}`;
+            //    else{
+            //         priorDirectory= traversedPath[curPathPtr];
+            //         console.log('cd_move_up priorDirectory:',priorDirectory);
+            //         directory = priorDirectory;
+            //     }
+
+            //     curPathPtr--;
+            // });
         }
 
         if(traversedPath.length > 1){
-            let tmp = '';
+            const tmpStr:string[] = [];
             for(const el of traversedPath ){
                 if(el !== directory){
-                    tmp += '/'+ el;
+                    tmpStr.push( `/${el}`);
                 }else{
-                    tmp += '/'+ directory;
+                    tmpStr.push( `/${directory}`);
                     break;
                 }
             }
-            directory = tmp;
+            dirPath = tmpStr.toString();
+            console.log('cd_move_up directory:',dirPath);
         }
 
-        return directory;
+        return dirPath;
     }
 
 
