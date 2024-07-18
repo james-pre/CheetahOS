@@ -50,9 +50,11 @@
                 <form [formGroup]="terminalForm"  class="terminal-form">
                     <span class="terminal-prompt">{{terminalPrompt}}</span>
                     <input
+                    appKeyPressCapture
                     class="terminal-input"
                     formControlName="terminalCmd"
                     (keydown)="onKeyDownInInputBox($event)"
+                    (keyDblPressed)="onKeyDoublePressed($event)" 
                     autofocus ="false" 
                     spellcheck="false"
                     autocomplete="off"

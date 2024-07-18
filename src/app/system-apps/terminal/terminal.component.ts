@@ -195,6 +195,73 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
     },this.SECONDS_DELAY[1]);
   }
 
+  async onKeyDoublePressed(evt: KeyboardEvent): Promise<void> {
+    console.log(`${evt.key} Key pressed  rapidly.`);
+    // Handle the rapid key presses here
+    if(evt.key == "Tab"){
+      const cmdString = this.terminalForm.value.terminalCmd as string;
+      const cmdStringArr = cmdString.split(" ");
+
+      const rootCmd = cmdStringArr[0];
+      const rootArg = cmdStringArr[1];
+
+      console.log('rootCmd:',rootCmd);
+
+      /**
+       * the command part of the command string, can not be undefined, must have a length greater than 0, and cannot contain space
+       */
+      if(rootCmd !== undefined && rootCmd.length > 0 && !rootCmd.includes(" ")){
+        if(!this.allCommands.includes(rootCmd)){
+
+          const autoCmpltReslt = this.getAutoCompelete(rootCmd, this.allCommands);
+
+          if(autoCmpltReslt.length <= 1){
+            this.terminalForm.setValue({terminalCmd: autoCmpltReslt[0]});
+          }else{
+            const terminalCommand = new TerminalCommand(cmdString, 0, " ");
+            terminalCommand.setResponseCode = this.Options;
+            terminalCommand.setCommandOutput = autoCmpltReslt.join(" ");
+            this.commandHistory.push(terminalCommand);
+          }
+
+        }
+      }
+
+      if(rootCmd === "cd"){
+        console.log('rootArg:',rootArg);
+
+        const terminalCommand = new TerminalCommand(cmdString, 0, " ");
+        await this.processCommand(terminalCommand).then(() =>{
+  
+          const autoCmpltReslt = this.getAutoCompelete(rootArg, this.generatedArguments);
+  
+          console.log('autoCmpltReslt:',autoCmpltReslt);
+          console.log('this.generatedArguments:',this.generatedArguments);
+
+          if(rootArg){
+            if(autoCmpltReslt.length === 1){
+              this.terminalForm.setValue({terminalCmd: `${rootCmd} ${autoCmpltReslt[0]}`});
+            }else{
+              terminalCommand.setResponseCode = this.Options;
+              terminalCommand.setCommandOutput = autoCmpltReslt.join(" ") || this.generatedArguments.join(" ");
+              this.commandHistory.push(terminalCommand);
+            }  
+          }else{
+            terminalCommand.setResponseCode = this.Options;
+            terminalCommand.setCommandOutput = this.generatedArguments.join(" ");
+            this.commandHistory.push(terminalCommand);
+          }
+    
+  
+        });
+      }
+
+      
+      evt.preventDefault();
+    }
+  }
+
+
   onKeyDownInInputBox(evt:KeyboardEvent):void{
    
     if(evt.key == "Enter"){
@@ -237,7 +304,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
 
           const autoCmpltReslt = this.getAutoCompelete(rootCmd, this.allCommands);
 
-          if(autoCmpltReslt.length <= 1){
+          if(autoCmpltReslt.length === 1){
             this.terminalForm.setValue({terminalCmd: autoCmpltReslt[0]});
           }else{
             const terminalCommand = new TerminalCommand(cmdString, 0, " ");
@@ -259,9 +326,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
         //   this.terminalForm.setValue({terminalCmd:`${rootCmd} ${this.getAutoCompelete(rootArg, this.generatedArguments)}`});
         // }
 
-        if(rootCmd == "cd"){
-
-        }else if(rootCmd !== "cd" && !this.generatedArguments.includes(rootArg)){
+        if(!this.generatedArguments.includes(rootArg)){
 
           const autoCmpltReslt = this.getAutoCompelete(rootArg, this.generatedArguments);
 
@@ -396,7 +461,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
 
         if(result.type === str)
           terminalCmd.setCommandOutput = result.result;
-        else{
+        else if(result.type === strArr){
           this.generatedArguments = [];
           this.generatedArguments = [...result.result as string[]];
         }
@@ -408,6 +473,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
 
         console.log('ls result:', result)
         terminalCmd.setCommandOutput = result.join(' ');
+        this.generatedArguments = [];
         this.generatedArguments = [...result];
       } 
       

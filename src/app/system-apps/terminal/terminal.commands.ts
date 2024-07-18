@@ -287,11 +287,11 @@ All commands:
 
            console.log('impliedPath:',impliedPath);
            console.log('explicitPath:',explicitPath);
-           console.log('directory:',directory);
+           console.log('directory-1:',directory);
         }else{
             if(!arg0.includes(this.defaultDirectoryPath))
                 directory = `${this.currentDirectoryPath}/${arg0}`;
-            console.log('directory:',directory);
+            console.log('directory-2:',directory);
         }
 
         const result = await this._fileService.checkIfFileOrFolderExistsAsync(directory);
