@@ -73,6 +73,8 @@ sudo n lts| stable | latest  --(pick one)
 
 28.) Capture Img on the window component displays the image to the bottom right, when hovering on the taskbar icon for a preview
 
+29.) termial has issues with folder name containing spaces "screen folder" turn into screen
+
 
 
 

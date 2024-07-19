@@ -59,7 +59,8 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   utilityCommands:string[] = ["clear", "all", "dir", "cd","ls", "download" ];
   generatedArguments:string[] = [];
   allCommands:string[] = [];
-  haveISeenThisBefore = '';
+  haveISeenThisRootArg = '';
+  haveISeenThisAutoCmplt = '';
 
   terminalForm!: FormGroup;
 
@@ -331,20 +332,22 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
         // }
 
         const alteredRootArg = this.alterRootArg(rootArg);
-    
- 
-
         console.log('alteredRootArg:',alteredRootArg);
+
 
         if(!this.generatedArguments.includes(alteredRootArg)){
 
           const autoCmpltReslt = this.getAutoCompelete(alteredRootArg, this.generatedArguments);
 
           if(autoCmpltReslt.length === 1){
-            if((rootArg.includes('/') && rootArg !== this.haveISeenThisBefore) &&  (this.haveISeenThisBefore !== autoCmpltReslt[0]))
+            if((rootArg.includes('/') && rootArg !== this.haveISeenThisRootArg) &&  (this.haveISeenThisAutoCmplt !== autoCmpltReslt[0])){
+
               this.terminalForm.setValue({terminalCmd: `${rootCmd} ${this.formatRootArg(rootArg)}${autoCmpltReslt[0]}`});
-            else{
-              this.haveISeenThisBefore = autoCmpltReslt[0];
+              this.haveISeenThisRootArg = `${this.formatRootArg(rootArg)}${autoCmpltReslt[0]}`
+              this.haveISeenThisAutoCmplt = autoCmpltReslt[0];
+
+            }else if(!rootArg.includes('/')){
+              this.haveISeenThisAutoCmplt = autoCmpltReslt[0];
               this.terminalForm.setValue({terminalCmd: `${rootCmd} ${autoCmpltReslt[0]}`});
             }
           }else if(autoCmpltReslt.length > 1){

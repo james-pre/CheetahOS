@@ -278,9 +278,11 @@ All commands:
         if(filePathRegex.test(arg0)){
 
            const cmdArg = arg0.split('/');
+           console.log('cmdArg:',cmdArg);
+      
            const moveUps = (cmdArg.length > 1)? cmdArg.filter(x => x == "..") : ['..'] ;
            const impliedPath = this.cd_move_up(moveUps);
-           const explicitPath = arg0.split("../").filter(x => x !== "");
+           const explicitPath = (arg0 !== '..')? arg0.split("../").filter(x => x !== "") : '';
 
            
            directory = `${impliedPath}/${explicitPath}`;
@@ -377,6 +379,8 @@ All commands:
             }
             dirPath = tmpStr.toString();
             console.log('cd_move_up directory:',dirPath);
+        }else if(traversedPath.length === 1){
+            dirPath = `/${directory}`;
         }
 
         return dirPath;
