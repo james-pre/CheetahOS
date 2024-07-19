@@ -306,7 +306,11 @@ All commands:
             const fetchedFiles = await this.loadFilesInfoAsync(directory).then(()=>{
                 const files:string[] = [];
                 this.files.forEach(file => {
-                    files.push(file.getFileName);
+
+                    if(file.getFileType === 'folder')
+                        files.push(`${file.getFileName}/`);
+                    else
+                        files.push(file.getFileName);
                 });
 
                 return {type:'string[]', result:files}

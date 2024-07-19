@@ -41,6 +41,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   private prevPtrIndex = 0;
   private versionNum = '1.0.3';
   private SECONDS_DELAY:number[] = [120,250];
+  private doesDirExist = true;
   
   Success = 1;
   Fail = 2;
@@ -239,13 +240,16 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
           console.log('this.generatedArguments:',this.generatedArguments);
 
           if(rootArg){
-            if(autoCmpltReslt.length === 1){
-              this.terminalForm.setValue({terminalCmd: `${rootCmd} ${autoCmpltReslt[0]}`});
-            }else{
-              terminalCommand.setResponseCode = this.Options;
-              terminalCommand.setCommandOutput = autoCmpltReslt.join(" ") || this.generatedArguments.join(" ");
-              this.commandHistory.push(terminalCommand);
-            }  
+            if(this.doesDirExist){
+              if(autoCmpltReslt.length === 1){
+                this.terminalForm.setValue({terminalCmd: `${rootCmd} ${autoCmpltReslt[0]}`});
+              }else{
+                terminalCommand.setResponseCode = this.Options;
+                terminalCommand.setCommandOutput = autoCmpltReslt.join(" ") || this.generatedArguments.join(" ");
+                this.commandHistory.push(terminalCommand);
+              }  
+            }
+
           }else{
             terminalCommand.setResponseCode = this.Options;
             terminalCommand.setCommandOutput = this.generatedArguments.join(" ");
@@ -306,7 +310,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
 
           if(autoCmpltReslt.length === 1){
             this.terminalForm.setValue({terminalCmd: autoCmpltReslt[0]});
-          }else{
+          }if(autoCmpltReslt.length > 1){
             const terminalCommand = new TerminalCommand(cmdString, 0, " ");
             terminalCommand.setResponseCode = this.Options;
             terminalCommand.setCommandOutput = autoCmpltReslt.join(" ");
@@ -326,13 +330,23 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
         //   this.terminalForm.setValue({terminalCmd:`${rootCmd} ${this.getAutoCompelete(rootArg, this.generatedArguments)}`});
         // }
 
-        if(!this.generatedArguments.includes(rootArg)){
+        const alteredRootArg = this.alterRootArg(rootArg);
+    
+ 
 
-          const autoCmpltReslt = this.getAutoCompelete(rootArg, this.generatedArguments);
+        console.log('alteredRootArg:',alteredRootArg);
 
-          if(autoCmpltReslt.length <= 1){
-            this.terminalForm.setValue({terminalCmd: `${rootCmd} ${autoCmpltReslt[0]}`});
-          }else{
+        if(!this.generatedArguments.includes(alteredRootArg)){
+
+          const autoCmpltReslt = this.getAutoCompelete(alteredRootArg, this.generatedArguments);
+
+          if(autoCmpltReslt.length === 1){
+            if(rootArg.includes('/'))
+              this.terminalForm.setValue({terminalCmd: `${rootCmd} ${rootArg}${autoCmpltReslt[0]}`});
+            else{
+              this.terminalForm.setValue({terminalCmd: `${rootCmd} ${autoCmpltReslt[0]}`});
+            }
+          }else if(autoCmpltReslt.length > 1){
             const terminalCommand = new TerminalCommand(cmdString, 0, " ");
             terminalCommand.setResponseCode = this.Options;
             terminalCommand.setCommandOutput = autoCmpltReslt.join(" ");
@@ -345,6 +359,44 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       
       evt.preventDefault();
     }
+  }
+
+
+
+  formatRootArg(arg0:string):string{
+    let result = '';
+
+    if(arg0.includes('/')) {
+      const argSplit = arg0.split('/');
+      const res:string[] = [];
+
+      for(let i = 0; i <= argSplit.length - 2; i++){
+        res.push(`${argSplit[i]}/`);
+      }
+
+      result = res.toString();
+      console.log('formatAlteredRootArg-result:',result);
+    }
+
+    return result;
+  }
+
+  alterRootArg(arg0:string):string{
+    const rootArgs = arg0.split('/');
+    let rootArg = '';
+
+    if(rootArgs.length === 1) {
+      rootArg =  rootArgs[0];
+    }else if (rootArgs.length >1){
+
+      if(rootArgs.slice(-1)[0] !== ''){
+         rootArg = rootArgs.slice(-1)[0];
+      }else{
+        rootArg = rootArgs.slice(-2)[0];
+      }
+    }
+
+    return rootArg;
   }
 
   getCommandHistory(direction:string):void{
@@ -459,11 +511,14 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
         const result = await this._terminaCommandsImpl.cd(cmdStringArr[1]);
         terminalCmd.setResponseCode = this.Success;
 
-        if(result.type === str)
+        if(result.type === str){
           terminalCmd.setCommandOutput = result.result;
+          this.doesDirExist = false;
+        }
         else if(result.type === strArr){
           this.generatedArguments = [];
           this.generatedArguments = [...result.result as string[]];
+          this.doesDirExist = true;
         }
       } 
 
