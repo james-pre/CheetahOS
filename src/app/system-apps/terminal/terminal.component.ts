@@ -274,7 +274,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       const terminalCommand = new TerminalCommand(cmdInput, 0, '');
 
       if(cmdInput !== ''){
-        this.processCommand(terminalCommand);
+        this.processCommand(terminalCommand, "Enter");
         this.commandHistory.push(terminalCommand);
         this.prevPtrIndex = this.commandHistory.length;
         this.terminalForm.reset();
@@ -382,7 +382,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       console.log('formatAlteredRootArg-result:',result);
     }
 
-    return result;
+    return result.replace(",","");
   }
 
   alterRootArg(arg0:string):string{
@@ -432,7 +432,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
     return this.isInAllCommands(arg)
   }
 
-  async processCommand(terminalCmd:TerminalCommand):Promise<void>{
+  async processCommand(terminalCmd:TerminalCommand, key=""):Promise<void>{
     const cmdStringArr = terminalCmd.getCommand.split(" ");
     const rootCmd = cmdStringArr[0].toLowerCase();
     if(this.isValidCommand(rootCmd)){
@@ -512,7 +512,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       if(rootCmd == "cd"){
         const str = 'string';
         const strArr = 'string[]';
-        const result = await this._terminaCommandsImpl.cd(cmdStringArr[1]);
+        const result = await this._terminaCommandsImpl.cd(cmdStringArr[1], key);
         terminalCmd.setResponseCode = this.Success;
 
         if(result.type === str){

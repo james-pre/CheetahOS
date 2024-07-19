@@ -21,6 +21,7 @@ export class TerminalCommands{
     private files:FileInfo[] = [];
     private readonly defaultDirectoryPath = '/osdrive';
     private currentDirectoryPath = '/osdrive';
+    private tmpDir = '';
 
     constructor() { 
         this._triggerProcessService = TriggerProcessService.instance;
@@ -268,7 +269,7 @@ All commands:
         return result || [];
     }
 
-    async cd(arg0:string):Promise<{type: string;  result: any;}>{
+    async cd(arg0:string, key=""):Promise<{type: string;  result: any;}>{
 
         console.log('arg0:',arg0);
         let directory = ''
@@ -282,7 +283,7 @@ All commands:
       
            const moveUps = (cmdArg.length > 1)? cmdArg.filter(x => x == "..") : ['..'] ;
            const impliedPath = this.cd_move_up(moveUps);
-           const explicitPath = (arg0 !== '..')? arg0.split("../").filter(x => x !== "") : '';
+           const explicitPath = (arg0 !== '..')? arg0.split("../").splice(-1)[0] : '';
 
            
            directory = `${impliedPath}/${explicitPath}`;
@@ -294,16 +295,17 @@ All commands:
             if(!arg0.includes(this.defaultDirectoryPath))
                 directory = `${this.currentDirectoryPath}/${arg0}`;
             console.log('directory-2:',directory);
+            this.tmpDir = directory;
         }
 
         const result = await this._fileService.checkIfFileOrFolderExistsAsync(directory);
 
         if(result){
-            // if(key == 'Tab'){
 
-            // }else if(key == 'Enter'){
-            //     this.currentDirectoryPath = directory;
-            // }
+            console.log('key:', key);
+            if(key == 'Enter'){
+                this.currentDirectoryPath = directory;
+            }
 
             const fetchedFiles = await this.loadFilesInfoAsync(directory).then(()=>{
                 const files:string[] = [];
