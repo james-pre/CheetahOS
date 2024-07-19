@@ -59,7 +59,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   utilityCommands:string[] = ["clear", "all", "dir", "cd","ls", "download" ];
   generatedArguments:string[] = [];
   allCommands:string[] = [];
-  
+  haveISeenThisBefore = '';
 
   terminalForm!: FormGroup;
 
@@ -341,9 +341,10 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
           const autoCmpltReslt = this.getAutoCompelete(alteredRootArg, this.generatedArguments);
 
           if(autoCmpltReslt.length === 1){
-            if(rootArg.includes('/'))
-              this.terminalForm.setValue({terminalCmd: `${rootCmd} ${rootArg}${autoCmpltReslt[0]}`});
+            if((rootArg.includes('/') && rootArg !== this.haveISeenThisBefore) &&  (this.haveISeenThisBefore !== autoCmpltReslt[0]))
+              this.terminalForm.setValue({terminalCmd: `${rootCmd} ${this.formatRootArg(rootArg)}${autoCmpltReslt[0]}`});
             else{
+              this.haveISeenThisBefore = autoCmpltReslt[0];
               this.terminalForm.setValue({terminalCmd: `${rootCmd} ${autoCmpltReslt[0]}`});
             }
           }else if(autoCmpltReslt.length > 1){
