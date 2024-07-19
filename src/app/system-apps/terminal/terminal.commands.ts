@@ -330,9 +330,11 @@ All commands:
         let directory = '';
         let dirPath = '';
         let cnt = 0;
-        const traversedPath = this.currentDirectoryPath.split('/');
-        traversedPath.shift();
+        const tmpTraversedPath = this.currentDirectoryPath.split('/');
+        tmpTraversedPath.shift();
+        const traversedPath = tmpTraversedPath.filter(x => x !== '');
         
+        console.log('traversedPath:', traversedPath)
         if(traversedPath.length == 1){
             directory = traversedPath[0];
          }else if(traversedPath.length > 1){
@@ -373,19 +375,20 @@ All commands:
             const tmpStr:string[] = [];
             for(const el of traversedPath ){
                 if(el !== directory){
-                    tmpStr.push( `/${el}`);
+                    tmpStr.push(`/${el}`);
                 }else{
-                    tmpStr.push( `/${directory}`);
+                    tmpStr.push(`/${directory}`);
                     break;
                 }
             }
-            dirPath = tmpStr.toString();
+            dirPath = tmpStr.join('');
+            console.log('tmpStr:',tmpStr);
             console.log('cd_move_up directory:',dirPath);
         }else if(traversedPath.length === 1){
             dirPath = `/${directory}`;
         }
 
-        return dirPath;
+        return dirPath.replace(',','');
     }
 
 
