@@ -21,7 +21,7 @@ export class TerminalCommands{
     private files:FileInfo[] = [];
     private readonly defaultDirectoryPath = '/osdrive';
     private currentDirectoryPath = '/osdrive';
-    private tmpDir = '';
+    private fallBackDirPath = '';
 
     constructor() { 
         this._triggerProcessService = TriggerProcessService.instance;
@@ -243,16 +243,14 @@ All commands:
 
     async ls(arg0:string):Promise<string[]>{
 
-        console.log('arg0:',arg0);
+        //console.log('arg0:',arg0);
 
         const result = await this.loadFilesInfoAsync(this.currentDirectoryPath).then(()=>{
 
             if(arg0 == undefined || arg0 == ''){
                 const result:string[] = [];
-
                 this.files.forEach(file => {
-
-                    console.log('file.getFileName:',file.getFileName);
+                    //console.log('file.getFileName:',file.getFileName);
                     result.push(file.getFileName);
                 });
 
@@ -283,6 +281,7 @@ All commands:
       
            const moveUps = (cmdArg.length > 1)? cmdArg.filter(x => x == "..") : ['..'] ;
            const impliedPath = this.cd_move_up(moveUps);
+           this.fallBackDirPath = impliedPath;
            const explicitPath = (arg0 !== '..')? arg0.split("../").splice(-1)[0] : '';
 
            
@@ -295,12 +294,20 @@ All commands:
             if(!arg0.includes(this.defaultDirectoryPath))
                 directory = `${this.currentDirectoryPath}/${arg0}`;
             console.log('directory-2:',directory);
-            this.tmpDir = directory;
         }
 
-        const result = await this._fileService.checkIfFileOrFolderExistsAsync(directory);
+        const firstDirectoryCheck = await this._fileService.checkIfFileOrFolderExistsAsync(directory);
+        let secondDirectoryCheck = false;
 
-        if(result){
+        if(!firstDirectoryCheck){
+            secondDirectoryCheck = await this._fileService.checkIfFileOrFolderExistsAsync(this.fallBackDirPath);
+
+            if(secondDirectoryCheck)
+                directory = this.fallBackDirPath;
+        }
+
+
+        if(firstDirectoryCheck || secondDirectoryCheck){
 
             console.log('key:', key);
             if(key == 'Enter'){
@@ -344,31 +351,16 @@ All commands:
 
              cnt = traversedPath.length - 1;
              for(const el of arg0){
-                let priorDirectory = '';
                 if(cnt <= 0){
                     directory = `/${traversedPath[0]}`;
                     break;
                 }else{
-                    priorDirectory= traversedPath[cnt];
+                    const priorDirectory= traversedPath[cnt];
                     console.log('cd_move_up priorDirectory:',priorDirectory);
                     directory = priorDirectory;
                 }
-
                 cnt--;
             }
-
-            //  arg0.forEach(() => {
-            //     let priorDirectory = traversedPath[curPathPtr];
-            //     if(curPathPtr <= 0)
-            //         directory = `/${traversedPath[0]}`;
-            //    else{
-            //         priorDirectory= traversedPath[curPathPtr];
-            //         console.log('cd_move_up priorDirectory:',priorDirectory);
-            //         directory = priorDirectory;
-            //     }
-
-            //     curPathPtr--;
-            // });
         }
 
         if(traversedPath.length > 1){
