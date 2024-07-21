@@ -296,10 +296,12 @@ All commands:
 
                 // given an input like this /osdrive/Documents/PD
                 // create a function that splits directory and the assisgns a portion to fallback
-                this.fallBackDirPath = this.currentDirectoryPath;  /* /osdrive/Documents */
+                //this.fallBackDirPath = this.currentDirectoryPath;  /* /osdrive/Documents */
+                this.fallBackDirPath = this.prepFallBackPath(directory);
+
+                console.log('directory-2:',directory);
+                console.log('fallBackDirPath-2:',this.fallBackDirPath);
             }
-    
-            console.log('directory-2:',directory);
         }
 
         const firstDirectoryCheck = await this._fileService.checkIfFileOrFolderExistsAsync(directory);
@@ -312,31 +314,25 @@ All commands:
                 directory = this.fallBackDirPath;
         }
 
-
         if(firstDirectoryCheck || secondDirectoryCheck){
-
             console.log('key:', key);
             if(key == 'Enter'){
                 this.currentDirectoryPath = directory;
             }
-
             const fetchedFiles = await this.loadFilesInfoAsync(directory).then(()=>{
                 const files:string[] = [];
                 this.files.forEach(file => {
-
                     if(file.getFileType === 'folder')
                         files.push(`${file.getFileName}/`);
                     else
                         files.push(file.getFileName);
                 });
-
                 return {type:'string[]', result:files}
             })
             return fetchedFiles
         }else{
             return {type:'string', result:'No such file or directory'}
         }
-
     }
 
     cd_move_up(arg0:string[]):string{
@@ -389,6 +385,25 @@ All commands:
         return dirPath.replace(',','');
     }
 
+    prepFallBackPath(arg0:string):string{
+        const tmpTraversedPath = arg0.split('/');
+        const tmpStr:string[] = [];
+        let dirPath = '';
+
+        tmpTraversedPath.shift();
+        const traversedPath = tmpTraversedPath.filter(x => x !== '');
+
+        // first, remove the last entry in the array
+        const removedEntry = traversedPath.pop();
+        console.log('prepFallBackPath - removedEntry:', removedEntry);
+
+        traversedPath.forEach(el =>{
+            tmpStr.push(`/${el}`);
+        })
+
+        dirPath = tmpStr.join('');
+        return dirPath.replace(',','');
+    }
 
 
     // cd_move_up_cpy(arg0:string[]):string{
