@@ -292,12 +292,8 @@ All commands:
            console.log('directory-1:',directory);
         }else{
             if(!arg0.includes(this.defaultDirectoryPath)){
-                directory = `${this.currentDirectoryPath}/${arg0}`;
-
-                // given an input like this /osdrive/Documents/PD
-                // create a function that splits directory and the assisgns a portion to fallback
-                //this.fallBackDirPath = this.currentDirectoryPath;  /* /osdrive/Documents */
-                this.fallBackDirPath = this.prepFallBackPath(directory);
+                directory = `${this.currentDirectoryPath}/${arg0}`.replace('//','/');
+                this.fallBackDirPath = this.getFallBackPath(directory);
 
                 console.log('directory-2:',directory);
                 console.log('fallBackDirPath-2:',this.fallBackDirPath);
@@ -346,16 +342,17 @@ All commands:
         console.log('traversedPath:', traversedPath)
         if(traversedPath.length == 1){
             directory = traversedPath[0];
-         }else if(traversedPath.length > 1){
-             // first, remove the current location, because it is where you currently are in the directory
-             const curDirectory = traversedPath.pop();
-             console.log(` cd_move_up curLocation:${curDirectory}    ==    this.currentDirectoryPath:${this.currentDirectoryPath}`);
+            return `/${directory}`;
+        }else if(traversedPath.length > 1){
+            // first, remove the current location, because it is where you currently are in the directory
+            const curDirectory = traversedPath.pop();
+            console.log(` cd_move_up curLocation:${curDirectory}    ==    this.currentDirectoryPath:${this.currentDirectoryPath}`);
 
-             cnt = traversedPath.length - 1;
-             for(const el of arg0){
+            cnt = traversedPath.length - 1;
+            for(const el of arg0){
                 if(cnt <= 0){
-                    directory = `/${traversedPath[0]}`;
-                    break;
+                    directory = traversedPath[0];
+                    return `/${directory}`;
                 }else{
                     const priorDirectory= traversedPath[cnt];
                     console.log('cd_move_up priorDirectory:',priorDirectory);
@@ -363,9 +360,7 @@ All commands:
                 }
                 cnt--;
             }
-        }
 
-        if(traversedPath.length > 1){
             const tmpStr:string[] = [];
             for(const el of traversedPath ){
                 if(el !== directory){
@@ -378,14 +373,18 @@ All commands:
             dirPath = tmpStr.join('');
             console.log('tmpStr:',tmpStr);
             console.log('cd_move_up directory:',dirPath);
-        }else if(traversedPath.length === 1){
-            dirPath = `/${directory}`;
         }
 
         return dirPath.replace(',','');
     }
 
-    prepFallBackPath(arg0:string):string{
+
+    getFallBackPath(arg0:string):string{
+
+        /* given an input like this /osdrive/Documents/PD
+        *create a function that splits directory and the assisgns a portion to fallback
+        *this.fallBackDirPath = this.currentDirectoryPath;  /osdrive/Documents */
+
         const tmpTraversedPath = arg0.split('/');
         const tmpStr:string[] = [];
         let dirPath = '';
@@ -404,36 +403,6 @@ All commands:
         dirPath = tmpStr.join('');
         return dirPath.replace(',','');
     }
-
-
-    // cd_move_up_cpy(arg0:string[]):string{
-    //     let directory = '';
-    //     let curPathPtr = 0;
-    //     if(this.navHistory.length == 1){
-    //         directory = this.navHistory[0];
-    //      }else if(this.navHistory.length > 1){
-    //          //simply go up a level
-    //          curPathPtr = this.pathPtr;
-    //          arg0.forEach(() => {
-    //             let priorPath = this.navHistory[curPathPtr] || '';
-    //             if(priorPath === this.currentDirectoryPath){
-    //                curPathPtr = curPathPtr - 1;
-    //                if(curPathPtr <= 0)
-    //                     directory = this.navHistory[0];
-    //                else{
-    //                     priorPath= this.navHistory[curPathPtr] || '';
-    //                     console.log('priorPath:',priorPath);
-    //                     directory = priorPath;
-    //                 }
-
-    //             }
-    //         });
-    //     }
-
-    //     return directory;
-    // }
-
-
 
     async mkdir(arg0:string):Promise<void>{
         1

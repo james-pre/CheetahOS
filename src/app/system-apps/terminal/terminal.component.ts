@@ -57,12 +57,14 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   commandHistory:TerminalCommand[] = [];
   echoCommands:string[] = ["close", "curl","date", "help","hostname", "list", "open", "version", "whoami", "weather","pwd"];
   utilityCommands:string[] = ["clear", "all", "dir", "cd","ls", "download" ];
+  fetchedDirectoryList:string[] = [];
   generatedArguments:string[] = [];
   allCommands:string[] = [];
   haveISeenThisRootArg = '';
   haveISeenThisAutoCmplt = '';
 
   terminalForm!: FormGroup;
+  numCntr = 0;
 
   hasWindow = true;
   icon = '/osdrive/icons/terminal_48.png';
@@ -235,10 +237,10 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
         const terminalCommand = new TerminalCommand(cmdString, 0, " ");
         await this.processCommand(terminalCommand).then(() =>{
   
-          const autoCmpltReslt = this.getAutoCompelete(rootArg, this.generatedArguments);
+          const autoCmpltReslt = this.getAutoCompelete(rootArg, this.fetchedDirectoryList);
   
           console.log('autoCmpltReslt:',autoCmpltReslt);
-          console.log('this.generatedArguments:',this.generatedArguments);
+          console.log('this.fetchedDirectoryList:',this.fetchedDirectoryList);
 
           if(rootArg){
             if(this.doesDirExist){
@@ -246,14 +248,14 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
                 this.terminalForm.setValue({terminalCmd: `${rootCmd} ${autoCmpltReslt[0]}`});
               }else{
                 terminalCommand.setResponseCode = this.Options;
-                terminalCommand.setCommandOutput = autoCmpltReslt.join(" ") || this.generatedArguments.join(" ");
+                terminalCommand.setCommandOutput = autoCmpltReslt.join(" ") || this.fetchedDirectoryList.join(" ");
                 this.commandHistory.push(terminalCommand);
               }  
             }
 
           }else{
             terminalCommand.setResponseCode = this.Options;
-            terminalCommand.setCommandOutput = this.generatedArguments.join(" ");
+            terminalCommand.setCommandOutput = this.fetchedDirectoryList.join(" ");
             this.commandHistory.push(terminalCommand);
           }
         });
@@ -261,7 +263,6 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       evt.preventDefault();
     }
   }
-
 
   async onKeyDownInInputBox(evt:KeyboardEvent):Promise<void>{
    
@@ -318,38 +319,11 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       }
 
       console.log('rootArg:',rootArg);
-      /**
-       * the argument part of the command string, can not be undefined, must have a length greater than 0, and cannot contain space
-       */
-      if(rootArg !== undefined && rootArg.length > 0 && !rootArg.includes(" ")){
 
-        // if(!this.generatedArguments.includes(rootArg)){
-        //   this.terminalForm.setValue({terminalCmd:`${rootCmd} ${this.getAutoCompelete(rootArg, this.generatedArguments)}`});
-        // }
-
-        if(rootCmd == "cd"){
-          const alteredRootArg = this.alterRootArg(rootArg);
-          console.log('alteredRootArg:',alteredRootArg);
-  
-          if(!this.generatedArguments.includes(alteredRootArg)){
-  
-            // go fetch data for current directory if generatedArguments is null
-  
-            /**
-             * if my current dir is /osdrive/Documents/PDFs/MotherBoard.
-             * and i enter cd ../../Sc and then hit the Tab key
-             * this.generatedArguments is not empty, but it has the incorrect data. 
-             * What conditions  should determine a go-fetch scenario
-             */
-  
-            if(!this.evaluateChangeDirectoryRequest(cmdString, rootCmd, rootArg, alteredRootArg)){
-              const terminalCommand = new TerminalCommand(cmdString, 0, " ");
-              await this.processCommand(terminalCommand).then(() =>{
-                this.evaluateChangeDirectoryRequest(cmdString, rootCmd, rootArg, alteredRootArg);
-              });
-            }
-          }
-        }else if(rootCmd !== "cd" && !this.generatedArguments.includes(rootArg)){
+      if(rootCmd == "cd"){
+        await this.handleChangeDirectoryRequest(cmdString,rootCmd,rootArg);
+      }else{
+        if(!this.generatedArguments.includes(rootArg)){
           const autoCmpltReslt = this.getAutoCompelete(rootArg, this.generatedArguments);
           if(autoCmpltReslt.length === 1){
             this.terminalForm.setValue({terminalCmd: `${rootCmd} ${autoCmpltReslt[0]}`});
@@ -365,12 +339,36 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
     }
   }
 
+  async handleChangeDirectoryRequest(cmdString:string, rootCmd:string, rootArg:string):Promise<void>{
+    if(rootArg !== undefined && rootArg.length > 0 && !rootArg.includes(" ")){
+      const alteredRootArg = this.alterRootArg(rootArg);
+      console.log('alteredRootArg:',alteredRootArg);
+
+      if(!this.fetchedDirectoryList.includes(alteredRootArg)){
+        if(!this.evaluateChangeDirectoryRequest(cmdString, rootCmd, rootArg, alteredRootArg)){
+          const terminalCommand = new TerminalCommand(cmdString, 0, " ");
+          await this.processCommand(terminalCommand).then(() =>{
+            this.evaluateChangeDirectoryRequest(cmdString, rootCmd, rootArg, alteredRootArg);
+          });
+        }
+      }
+    }else{
+      console.log('rootArg:',rootArg);
+      if(this.fetchedDirectoryList.length == 0){
+        const terminalCommand = new TerminalCommand(cmdString, 0, " ");
+        await this.processCommand(terminalCommand).then(() =>{
+          //this.terminalForm.setValue({terminalCmd: `${rootCmd} ${this.fetchedDirectoryList[this.numCntr]}`});
+        });
+      }
+    }
+  }
+
   evaluateChangeDirectoryRequest(cmdString:string, rootCmd:string, rootArg:string, alteredRootArg:string):boolean{
     console.log('ecdr-cmdString:',cmdString);
     console.log('ecdr-rootCmd:',rootCmd);
     console.log('ecdr-rootArg:',rootArg);
     console.log('ecdr-alteredRootArg:',alteredRootArg);
-    const autoCmpltReslt = this.getAutoCompelete(alteredRootArg, this.generatedArguments);
+    const autoCmpltReslt = this.getAutoCompelete(alteredRootArg, this.fetchedDirectoryList);
     let result = false;
     if(autoCmpltReslt.length === 1){
       if((rootArg.includes('/') && rootArg !== this.haveISeenThisRootArg) &&  (this.haveISeenThisAutoCmplt !== autoCmpltReslt[0])){
@@ -393,7 +391,6 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
     console.log('cd eval state:',result);
     return result
   }
-
 
   formatRootArg(arg0:string):string{
     let result = '';
@@ -548,8 +545,8 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
           this.doesDirExist = false;
         }
         else if(result.type === strArr){
-          this.generatedArguments = [];
-          this.generatedArguments = [...result.result as string[]];
+          this.fetchedDirectoryList = [];
+          this.fetchedDirectoryList = [...result.result as string[]];
           this.doesDirExist = true;
         }
       } 
@@ -560,8 +557,8 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
 
         console.log('ls result:', result)
         terminalCmd.setCommandOutput = result.join(' ');
-        this.generatedArguments = [];
-        this.generatedArguments = [...result];
+        this.fetchedDirectoryList = [];
+        this.fetchedDirectoryList = [...result];
       } 
       
     }else{
