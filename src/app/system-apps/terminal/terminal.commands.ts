@@ -50,17 +50,21 @@ terminal <command>
 
 Usage:
 
-help                     get a list of available commands
-help -verbose            get a detailed list of commands 
-open --app  <foo>        opens app <foo>
-close --app <pid>        closes app <pid>
-clear                    clears the terminal output and all previous command
-curl                     query Api's, and transfer data to and from servers
-download <uri> <name>    download from the internet by providing a urls
-ls                       list files and folder in the present directory
-cd                       change directory
-list --apps -i           get a list of all installed apps
-list --apps -a           get a list of all running apps
+help                            get a list of available commands
+help -verbose                   get a detailed list of commands 
+open --app  <foo>               opens app <foo>
+close --app <pid>               closes app <pid>
+clear                           clears the terminal output and all previous command
+curl                            query Api's, and transfer data to and from servers
+download <uri> <name>           download from the internet by providing a urls
+ls                              list files and folder in the present directory
+cd                              change directory
+cp  -<option> <path> <path>     copy from source to destination folder
+mv  <path> <path>               move from source to destination folder
+cat <file>                      open the contents 
+tocuh <file>                    create an empty files
+list --apps -i                  get a list of all installed apps
+list --apps -a                  get a list of all running apps
 
 All commands:
     clear, close, curl, cd, download, date, ls, list, help, hostname, open, pwd, version, weather
@@ -243,7 +247,7 @@ All commands:
 
     async ls(arg0:string):Promise<string[]>{
 
-        //console.log('arg0:',arg0);
+        console.log('arg0:',arg0);
 
         const result = await this.loadFilesInfoAsync(this.currentDirectoryPath).then(()=>{
 
@@ -253,12 +257,11 @@ All commands:
                     //console.log('file.getFileName:',file.getFileName);
                     result.push(file.getFileName);
                 });
-
-                //console.log('result.join(\'\'):',result.join(' '));
                 return result;
             }
 
-            if(arg0 == ' -l' || arg0 == ' -lr' || arg0 == ' -lrt' || arg0 == ' -lt') {
+            const listOrder:string[] = ['-l', '-r', '-t', '-lr', '-rl', '-lt', '-tl', '-lrt', '-ltr', '-rtl', '-rlt', '-tlr', '-trl'];
+            if(listOrder.includes(arg0)) {
                 console.log('hello world');
                 return ''
             }
@@ -269,7 +272,7 @@ All commands:
 
     async cd(arg0:string, key=""):Promise<{type: string;  result: any;}>{
 
-        console.log('arg0:',arg0);
+        // console.log('arg0:',arg0);
         let directory = ''
 
         const filePathRegex = /^(\.\.\/)+([a-zA-Z0-9_-]+\/?)*$|^(\.\/|\/)([a-zA-Z0-9_-]+\/?)+$|^\.\.$|^\.\.\/$/;
@@ -277,7 +280,7 @@ All commands:
         if(filePathRegex.test(arg0)){
 
            const cmdArg = arg0.split('/');
-           console.log('cmdArg:',cmdArg);
+        //    console.log('cmdArg:',cmdArg);
       
            const moveUps = (cmdArg.length > 1)? cmdArg.filter(x => x == "..") : ['..'] ;
            const impliedPath = this.cd_move_up(moveUps);
@@ -287,16 +290,16 @@ All commands:
            
            directory = `${impliedPath}/${explicitPath}`;
 
-           console.log('impliedPath:',impliedPath);
-           console.log('explicitPath:',explicitPath);
-           console.log('directory-1:',directory);
+        //    console.log('impliedPath:',impliedPath);
+        //    console.log('explicitPath:',explicitPath);
+        //    console.log('directory-1:',directory);
         }else{
             if(!arg0.includes(this.defaultDirectoryPath)){
                 directory = `${this.currentDirectoryPath}/${arg0}`.replace('//','/');
                 this.fallBackDirPath = this.getFallBackPath(directory);
 
-                console.log('directory-2:',directory);
-                console.log('fallBackDirPath-2:',this.fallBackDirPath);
+                // console.log('directory-2:',directory);
+                // console.log('fallBackDirPath-2:',this.fallBackDirPath);
             }
         }
 
@@ -339,14 +342,14 @@ All commands:
         tmpTraversedPath.shift();
         const traversedPath = tmpTraversedPath.filter(x => x !== '');
         
-        console.log('traversedPath:', traversedPath)
+        // console.log('traversedPath:', traversedPath);
         if(traversedPath.length == 1){
             directory = traversedPath[0];
             return `/${directory}`;
         }else if(traversedPath.length > 1){
             // first, remove the current location, because it is where you currently are in the directory
             const curDirectory = traversedPath.pop();
-            console.log(` cd_move_up curLocation:${curDirectory}    ==    this.currentDirectoryPath:${this.currentDirectoryPath}`);
+            // console.log(` cd_move_up curLocation:${curDirectory}    ==    this.currentDirectoryPath:${this.currentDirectoryPath}`);
 
             cnt = traversedPath.length - 1;
             for(const el of arg0){
@@ -355,7 +358,7 @@ All commands:
                     return `/${directory}`;
                 }else{
                     const priorDirectory= traversedPath[cnt];
-                    console.log('cd_move_up priorDirectory:',priorDirectory);
+                    // console.log('cd_move_up priorDirectory:',priorDirectory);
                     directory = priorDirectory;
                 }
                 cnt--;
@@ -371,8 +374,8 @@ All commands:
                 }
             }
             dirPath = tmpStr.join('');
-            console.log('tmpStr:',tmpStr);
-            console.log('cd_move_up directory:',dirPath);
+            // console.log('tmpStr:',tmpStr);
+            // console.log('cd_move_up directory:',dirPath);
         }
 
         return dirPath.replace(',','');
@@ -381,9 +384,10 @@ All commands:
 
     getFallBackPath(arg0:string):string{
 
-        /* given an input like this /osdrive/Documents/PD
+        /** given an input like this /osdrive/Documents/PD
         *create a function that splits directory and the assisgns a portion to fallback
-        *this.fallBackDirPath = this.currentDirectoryPath;  /osdrive/Documents */
+        *this.fallBackDirPath = this.currentDirectoryPath;  /osdrive/Documents 
+        */
 
         const tmpTraversedPath = arg0.split('/');
         const tmpStr:string[] = [];
@@ -394,7 +398,7 @@ All commands:
 
         // first, remove the last entry in the array
         const removedEntry = traversedPath.pop();
-        console.log('prepFallBackPath - removedEntry:', removedEntry);
+        //console.log('prepFallBackPath - removedEntry:', removedEntry);
 
         traversedPath.forEach(el =>{
             tmpStr.push(`/${el}`);

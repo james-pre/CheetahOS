@@ -39,7 +39,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   private msgPosCounter = 0;
   private scrollCounter = 0
   private prevPtrIndex = 0;
-  private versionNum = '1.0.3';
+  private versionNum = '1.0.4';
   private SECONDS_DELAY:number[] = [120,250];
   private doesDirExist = true;
   
@@ -55,8 +55,8 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   welcomeMessage = '';
   terminalPrompt = ">";
   commandHistory:TerminalCommand[] = [];
-  echoCommands:string[] = ["close", "curl","date", "help","hostname", "list", "open", "version", "whoami", "weather","pwd"];
-  utilityCommands:string[] = ["clear", "all", "dir", "cd","ls", "download" ];
+  echoCommands:string[] = ["close", "curl","date", "echo", "help", "hostname", "list", "open", "version", "whoami", "weather","pwd"];
+  utilityCommands:string[] = ["all", "cat", "cd", "clear", "cp", "dir", "download","exit", "ls", "mkdir", "mv", "touch"];
   fetchedDirectoryList:string[] = [];
   generatedArguments:string[] = [];
   allCommands:string[] = [];
@@ -232,15 +232,15 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       }
 
       if(rootCmd === "cd"){
-        console.log('rootArg:',rootArg);
+        //console.log('rootArg:',rootArg);
 
         const terminalCommand = new TerminalCommand(cmdString, 0, " ");
         await this.processCommand(terminalCommand).then(() =>{
   
           const autoCmpltReslt = this.getAutoCompelete(rootArg, this.fetchedDirectoryList);
   
-          console.log('autoCmpltReslt:',autoCmpltReslt);
-          console.log('this.fetchedDirectoryList:',this.fetchedDirectoryList);
+          // console.log('autoCmpltReslt:',autoCmpltReslt);
+          // console.log('this.fetchedDirectoryList:',this.fetchedDirectoryList);
 
           if(rootArg){
             if(this.doesDirExist){
@@ -292,11 +292,10 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
     if(evt.key == "Tab"){
       const cmdString = this.terminalForm.value.terminalCmd as string;
       const cmdStringArr = cmdString.split(" ");
-
       const rootCmd = cmdStringArr[0];
       const rootArg = cmdStringArr[1];
 
-      console.log('rootCmd:',rootCmd);
+      //console.log('rootCmd:',rootCmd);
 
       /**
        * the command part of the command string, can not be undefined, must have a length greater than 0, and cannot contain space
@@ -318,7 +317,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
         }
       }
 
-      console.log('rootArg:',rootArg);
+      //console.log('rootArg:',rootArg);
 
       if(rootCmd == "cd"){
         await this.handleChangeDirectoryRequest(cmdString,rootCmd,rootArg);
@@ -342,7 +341,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   async handleChangeDirectoryRequest(cmdString:string, rootCmd:string, rootArg:string):Promise<void>{
     if(rootArg !== undefined && rootArg.length > 0 && !rootArg.includes(" ")){
       const alteredRootArg = this.alterRootArg(rootArg);
-      console.log('alteredRootArg:',alteredRootArg);
+      //console.log('alteredRootArg:',alteredRootArg);
 
       if(!this.fetchedDirectoryList.includes(alteredRootArg)){
         if(!this.evaluateChangeDirectoryRequest(cmdString, rootCmd, rootArg, alteredRootArg)){
@@ -353,7 +352,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
         }
       }
     }else{
-      console.log('rootArg:',rootArg);
+      //console.log('rootArg:',rootArg);
       if(this.fetchedDirectoryList.length == 0){
         const terminalCommand = new TerminalCommand(cmdString, 0, " ");
         await this.processCommand(terminalCommand).then(() =>{
@@ -364,10 +363,10 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   }
 
   evaluateChangeDirectoryRequest(cmdString:string, rootCmd:string, rootArg:string, alteredRootArg:string):boolean{
-    console.log('ecdr-cmdString:',cmdString);
-    console.log('ecdr-rootCmd:',rootCmd);
-    console.log('ecdr-rootArg:',rootArg);
-    console.log('ecdr-alteredRootArg:',alteredRootArg);
+    // console.log('ecdr-cmdString:',cmdString);
+    // console.log('ecdr-rootCmd:',rootCmd);
+    // console.log('ecdr-rootArg:',rootArg);
+    // console.log('ecdr-alteredRootArg:',alteredRootArg);
     const autoCmpltReslt = this.getAutoCompelete(alteredRootArg, this.fetchedDirectoryList);
     let result = false;
     if(autoCmpltReslt.length === 1){
@@ -388,11 +387,16 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       result = true;
     }
 
-    console.log('cd eval state:',result);
+    // console.log('cd eval state:',result);
     return result
   }
 
   formatRootArg(arg0:string):string{
+
+    /**
+     * give an input like Document/PD, Games/Data/In
+     * return Document/, Games/Data
+     */
     let result = '';
 
     if(arg0.includes('/')) {
@@ -411,6 +415,10 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   }
 
   alterRootArg(arg0:string):string{
+    /**
+     * give an input like Document/PD, Games/Data/In
+     * return PD, In
+     */
     const rootArgs = arg0.split('/');
     let rootArg = '';
 
