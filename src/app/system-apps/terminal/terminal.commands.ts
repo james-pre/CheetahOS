@@ -291,8 +291,14 @@ All commands:
            console.log('explicitPath:',explicitPath);
            console.log('directory-1:',directory);
         }else{
-            if(!arg0.includes(this.defaultDirectoryPath))
+            if(!arg0.includes(this.defaultDirectoryPath)){
                 directory = `${this.currentDirectoryPath}/${arg0}`;
+
+                // given an input like this /osdrive/Documents/PD
+                // create a function that splits directory and the assisgns a portion to fallback
+                this.fallBackDirPath = this.currentDirectoryPath;  /* /osdrive/Documents */
+            }
+    
             console.log('directory-2:',directory);
         }
 

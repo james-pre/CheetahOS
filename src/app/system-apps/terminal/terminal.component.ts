@@ -256,18 +256,14 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
             terminalCommand.setCommandOutput = this.generatedArguments.join(" ");
             this.commandHistory.push(terminalCommand);
           }
-    
-  
         });
       }
-
-      
       evt.preventDefault();
     }
   }
 
 
-  onKeyDownInInputBox(evt:KeyboardEvent):void{
+  async onKeyDownInInputBox(evt:KeyboardEvent):Promise<void>{
    
     if(evt.key == "Enter"){
       const cmdInput = this.terminalForm.value.terminalCmd as string;
@@ -331,40 +327,72 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
         //   this.terminalForm.setValue({terminalCmd:`${rootCmd} ${this.getAutoCompelete(rootArg, this.generatedArguments)}`});
         // }
 
-        const alteredRootArg = this.alterRootArg(rootArg);
-        console.log('alteredRootArg:',alteredRootArg);
-
-
-        if(!this.generatedArguments.includes(alteredRootArg)){
-
-          const autoCmpltReslt = this.getAutoCompelete(alteredRootArg, this.generatedArguments);
-
-          if(autoCmpltReslt.length === 1){
-            if((rootArg.includes('/') && rootArg !== this.haveISeenThisRootArg) &&  (this.haveISeenThisAutoCmplt !== autoCmpltReslt[0])){
-
-              this.terminalForm.setValue({terminalCmd: `${rootCmd} ${this.formatRootArg(rootArg)}${autoCmpltReslt[0]}`});
-              this.haveISeenThisRootArg = `${this.formatRootArg(rootArg)}${autoCmpltReslt[0]}`
-              this.haveISeenThisAutoCmplt = autoCmpltReslt[0];
-
-            }else if(!rootArg.includes('/')){
-              this.haveISeenThisAutoCmplt = autoCmpltReslt[0];
-              this.terminalForm.setValue({terminalCmd: `${rootCmd} ${autoCmpltReslt[0]}`});
+        if(rootCmd == "cd"){
+          const alteredRootArg = this.alterRootArg(rootArg);
+          console.log('alteredRootArg:',alteredRootArg);
+  
+          if(!this.generatedArguments.includes(alteredRootArg)){
+  
+            // go fetch data for current directory if generatedArguments is null
+  
+            /**
+             * if my current dir is /osdrive/Documents/PDFs/MotherBoard.
+             * and i enter cd ../../Sc and then hit the Tab key
+             * this.generatedArguments is not empty, but it has the incorrect data. 
+             * What conditions  should determine a go-fetch scenario
+             */
+  
+            if(!this.evaluateChangeDirectoryRequest(cmdString, rootCmd, rootArg, alteredRootArg)){
+              const terminalCommand = new TerminalCommand(cmdString, 0, " ");
+              await this.processCommand(terminalCommand).then(() =>{
+                this.evaluateChangeDirectoryRequest(cmdString, rootCmd, rootArg, alteredRootArg);
+              });
             }
-          }else if(autoCmpltReslt.length > 1){
+          }
+        }else if(rootCmd !== "cd" && !this.generatedArguments.includes(rootArg)){
+          const autoCmpltReslt = this.getAutoCompelete(rootArg, this.generatedArguments);
+          if(autoCmpltReslt.length === 1){
+            this.terminalForm.setValue({terminalCmd: `${rootCmd} ${autoCmpltReslt[0]}`});
+          }else{
             const terminalCommand = new TerminalCommand(cmdString, 0, " ");
             terminalCommand.setResponseCode = this.Options;
             terminalCommand.setCommandOutput = autoCmpltReslt.join(" ");
             this.commandHistory.push(terminalCommand);
           }
-
         }
       }
-
-      
       evt.preventDefault();
     }
   }
 
+  evaluateChangeDirectoryRequest(cmdString:string, rootCmd:string, rootArg:string, alteredRootArg:string):boolean{
+    console.log('ecdr-cmdString:',cmdString);
+    console.log('ecdr-rootCmd:',rootCmd);
+    console.log('ecdr-rootArg:',rootArg);
+    console.log('ecdr-alteredRootArg:',alteredRootArg);
+    const autoCmpltReslt = this.getAutoCompelete(alteredRootArg, this.generatedArguments);
+    let result = false;
+    if(autoCmpltReslt.length === 1){
+      if((rootArg.includes('/') && rootArg !== this.haveISeenThisRootArg) &&  (this.haveISeenThisAutoCmplt !== autoCmpltReslt[0])){
+        this.terminalForm.setValue({terminalCmd: `${rootCmd} ${this.formatRootArg(rootArg)}${autoCmpltReslt[0]}`});
+        this.haveISeenThisRootArg = `${this.formatRootArg(rootArg)}${autoCmpltReslt[0]}`
+        this.haveISeenThisAutoCmplt = autoCmpltReslt[0];
+      }else if(!rootArg.includes('/')){
+        this.haveISeenThisAutoCmplt = autoCmpltReslt[0];
+        this.terminalForm.setValue({terminalCmd: `${rootCmd} ${autoCmpltReslt[0]}`});
+      }
+      result = true;
+    }else if(autoCmpltReslt.length > 1){
+      const terminalCommand = new TerminalCommand(cmdString, 0, " ");
+      terminalCommand.setResponseCode = this.Options;
+      terminalCommand.setCommandOutput = autoCmpltReslt.join(" ");
+      this.commandHistory.push(terminalCommand);
+      result = true;
+    }
+
+    console.log('cd eval state:',result);
+    return result
+  }
 
 
   formatRootArg(arg0:string):string{
