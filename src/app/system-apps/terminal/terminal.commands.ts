@@ -234,10 +234,10 @@ All commands:
         }
     }
 
-    addspaces(arg:string):string{
-        const maxSpace = 21;
+    addspaces(arg:string, maxSpace = 21):string{
+        const maxSpaceInput = maxSpace;
         const argLen = arg.length;
-        const diff = maxSpace - argLen;
+        const diff = maxSpaceInput - argLen;
         const strArr = arg.split("");
         let counter = 0;
 
@@ -285,7 +285,7 @@ All commands:
 
                         this.files.forEach(file => {
                             const fileInfo = `
-${this.addspaces1(file.getMode)} ${this.addspaces1('Terminal')} ${this.addspaces1('staff')} ${this.addspaces1(file.getDateTimeModifiedUS)} ${this.addspaces1(file.getFileName)}
+${this.addspaces(file.getMode,8)} ${this.addspaces('Terminal',8)} ${this.addspaces('staff', 6)} ${this.addspaces(file.getDateTimeModifiedUS,12)} ${this.addspaces(file.getFileName,11)}
                         `
                             result.push(fileInfo);
                         });
@@ -299,20 +299,7 @@ ${this.addspaces1(file.getMode)} ${this.addspaces1('Terminal')} ${this.addspaces
         return result;
     }
 
-    addspaces1(arg:string):string{
-        const maxSpace = 11;
-        const argLen = arg.length;
-        const diff = maxSpace - argLen;
-        const strArr = arg.split("");
-        let counter = 0;
 
-        while(counter < diff){
-            strArr.push(" ");
-            //strArr.unshift(" ");
-            counter++;
-        }
-        return strArr.join("");
-    }
 
     async cd(arg0:string, key=""):Promise<{type: string;  result: any;}>{
 
