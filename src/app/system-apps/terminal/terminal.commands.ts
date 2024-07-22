@@ -70,7 +70,6 @@ All commands:
     clear, close, curl, cd, download, date, ls, list, help, hostname, open, pwd, version, weather
     whoami
         `;
-    
             return verbose;
         }
 
@@ -206,6 +205,15 @@ All commands:
         }
     }
 
+    exit(arg0:number):void{
+        
+        const pid = arg0
+        const processToClose = this._runningProcessService.getProcess(pid);
+        if(processToClose){
+            this._runningProcessService.closeProcessNotify.next(processToClose);
+        }
+    }
+
     async curl (args: string[]):Promise<string> {
         if (args.length === 0 || (args[1] === undefined || args[1].length === 0)){
           return 'curl: no URL provided';
@@ -245,29 +253,65 @@ All commands:
         return this.currentDirectoryPath;
     }
 
-    async ls(arg0:string):Promise<string[]>{
+    async ls(arg0:string):Promise<{type: string;  result: any;}>{
 
         console.log('arg0:',arg0);
 
         const result = await this.loadFilesInfoAsync(this.currentDirectoryPath).then(()=>{
 
             if(arg0 == undefined || arg0 == ''){
-                const result:string[] = [];
+                const onlyFileNames:string[] = [];
                 this.files.forEach(file => {
-                    //console.log('file.getFileName:',file.getFileName);
-                    result.push(file.getFileName);
+                    onlyFileNames.push(file.getFileName);
                 });
-                return result;
+                return {type:'string[]', result:onlyFileNames};
             }
 
-            const listOrder:string[] = ['-l', '-r', '-t', '-lr', '-rl', '-lt', '-tl', '-lrt', '-ltr', '-rtl', '-rlt', '-tlr', '-trl'];
-            if(listOrder.includes(arg0)) {
-                console.log('hello world');
-                return ''
+            const lsOptions:string[] = ['-l', '-r', '-t', '-lr', '-rl', '-lt', '-tl', '-lrt', '-ltr', '-rtl', '-rlt', '-tlr', '-trl'];
+            if(lsOptions.includes(arg0)) {
+                
+                const splitOptions = arg0.replace('-','').split('').sort().reverse();
+                console.log('splitOptions:', splitOptions);
+
+                const result:string[] = [];
+
+                splitOptions.forEach(i => {
+                    // sort by time
+                    if( i === 't'){
+                       this.files = this.files.sort((objA, objB) => objB.getDateModified.getTime() -  objA.getDateModified.getTime());
+                    }else if( i  === 'r'){ // reverse the order
+                        this.files.reverse();
+                    }else{ // present in list format
+
+                        this.files.forEach(file => {
+                            const fileInfo = `
+${this.addspaces1(file.getMode)} ${this.addspaces1('Terminal')} ${this.addspaces1('staff')} ${this.addspaces1(file.getDateTimeModifiedUS)} ${this.addspaces1(file.getFileName)}
+                        `
+                            result.push(fileInfo);
+                        });
+                    }
+                });
+                return {type:'string', result:result.join('')}; // Join with empty string to avoid commas
             }
-            return '';
+           
+            return {type:'', result: ''};
         })
-        return result || [];
+        return result;
+    }
+
+    addspaces1(arg:string):string{
+        const maxSpace = 11;
+        const argLen = arg.length;
+        const diff = maxSpace - argLen;
+        const strArr = arg.split("");
+        let counter = 0;
+
+        while(counter < diff){
+            strArr.push(" ");
+            //strArr.unshift(" ");
+            counter++;
+        }
+        return strArr.join("");
     }
 
     async cd(arg0:string, key=""):Promise<{type: string;  result: any;}>{
@@ -326,11 +370,11 @@ All commands:
                     else
                         files.push(file.getFileName);
                 });
-                return {type:'string[]', result:files}
+                return {type:'string[]', result:files};
             })
             return fetchedFiles
         }else{
-            return {type:'string', result:'No such file or directory'}
+            return {type:'string', result:'No such file or directory'};
         }
     }
 
@@ -380,7 +424,6 @@ All commands:
 
         return dirPath.replace(',','');
     }
-
 
     getFallBackPath(arg0:string):string{
 

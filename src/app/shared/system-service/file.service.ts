@@ -123,6 +123,7 @@ export class FileService{
                 this._fileInfo.setOpensWith = sc.getOpensWith;
                 this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
                 this._fileInfo.setSize = fileMetaData.getSize;
+                this._fileInfo.setMode = fileMetaData.getMode;
             }
              else if(this._consts.IMAGE_FILE_EXTENSIONS.includes(extension)){    
                 const sc = await this.getImageFileB64DataUrlAsync(path) as ShortCut;
@@ -134,6 +135,7 @@ export class FileService{
                 this._fileInfo.setOpensWith = 'photoviewer';
                 this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
                 this._fileInfo.setSize = fileMetaData.getSize;
+                this._fileInfo.setMode = fileMetaData.getMode;
             }
             else if(this._consts.VIDEO_FILE_EXTENSIONS.includes(extension)){    
                 const sc = await this.getImageFileB64DataUrlAsync(path) as ShortCut;
@@ -145,6 +147,7 @@ export class FileService{
                 this._fileInfo.setOpensWith = 'videoplayer';
                 this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
                 this._fileInfo.setSize = fileMetaData.getSize;
+                this._fileInfo.setMode = fileMetaData.getMode;
             }else if(this._consts.AUDIO_FILE_EXTENSIONS.includes(extension)){    
                 const sc = await this.getImageFileB64DataUrlAsync(path) as ShortCut;
                 this._fileInfo.setIconPath = '/osdrive/icons/music_file.ico';
@@ -155,6 +158,7 @@ export class FileService{
                 this._fileInfo.setOpensWith = 'audioplayer';
                 this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
                 this._fileInfo.setSize = fileMetaData.getSize;
+                this._fileInfo.setMode = fileMetaData.getMode;
             }else if(extension == '.txt' || extension == '.properties'){
                 this._fileInfo.setIconPath = '/osdrive/icons/file.ico';
                 this._fileInfo.setCurrentPath = path;
@@ -163,6 +167,7 @@ export class FileService{
                 this._fileInfo.setOpensWith = 'texteditor';
                 this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
                 this._fileInfo.setSize = fileMetaData.getSize;
+                this._fileInfo.setMode = fileMetaData.getMode;
             }else if(extension == '.md'){
                 this._fileInfo.setIconPath = '/osdrive/icons/markdown-file_50.png';
                 this._fileInfo.setCurrentPath = path;
@@ -171,6 +176,7 @@ export class FileService{
                 this._fileInfo.setOpensWith = 'markdownviewer';
                 this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
                 this._fileInfo.setSize = fileMetaData.getSize;
+                this._fileInfo.setMode = fileMetaData.getMode;
             }else if(extension == '.jsdos'){
                 this._fileInfo.setIconPath = '/osdrive/icons/emulator-2.png';
                 this._fileInfo.setCurrentPath = path;
@@ -179,6 +185,7 @@ export class FileService{
                 this._fileInfo.setOpensWith = 'jsdos';
                 this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
                 this._fileInfo.setSize = fileMetaData.getSize;
+                this._fileInfo.setMode = fileMetaData.getMode;
             }
             else if(extension == '.swf'){
                 this._fileInfo.setIconPath = '/osdrive/icons/flash_67.png';
@@ -188,6 +195,7 @@ export class FileService{
                 this._fileInfo.setOpensWith = 'ruffle';
                 this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
                 this._fileInfo.setSize = fileMetaData.getSize;
+                this._fileInfo.setMode = fileMetaData.getMode;
             }
              else{
                 this._fileInfo.setIconPath='/osdrive/icons/unknown.ico';
@@ -195,6 +203,7 @@ export class FileService{
                 this._fileInfo.setFileName = basename(path, extname(path));
                 this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
                 this._fileInfo.setSize = fileMetaData.getSize;
+                this._fileInfo.setMode = fileMetaData.getMode;
             }
         }
         return this._fileInfo;
@@ -292,7 +301,7 @@ export class FileService{
                     console.log('getExtraFileMetaDataAsync error:',err)
                     reject(err)
                 }
-                resolve(new FileMetaData(stats?.ctime, stats?.mtime, stats?.size));
+                resolve(new FileMetaData(stats?.ctime, stats?.mtime, stats?.size, stats?.mode));
             });
         });
     }

@@ -500,6 +500,10 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
         terminalCmd.setCommandOutput = 'downloading ..';
       } 
 
+      if(rootCmd == "exit"){
+        this._terminaCommandsImpl.exit(this.processId);
+      } 
+
       if(rootCmd == "help"){
         const result = this._terminaCommandsImpl.help(this.echoCommands, this.utilityCommands, cmdStringArr[1]);
         terminalCmd.setResponseCode = this.Success;
@@ -560,13 +564,22 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       } 
 
       if(rootCmd == "ls"){
+        const str = 'string';
+        const strArr = 'string[]';
         const result = await this._terminaCommandsImpl.ls(cmdStringArr[1]);
         terminalCmd.setResponseCode = this.Success;
 
-        console.log('ls result:', result)
-        terminalCmd.setCommandOutput = result.join(' ');
-        this.fetchedDirectoryList = [];
-        this.fetchedDirectoryList = [...result];
+
+        if(result.type === str){
+          terminalCmd.setCommandOutput = result.result;
+          this.doesDirExist = false;
+        }
+        else if(result.type === strArr){
+          console.log('ls result:', result)
+          terminalCmd.setCommandOutput = result.result.join(' ');
+          this.fetchedDirectoryList = [];
+          this.fetchedDirectoryList = [...result.result];
+        }
       } 
       
     }else{

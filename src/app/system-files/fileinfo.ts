@@ -9,6 +9,7 @@ export class FileInfo{
     private _size:number;
     private _isFile:boolean;
     private _fileSizeUnit:string;
+    private _mode:number;
 
 
     constructor(){
@@ -22,6 +23,7 @@ export class FileInfo{
         this._size = 0;
         this._isFile = true;
         this._fileSizeUnit = 'B';
+        this._mode = 0;
     }
 
     get getIconPath(){
@@ -73,6 +75,18 @@ export class FileInfo{
 
     get getDateModifiedUS(){
         return this._dateModified.toLocaleString("en-US");
+    }
+
+    get getDateTimeModifiedUS(){
+        const options:  Intl.DateTimeFormatOptions =  {
+            month: 'short',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+          };
+
+        return this._dateModified.toLocaleString("en-US", options).replace(',', '');
     }
     set setDateModified(dateModified:any){
 
@@ -130,5 +144,13 @@ export class FileInfo{
         }
 
         return this._fileSizeUnit;
+    }
+
+
+    get getMode(){
+        return '0' + (this._mode & parseInt('777', 8)).toString(8);
+    }
+    set setMode(mode:number){
+        this._mode = mode;
     }
 }
