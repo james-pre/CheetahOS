@@ -8,6 +8,11 @@ import { FileService } from "src/app/shared/system-service/file.service";
 import { FileEntry } from 'src/app/system-files/fileentry';
 
 
+export interface OctalRepresentation {
+    symboolic:string;
+    binary: number;
+    permission: string;
+}
 
 export class TerminalCommands{
 
@@ -15,8 +20,9 @@ export class TerminalCommands{
     private _runningProcessService:RunningProcessService;
     private _fileService:FileService;
     private _directoryFilesEntires!:FileEntry[];
-    
     private _appDirctory = new AppDirectory();
+    
+    private  permissionChart!:Map<number, OctalRepresentation>;
     private closingNotAllowed:string[] = ["system", "desktop", "filemanager", "taskbar", "startbutton","clock","taskbarentry"];
     private files:FileInfo[] = [];
     private readonly defaultDirectoryPath = '/osdrive';
@@ -27,6 +33,8 @@ export class TerminalCommands{
         this._triggerProcessService = TriggerProcessService.instance;
         this._runningProcessService = RunningProcessService.instance;
         this._fileService = FileService.instace;
+        this.permissionChart = new Map<number, OctalRepresentation>();
+        this.genPermissionsRepresentation();
     }
 
     help(arg0:string[], arg1:string[],arg2:string):string{
@@ -253,9 +261,43 @@ All commands:
         return this.currentDirectoryPath;
     }
 
+    genPermissionsRepresentation():void{
+        const rwx:OctalRepresentation ={symboolic:'rwx', binary:111, permission:'Read + Write + Execute'};
+        const rw_:OctalRepresentation ={symboolic:'rw-', binary:110, permission:'Read + Write'};
+        const r_w:OctalRepresentation ={symboolic:'r-x', binary:101, permission:'Read + Execute'};
+        const r__:OctalRepresentation ={symboolic:'r--', binary:100, permission:'Read'};
+        const _wx:OctalRepresentation ={symboolic:'-wx', binary:0b11, permission:'Write + Execute'};
+        const _w_:OctalRepresentation ={symboolic:'-w-', binary:0b10, permission:'Write'};
+        const __x:OctalRepresentation ={symboolic:'--x', binary:0b01, permission:'Execute'};
+        const ___:OctalRepresentation ={symboolic:'---', binary:0b00, permission:'None'};
+
+        this.permissionChart.set(7, rwx);
+        this.permissionChart.set(6, rw_);
+        this.permissionChart.set(5, r_w);
+        this.permissionChart.set(4, r__);
+        this.permissionChart.set(3, _wx);
+        this.permissionChart.set(2, _w_);
+        this.permissionChart.set(1, __x);
+        this.permissionChart.set(0, ___);
+    }
+
+    getPermission(arg0:string):string{
+        let result = '';
+        const argSplit = arg0.split('');
+        argSplit.shift();
+
+        argSplit.forEach(x => {
+            const permission = this.permissionChart.get(Number(x));
+            result += permission?.symboolic;
+        });
+
+        return result;
+    }
+
     async ls(arg0:string):Promise<{type: string;  result: any;}>{
 
         console.log('arg0:',arg0);
+
 
         const result = await this.loadFilesInfoAsync(this.currentDirectoryPath).then(()=>{
 
@@ -282,10 +324,10 @@ All commands:
                     }else if( i  === 'r'){ // reverse the order
                         this.files.reverse();
                     }else{ // present in list format
-
                         this.files.forEach(file => {
+                            const strPermission =this.getPermission(file.getMode);
                             const fileInfo = `
-${this.addspaces(file.getMode,8)} ${this.addspaces('Terminal',8)} ${this.addspaces('staff', 6)} ${this.addspaces(file.getDateTimeModifiedUS,12)} ${this.addspaces(file.getFileName,11)}
+${this.addspaces(strPermission,10)} ${this.addspaces('Terminal',8)} ${this.addspaces('staff', 6)} ${this.addspaces(String(file.getSize),6)}  ${this.addspaces(file.getDateTimeModifiedUS,12)} ${this.addspaces(file.getFileName,11)}
                         `
                             result.push(fileInfo);
                         });
@@ -293,13 +335,10 @@ ${this.addspaces(file.getMode,8)} ${this.addspaces('Terminal',8)} ${this.addspac
                 });
                 return {type:'string', result:result.join('')}; // Join with empty string to avoid commas
             }
-           
             return {type:'', result: ''};
         })
         return result;
     }
-
-
 
     async cd(arg0:string, key=""):Promise<{type: string;  result: any;}>{
 
