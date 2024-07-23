@@ -217,7 +217,7 @@ export class FileService{
                     console.log('createFolderAsync: folder already exists',exists);
                     resolve(false);
                 }else{
-                    this._fileSystem.mkdir(`${directory}/${fileName}`,'0777',(err) =>{  
+                    this._fileSystem.mkdir(`${directory}/${fileName}`,0o777,(err) =>{  
                         if(err){
                             console.log('createFolderAsync Error: folder creation',err);
                             reject(false);
