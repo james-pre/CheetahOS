@@ -581,6 +581,12 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
           this.fetchedDirectoryList = [...result.result];
         }
       } 
+
+      if(rootCmd == "mkdir"){
+        const result = await this._terminaCommandsImpl.mkdir(cmdStringArr[1], cmdStringArr[2]);
+        terminalCmd.setResponseCode = this.Success;
+        terminalCmd.setCommandOutput = result;
+      }
       
     }else{
       terminalCmd.setResponseCode = this.Fail;

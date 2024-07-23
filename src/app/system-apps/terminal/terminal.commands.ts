@@ -477,8 +477,25 @@ ${this.addspaces(strPermission,10)} ${this.addspaces('Terminal',8)} ${this.addsp
         return dirPath.replace(',','');
     }
 
-    async mkdir(arg0:string):Promise<void>{
-        1
+    async mkdir(arg0:string, arg1:string):Promise<string>{
+        
+        const forbiddenChars:string[]= [ '\\', '/',':','*','?',' "', '<', '>', '|'];
+
+        if(arg0 && !forbiddenChars.includes(arg0)){
+            const folderName = arg0;
+            const  result = await this._fileService.createFolderAsync(this.currentDirectoryPath, folderName);//.then(()=>{ })
+            if(result){
+                if(arg1 && arg1 == '-v'){
+                    return `folder: ${arg0} successfully created`;
+                }
+            }
+        }else{
+            return `
+usage: mkdir direcotry_name [-v]
+                        `;
+        }
+
+        return '';
     }
 
     async mv(arg0:string):Promise<void>{

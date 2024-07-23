@@ -71,8 +71,8 @@ export class FileService{
             const interval = setInterval(() => {
                 fs.readdir(dirPath, function(err, files) {
                   if(err){
-                      console.log("Oops! a boo boo happened, filesystem wasn't ready:", err)
-                      reject(err)
+                      console.log("Oops! a boo boo happened, filesystem wasn't ready:", err);
+                      reject(err);
                   }else{
                     clearInterval(interval);
                     resolve(files);
@@ -90,7 +90,7 @@ export class FileService{
                      resolve(true)
                  }else{
                     console.log('checkIfFileOrFolderExistsAsync :Does not exists',exits);
-                    resolve(false)
+                    resolve(false);
                  }
             });
         })
@@ -209,27 +209,32 @@ export class FileService{
         return this._fileInfo;
     }
 
-    public async createFolderAsync(directory:string, fileName:string):Promise<void>{
-        new Promise<void>((resolve, reject) =>{
+    public async createFolderAsync(directory:string, fileName:string):Promise<boolean>{
+        return new Promise<boolean>((resolve, reject) =>{
 
            this._fileSystem.exists(`${directory}/${fileName}`, (exists) =>{
                 if(exists){
                     console.log('createFolderAsync: folder already exists',exists);
+                    resolve(false);
                 }else{
                     this._fileSystem.mkdir(`${directory}/${fileName}`,'0777',(err) =>{  
                         if(err){
                             console.log('createFolderAsync Error: folder creation',err);
-                            reject(err);
+                            reject(false);
                         }
-                        resolve();
+                        this.dirFilesUpdateNotify.next();
+                        resolve(true);
                     });
                 }
              });
-        }).then(()=>{
-            //Send update notification
-            this.dirFilesUpdateNotify.next();
-        });
+        })
+        
+        // .then(()=>{
+        //     //Send update notification
+        //     this.dirFilesUpdateNotify.next();
+        // });
     }
+
 
     public async getFolderAsync(path: string) {
         await this.initBrowserFsAsync();
