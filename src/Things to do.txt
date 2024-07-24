@@ -77,6 +77,8 @@ sudo n lts| stable | latest  --(pick one)
 
 30.) Adding a new folder through the termial, causes the desktop to refresh. Even if the folder added is not to the desktop
 
+31.) Maximizing an Maximizing terminal before / after vertial overflow has been triggered, break vertial overflow
+
 
 
 --------FEATURES TO ADD--------

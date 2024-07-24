@@ -42,6 +42,8 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   private versionNum = '1.0.4';
   private SECONDS_DELAY:number[] = [120,250];
   private doesDirExist = true;
+  private isInLoopState = false;
+  private hasWhiteSpaceAtTheEnd = false;
   
   Success = 1;
   Fail = 2;
@@ -65,6 +67,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
 
   terminalForm!: FormGroup;
   numCntr = 0;
+  traversalDepth = 0;
 
   hasWindow = true;
   icon = '/osdrive/icons/terminal_48.png';
@@ -201,72 +204,14 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
 
   async onKeyDoublePressed(evt: KeyboardEvent): Promise<void> {
     console.log(`${evt.key} Key pressed  rapidly.`);
-    // Handle the rapid key presses here
-    if(evt.key == "Tab"){
-      const cmdString = this.terminalForm.value.terminalCmd as string;
-      const cmdStringArr = cmdString.split(" ");
-
-      const rootCmd = cmdStringArr[0];
-      const rootArg = cmdStringArr[1];
-
-      console.log('rootCmd:',rootCmd);
-
-      /**
-       * the command part of the command string, can not be undefined, must have a length greater than 0, and cannot contain space
-       */
-      if(rootCmd !== undefined && rootCmd.length > 0 && !rootCmd.includes(" ")){
-        if(!this.allCommands.includes(rootCmd)){
-
-          const autoCmpltReslt = this.getAutoCompelete(rootCmd, this.allCommands);
-
-          if(autoCmpltReslt.length <= 1){
-            this.terminalForm.setValue({terminalCmd: autoCmpltReslt[0]});
-          }else{
-            const terminalCommand = new TerminalCommand(cmdString, 0, " ");
-            terminalCommand.setResponseCode = this.Options;
-            terminalCommand.setCommandOutput = autoCmpltReslt.join(" ");
-            this.commandHistory.push(terminalCommand);
-          }
-
-        }
-      }
-
-      if(rootCmd === "cd"){
-        //console.log('rootArg:',rootArg);
-
-        const terminalCommand = new TerminalCommand(cmdString, 0, " ");
-        await this.processCommand(terminalCommand).then(() =>{
-  
-          const autoCmpltReslt = this.getAutoCompelete(rootArg, this.fetchedDirectoryList);
-  
-          // console.log('autoCmpltReslt:',autoCmpltReslt);
-          // console.log('this.fetchedDirectoryList:',this.fetchedDirectoryList);
-
-          if(rootArg){
-            if(this.doesDirExist){
-              if(autoCmpltReslt.length === 1){
-                this.terminalForm.setValue({terminalCmd: `${rootCmd} ${autoCmpltReslt[0]}`});
-              }else{
-                terminalCommand.setResponseCode = this.Options;
-                terminalCommand.setCommandOutput = autoCmpltReslt.join(" ") || this.fetchedDirectoryList.join(" ");
-                this.commandHistory.push(terminalCommand);
-              }  
-            }
-
-          }else{
-            terminalCommand.setResponseCode = this.Options;
-            terminalCommand.setCommandOutput = this.fetchedDirectoryList.join(" ");
-            this.commandHistory.push(terminalCommand);
-          }
-        });
-      }
-      evt.preventDefault();
-    }
   }
 
   async onKeyDownInInputBox(evt:KeyboardEvent):Promise<void>{
    
     if(evt.key == "Enter"){
+      //this.isInLoopState = false;
+      this.numCntr = 0;
+
       const cmdInput = this.terminalForm.value.terminalCmd as string;
       const terminalCommand = new TerminalCommand(cmdInput, 0, '');
 
@@ -277,26 +222,19 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
         this.terminalForm.reset();
       }
       evt.preventDefault();
-    }
-
-    if(evt.key == "ArrowUp"){
+    }else if(evt.key == "ArrowUp"){
       this.getCommandHistory("backward");
       evt.preventDefault();
-    }
-
-    if(evt.key == "ArrowDown"){
+    }else if(evt.key == "ArrowDown"){
       this.getCommandHistory("forward")
       evt.preventDefault();
-    }
-
-    if(evt.key == "Tab"){
+    }else  if(evt.key == "Tab"){
       const cmdString = this.terminalForm.value.terminalCmd as string;
       const cmdStringArr = cmdString.split(" ");
       const rootCmd = cmdStringArr[0];
       const rootArg = cmdStringArr[1];
 
       //console.log('rootCmd:',rootCmd);
-
       /**
        * the command part of the command string, can not be undefined, must have a length greater than 0, and cannot contain space
        */
@@ -320,98 +258,197 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       //console.log('rootArg:',rootArg);
 
       if(rootCmd == "cd"){
+
+        this.hasWhiteSpaceAtTheEnd = (cmdString.slice(-1) === ' ')? true: false;
+
+        console.log('Has-White-Space-At-The- sEnd:', this.hasWhiteSpaceAtTheEnd);
+
         await this.handleChangeDirectoryRequest(cmdString,rootCmd,rootArg);
       }else{
-        if(!this.generatedArguments.includes(rootArg)){
-          const autoCmpltReslt = this.getAutoCompelete(rootArg, this.generatedArguments);
-          if(autoCmpltReslt.length === 1){
-            this.terminalForm.setValue({terminalCmd: `${rootCmd} ${autoCmpltReslt[0]}`});
-          }else{
-            const terminalCommand = new TerminalCommand(cmdString, 0, " ");
-            terminalCommand.setResponseCode = this.Options;
-            terminalCommand.setCommandOutput = autoCmpltReslt.join(" ");
-            this.commandHistory.push(terminalCommand);
-          }
-        }
+        // if(!this.generatedArguments.includes(rootArg)){
+        //   const autoCmpltReslt = this.getAutoCompelete(rootArg, this.generatedArguments);
+        //   if(autoCmpltReslt.length === 1){
+        //     this.terminalForm.setValue({terminalCmd: `${rootCmd} ${autoCmpltReslt[0]}`});
+        //   }else{
+        //     const terminalCommand = new TerminalCommand(cmdString, 0, " ");
+        //     terminalCommand.setResponseCode = this.Options;
+        //     terminalCommand.setCommandOutput = autoCmpltReslt.join(" ");
+        //     this.commandHistory.push(terminalCommand);
+        //   }
+        // }
       }
       evt.preventDefault();
+    }else{
+      this.isInLoopState = false;
     }
   }
+
 
   async handleChangeDirectoryRequest(cmdString:string, rootCmd:string, rootArg:string):Promise<void>{
     if(rootArg !== undefined && rootArg.length > 0 && !rootArg.includes(" ")){
       const alteredRootArg = this.alterRootArg(rootArg);
-      //console.log('alteredRootArg:',alteredRootArg);
+      console.log('alteredRootArg:',alteredRootArg);
 
-      if(!this.fetchedDirectoryList.includes(alteredRootArg)){
-        if(!this.evaluateChangeDirectoryRequest(cmdString, rootCmd, rootArg, alteredRootArg)){
+
+      if(!this.isInLoopState){
+        console.log('i am now here');
+        if(!this.fetchedDirectoryList.includes(alteredRootArg)){
+
+          console.log('fetchedDirectoryList does not have:',alteredRootArg );
           const terminalCommand = new TerminalCommand(cmdString, 0, " ");
           await this.processCommand(terminalCommand).then(() =>{
             this.evaluateChangeDirectoryRequest(cmdString, rootCmd, rootArg, alteredRootArg);
+            this.isInLoopState = true;
+            this.numCntr = 0;
           });
+
+        }else{
+          console.log('fetchedDirectoryList does have:',alteredRootArg );
+          this.evaluateChangeDirectoryRequest(cmdString, rootCmd, rootArg, alteredRootArg);
+          this.isInLoopState = true;
         }
+      }else{
+
+        console.log('i am now here 1');
+
+        this.loopThroughDirectory(rootCmd,rootArg, alteredRootArg);
+
+        console.log('this.numCntr++:', this.numCntr);
       }
+
     }else{
       //console.log('rootArg:',rootArg);
       if(this.fetchedDirectoryList.length == 0){
+
+        console.log('i am now here 2');
         const terminalCommand = new TerminalCommand(cmdString, 0, " ");
         await this.processCommand(terminalCommand).then(() =>{
-          //this.terminalForm.setValue({terminalCmd: `${rootCmd} ${this.fetchedDirectoryList[this.numCntr]}`});
+          this.evaluateChangeDirectoryRequest(cmdString, rootCmd, rootArg, "");
+          this.isInLoopState = true;
         });
+      }else{
+        if(this.isInLoopState){
+          console.log('i am now here 4');
+
+          if(rootArg.includes('/')){
+            this.terminalForm.setValue({terminalCmd: `${rootCmd} ${this.removeCurrentDir(rootArg)}${this.fetchedDirectoryList[0]}`});
+          }else{
+            this.terminalForm.setValue({terminalCmd:`${rootCmd} ${this.fetchedDirectoryList[0]}`});
+          }
+
+          this.numCntr++;
+        }else{
+          console.log('i am now here 5');
+          this.loopThroughDirectory(rootCmd,rootArg, '');
+        }
       }
     }
   }
 
+
+  loopThroughDirectory(rootCmd:string, rootArg:string,  alteredRootArg:string):void{
+
+    //this.terminalForm.setValue({terminalCmd:`${rootCmd} ${this.fetchedDirectoryList[this.numCntr++]}`});
+
+    const cnt = this.countSlashes(rootArg);
+    console.log('cnt:',cnt);
+    console.log(`loopThroughDirectory:rootArg:${rootArg}`)
+    console.log(`loopThroughDirectory:alteredRootArg:${alteredRootArg}`)
+    console.log('traversalDepth:',this.traversalDepth);
+
+    let curNum = this.numCntr++;
+
+    if((this.traversalDepth > 2)){
+      console.log('11111111');
+      this.terminalForm.setValue({terminalCmd: `${rootCmd} ${this.removeCurrentDir(rootArg)}${this.fetchedDirectoryList[curNum]}`});
+      //this.haveISeenThisRootArg = `${this.removeCurrentDir(rootArg)}${this.fetchedDirectoryList[curNum]}`
+      //this.haveISeenThisAutoCmplt = this.fetchedDirectoryList[curNum];
+    }else if(this.traversalDepth >= 0 && this.traversalDepth <= 2){
+      //this.haveISeenThisAutoCmplt = this.fetchedDirectoryList[curNum]
+      console.log('22222222');
+      this.terminalForm.setValue({terminalCmd: `${rootCmd} ${this.fetchedDirectoryList[curNum]}`});
+    }
+
+    if(this.numCntr > this.fetchedDirectoryList.length - 1){
+      this.numCntr = 0;
+      curNum = 0;
+    }
+     
+
+  }
+
+  countSlashes(input: string): number {
+    const matches = input.match(/\//g);
+    return matches ? matches.length : 0;
+  }
+
+
   evaluateChangeDirectoryRequest(cmdString:string, rootCmd:string, rootArg:string, alteredRootArg:string):boolean{
-    // console.log('ecdr-cmdString:',cmdString);
-    // console.log('ecdr-rootCmd:',rootCmd);
-    // console.log('ecdr-rootArg:',rootArg);
-    // console.log('ecdr-alteredRootArg:',alteredRootArg);
+    console.log('ecdr-cmdString:',cmdString);
+    console.log('ecdr-rootCmd:',rootCmd);
+    console.log('ecdr-rootArg:',rootArg);
+    console.log('ecdr-alteredRootArg:',alteredRootArg);
     const autoCmpltReslt = this.getAutoCompelete(alteredRootArg, this.fetchedDirectoryList);
     let result = false;
     if(autoCmpltReslt.length === 1){
       if((rootArg.includes('/') && rootArg !== this.haveISeenThisRootArg) &&  (this.haveISeenThisAutoCmplt !== autoCmpltReslt[0])){
-        this.terminalForm.setValue({terminalCmd: `${rootCmd} ${this.formatRootArg(rootArg)}${autoCmpltReslt[0]}`});
-        this.haveISeenThisRootArg = `${this.formatRootArg(rootArg)}${autoCmpltReslt[0]}`
+        console.log('1- I AM STILL NEEDED 001');
+        this.terminalForm.setValue({terminalCmd: `${rootCmd} ${this.removeCurrentDir(rootArg)}${autoCmpltReslt[0]}`});
+        this.haveISeenThisRootArg = `${this.removeCurrentDir(rootArg)}${autoCmpltReslt[0]}`
         this.haveISeenThisAutoCmplt = autoCmpltReslt[0];
       }else if(!rootArg.includes('/')){
+        console.log('2 - I AM STILL NEEDED 0002');
         this.haveISeenThisAutoCmplt = autoCmpltReslt[0];
         this.terminalForm.setValue({terminalCmd: `${rootCmd} ${autoCmpltReslt[0]}`});
       }
       result = true;
     }else if(autoCmpltReslt.length > 1){
+      console.log('3 - I AM STILL NEEDED 00003');
       const terminalCommand = new TerminalCommand(cmdString, 0, " ");
       terminalCommand.setResponseCode = this.Options;
       terminalCommand.setCommandOutput = autoCmpltReslt.join(" ");
       this.commandHistory.push(terminalCommand);
       result = true;
+    }else{
+      const terminalCommand = new TerminalCommand(cmdString, 0, " ");
+      terminalCommand.setResponseCode = this.Options;
+      terminalCommand.setCommandOutput = this.fetchedDirectoryList.join(" ");
+      this.commandHistory.push(terminalCommand);
+      result = true;
     }
 
-    // console.log('cd eval state:',result);
     return result
   }
 
-  formatRootArg(arg0:string):string{
+  removeCurrentDir(arg0:string):string{
 
     /**
-     * give an input like Document/PD, Games/Data/In
-     * return Document/, Games/Data
+     * give an input like Document/, Games/Data/In/, Documents/Sample, Games/FlashGames/Moz, ABC/DEF/HIJ/KlM/, ABC/DEF/HIJ/KlM/NO
+     * return Document/, Games/Data/, Documents, Games/FlashGames/, ABC/DEF/HIJ/, ABC/DEF/HIJ/KlM/
      */
     let result = '';
 
+    if(this.hasWhiteSpaceAtTheEnd)
+        return arg0;
+
     if(arg0.includes('/')) {
-      const argSplit = arg0.split('/');
+      const argSplit = arg0.split('/').filter(x => x !== '');
       const res:string[] = [];
 
-      for(let i = 0; i <= argSplit.length - 2; i++){
-        res.push(`${argSplit[i]}/`);
-      }
+      if(argSplit.length === 1)
+          return `${argSplit[0]}/`;
+      else{
+        argSplit.pop();
 
-      result = res.toString();
-      console.log('formatAlteredRootArg-result:',result);
+        for(let i = 0; i <= argSplit.length - 1; i++){
+          res.push(`${argSplit[i]}/`);
+        }
+      }
+      result = res.join('');
+      //console.log('removeCurrentDir-result:',result);
     }
 
-    return result.replace(",","");
+    return result.replace(',','');
   }
 
   alterRootArg(arg0:string):string{
@@ -555,11 +592,13 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
         if(result.type === str){
           terminalCmd.setCommandOutput = result.result;
           this.doesDirExist = false;
+          this.traversalDepth = result.depth;
         }
         else if(result.type === strArr){
           this.fetchedDirectoryList = [];
           this.fetchedDirectoryList = [...result.result as string[]];
           this.doesDirExist = true;
+          this.traversalDepth = result.depth;
         }
       } 
 

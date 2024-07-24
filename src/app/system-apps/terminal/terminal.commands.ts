@@ -340,10 +340,11 @@ ${this.addspaces(strPermission,10)} ${this.addspaces('Terminal',8)} ${this.addsp
         return result;
     }
 
-    async cd(arg0:string, key=""):Promise<{type: string;  result: any;}>{
+    async cd(arg0:string, key=""):Promise<{type: string;  result: any; depth:number;}>{
 
         // console.log('arg0:',arg0);
         let directory = ''
+        let depth = 0;
 
         const filePathRegex = /^(\.\.\/)+([a-zA-Z0-9_-]+\/?)*$|^(\.\/|\/)([a-zA-Z0-9_-]+\/?)+$|^\.\.$|^\.\.\/$/;
 
@@ -368,8 +369,8 @@ ${this.addspaces(strPermission,10)} ${this.addspaces('Terminal',8)} ${this.addsp
                 directory = `${this.currentDirectoryPath}/${arg0}`.replace('//','/');
                 this.fallBackDirPath = this.getFallBackPath(directory);
 
-                // console.log('directory-2:',directory);
-                // console.log('fallBackDirPath-2:',this.fallBackDirPath);
+                console.log('directory-2:',directory);
+                console.log('fallBackDirPath-2:',this.fallBackDirPath);
             }
         }
 
@@ -388,6 +389,8 @@ ${this.addspaces(strPermission,10)} ${this.addspaces('Terminal',8)} ${this.addsp
             if(key == 'Enter'){
                 this.currentDirectoryPath = directory;
             }
+
+            depth = this.getFolderDepth(directory);
             const fetchedFiles = await this.loadFilesInfoAsync(directory).then(()=>{
                 const files:string[] = [];
                 this.files.forEach(file => {
@@ -396,11 +399,11 @@ ${this.addspaces(strPermission,10)} ${this.addspaces('Terminal',8)} ${this.addsp
                     else
                         files.push(file.getFileName);
                 });
-                return {type:'string[]', result:files};
+                return {type:'string[]', result:files, depth:depth};
             })
             return fetchedFiles
         }else{
-            return {type:'string', result:'No such file or directory'};
+            return {type:'string', result:'No such file or directory', depth:depth};
         }
     }
 
@@ -451,6 +454,11 @@ ${this.addspaces(strPermission,10)} ${this.addspaces('Terminal',8)} ${this.addsp
         return dirPath.replace(',','');
     }
 
+    getFolderDepth(input: string): number {
+        const matches = input.match(/\//g);
+        return matches ? matches.length : 0;
+    }
+
     getFallBackPath(arg0:string):string{
 
         /** given an input like this /osdrive/Documents/PD
@@ -472,6 +480,7 @@ ${this.addspaces(strPermission,10)} ${this.addspaces('Terminal',8)} ${this.addsp
         traversedPath.forEach(el =>{
             tmpStr.push(`/${el}`);
         })
+        tmpStr.push('/');
 
         dirPath = tmpStr.join('');
         return dirPath.replace(',','');
