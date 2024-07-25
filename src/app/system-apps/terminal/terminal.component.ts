@@ -43,7 +43,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   private SECONDS_DELAY:number[] = [120,250];
   private doesDirExist = true;
   private isInLoopState = false;
-  private hasWhiteSpaceAtTheEnd = false;
+  private isWhiteSpaceAtTheEnd = false;
   
   Success = 1;
   Fail = 2;
@@ -230,10 +230,10 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       evt.preventDefault();
     }else  if(evt.key == "Tab"){
       const cmdString = this.terminalForm.value.terminalCmd as string;
-      const cmdStringArr = cmdString.split(" ");
+      const cmdStringArr =(cmdString === undefined)? '': cmdString.split(" ");
       const rootCmd = cmdStringArr[0];
       const rootArg = cmdStringArr[1];
-
+ 
       //console.log('rootCmd:',rootCmd);
       /**
        * the command part of the command string, can not be undefined, must have a length greater than 0, and cannot contain space
@@ -258,10 +258,13 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       //console.log('rootArg:',rootArg);
 
       if(rootCmd == "cd"){
+        this.isWhiteSpaceAtTheEnd = this.checkForWhitSpaceAtTheEnd(cmdString);
+        console.log('Has-White-Space-At-The- sEnd:', this.isWhiteSpaceAtTheEnd);
 
-        this.hasWhiteSpaceAtTheEnd = (cmdString.slice(-1) === ' ')? true: false;
-
-        console.log('Has-White-Space-At-The- sEnd:', this.hasWhiteSpaceAtTheEnd);
+        if(rootArg === undefined){
+          const whiteSpace = ' ';
+          this.terminalForm.setValue({terminalCmd:`${rootCmd} ${whiteSpace}`});
+        }
 
         await this.handleChangeDirectoryRequest(cmdString,rootCmd,rootArg);
       }else{
@@ -348,33 +351,25 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
 
   loopThroughDirectory(rootCmd:string, rootArg:string,  alteredRootArg:string):void{
 
-    //this.terminalForm.setValue({terminalCmd:`${rootCmd} ${this.fetchedDirectoryList[this.numCntr++]}`});
-
-    const cnt = this.countSlashes(rootArg);
-    console.log('cnt:',cnt);
+    //const cnt = this.countSlashes(rootArg);
+    //console.log('cnt:',cnt);
     console.log(`loopThroughDirectory:rootArg:${rootArg}`)
     console.log(`loopThroughDirectory:alteredRootArg:${alteredRootArg}`)
     console.log('traversalDepth:',this.traversalDepth);
 
-    let curNum = this.numCntr++;
+    const curNum = this.numCntr++;
 
     if((this.traversalDepth > 2)){
       console.log('11111111');
       this.terminalForm.setValue({terminalCmd: `${rootCmd} ${this.removeCurrentDir(rootArg)}${this.fetchedDirectoryList[curNum]}`});
-      //this.haveISeenThisRootArg = `${this.removeCurrentDir(rootArg)}${this.fetchedDirectoryList[curNum]}`
-      //this.haveISeenThisAutoCmplt = this.fetchedDirectoryList[curNum];
     }else if(this.traversalDepth >= 0 && this.traversalDepth <= 2){
-      //this.haveISeenThisAutoCmplt = this.fetchedDirectoryList[curNum]
       console.log('22222222');
       this.terminalForm.setValue({terminalCmd: `${rootCmd} ${this.fetchedDirectoryList[curNum]}`});
     }
 
     if(this.numCntr > this.fetchedDirectoryList.length - 1){
       this.numCntr = 0;
-      curNum = 0;
     }
-     
-
   }
 
   countSlashes(input: string): number {
@@ -428,7 +423,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
      */
     let result = '';
 
-    if(this.hasWhiteSpaceAtTheEnd)
+    if(this.isWhiteSpaceAtTheEnd)
         return arg0;
 
     if(arg0.includes('/')) {
@@ -471,6 +466,11 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
     }
 
     return rootArg;
+  }
+
+  checkForWhitSpaceAtTheEnd(arg0:string):boolean {
+    const whitespaceChars = [' ', '\t', '\n'];
+    return whitespaceChars.some(char => arg0.slice(-1).includes(char));
   }
 
   getCommandHistory(direction:string):void{
@@ -587,19 +587,21 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
         const str = 'string';
         const strArr = 'string[]';
         const result = await this._terminaCommandsImpl.cd(cmdStringArr[1], key);
-        terminalCmd.setResponseCode = this.Success;
 
-        if(result.type === str){
-          terminalCmd.setCommandOutput = result.result;
-          this.doesDirExist = false;
-          this.traversalDepth = result.depth;
-        }
-        else if(result.type === strArr){
-          this.fetchedDirectoryList = [];
-          this.fetchedDirectoryList = [...result.result as string[]];
-          this.doesDirExist = true;
-          this.traversalDepth = result.depth;
-        }
+        // if(result.type === str || result.type === strArr)
+        //   terminalCmd.setResponseCode = this.Success;
+ 
+        // if(result.type === str){
+        //   terminalCmd.setCommandOutput = result.result;
+        //   this.doesDirExist = false;
+        //   this.traversalDepth = result.depth;
+        // }
+        // else if(result.type === strArr){
+        //   this.fetchedDirectoryList = [];
+        //   this.fetchedDirectoryList = [...result.result as string[]];
+        //   this.doesDirExist = true;
+        //   this.traversalDepth = result.depth;
+        // }
       } 
 
       if(rootCmd == "ls"){

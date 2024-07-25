@@ -346,6 +346,10 @@ ${this.addspaces(strPermission,10)} ${this.addspaces('Terminal',8)} ${this.addsp
         let directory = ''
         let depth = 0;
 
+        if(arg0===undefined){
+            return {type:'', result:'', depth:depth};
+        }
+
         const filePathRegex = /^(\.\.\/)+([a-zA-Z0-9_-]+\/?)*$|^(\.\/|\/)([a-zA-Z0-9_-]+\/?)+$|^\.\.$|^\.\.\/$/;
 
         if(filePathRegex.test(arg0)){
