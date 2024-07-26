@@ -99,7 +99,7 @@ export class JSdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
 
       emulators.pathPrefix= '/';
 
-      const data = await this._fileService.getFileAsync(this.gameSrc);
+      const data = await this._fileService.getFileBlobAsync(this.gameSrc);
       this._ci = await  Dos(this.dosWindow.nativeElement, this.dosOptions).run(data);
       this.storeAppState(this.gameSrc);
       URL.revokeObjectURL(this.gameSrc);

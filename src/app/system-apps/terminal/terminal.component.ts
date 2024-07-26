@@ -232,7 +232,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       const cmdString = this.terminalForm.value.terminalCmd as string;
       const cmdStringArr =(cmdString === undefined)? '': cmdString.split(" ");
       const rootCmd = cmdStringArr[0];
-      const rootArg = cmdStringArr[1];
+      let rootArg = ''
  
       //console.log('rootCmd:',rootCmd);
       /**
@@ -256,8 +256,8 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       }
 
       //console.log('rootArg:',rootArg);
-
       if(rootCmd == "cd"){
+        rootArg  =  cmdStringArr[1];
         this.isWhiteSpaceAtTheEnd = this.checkForWhitSpaceAtTheEnd(cmdString);
         console.log('Has-White-Space-At-The- sEnd:', this.isWhiteSpaceAtTheEnd);
 
@@ -267,7 +267,12 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
         }
 
         await this.handleChangeDirectoryRequest(cmdString,rootCmd,rootArg);
-      }else{
+      }else if(rootCmd == "cp"){
+        const option = cmdStringArr[1];
+        const source = cmdStringArr[2];
+        const destination = cmdStringArr[3];
+
+      } else{
         // if(!this.generatedArguments.includes(rootArg)){
         //   const autoCmpltReslt = this.getAutoCompelete(rootArg, this.generatedArguments);
         //   if(autoCmpltReslt.length === 1){
@@ -289,7 +294,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
 
   async handleChangeDirectoryRequest(cmdString:string, rootCmd:string, rootArg:string):Promise<void>{
     if(rootArg !== undefined && rootArg.length > 0 && !rootArg.includes(" ")){
-      const alteredRootArg = this.alterRootArg(rootArg);
+      const alteredRootArg = this.getLastSegment(rootArg);
       console.log('alteredRootArg:',alteredRootArg);
 
 
@@ -446,7 +451,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
     return result.replace(',','');
   }
 
-  alterRootArg(arg0:string):string{
+  getLastSegment(arg0:string):string{
     /**
      * give an input like Document/PD, Games/Data/In
      * return PD, In
@@ -588,20 +593,20 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
         const strArr = 'string[]';
         const result = await this._terminaCommandsImpl.cd(cmdStringArr[1], key);
 
-        // if(result.type === str || result.type === strArr)
-        //   terminalCmd.setResponseCode = this.Success;
+        if(result.type === str || result.type === strArr)
+          terminalCmd.setResponseCode = this.Success;
  
-        // if(result.type === str){
-        //   terminalCmd.setCommandOutput = result.result;
-        //   this.doesDirExist = false;
-        //   this.traversalDepth = result.depth;
-        // }
-        // else if(result.type === strArr){
-        //   this.fetchedDirectoryList = [];
-        //   this.fetchedDirectoryList = [...result.result as string[]];
-        //   this.doesDirExist = true;
-        //   this.traversalDepth = result.depth;
-        // }
+        if(result.type === str){
+          terminalCmd.setCommandOutput = result.result;
+          this.doesDirExist = false;
+          this.traversalDepth = result.depth;
+        }
+        else if(result.type === strArr){
+          this.fetchedDirectoryList = [];
+          this.fetchedDirectoryList = [...result.result as string[]];
+          this.doesDirExist = true;
+          this.traversalDepth = result.depth;
+        }
       } 
 
       if(rootCmd == "ls"){
@@ -625,6 +630,19 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
 
       if(rootCmd == "mkdir"){
         const result = await this._terminaCommandsImpl.mkdir(cmdStringArr[1], cmdStringArr[2]);
+        terminalCmd.setResponseCode = this.Success;
+        terminalCmd.setCommandOutput = result;
+      }
+
+      if (rootCmd == "cp"){
+
+        const option = cmdStringArr[1];
+
+        const source = cmdStringArr[2];
+        const destination = cmdStringArr[3];
+      
+        const result = await this._terminaCommandsImpl.cp(option, source, destination);
+
         terminalCmd.setResponseCode = this.Success;
         terminalCmd.setCommandOutput = result;
       }

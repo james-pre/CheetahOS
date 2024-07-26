@@ -515,8 +515,73 @@ usage: mkdir direcotry_name [-v]
         1
     }
 
-    async cp(arg0:string):Promise<void>{
-        1
+    async cp(arg0:any, arg1:string, arg2:string):Promise<string>{
+
+        console.log(`source ${arg0}`);
+        console.log(`source ${arg1}`);
+        console.log(`destination ${arg2}`)
+
+        if(arg2 === undefined){
+            arg2 = arg1;
+            arg1 = arg0;
+            arg0 = undefined
+        }
+        
+        const options = ['-f', '--force', '-R','-r','--recursive', '-v', '--verbose' , '--help'];
+        let option = '';
+        if(arg0){
+            option = (options.includes(arg0 as string))? arg0 : '';
+            if(option === '')
+                return `cp: invalid option ${arg0 as string}`
+
+            if(option === '--help'){
+                return `
+Usage cp [option] ....SOURCE DEST
+Copy SOURCE to DEST.
+
+Mandatory argument to long options are mandotory for short options too.
+
+   -f, --force             copy file by force
+   -r, -R, -- recursive    copy folder recurively.
+   -v, --verbose           explain what is being done.
+       --help              display the help and exit.
+
+                `;
+            }
+        }
+
+        if(arg1 === undefined || arg1.length === 0)
+            return 'source path required';
+
+        if(arg2 === undefined || arg2.length === 0)
+            return 'destination path required';
+
+        const isDirectory = await this._fileService.checkIfDirectory(arg1);
+        if(isDirectory){
+            if(option === '' || option === '-f' || option === '--force' || option === '--verbose')
+                return `cp: omitting directory ${arg1}`;
+
+
+            if(option === '-r' || (option === '-R' || option === '--recursive')){
+                return `cp: omitting directory ${arg1}` 
+            }
+        }else{
+            // just copy regular file
+            this.cp_file_handler(arg0,arg1,arg2);
+        }        
+        return '';
+    }
+
+
+    private cp_file_handler(arg0:string, arg1:string, arg2:string):void{
+
+        console.log(`source ${arg1}`);
+        console.log(`destination ${arg2}`)
+        this._fileService.copyFileAsync(arg1,arg2);
+    }
+
+    private cp_dir_handler():void{
+
     }
 
 

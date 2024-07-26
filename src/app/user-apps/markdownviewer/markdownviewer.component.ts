@@ -94,7 +94,7 @@ export class MarkDownViewerComponent implements BaseComponent,  OnDestroy, After
         breaks: true
       });
 
-      const textCntnt = await this._fileService.readTextFileAsync(this.fileSrc);
+      const textCntnt = await this._fileService.getFileAsync(this.fileSrc);
       const htmlCntnt = mkd(textCntnt);
       const safeHtmlCntnt = this._sanitizer.bypassSecurityTrustHtml(htmlCntnt);
       this.mkdDwnHtml = safeHtmlCntnt;

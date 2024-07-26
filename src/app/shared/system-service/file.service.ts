@@ -27,6 +27,8 @@ export class FileService{
     private _fileSystem!:FSModule;
     private _directoryFileEntires:FileEntry[]=[];
     private _fileExistsMap!:Map<string,number>; 
+    private _eventOriginator = '';
+
     dirFilesReadyNotify: Subject<void> = new Subject<void>();
     dirFilesUpdateNotify: Subject<void> = new Subject<void>();
 
@@ -101,7 +103,7 @@ export class FileService{
         this._fileInfo = new FileInfo();
 
         if(!extension){
-            const sc = await this.getFolderAsync(path) as ShortCut;
+            const sc = await this.setFolderValuesAsync(path) as ShortCut;
             this._fileInfo.setIconPath = this.changeFolderIcon(sc.geFileName,sc.getIconPath);
             this._fileInfo.setCurrentPath = path;
             this._fileInfo.setFileType = sc.getFileType;
@@ -228,28 +230,40 @@ export class FileService{
                 }
              });
         })
-        
-        // .then(()=>{
-        //     //Send update notification
-        //     this.dirFilesUpdateNotify.next();
-        // });
     }
 
 
-    public async getFolderAsync(path: string) {
+    public async setFolderValuesAsync(path: string) {
         await this.initBrowserFsAsync();
 
         return new Promise((resolve, reject) =>{
             this._fileSystem.stat(path,(err, stats) =>{
                 if(err){
-                    console.log('getFolderAsync error:',err)
+                    console.log('setFolderValuesAsync error:',err)
                     reject(err)
                 }
-                const isDirectory = stats? stats.isDirectory() : false
+
+                const isDirectory = (stats)? stats.isDirectory(): false;
                 const iconFile = `/osdrive/icons/${isDirectory ? 'folder.ico' : 'unknown.ico'}`
                 const fileType = 'folder';
                 const opensWith ='fileexplorer'
                 resolve(new ShortCut(iconFile, basename(path, extname(path)),fileType,basename(path, extname(path)) ,opensWith ));
+            });
+        });
+    }
+
+    public async checkIfDirectory(path: string):Promise<boolean> {
+        await this.initBrowserFsAsync();
+
+        return new Promise<boolean>((resolve, reject) =>{
+            this._fileSystem.stat(path,(err, stats) =>{
+                if(err){
+                    console.log('checkIfDirectory error:',err)
+                    reject(err)
+                }
+               
+                const isDirectory = (stats)? stats.isDirectory(): false;
+                resolve(isDirectory);
             });
         });
     }
@@ -367,9 +381,9 @@ export class FileService{
         });
     }
 
-    public async getFileAsync(path:string): Promise<string> {
+    public async getFileBlobAsync(path:string): Promise<string> {
         if (!path) {
-            console.error('getFileAsync error: Path must not be empty');
+            console.error('getFileBlobAsync error: Path must not be empty');
             return Promise.reject(new Error('Path must not be empty'));
         }
 
@@ -378,7 +392,7 @@ export class FileService{
         return new Promise((resolve, reject) =>{
             this._fileSystem.readFile(path,(err, contents = Buffer.from('')) =>{
                 if(err){
-                    console.log('getFileAsync error:',err)
+                    console.log('getFileBlobAsync error:',err)
                     reject(err);
                     return
                 }
@@ -390,8 +404,28 @@ export class FileService{
         });
     }
 
-    public async writeFilesAsync(directory:string, files:File[]):Promise<void>{
+    public async getFileAsync(path:string): Promise<string> {
+        if (!path) {
+            console.error('getFileAsync error: Path must not be empty');
+            return Promise.reject(new Error('Path must not be empty'));
+        }
 
+        await this.initBrowserFsAsync();
+
+       return new Promise((resolve, reject) =>{
+            this._fileSystem.readFile(path,(err, contents = Buffer.from('')) =>{
+                if(err){
+                    console.log('getFileAsync error:',err)
+                    reject(err)
+                }else{
+                    resolve(contents.toString('utf8'));
+                }
+            });
+        });
+    }
+
+    public async writeFilesAsync(directory:string, files:File[]):Promise<void>{
+        await this.initBrowserFsAsync();
         new Promise<void>((resolve, reject) =>{
             files.forEach((file)=>{
                 const fileReader = new FileReader()
@@ -418,13 +452,19 @@ export class FileService{
                     });
                 }
             })
-         }).then(()=>{
+
             //Send update notification
             this.dirFilesUpdateNotify.next();
-        });
+         })
+
+        // .then(()=>{
+        //     //Send update notification
+        //     this.dirFilesUpdateNotify.next();
+        // });
     }
 
     public async writeFileAsync(directory:string, file:FileInfo):Promise<void>{
+        await this.initBrowserFsAsync();
         new Promise<void>((resolve, reject) =>{
             this._fileSystem.writeFile(`${directory}/${file.getFileName}`, file.getContentPath, {flag: 'wx'}, (err) =>{  
                 if(err?.code === 'EEXIST' ){
@@ -443,10 +483,56 @@ export class FileService{
                     resolve();
                 }
             });
-         }).then(()=>{
+
+            //Send update notification
+            this.dirFilesUpdateNotify.next();
+         })
+ 
+        //  .then(()=>{
+        //     //Send update notification
+        //     this.dirFilesUpdateNotify.next();
+        // });
+    }
+
+
+    public async copyFileAsync(sourcepath:string, destinationpath:string):Promise<void>{
+        await this.initBrowserFsAsync();
+
+        const fileName = this.getFileName(sourcepath);
+        console.log(`copyFileAsync-filename: ${fileName}`);
+        return new Promise((resolve, reject) =>{
+             this._fileSystem.readFile(sourcepath,(err, contents = Buffer.from('')) =>{
+                if(err){
+                    console.log('copyFileAsync error:',err)
+                    reject(err)
+                }else{
+                    this._fileSystem.writeFile(`${destinationpath}/${fileName}`, contents, {flag: 'wx'}, (err) =>{  
+                        if(err?.code === 'EEXIST' ){
+                            console.log('copyFileAsync Error: file already exists',err);
+        
+                            const itrName = this.iterateFileName(`${destinationpath}/${fileName}`);
+                            this._fileSystem.writeFile(itrName,fileName,(err) =>{  
+                                if(err){
+                                    console.log('copyFileAsync Iterate Error:',err);
+                                    reject(err);
+                                }
+                                resolve();
+                            });
+                        }else{
+                            this._fileExistsMap.set(`${destinationpath}/${fileName}`,0);
+                            resolve();
+                        }
+                    });
+                }
+            });
+
             //Send update notification
             this.dirFilesUpdateNotify.next();
         });
+    }
+
+    private getFileName(path:string):string{
+        return `${basename(path, extname(path))}${ extname(path)}`;
     }
 
     public async renameFileAsync(path:string, newFileName:string): Promise<void> {
@@ -479,26 +565,6 @@ export class FileService{
         });
     }
 
-    public async readTextFileAsync(path:string): Promise<string> {
-        if (!path) {
-            console.error('readTextFileAsync error: Path must not be empty');
-            return Promise.reject(new Error('Path must not be empty'));
-        }
-
-        await this.initBrowserFsAsync();
-
-       return new Promise((resolve, reject) =>{
-            this._fileSystem.readFile(path,(err, contents = Buffer.from('')) =>{
-                if(err){
-                    console.log('readTextFileAsync error:',err)
-                    reject(err)
-                }else{
-                    resolve(contents.toString());
-                }
-            });
-        });
-    }
-
     public async deleteFileAsync(path:string): Promise<void> {
         await this.initBrowserFsAsync();
 
@@ -509,12 +575,17 @@ export class FileService{
                     reject(err)
                 }
                
+                //Send update notification
+                this.dirFilesUpdateNotify.next();
+
                 resolve(console.log('successfully deleted'));
             });
-        }).then(()=>{
-            //Send update notification
-            this.dirFilesUpdateNotify.next();
-        });
+
+        })
+        // .then(()=>{
+        //     //Send update notification
+        //     this.dirFilesUpdateNotify.next();
+        // });
     }
 
     public  getFileEntriesFromDirectory(fileList:string[], directory:string):FileEntry[]{
@@ -544,16 +615,16 @@ export class FileService{
         this._directoryFileEntires=[]
     }
 
-    public bufferToUrl(buffer:Buffer):string{
+    private bufferToUrl(buffer:Buffer):string{
        return URL.createObjectURL(new Blob([new Uint8Array(buffer)]));
     }
 
-    public uint8ToBase64(arr:Uint8Array):string{
+    private uint8ToBase64(arr:Uint8Array):string{
         const base64String = btoa(String.fromCharCode(...new Uint8Array(arr)));
         return base64String;
     }
 
-    public isUtf8Encoded(data: string): boolean {
+    private isUtf8Encoded(data: string): boolean {
         try {
           const encoder = new TextEncoder();
           const bytes = encoder.encode(data);
@@ -565,7 +636,7 @@ export class FileService{
         }
       }
 
-    public changeFolderIcon(fileName:string, iconPath:string):string{
+    private changeFolderIcon(fileName:string, iconPath:string):string{
 
         if(fileName === 'Music'){
             return '/osdrive/icons/music_folder.ico';
@@ -586,5 +657,13 @@ export class FileService{
         }
 
         return iconPath;
+    }
+
+    addEventOriginator(eventOrig:string):void{
+        this._eventOriginator = eventOrig;
+    }
+
+    removeEventOriginator():void{
+        this._eventOriginator = '';
     }
 }
