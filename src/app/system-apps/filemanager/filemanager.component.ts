@@ -95,7 +95,13 @@ export class FileManagerComponent implements BaseComponent, OnInit, AfterViewIni
     this.processId = this._processIdService.getNewProcessId();
     this._runningProcessService.addProcess(this.getComponentDetail());
 
-    this._dirFilesUpdatedSub = this._fileService.dirFilesUpdateNotify.subscribe(() =>{this.loadFilesInfoAsync()});
+    this._dirFilesUpdatedSub = this._fileService.dirFilesUpdateNotify.subscribe(() =>{
+      if(this._fileService.getEventOrginator() === this.name){
+        this.loadFilesInfoAsync();
+        this._fileService.removeEventOriginator();
+      }
+    });
+
     this._viewByNotifySub = fileManagerService.viewByNotify.subscribe((p) =>{this.changeIconsSize(p)});
     this._sortByNotifySub = fileManagerService.sortByNotify.subscribe((p)=>{this.sortIcons(p)});
     this._autoArrangeIconsNotifySub = fileManagerService.autoArrangeIconsNotify.subscribe((p) =>{this.toggleAutoArrangeIcons(p)});
@@ -400,8 +406,12 @@ export class FileManagerComponent implements BaseComponent, OnInit, AfterViewIni
     await this.loadFilesInfoAsync();
   }
 
-  onDeleteFile():void{
-    this._fileService.deleteFileAsync(this.selectedFile.getCurrentPath)
+  async onDeleteFile():Promise<void>{
+    const result = await this._fileService.deleteFileAsync(this.selectedFile.getCurrentPath)
+
+    if(result){
+      await this.loadFilesInfoAsync();
+    }
   }
 
   onInputChange(evt:KeyboardEvent):boolean{
@@ -492,16 +502,18 @@ export class FileManagerComponent implements BaseComponent, OnInit, AfterViewIni
     const renameText = this.renameForm.value.renameInput as string;
 
     if(renameText !== '' && renameText.length !== 0 && renameText !== this.currentIconName ){
-      await this._fileService.renameFileAsync(this.selectedFile.getCurrentPath, renameText);
+     const result =  await this._fileService.renameFileAsync(this.selectedFile.getCurrentPath, renameText);
 
-      // renamFileAsync, doesn't trigger a reload of the file directory, so to give the user the impression that the file has been updated, the code below
-      const fileIdx = this.files.findIndex(f => (f.getCurrentPath == this.selectedFile.getContentPath) && (f.getFileName == this.selectedFile.getFileName));
-      this.selectedFile.setFileName = renameText;
-      this.selectedFile.setDateModified = Date.now();
-      this.files[fileIdx] = this.selectedFile;
+      if(result){
+        // renamFileAsync, doesn't trigger a reload of the file directory, so to give the user the impression that the file has been updated, the code below
+        const fileIdx = this.files.findIndex(f => (f.getCurrentPath == this.selectedFile.getContentPath) && (f.getFileName == this.selectedFile.getFileName));
+        this.selectedFile.setFileName = renameText;
+        this.selectedFile.setDateModified = Date.now();
+        this.files[fileIdx] = this.selectedFile;
 
-      this.renameForm.reset();
-      await this.loadFilesInfoAsync();
+        this.renameForm.reset();
+        await this.loadFilesInfoAsync();
+      }
     }else{
       this.renameForm.reset();
     }

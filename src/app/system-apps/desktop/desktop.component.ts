@@ -249,7 +249,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
 
   captureComponentImg():void{
-    const directory ='/osdrive/Documents/Screen Shots';
+    const directory ='/osdrive/Documents/Screen-Shots';
     htmlToImage.toPng(this.desktopContainer.nativeElement).then(htmlImg =>{
       //console.log('img data:',htmlImg);
 
@@ -270,6 +270,8 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
       setTimeout(()=>{
         this.slideState = 'slideOut';
         this._fileService.writeFileAsync(directory, screenShot);
+        this._fileService.addEventOriginator('fileexplorer');
+        this._fileService.dirFilesUpdateNotify.next();
       },4000);
 
       setTimeout(()=>{
@@ -283,6 +285,8 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     const directory ='/osdrive/Desktop';
     const folderName = 'New Folder';
     this._fileService.createFolderAsync(directory, folderName);
+    this._fileService.addEventOriginator('filemanager');
+    this._fileService.dirFilesUpdateNotify.next();
   }
 
   hideContextMenu():void{

@@ -378,11 +378,11 @@ ${this.addspaces(strPermission,10)} ${this.addspaces('Terminal',8)} ${this.addsp
             }
         }
 
-        const firstDirectoryCheck = await this._fileService.checkIfFileOrFolderExistsAsync(directory);
+        const firstDirectoryCheck = await this._fileService.checkIfExistsAsync(directory);
         let secondDirectoryCheck = false;
 
         if(!firstDirectoryCheck){
-            secondDirectoryCheck = await this._fileService.checkIfFileOrFolderExistsAsync(this.fallBackDirPath);
+            secondDirectoryCheck = await this._fileService.checkIfExistsAsync(this.fallBackDirPath);
 
             if(secondDirectoryCheck)
                 directory = this.fallBackDirPath;
@@ -501,6 +501,8 @@ ${this.addspaces(strPermission,10)} ${this.addspaces('Terminal',8)} ${this.addsp
                 if(arg1 && arg1 == '-v'){
                     return `folder: ${arg0} successfully created`;
                 }
+
+                this.sendDirectoryUpdateNotification();
             }
         }else{
             return `
@@ -581,9 +583,18 @@ Mandatory argument to long options are mandotory for short options too.
     }
 
     private cp_dir_handler():void{
-
+        1
     }
 
+
+    private sendDirectoryUpdateNotification():void{
+        if(this.currentDirectoryPath.includes('/osdrive/Desktop')){
+            this._fileService.addEventOriginator('filemanager');
+        }else{
+            this._fileService.addEventOriginator('fileexplorer');
+        }
+        this._fileService.dirFilesUpdateNotify.next();
+    }
 
     private async loadFilesInfoAsync(directory:string):Promise<void>{
         this.files = [];
