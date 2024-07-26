@@ -169,7 +169,7 @@ export class PhotoViewerComponent implements BaseComponent, OnInit, OnDestroy, A
         // else, go fetch.
         const dirPath = dirname(this.picSrc);
         //console.log('dirPath:', dirPath);
-        const pathList:string[] = await this._fileService.getFilesFromDirectoryAsync(dirPath) as string[];
+        const pathList:string[] = await this._fileService.getFilesPathsFromDirectoryAsync(dirPath);
 
         //check for images
         for(let i = 0; i <= pathList.length - 1; i++){

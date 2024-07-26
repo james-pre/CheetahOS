@@ -88,21 +88,6 @@ export class FileService{
         return iconPath;
     }
 
-    public async checkIfExistsAsync(dirPath:string):Promise<boolean>{
-        await this.initBrowserFsAsync();
-        return new Promise<boolean>((resolve) =>{
-            this._fileSystem.exists(`${dirPath}`, (exits) =>{
-                 if(exits){
-                     console.log('checkIfExistsAsync :Already exists',exits);
-                     resolve(true)
-                 }else{
-                    console.log('checkIfExistsAsync :Does not exists',exits);
-                    resolve(false);
-                 }
-            });
-        })
-    }
-
     public async checkIfDirectory(path: string):Promise<boolean> {
         await this.initBrowserFsAsync();
 
@@ -117,6 +102,21 @@ export class FileService{
                 resolve(isDirectory);
             });
         });
+    }
+
+    public async checkIfExistsAsync(dirPath:string):Promise<boolean>{
+        await this.initBrowserFsAsync();
+        return new Promise<boolean>((resolve) =>{
+            this._fileSystem.exists(`${dirPath}`, (exits) =>{
+                 if(exits){
+                     console.log('checkIfExistsAsync :Already exists',exits);
+                     resolve(true)
+                 }else{
+                    console.log('checkIfExistsAsync :Does not exists',exits);
+                    resolve(false);
+                 }
+            });
+        })
     }
 
     public async copyFileAsync(sourcepath:string, destinationpath:string):Promise<boolean>{
@@ -274,19 +274,19 @@ export class FileService{
         return this._directoryFileEntires;
     }
 
-    public async getFilesFromDirectoryAsync(dirPath:string):Promise<unknown>{
+    public async getFilesPathsFromDirectoryAsync(dirPath:string):Promise<string[]>{
         await this.initBrowserFsAsync();
 
-        return new Promise((resolve, reject) => {
+        return new Promise<string[]>((resolve, reject) => {
             const fs = this._fileSystem;
             const interval = setInterval(() => {
                 fs.readdir(dirPath, function(err, files) {
                   if(err){
                       console.log("Oops! a boo boo happened, filesystem wasn't ready:", err);
-                      reject(err);
+                      reject([]);
                   }else{
                     clearInterval(interval);
-                    resolve(files);
+                    resolve(files || []);
                   }
                 });
             }, this.SECONDS_DELAY);

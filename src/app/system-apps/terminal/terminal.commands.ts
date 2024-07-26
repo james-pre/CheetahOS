@@ -599,7 +599,7 @@ Mandatory argument to long options are mandotory for short options too.
     private async loadFilesInfoAsync(directory:string):Promise<void>{
         this.files = [];
         this._fileService.resetDirectoryFiles();
-        const dirFileEntries  = await this._fileService.getFilesFromDirectoryAsync(directory) as [];
+        const dirFileEntries  = await this._fileService.getFilesPathsFromDirectoryAsync(directory);
         this._directoryFilesEntires = this._fileService.getFileEntriesFromDirectory(dirFileEntries,directory);
     
         for(let i = 0; i < dirFileEntries.length; i++){

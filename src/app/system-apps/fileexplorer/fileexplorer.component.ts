@@ -626,7 +626,7 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
   private async loadFilesInfoAsync():Promise<void>{
     this.files = [];
     this._fileService.resetDirectoryFiles();
-    const dirFileEntries  = await this._fileService.getFilesFromDirectoryAsync(this.directory) as [];
+    const dirFileEntries  = await this._fileService.getFilesPathsFromDirectoryAsync(this.directory);
     this._directoryFilesEntires = this._fileService.getFileEntriesFromDirectory(dirFileEntries,this.directory);
 
     for(let i = 0; i < dirFileEntries.length; i++){
