@@ -24,7 +24,7 @@ export class FileManagerComponent implements BaseComponent, OnInit, AfterViewIni
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _fileService:FileService;
-  private _directoryFilesEntires!:FileEntry[];
+  private _directoryFilesEntries!:FileEntry[];
   private _triggerProcessService:TriggerProcessService;
   private _menuService:MenuService;
   private _formBuilder;
@@ -153,11 +153,11 @@ export class FileManagerComponent implements BaseComponent, OnInit, AfterViewIni
   private async loadFilesInfoAsync():Promise<void>{
     this.files = [];
     this._fileService.resetDirectoryFiles();
-    const dirFileEntries  = await this._fileService.getFilesPathsFromDirectoryAsync(this.directory);
-    this._directoryFilesEntires = this._fileService.getFileEntriesFromDirectory(dirFileEntries,this.directory);
+    const directoryEntries  = await this._fileService.getEntriesFromDirectoryAsync(this.directory);
+    this._directoryFilesEntries = this._fileService.getFileEntriesFromDirectory(directoryEntries,this.directory);
 
-    for(let i = 0; i < dirFileEntries.length; i++){
-      const fileEntry = this._directoryFilesEntires[i];
+    for(let i = 0; i < directoryEntries.length; i++){
+      const fileEntry = this._directoryFilesEntries[i];
       const fileInfo = await this._fileService.getFileInfoAsync(fileEntry.getPath);
 
       this.files.push(fileInfo)

@@ -20,7 +20,7 @@ export class TerminalCommands{
     private _triggerProcessService:TriggerProcessService;
     private _runningProcessService:RunningProcessService;
     private _fileService:FileService;
-    private _directoryFilesEntires!:FileEntry[];
+    private _directoryFilesEntries!:FileEntry[];
     private _appDirctory = new AppDirectory();
     
     private  permissionChart!:Map<number, OctalRepresentation>;
@@ -605,17 +605,17 @@ Mandatory argument to long options are mandotory for short options too.
         const folderName = this.getFileName(sourcePath);
         const  createFolderResult = await this._fileService.createFolderAsync(destinationArg, folderName);
         if(createFolderResult){
-            const loadedFilePaths = await this._fileService.getFilesPathsFromDirectoryAsync(sourcePath);
-            for(const filePath of loadedFilePaths){
-                const checkIfDirResult = await this._fileService.checkIfDirectory(filePath);
+            const loadedDirectoryEntries = await this._fileService.getEntriesFromDirectoryAsync(sourcePath);
+            for(const directoryEntry of loadedDirectoryEntries){
+                const checkIfDirResult = await this._fileService.checkIfDirectory(`${sourcePath}/${directoryEntry}`);
                 if(checkIfDirResult){
-                    folderQueue.push(filePath);
+                    folderQueue.push(`${sourcePath}/${directoryEntry}`);
                 }else{
-                    const result = await this._fileService.copyFileAsync(filePath, `${destinationArg}/${folderName}`);
+                    const result = await this._fileService.copyFileAsync(`${sourcePath}/${directoryEntry}`, `${destinationArg}/${folderName}`);
                     if(result){
-                        console.log(`file:${filePath} successfully copied to destination:${destinationArg}/${folderName}`);
+                        console.log(`file:${sourcePath}/${directoryEntry} successfully copied to destination:${destinationArg}/${folderName}`);
                     }else{
-                        console.log(`file:${filePath} failed to copy to destination:${destinationArg}/${folderName}`)
+                        console.log(`file:${sourcePath}/${directoryEntry} failed to copy to destination:${destinationArg}/${folderName}`)
                     }
                 }
             }
@@ -627,11 +627,9 @@ Mandatory argument to long options are mandotory for short options too.
         return this.cp_dir_handler(arg0,`${destinationArg}/${folderName}`, folderQueue);
     }
 
-
     private getFileName(path:string):string{
         return `${basename(path, extname(path))}${ extname(path)}`;
     }
-
 
     private sendDirectoryUpdateNotification():void{
         if(this.currentDirectoryPath.includes('/osdrive/Desktop')){
@@ -645,15 +643,14 @@ Mandatory argument to long options are mandotory for short options too.
     private async loadFilesInfoAsync(directory:string):Promise<void>{
         this.files = [];
         this._fileService.resetDirectoryFiles();
-        const dirFileEntries  = await this._fileService.getFilesPathsFromDirectoryAsync(directory);
-        this._directoryFilesEntires = this._fileService.getFileEntriesFromDirectory(dirFileEntries,directory);
+        const directoryEntries  = await this._fileService.getEntriesFromDirectoryAsync(directory);
+        this._directoryFilesEntries = this._fileService.getFileEntriesFromDirectory(directoryEntries,directory);
     
-        for(let i = 0; i < dirFileEntries.length; i++){
-          const fileEntry = this._directoryFilesEntires[i];
+        for(let i = 0; i < directoryEntries.length; i++){
+          const fileEntry = this._directoryFilesEntries[i];
           const fileInfo = await this._fileService.getFileInfoAsync(fileEntry.getPath);
     
           this.files.push(fileInfo)
         }
-      }
-    
+    }
 }

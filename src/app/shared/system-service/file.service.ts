@@ -309,7 +309,7 @@ export class FileService{
         return this._directoryFileEntires;
     }
 
-    public async getFilesPathsFromDirectoryAsync(dirPath:string):Promise<string[]>{
+    public async getEntriesFromDirectoryAsync(dirPath:string):Promise<string[]>{
         await this.initBrowserFsAsync();
 
         return new Promise<string[]>((resolve, reject) => {
