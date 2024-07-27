@@ -4,6 +4,7 @@ import { TriggerProcessService } from "src/app/shared/system-service/trigger.pro
 import { FileInfo } from "src/app/system-files/fileinfo";
 import { RunningProcessService } from "src/app/shared/system-service/running.process.service";
 import { StateManagmentService } from "src/app/shared/system-service/state.management.service";
+import {extname, basename, resolve, dirname} from 'path';
 import { FileService } from "src/app/shared/system-service/file.service";
 import { FileEntry } from 'src/app/system-files/fileentry';
 
@@ -517,24 +518,31 @@ usage: mkdir direcotry_name [-v]
         1
     }
 
-    async cp(arg0:any, arg1:string, arg2:string):Promise<string>{
+    async cp(optionArg:any, sourceArg:string, destinationArg:string):Promise<string>{
 
-        console.log(`source ${arg0}`);
-        console.log(`source ${arg1}`);
-        console.log(`destination ${arg2}`)
+        console.log(`source ${optionArg}`);
+        console.log(`source ${sourceArg}`);
+        console.log(`destination ${destinationArg}`);
 
-        if(arg2 === undefined){
-            arg2 = arg1;
-            arg1 = arg0;
-            arg0 = undefined
+        const folderQueue:string[] = []
+        if(destinationArg === undefined){
+            destinationArg = sourceArg;
+            if(destinationArg === '.'){
+                destinationArg = this.currentDirectoryPath;
+            }
+            sourceArg = optionArg;
+            optionArg = undefined
+        }
+        if(destinationArg === '.'){
+            destinationArg = this.currentDirectoryPath;
         }
         
         const options = ['-f', '--force', '-R','-r','--recursive', '-v', '--verbose' , '--help'];
         let option = '';
-        if(arg0){
-            option = (options.includes(arg0 as string))? arg0 : '';
+        if(optionArg){
+            option = (options.includes(optionArg as string))? optionArg : '';
             if(option === '')
-                return `cp: invalid option ${arg0 as string}`
+                return `cp: invalid option ${optionArg as string}`
 
             if(option === '--help'){
                 return `
@@ -552,38 +560,76 @@ Mandatory argument to long options are mandotory for short options too.
             }
         }
 
-        if(arg1 === undefined || arg1.length === 0)
+        if(sourceArg === undefined || sourceArg.length === 0)
             return 'source path required';
 
-        if(arg2 === undefined || arg2.length === 0)
+        if(destinationArg === undefined || destinationArg.length === 0)
             return 'destination path required';
 
-        const isDirectory = await this._fileService.checkIfDirectory(arg1);
+        const isDirectory = await this._fileService.checkIfDirectory(sourceArg);
         if(isDirectory){
             if(option === '' || option === '-f' || option === '--force' || option === '--verbose')
-                return `cp: omitting directory ${arg1}`;
-
+                return `cp: omitting directory ${sourceArg}`;
 
             if(option === '-r' || (option === '-R' || option === '--recursive')){
-                return `cp: omitting directory ${arg1}` 
+                folderQueue.push(sourceArg);
+                const result = await this.cp_dir_handler(optionArg,destinationArg, folderQueue);
+                if(result){
+                    this.sendDirectoryUpdateNotification();
+                }
             }
         }else{
             // just copy regular file
-            this.cp_file_handler(arg0,arg1,arg2);
+            const result = await this.cp_file_handler(optionArg,sourceArg,destinationArg);
+            if(result){
+                this.sendDirectoryUpdateNotification();
+            }
         }        
         return '';
     }
 
 
-    private cp_file_handler(arg0:string, arg1:string, arg2:string):void{
+    private async cp_file_handler(optionArg:string, sourceArg:string, destinationArg:string):Promise<boolean>{
 
-        console.log(`source ${arg1}`);
-        console.log(`destination ${arg2}`)
-        this._fileService.copyFileAsync(arg1,arg2);
+        // console.log(`source ${sourceArg}`);
+        // console.log(`destination ${destinationArg}`)
+        return await this._fileService.copyFileAsync(sourceArg,destinationArg);
     }
 
-    private cp_dir_handler():void{
-        1
+    private async cp_dir_handler(arg0:string, destinationArg:string, folderQueue:string[]):Promise<boolean>{
+
+        if(folderQueue.length === 0)
+            return true;
+
+        const sourcePath = folderQueue.shift() || '';
+        const folderName = this.getFileName(sourcePath);
+        const  createFolderResult = await this._fileService.createFolderAsync(destinationArg, folderName);
+        if(createFolderResult){
+            const loadedFilePaths = await this._fileService.getFilesPathsFromDirectoryAsync(sourcePath);
+            for(const filePath of loadedFilePaths){
+                const checkIfDirResult = await this._fileService.checkIfDirectory(filePath);
+                if(checkIfDirResult){
+                    folderQueue.push(filePath);
+                }else{
+                    const result = await this._fileService.copyFileAsync(filePath, `${destinationArg}/${folderName}`);
+                    if(result){
+                        console.log(`file:${filePath} successfully copied to destination:${destinationArg}/${folderName}`);
+                    }else{
+                        console.log(`file:${filePath} failed to copy to destination:${destinationArg}/${folderName}`)
+                    }
+                }
+            }
+        }else{
+            console.log(`folder:${destinationArg}/${folderName}  creation failed`);
+            return false;
+        }
+
+        return this.cp_dir_handler(arg0,`${destinationArg}/${folderName}`, folderQueue);
+    }
+
+
+    private getFileName(path:string):string{
+        return `${basename(path, extname(path))}${ extname(path)}`;
     }
 
 

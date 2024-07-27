@@ -32,7 +32,7 @@ export class FileService{
     dirFilesReadyNotify: Subject<void> = new Subject<void>();
     dirFilesUpdateNotify: Subject<void> = new Subject<void>();
 
-    SECONDS_DELAY = 200;
+    SECONDS_DELAY = 250;
 
     constructor(){ 
         this._fileExistsMap =  new Map<string, number>();
@@ -148,6 +148,41 @@ export class FileService{
                     });
                 }
             });
+        });
+    }
+
+
+    public async copyFilesAsync(sourcepaths:string[], destinationpath:string):Promise<boolean>{
+        await this.initBrowserFsAsync();
+
+        return new Promise<boolean>((resolve, reject) =>{
+            for(const sourcepath of sourcepaths){
+                const fileName = this.getFileName(sourcepath);
+                this._fileSystem.readFile(sourcepath,(err, contents = Buffer.from('')) =>{
+                    if(err){
+                        console.log('copyFilesAsync error:',err)
+                        reject(false)
+                    }else{
+                        this._fileSystem.writeFile(`${destinationpath}/${fileName}`, contents, {flag: 'wx'}, (err) =>{  
+                            if(err?.code === 'EEXIST' ){
+                                console.log('copyFilesAsync Error: file already exists',err);
+            
+                                const itrName = this.iterateFileName(`${destinationpath}/${fileName}`);
+                                this._fileSystem.writeFile(itrName,fileName,(err) =>{  
+                                    if(err){
+                                        console.log('copyFilesAsync Iterate Error:',err);
+                                        reject(false);
+                                    }
+                                    resolve(true);
+                                });
+                            }else{
+                                this._fileExistsMap.set(`${destinationpath}/${fileName}`,0);
+                                resolve(true);
+                            }
+                        });
+                    }
+                });
+            }
         });
     }
 
