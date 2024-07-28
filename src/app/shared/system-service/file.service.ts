@@ -32,7 +32,7 @@ export class FileService{
     dirFilesReadyNotify: Subject<void> = new Subject<void>();
     dirFilesUpdateNotify: Subject<void> = new Subject<void>();
 
-    SECONDS_DELAY = 250;
+    SECONDS_DELAY = 200;
 
     constructor(){ 
         this._fileExistsMap =  new Map<string, number>();
@@ -274,6 +274,18 @@ export class FileService{
         });
     }
 
+
+    /**
+     * 
+     * @param path 
+     * @returns Promise
+     * 
+     * Read File and Convert to Blob URL:
+     * It returns a new promise that attempts to read the file from the given path using the filesystem's readFile method.
+     * If there's an error reading the file, it logs the error and rejects the promise.
+     * If the file is read successfully, it converts the file contents (buffer) into a Blob URL using the bufferToUrl method.
+     * It then resolves the promise with the Blob URL.
+     */
     public async getFileBlobAsync(path:string): Promise<string> {
         if (!path) {
             console.error('getFileBlobAsync error: Path must not be empty');
@@ -287,13 +299,36 @@ export class FileService{
                 if(err){
                     console.log('getFileBlobAsync error:',err)
                     reject(err);
-                    return
                 }
 
                 contents = contents || new Uint8Array();
-                const fileUrl = URL.createObjectURL(new Blob([new Uint8Array(contents)]))
+                const fileUrl =  this.bufferToUrl(contents); // URL.createObjectURL(new Blob([new Uint8Array(contents)]))
                 resolve(fileUrl);
             });
+        });
+    }
+
+    public async getEntriesFromDirectoryAsync(path:string):Promise<string[]>{
+        if (!path) {
+            console.error('getEntriesFromDirectoryAsync error: Path must not be empty');
+            return Promise.reject(new Error('Path must not be empty'));
+        }
+
+        await this.initBrowserFsAsync();
+
+        return new Promise<string[]>((resolve, reject) => {
+            const fs = this._fileSystem;
+            const interval = setInterval(() => {
+                fs.readdir(path, function(err, files) {
+                  if(err){
+                      console.log("Oops! a boo boo happened, filesystem wasn't ready:", err);
+                      reject([]);
+                  }else{
+                    clearInterval(interval);
+                    resolve(files || []);
+                  }
+                });
+            }, this.SECONDS_DELAY);
         });
     }
 
@@ -307,25 +342,6 @@ export class FileService{
             this._directoryFileEntires.push(fileEntry)
         }
         return this._directoryFileEntires;
-    }
-
-    public async getEntriesFromDirectoryAsync(dirPath:string):Promise<string[]>{
-        await this.initBrowserFsAsync();
-
-        return new Promise<string[]>((resolve, reject) => {
-            const fs = this._fileSystem;
-            const interval = setInterval(() => {
-                fs.readdir(dirPath, function(err, files) {
-                  if(err){
-                      console.log("Oops! a boo boo happened, filesystem wasn't ready:", err);
-                      reject([]);
-                  }else{
-                    clearInterval(interval);
-                    resolve(files || []);
-                  }
-                });
-            }, this.SECONDS_DELAY);
-        });
     }
 
     private getFileName(path:string):string{
@@ -362,7 +378,7 @@ export class FileService{
                 this._fileInfo.setMode = fileMetaData.getMode;
             }
              else if(this._consts.IMAGE_FILE_EXTENSIONS.includes(extension)){    
-                const sc = await this.getImageFileB64DataUrlAsync(path) as ShortCut;
+                const sc = await this.getFileB64DataUrlAsync(path) as ShortCut;
                 this._fileInfo.setIconPath = sc.getIconPath;
                 this._fileInfo.setCurrentPath = path;
                 this._fileInfo.setContentPath = sc.getContentPath;
@@ -374,7 +390,7 @@ export class FileService{
                 this._fileInfo.setMode = fileMetaData.getMode;
             }
             else if(this._consts.VIDEO_FILE_EXTENSIONS.includes(extension)){    
-                const sc = await this.getImageFileB64DataUrlAsync(path) as ShortCut;
+                const sc = await this.getFileB64DataUrlAsync(path) as ShortCut;
                 this._fileInfo.setIconPath = '/osdrive/icons/video_file.ico';
                 this._fileInfo.setCurrentPath = path;
                 this._fileInfo.setContentPath = sc.getContentPath;
@@ -385,7 +401,7 @@ export class FileService{
                 this._fileInfo.setSize = fileMetaData.getSize;
                 this._fileInfo.setMode = fileMetaData.getMode;
             }else if(this._consts.AUDIO_FILE_EXTENSIONS.includes(extension)){    
-                const sc = await this.getImageFileB64DataUrlAsync(path) as ShortCut;
+                const sc = await this.getFileB64DataUrlAsync(path) as ShortCut;
                 this._fileInfo.setIconPath = '/osdrive/icons/music_file.ico';
                 this._fileInfo.setCurrentPath = path;
                 this._fileInfo.setContentPath = sc.getContentPath;
@@ -445,23 +461,17 @@ export class FileService{
         return this._fileInfo;
     }
     
-    public async getImageFileB64DataUrlAsync(path:string):Promise<ShortCut> {
+    public async getFileB64DataUrlAsync(path:string):Promise<ShortCut> {
         await this.initBrowserFsAsync();
 
         return new Promise((resolve, reject) =>{
             this._fileSystem.readFile(path, 'utf-8',(err, data) =>{
                 if(err){
-                    console.log('getImageFileAsync error:',err)
+                    console.log('getFileB64DataUrlAsync error:',err)
                     reject(err)
                 }
 
-                //console.log('stringData:', stringData.substring(0, 20));
-                // if(stringData.includes('\x00') || stringData.includes('\u0000')){
-                //     resolve(new ShortCut(path, basename(path, extname(path)),'',basename(path, extname(path)),''));
-                // }
-
                 const stringData = data as string
-
                 if(this.isUtf8Encoded(stringData)){
                     if(stringData.substring(0, 10) == 'data:image'){
                         resolve(new ShortCut(stringData, basename(path, extname(path)),'',stringData,''));
@@ -573,6 +583,39 @@ export class FileService{
         });
     }
 
+    public async renameFileAsync_TBD(path:string, newFileName:string): Promise<boolean> {
+        await this.initBrowserFsAsync();
+
+       return new Promise<boolean>((resolve, reject) =>{
+            this._fileSystem.readFile(path,(err, contents = Buffer.from('')) =>{
+                if(err){
+                    console.log('getFile in renameFileAsync error:',err)
+                    reject(false)
+                }else{
+                    this._fileSystem.writeFile(`${dirname(path)}/${newFileName}${extname(path)}`,contents,(err)=>{  
+                        if(err){
+                            console.log('writeFile in renameFileAsync error:',err);
+                            reject(false);
+                        }else{
+                            this._fileSystem.unlink(path,(err) =>{
+                                if(err){
+                                    console.log('unlink file error:',err)
+                                    reject(err)
+                                }
+                                console.log('successfully unlinked')
+                                resolve(true);
+                            });
+                            console.log('successfully renamed')
+                            resolve(true);
+                        }
+                    });
+                    console.log('successfully fetched')
+                    resolve(true);
+                }
+            });
+        });
+    }
+
     public async renameFileAsync(path:string, newFileName:string): Promise<boolean> {
         await this.initBrowserFsAsync();
 
@@ -606,6 +649,8 @@ export class FileService{
         });
     }
 
+
+
     public iterateFileName(path:string):string{
         const extension = extname(path);
         const filename = basename(path, extension);
@@ -620,7 +665,6 @@ export class FileService{
     public resetDirectoryFiles(){
         this._directoryFileEntires=[]
     }
-
 
     public async setFolderValuesAsync(path: string):Promise<ShortCut>{
         await this.initBrowserFsAsync();

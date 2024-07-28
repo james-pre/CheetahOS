@@ -162,6 +162,7 @@ export class PhotoViewerComponent implements BaseComponent, OnInit, OnDestroy, A
     }
   }
 
+
   async getCurrentPicturePathAndSearchForOthers():Promise<void>{
     // if stuff was reutrned from session, then use it.
     if(this.imageList.length == 0){
@@ -174,7 +175,8 @@ export class PhotoViewerComponent implements BaseComponent, OnInit, OnDestroy, A
         //check for images
         for(let i = 0; i <= entries.length - 1; i++){
           if(this._consts.IMAGE_FILE_EXTENSIONS.includes(extname(entries[i]))){
-            this.imageList.push(`${dirPath}/${entries[i]}`);
+            const blobUrl = await this._fileService.getFileBlobAsync(`${dirPath}/${entries[i]}`);
+            this.imageList.push(blobUrl);
           }
         }
       }

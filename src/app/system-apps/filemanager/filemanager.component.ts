@@ -119,7 +119,6 @@ export class FileManagerComponent implements BaseComponent, OnInit, AfterViewIni
   async ngAfterViewInit():Promise<void>{
     await this.loadFilesInfoAsync();
   }
-  
 
   ngOnDestroy(): void {
     this._viewByNotifySub?.unsubscribe();
@@ -145,9 +144,14 @@ export class FileManagerComponent implements BaseComponent, OnInit, AfterViewIni
         droppedFiles  = [...event?.dataTransfer?.files];
     }
     
-    if(droppedFiles.length >= 1)
-        await this._fileService.writeFilesAsync(this.directory, droppedFiles)
-
+    if(droppedFiles.length >= 1){
+      const result =  await this._fileService.writeFilesAsync(this.directory, droppedFiles);
+      if(result){
+        this._fileService.addEventOriginator('filemanager');
+        this._fileService.dirFilesUpdateNotify.next();
+      }
+    }
+      
   }
 
   private async loadFilesInfoAsync():Promise<void>{
@@ -159,6 +163,9 @@ export class FileManagerComponent implements BaseComponent, OnInit, AfterViewIni
     for(let i = 0; i < directoryEntries.length; i++){
       const fileEntry = this._directoryFilesEntries[i];
       const fileInfo = await this._fileService.getFileInfoAsync(fileEntry.getPath);
+      //fileInfo.setIconPath = await this._fileService.getFileBlobAsync(fileInfo.getIconPath);
+
+      console.log(`filemanager-fileInfo: iconPath:${fileInfo.getIconPath}  cntPath:${fileInfo.getContentPath}   curPath:${fileInfo.getCurrentPath}`);
 
       this.files.push(fileInfo)
     }

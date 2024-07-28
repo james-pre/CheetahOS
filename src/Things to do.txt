@@ -79,6 +79,12 @@ sudo n lts| stable | latest  --(pick one)
 
 31.) Maximizing an Maximizing terminal before / after vertial overflow has been triggered, break vertial overflow
 
+32.) Aligon icond to grid on the desktop  is broken
+
+33.) Windows z-indexing is BROOOOKEN.
+
+34.) Creating a new folder from the termial/fileexplorer has broken back navigation
+
 
 
 --------FEATURES TO ADD--------
@@ -142,6 +148,8 @@ URl = The URL, is the specifier for what app should be used to open said file
 14.) Terminal  -- in progress
     *************Use this pattern for the terminal********************
     Terminal <command> <arg> --<options>
+    Add themeing options
+    Add description for commands
 
 
 15.)  FileExlporer -- in progress
@@ -169,6 +177,7 @@ URl = The URL, is the specifier for what app should be used to open said file
 
 23.) Switch to ZenFS from BrowserFS
 
+24.? Implement dra n' drop of content from source to destination and viseversa in fileexplorer
 
 Things to come back to
 TaskBar Foreground Behaviors: https://www.youtube.com/watch?v=Hu1RYVoCbgs&list=PLM88opVjBuU7xSRoHhs3hZBz3JmHHBMMN&index=16&t=4518s

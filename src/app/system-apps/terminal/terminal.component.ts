@@ -58,7 +58,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   terminalPrompt = ">";
   commandHistory:TerminalCommand[] = [];
   echoCommands:string[] = ["close", "curl","date", "echo", "help", "hostname", "list", "open", "version", "whoami", "weather","pwd"];
-  utilityCommands:string[] = ["all", "cat", "cd", "clear", "cp", "dir", "download","exit", "ls", "mkdir", "mv", "touch"];
+  utilityCommands:string[] = ["all", "cat", "cd", "clear", "cp", "dir", "download","exit", "ls", "mkdir", "mv", "rm","touch"];
   fetchedDirectoryList:string[] = [];
   generatedArguments:string[] = [];
   allCommands:string[] = [];

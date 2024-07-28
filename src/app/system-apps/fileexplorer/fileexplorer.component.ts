@@ -633,6 +633,12 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
       const fileEntry = this._directoryFilesEntries[i];
       const fileInfo = await this._fileService.getFileInfoAsync(fileEntry.getPath);
 
+      if(fileInfo.getContentPath.substring(0, 10) !== 'data:image')
+          fileInfo.setIconPath = await this._fileService.getFileBlobAsync(fileInfo.getIconPath)
+
+
+      console.log(`filemanager-fileInfo: cntPath:${fileInfo.getContentPath}   curPath:${fileInfo.getCurrentPath}`);
+      
       this.files.push(fileInfo)
     }
   }
