@@ -134,7 +134,7 @@ export class FileService{
                             console.log('copyFileAsync Error: file already exists',err);
         
                             const itrName = this.iterateFileName(`${destinationpath}/${fileName}`);
-                            this._fileSystem.writeFile(itrName,fileName,(err) =>{  
+                            this._fileSystem.writeFile(itrName,contents,(err) =>{  
                                 if(err){
                                     console.log('copyFileAsync Iterate Error:',err);
                                     reject(false);
@@ -168,7 +168,7 @@ export class FileService{
                                 console.log('copyFilesAsync Error: file already exists',err);
             
                                 const itrName = this.iterateFileName(`${destinationpath}/${fileName}`);
-                                this._fileSystem.writeFile(itrName,fileName,(err) =>{  
+                                this._fileSystem.writeFile(itrName,contents,(err) =>{  
                                     if(err){
                                         console.log('copyFilesAsync Iterate Error:',err);
                                         reject(false);
@@ -254,7 +254,7 @@ export class FileService{
         });
     }
 
-    public async getFileAsync(path:string): Promise<string> {
+    public async getFileAsync(path:string, encoding:BufferEncoding = 'utf8'): Promise<string> {
         if (!path) {
             console.error('getFileAsync error: Path must not be empty');
             return Promise.reject(new Error('Path must not be empty'));
@@ -268,7 +268,7 @@ export class FileService{
                     console.log('getFileAsync error:',err)
                     reject(err)
                 }else{
-                    resolve(contents.toString('utf8'));
+                    resolve(contents.toString(encoding));
                 }
             });
         });
@@ -302,7 +302,7 @@ export class FileService{
                 }
 
                 contents = contents || new Uint8Array();
-                const fileUrl =  this.bufferToUrl(contents); // URL.createObjectURL(new Blob([new Uint8Array(contents)]))
+                const fileUrl =  this.bufferToUrl(contents);
                 resolve(fileUrl);
             });
         });
@@ -461,17 +461,17 @@ export class FileService{
         return this._fileInfo;
     }
     
-    public async getFileB64DataUrlAsync(path:string):Promise<ShortCut> {
+    public async getFileB64DataUrlAsync(path:string, encoding:BufferEncoding = 'utf8'):Promise<ShortCut> {
         await this.initBrowserFsAsync();
 
         return new Promise((resolve, reject) =>{
-            this._fileSystem.readFile(path, 'utf-8',(err, data) =>{
+            this._fileSystem.readFile(path, (err, contents = Buffer.from('')) =>{
                 if(err){
                     console.log('getFileB64DataUrlAsync error:',err)
                     reject(err)
                 }
 
-                const stringData = data as string
+                const stringData = contents.toString(encoding);
                 if(this.isUtf8Encoded(stringData)){
                     if(stringData.substring(0, 10) == 'data:image'){
                         resolve(new ShortCut(stringData, basename(path, extname(path)),'',stringData,''));
@@ -648,7 +648,6 @@ export class FileService{
             });
         });
     }
-
 
 
     public iterateFileName(path:string):string{

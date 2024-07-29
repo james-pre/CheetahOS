@@ -16,6 +16,7 @@ import { Subscription } from 'rxjs';
 import { ScriptService } from 'src/app/shared/system-service/script.services';
 import * as htmlToImage from 'html-to-image';
 import { TaskBarPreviewImage } from '../taskbarpreview/taskbar.preview';
+import { FileService } from 'src/app/shared/system-service/file.service';
 // eslint-disable-next-line no-var
 declare const Howl:any;
 declare const SiriWave:any;
@@ -53,6 +54,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   private _triggerProcessService:TriggerProcessService;
   private _stateManagmentService:StateManagmentService;
   private _sessionManagmentService: SessionManagmentService;
+  private _fileService:FileService;
   private _scriptService: ScriptService;
   private _fileInfo!:FileInfo;
   private _consts:Constants = new Constants();
@@ -81,12 +83,13 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
  
   constructor(processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService,
-    stateManagmentService: StateManagmentService, sessionManagmentService: SessionManagmentService, scriptService: ScriptService) { 
+    stateManagmentService: StateManagmentService, sessionManagmentService: SessionManagmentService, scriptService: ScriptService, fileService:FileService,) { 
     this._processIdService = processIdService;
     this._triggerProcessService = triggerProcessService;
     this._stateManagmentService = stateManagmentService;
     this._sessionManagmentService= sessionManagmentService;
     this._scriptService = scriptService;
+    this._fileService = fileService;
     this.processId = this._processIdService.getNewProcessId();
     
     this.retrievePastSessionData();
@@ -102,7 +105,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
     this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
   }
 
-  ngAfterViewInit():void{  
+  async ngAfterViewInit():Promise<void>{  
 
     this.setAudioWindowToFocus(this.processId); 
     this.audioSrc = (this.audioSrc !== '')? 
@@ -110,7 +113,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
       this._scriptService.loadScript("howler","assets/howler/howler.min.js").then(()=>{
 
-        this._scriptService.loadScript("siriwave","assets/howler/siriwave.umd.min.js").then(()=>{
+        this._scriptService.loadScript("siriwave","assets/howler/siriwave.umd.min.js").then(async ()=>{
 
           this.siriWave = new SiriWave({
             container: this.waveForm.nativeElement,
@@ -124,7 +127,13 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
           });
   
           if(this.playList.length == 0){
-            this.loadHowlSingleTrackObjectAsync()
+
+            const audioSrc = await this._fileService.getFileAsync(this.audioSrc, 'base64');
+
+            console.log(`this.audioSrc: ${this.audioSrc}`);
+            console.log(`audioSrc: ${audioSrc}`);
+
+            this.loadHowlSingleTrackObjectAsync(audioSrc)
                 .then(howl => { this.audioPlayer = howl; })
                 .catch(error => { console.error('Error loading track:', error); });
       
@@ -340,12 +349,15 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   }
 
 
-  loadHowlSingleTrackObjectAsync(): Promise<any> {
+  async loadHowlSingleTrackObjectAsync(audioSrc:string): Promise<any> {
 
+
+    //const audioSrc = await this._fileService.getFileBlobAsync(this.audioSrc);
     // Your asynchronous code here
     return new Promise<any>((resolve, reject) => {
+      const contentType = "audio/mp3";
       const audioPlayer = new Howl({
-        src:[this.audioSrc],
+        src:[`data:${contentType};base64,${audioSrc}`],
         autoplay: false,
         loop: false,
         volume: 0.5,

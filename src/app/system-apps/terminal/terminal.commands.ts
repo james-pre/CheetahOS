@@ -573,57 +573,22 @@ Mandatory argument to long options are mandotory for short options too.
 
             if(option === '-r' || (option === '-R' || option === '--recursive')){
                 folderQueue.push(sourceArg);
-                const result = await this.cp_dir_handler(optionArg,destinationArg, folderQueue);
+                //const result = await this.cp_dir_handler(optionArg,destinationArg, folderQueue);
+                const result = await this.cpHandler(optionArg,sourceArg, destinationArg);
                 if(result){
                     this.sendDirectoryUpdateNotification();
                 }
             }
         }else{
             // just copy regular file
-            const result = await this.cp_file_handler(sourceArg,destinationArg);
+            //const result = await this.cp_file_handler(sourceArg,destinationArg);
+            const result = await this.cpHandler(optionArg,sourceArg, destinationArg);
             if(result){
                 this.sendDirectoryUpdateNotification();
             }
         }        
         return '';
     }
-
-
-    private async cp_file_handler(sourceArg:string, destinationArg:string):Promise<boolean>{
-        return await this._fileService.copyFileAsync(sourceArg,destinationArg);
-    }
-
-    private async cp_dir_handler(arg0:string, destinationArg:string, folderQueue:string[]):Promise<boolean>{
-
-        if(folderQueue.length === 0)
-            return true;
-
-        const sourcePath = folderQueue.shift() || '';
-        const folderName = this.getFileName(sourcePath);
-        const  createFolderResult = await this._fileService.createFolderAsync(destinationArg, folderName);
-        if(createFolderResult){
-            const loadedDirectoryEntries = await this._fileService.getEntriesFromDirectoryAsync(sourcePath);
-            for(const directoryEntry of loadedDirectoryEntries){
-                const checkIfDirResult = await this._fileService.checkIfDirectory(`${sourcePath}/${directoryEntry}`);
-                if(checkIfDirResult){
-                    folderQueue.push(`${sourcePath}/${directoryEntry}`);
-                }else{
-                    const result = await this._fileService.copyFileAsync(`${sourcePath}/${directoryEntry}`, `${destinationArg}/${folderName}`);
-                    if(result){
-                        console.log(`file:${sourcePath}/${directoryEntry} successfully copied to destination:${destinationArg}/${folderName}`);
-                    }else{
-                        console.log(`file:${sourcePath}/${directoryEntry} failed to copy to destination:${destinationArg}/${folderName}`)
-                    }
-                }
-            }
-        }else{
-            console.log(`folder:${destinationArg}/${folderName}  creation failed`);
-            return false;
-        }
-
-        return this.cp_dir_handler(arg0,`${destinationArg}/${folderName}`, folderQueue);
-    }
-
 
     private async cpHandler(arg0:string, sourcePathArg:string, destinationArg:string):Promise<boolean>{
 
