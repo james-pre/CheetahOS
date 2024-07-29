@@ -366,7 +366,7 @@ export class FileService{
             const fileMetaData = await this.getExtraFileMetaDataAsync(path) as FileMetaData;
 
             if(extension == '.url'){
-                const sc = await this.getShortCutAsync(path) as ShortCut;
+                const sc = await this.getShortCutFromURLAsync(path) as ShortCut;
                 this._fileInfo.setIconPath = sc.getIconPath;
                 this._fileInfo.setCurrentPath = path;
                 this._fileInfo.setContentPath = sc.getContentPath;
@@ -390,7 +390,7 @@ export class FileService{
                 this._fileInfo.setMode = fileMetaData.getMode;
             }
             else if(this._consts.VIDEO_FILE_EXTENSIONS.includes(extension)){    
-                const sc = await this.getFileB64DataUrlAsync(path) as ShortCut;
+                const sc =  this.getFileShortCut(path);
                 this._fileInfo.setIconPath = '/osdrive/icons/video_file.ico';
                 this._fileInfo.setCurrentPath = path;
                 this._fileInfo.setContentPath = sc.getContentPath;
@@ -401,7 +401,7 @@ export class FileService{
                 this._fileInfo.setSize = fileMetaData.getSize;
                 this._fileInfo.setMode = fileMetaData.getMode;
             }else if(this._consts.AUDIO_FILE_EXTENSIONS.includes(extension)){    
-                const sc = await this.getFileB64DataUrlAsync(path) as ShortCut;
+                const sc =  this.getFileShortCut(path);
                 this._fileInfo.setIconPath = '/osdrive/icons/music_file.ico';
                 this._fileInfo.setCurrentPath = path;
                 this._fileInfo.setContentPath = sc.getContentPath;
@@ -460,7 +460,8 @@ export class FileService{
         }
         return this._fileInfo;
     }
-    
+
+
     public async getFileB64DataUrlAsync(path:string, encoding:BufferEncoding = 'utf8'):Promise<ShortCut> {
         await this.initBrowserFsAsync();
 
@@ -472,6 +473,7 @@ export class FileService{
                 }
 
                 const stringData = contents.toString(encoding);
+                console.log(`path:${path}  -----  stringData:${stringData}`);
                 if(this.isUtf8Encoded(stringData)){
                     if(stringData.substring(0, 10) == 'data:image'){
                         resolve(new ShortCut(stringData, basename(path, extname(path)),'',stringData,''));
@@ -484,8 +486,12 @@ export class FileService{
             });
         });
     }
+    
+    public  getFileShortCut(path:string):ShortCut {
+        return new ShortCut(path, basename(path, extname(path)),'',basename(path, extname(path)),'')
+    }
 
-    public async getShortCutAsync(path:string):Promise<ShortCut>{
+    public async getShortCutFromURLAsync(path:string):Promise<ShortCut>{
         await this.initBrowserFsAsync();
 
         return new Promise<ShortCut>((resolve, reject) =>{
