@@ -39,6 +39,7 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   private _stateManagmentService:StateManagmentService;
   private _sessionManagmentService: SessionManagmentService;
   private _scriptService: ScriptService;
+
   private _fileInfo!:FileInfo;
   private player: any;
   private _consts:Constants = new Constants();
@@ -93,7 +94,7 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
     this.showTopMenu = false;
   }
 
-  ngAfterViewInit() {
+  async ngAfterViewInit(): Promise<void> {
 
     this.setVideoWindowToFocus(this.processId); 
     this.fileType =  (this.fileType !=='') ? 
@@ -101,6 +102,8 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
     this.videoSrc = (this.videoSrc !=='') ? 
       this.videoSrc : this.getVideoSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
+
+   
 
     const options = {
         fluid: true,
@@ -178,7 +181,9 @@ export class VideoPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   getVideoSrc(pathOne:string, pathTwo:string):string{
     let videoSrc = '';
 
-    if(this.checkForExt(pathOne,pathTwo)){
+    if(pathOne.includes('blob:http')){
+      return pathOne;
+    }else if(this.checkForExt(pathOne,pathTwo)){
       videoSrc = '/' + this._fileInfo.getContentPath;
     }else{
       videoSrc =  this._fileInfo.getCurrentPath;

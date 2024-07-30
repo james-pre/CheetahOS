@@ -378,7 +378,7 @@ export class FileService{
                 this._fileInfo.setMode = fileMetaData.getMode;
             }
              else if(this._consts.IMAGE_FILE_EXTENSIONS.includes(extension)){    
-                const sc = await this.getFileB64DataUrlAsync(path) as ShortCut;
+                const sc = await this.getShortCutFromB64DataUrlAsync(path);
                 this._fileInfo.setIconPath = sc.getIconPath;
                 this._fileInfo.setCurrentPath = path;
                 this._fileInfo.setContentPath = sc.getContentPath;
@@ -390,7 +390,7 @@ export class FileService{
                 this._fileInfo.setMode = fileMetaData.getMode;
             }
             else if(this._consts.VIDEO_FILE_EXTENSIONS.includes(extension)){    
-                const sc =  this.getFileShortCut(path);
+                const sc = await this.getShortCutFromB64DataUrlAsync(path);
                 this._fileInfo.setIconPath = '/osdrive/icons/video_file.ico';
                 this._fileInfo.setCurrentPath = path;
                 this._fileInfo.setContentPath = sc.getContentPath;
@@ -401,7 +401,7 @@ export class FileService{
                 this._fileInfo.setSize = fileMetaData.getSize;
                 this._fileInfo.setMode = fileMetaData.getMode;
             }else if(this._consts.AUDIO_FILE_EXTENSIONS.includes(extension)){    
-                const sc =  this.getFileShortCut(path);
+                const sc = await this.getShortCutFromB64DataUrlAsync(path);
                 this._fileInfo.setIconPath = '/osdrive/icons/music_file.ico';
                 this._fileInfo.setCurrentPath = path;
                 this._fileInfo.setContentPath = sc.getContentPath;
@@ -462,21 +462,32 @@ export class FileService{
     }
 
 
-    public async getFileB64DataUrlAsync(path:string, encoding:BufferEncoding = 'utf8'):Promise<ShortCut> {
+    public async getShortCutFromB64DataUrlAsync(path:string):Promise<ShortCut> {
         await this.initBrowserFsAsync();
 
         return new Promise((resolve, reject) =>{
             this._fileSystem.readFile(path, (err, contents = Buffer.from('')) =>{
                 if(err){
-                    console.log('getFileB64DataUrlAsync error:',err)
+                    console.log('getShortCutFromB64DataUrlAsync error:',err)
                     reject(err)
                 }
 
+                const encoding:BufferEncoding = 'utf8';
                 const stringData = contents.toString(encoding);
-                console.log(`path:${path}  -----  stringData:${stringData}`);
+
                 if(this.isUtf8Encoded(stringData)){
-                    if(stringData.substring(0, 10) == 'data:image'){
-                        resolve(new ShortCut(stringData, basename(path, extname(path)),'',stringData,''));
+                    if(stringData.substring(0, 10) == 'data:image' || stringData.substring(0, 10) == 'data:video' || stringData.substring(0, 10) == 'data:audio'){
+
+                        // Extract Base64-encoded string from Data URL
+                        const base64Data = contents.toString().split(',')[1];
+                        const encoding:BufferEncoding = 'base64';
+                        const cntntData = Buffer.from(base64Data, encoding);
+                        const fileUrl =  this.bufferToUrl(cntntData);
+
+                        if(stringData.substring(0, 10) == 'data:image')
+                            resolve(new ShortCut(fileUrl, basename(path, extname(path)),'',fileUrl,''));
+                        else
+                            resolve(new ShortCut('', basename(path, extname(path)),'',fileUrl,''));
                     }else{
                         resolve(new ShortCut(path, basename(path, extname(path)),'',basename(path, extname(path)),''));
                     }
@@ -487,9 +498,6 @@ export class FileService{
         });
     }
     
-    public  getFileShortCut(path:string):ShortCut {
-        return new ShortCut(path, basename(path, extname(path)),'',basename(path, extname(path)),'')
-    }
 
     public async getShortCutFromURLAsync(path:string):Promise<ShortCut>{
         await this.initBrowserFsAsync();

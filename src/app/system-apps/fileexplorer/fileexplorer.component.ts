@@ -36,7 +36,7 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
   private _processIdService:ProcessIDService;
   private _runningProcessService:RunningProcessService;
   private _fileService:FileService;
-  private _directoryFilesEntries!:FileEntry[];
+  private _directoryFilesEntires!:FileEntry[];
   private _triggerProcessService:TriggerProcessService;
   private _stateManagmentService: StateManagmentService;
   private _sessionManagmentService: SessionManagmentService;
@@ -627,18 +627,12 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
     this.files = [];
     this._fileService.resetDirectoryFiles();
     const directoryEntries  = await this._fileService.getEntriesFromDirectoryAsync(this.directory);
-    this._directoryFilesEntries = this._fileService.getFileEntriesFromDirectory(directoryEntries,this.directory);
+    this._directoryFilesEntires = this._fileService.getFileEntriesFromDirectory(directoryEntries,this.directory);
 
     for(let i = 0; i < directoryEntries.length; i++){
-      const fileEntry = this._directoryFilesEntries[i];
+      const fileEntry = this._directoryFilesEntires[i];
       const fileInfo = await this._fileService.getFileInfoAsync(fileEntry.getPath);
 
-      if(fileInfo.getContentPath.substring(0, 10) !== 'data:image')
-          fileInfo.setIconPath = await this._fileService.getFileBlobAsync(fileInfo.getIconPath)
-
-
-      console.log(`filemanager-fileInfo: cntPath:${fileInfo.getContentPath}   curPath:${fileInfo.getCurrentPath}`);
-      
       this.files.push(fileInfo)
     }
   }

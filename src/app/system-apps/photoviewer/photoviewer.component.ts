@@ -165,8 +165,7 @@ export class PhotoViewerComponent implements BaseComponent, OnInit, OnDestroy, A
 
   async getCurrentPicturePathAndSearchForOthers():Promise<void>{
     // if stuff was reutrned from session, then use it.
-    if(this.imageList.length == 0){
-      if(this.picSrc.substring(0, 10) !== 'data:image'){
+    if(this.imageList.length == 0  && !this.picSrc.includes('blob:http')){
         // else, go fetch.
         const dirPath = dirname(this.picSrc);
         //console.log('dirPath:', dirPath);
@@ -175,11 +174,9 @@ export class PhotoViewerComponent implements BaseComponent, OnInit, OnDestroy, A
         //check for images
         for(let i = 0; i <= entries.length - 1; i++){
           if(this._consts.IMAGE_FILE_EXTENSIONS.includes(extname(entries[i]))){
-            const blobUrl = await this._fileService.getFileBlobAsync(`${dirPath}/${entries[i]}`);
-            this.imageList.push(blobUrl);
+            this.imageList.push(`${dirPath}/${entries[i]}`);
           }
         }
-      }
     }
   }
 
@@ -190,7 +187,7 @@ export class PhotoViewerComponent implements BaseComponent, OnInit, OnDestroy, A
   getPictureSrc(pathOne:string, pathTwo:string):string{
     let pictureSrc = '';
     
-    if(pathOne.substring(0, 10) === 'data:image'){
+    if(pathOne.includes('blob:http')){
       return pathOne;
     }else if(this.checkForExt(pathOne,pathTwo)){
       pictureSrc = '/' + this._fileInfo.getContentPath;

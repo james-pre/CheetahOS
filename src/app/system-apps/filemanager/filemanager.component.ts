@@ -163,10 +163,6 @@ export class FileManagerComponent implements BaseComponent, OnInit, AfterViewIni
     for(let i = 0; i < directoryEntries.length; i++){
       const fileEntry = this._directoryFilesEntries[i];
       const fileInfo = await this._fileService.getFileInfoAsync(fileEntry.getPath);
-      //fileInfo.setIconPath = await this._fileService.getFileBlobAsync(fileInfo.getIconPath);
-
-      console.log(`filemanager-fileInfo: iconPath:${fileInfo.getIconPath}  cntPath:${fileInfo.getContentPath}   curPath:${fileInfo.getCurrentPath}`);
-
       this.files.push(fileInfo)
     }
   }
