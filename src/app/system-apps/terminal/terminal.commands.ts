@@ -10,7 +10,7 @@ import { FileEntry } from 'src/app/system-files/fileentry';
 
 
 export interface OctalRepresentation {
-    symboolic:string;
+    symbolic:string;
     binary: number;
     permission: string;
 }
@@ -263,14 +263,14 @@ All commands:
     }
 
     genPermissionsRepresentation():void{
-        const rwx:OctalRepresentation ={symboolic:'rwx', binary:111, permission:'Read + Write + Execute'};
-        const rw_:OctalRepresentation ={symboolic:'rw-', binary:110, permission:'Read + Write'};
-        const r_w:OctalRepresentation ={symboolic:'r-x', binary:101, permission:'Read + Execute'};
-        const r__:OctalRepresentation ={symboolic:'r--', binary:100, permission:'Read'};
-        const _wx:OctalRepresentation ={symboolic:'-wx', binary:0b11, permission:'Write + Execute'};
-        const _w_:OctalRepresentation ={symboolic:'-w-', binary:0b10, permission:'Write'};
-        const __x:OctalRepresentation ={symboolic:'--x', binary:0b01, permission:'Execute'};
-        const ___:OctalRepresentation ={symboolic:'---', binary:0b00, permission:'None'};
+        const rwx:OctalRepresentation ={symbolic:'rwx', binary:111, permission:'Read + Write + Execute'};
+        const rw_:OctalRepresentation ={symbolic:'rw-', binary:110, permission:'Read + Write'};
+        const r_w:OctalRepresentation ={symbolic:'r-x', binary:101, permission:'Read + Execute'};
+        const r__:OctalRepresentation ={symbolic:'r--', binary:100, permission:'Read'};
+        const _wx:OctalRepresentation ={symbolic:'-wx', binary:0b11, permission:'Write + Execute'};
+        const _w_:OctalRepresentation ={symbolic:'-w-', binary:0b10, permission:'Write'};
+        const __x:OctalRepresentation ={symbolic:'--x', binary:0b01, permission:'Execute'};
+        const ___:OctalRepresentation ={symbolic:'---', binary:0b00, permission:'None'};
 
         this.permissionChart.set(7, rwx);
         this.permissionChart.set(6, rw_);
@@ -289,16 +289,13 @@ All commands:
 
         argSplit.forEach(x => {
             const permission = this.permissionChart.get(Number(x));
-            result += permission?.symboolic;
+            result += permission?.symbolic;
         });
 
         return result;
     }
 
     async ls(arg0:string):Promise<{type: string;  result: any;}>{
-
-        console.log('arg0:',arg0);
-
 
         const result = await this.loadFilesInfoAsync(this.currentDirectoryPath).then(()=>{
 
@@ -343,7 +340,6 @@ ${this.addspaces(strPermission,10)} ${this.addspaces('Terminal',8)} ${this.addsp
 
     async cd(arg0:string, key=""):Promise<{type: string;  result: any; depth:number;}>{
 
-        // console.log('arg0:',arg0);
         let directory = ''
         let depth = 0;
 
@@ -354,28 +350,19 @@ ${this.addspaces(strPermission,10)} ${this.addspaces('Terminal',8)} ${this.addsp
         const filePathRegex = /^(\.\.\/)+([a-zA-Z0-9_-]+\/?)*$|^(\.\/|\/)([a-zA-Z0-9_-]+\/?)+$|^\.\.$|^\.\.\/$/;
 
         if(filePathRegex.test(arg0)){
-
            const cmdArg = arg0.split('/');
-        //    console.log('cmdArg:',cmdArg);
       
            const moveUps = (cmdArg.length > 1)? cmdArg.filter(x => x == "..") : ['..'] ;
-           const impliedPath = this.cd_move_up(moveUps);
+           const impliedPath = this.cdMoveUp(moveUps);
            this.fallBackDirPath = impliedPath;
            const explicitPath = (arg0 !== '..')? arg0.split("../").splice(-1)[0] : '';
 
-           
            directory = `${impliedPath}/${explicitPath}`;
 
-        //    console.log('impliedPath:',impliedPath);
-        //    console.log('explicitPath:',explicitPath);
-        //    console.log('directory-1:',directory);
         }else{
             if(!arg0.includes(this.defaultDirectoryPath)){
                 directory = `${this.currentDirectoryPath}/${arg0}`.replace('//','/');
                 this.fallBackDirPath = this.getFallBackPath(directory);
-
-                console.log('directory-2:',directory);
-                console.log('fallBackDirPath-2:',this.fallBackDirPath);
             }
         }
 
@@ -412,7 +399,7 @@ ${this.addspaces(strPermission,10)} ${this.addspaces('Terminal',8)} ${this.addsp
         }
     }
 
-    cd_move_up(arg0:string[]):string{
+    cdMoveUp(arg0:string[]):string{
         let directory = '';
         let dirPath = '';
         let cnt = 0;
@@ -420,15 +407,12 @@ ${this.addspaces(strPermission,10)} ${this.addspaces('Terminal',8)} ${this.addsp
         tmpTraversedPath.shift();
         const traversedPath = tmpTraversedPath.filter(x => x !== '');
         
-        // console.log('traversedPath:', traversedPath);
         if(traversedPath.length == 1){
             directory = traversedPath[0];
             return `/${directory}`;
         }else if(traversedPath.length > 1){
             // first, remove the current location, because it is where you currently are in the directory
-            const curDirectory = traversedPath.pop();
-            // console.log(` cd_move_up curLocation:${curDirectory}    ==    this.currentDirectoryPath:${this.currentDirectoryPath}`);
-
+            traversedPath.pop();
             cnt = traversedPath.length - 1;
             for(const el of arg0){
                 if(cnt <= 0){
@@ -436,7 +420,6 @@ ${this.addspaces(strPermission,10)} ${this.addspaces('Terminal',8)} ${this.addsp
                     return `/${directory}`;
                 }else{
                     const priorDirectory= traversedPath[cnt];
-                    // console.log('cd_move_up priorDirectory:',priorDirectory);
                     directory = priorDirectory;
                 }
                 cnt--;
@@ -452,8 +435,6 @@ ${this.addspaces(strPermission,10)} ${this.addspaces('Terminal',8)} ${this.addsp
                 }
             }
             dirPath = tmpStr.join('');
-            // console.log('tmpStr:',tmpStr);
-            // console.log('cd_move_up directory:',dirPath);
         }
 
         return dirPath.replace(',','');
@@ -514,7 +495,7 @@ usage: mkdir direcotry_name [-v]
         return '';
     }
 
-    async mv(arg0:string):Promise<void>{
+    async mv(arg0:string, arg1:string):Promise<void>{
         1
     }
 
