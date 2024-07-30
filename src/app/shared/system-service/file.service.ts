@@ -576,7 +576,7 @@ export class FileService{
         });
     }
 
-    public async renameFileAsync_TBD(path:string, newFileName:string): Promise<boolean> {
+    private async renameFileAsync_TBD(path:string, newFileName:string): Promise<boolean> {
         await this.initBrowserFsAsync();
 
        return new Promise<boolean>((resolve, reject) =>{
