@@ -410,7 +410,12 @@ export class FileManagerComponent implements BaseComponent, OnInit, AfterViewIni
   }
 
   async onDeleteFile():Promise<void>{
-    const result = await this._fileService.deleteFileAsync(this.selectedFile.getCurrentPath)
+    let result = false;
+    if(this.selectedFile.getIsFile){
+      result = await this._fileService.deleteFileAsync(this.selectedFile.getCurrentPath);
+    }else{
+      result = await this._fileService.deleteFolderAsync(this.selectedFile.getCurrentPath)
+    }
 
     if(result){
       await this.loadFilesInfoAsync();
@@ -505,7 +510,7 @@ export class FileManagerComponent implements BaseComponent, OnInit, AfterViewIni
     const renameText = this.renameForm.value.renameInput as string;
 
     if(renameText !== '' && renameText.length !== 0 && renameText !== this.currentIconName ){
-     const result =  await this._fileService.renameFileAsync(this.selectedFile.getCurrentPath, renameText);
+     const result =   await this._fileService.renameAsync(this.selectedFile.getCurrentPath, renameText, this.selectedFile.getIsFile);
 
       if(result){
         // renamFileAsync, doesn't trigger a reload of the file directory, so to give the user the impression that the file has been updated, the code below

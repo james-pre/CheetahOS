@@ -151,7 +151,6 @@ export class FileService{
         });
     }
 
-
     public async copyFilesAsync(sourcepaths:string[], destinationpath:string):Promise<boolean>{
         await this.initBrowserFsAsync();
 
@@ -189,30 +188,31 @@ export class FileService{
     public async createFolderAsync(directory:string, fileName:string):Promise<boolean>{
         await this.initBrowserFsAsync();
         return new Promise<boolean>((resolve, reject) =>{
-
-           this._fileSystem.exists(`${directory}/${fileName}`, (exists) =>{
-                if(exists){
-                    console.log('createFolderAsync: folder already exists',exists);
-                    resolve(false);
-                }else{
-                    this._fileSystem.mkdir(`${directory}/${fileName}`,0o777,(err) =>{  
+            this._fileSystem.mkdir(`${directory}/${fileName}`,0o777,(err) =>{  
+                if(err?.code === 'EEXIST' ){
+                    console.log('createFolderAsync Error:folder  already exists',err);
+                    const itrName = this.iterateFileName(`${directory}/${fileName}`);
+                    this._fileSystem.mkdir(itrName,0o777,(err) =>{  
                         if(err){
-                            console.log('createFolderAsync Error: folder creation',err);
-                            reject(false);
+                            console.log('createFolderAsync  Error:',err);
+                            reject(err);
                         }
-                        //this.dirFilesUpdateNotify.next();
                         resolve(true);
                     });
+                }else{
+                    console.log(`err:${err}`);
+                    this._fileExistsMap.set(`${directory}/${fileName}`,0);
+                    resolve(true);
                 }
             });
-        })
+        });
     }
 
-    public async deleteFolderAsync(directory:string, fileName:string):Promise<boolean>{
+    public async deleteFolderAsync(directory:string):Promise<boolean>{
        return new Promise<boolean>((resolve, reject) =>{
-           this._fileSystem.exists(`${directory}/${fileName}`, (err) =>{
+           this._fileSystem.exists(`${directory}/`, (err) =>{
                 if(err){
-                    this._fileSystem.rmdir(`${directory}/${fileName}`,(err) =>{  
+                    this._fileSystem.rmdir(`${directory}/`,(err) =>{  
                         if(err){
                             console.log('deleteFolderAsync Error: folder delete failed',err);
                             reject(false);
@@ -498,7 +498,6 @@ export class FileService{
         });
     }
     
-
     public async getShortCutFromURLAsync(path:string):Promise<ShortCut>{
         await this.initBrowserFsAsync();
 
@@ -577,26 +576,6 @@ export class FileService{
         });
     }
 
-    public async renameFolderAsync(directory:string, oldfileName:string, newFileName:string):Promise<boolean>{
-        await this.initBrowserFsAsync();
-
-        return new Promise<boolean>((resolve, reject) =>{
-           this._fileSystem.exists(`${directory}/${newFileName}`, (err) =>{
-                if(err){
-                    console.log('renameFolderAsync Error: folder already exists',err);
-                }else{
-                    this._fileSystem.rename(`${directory}/${oldfileName}`,`${directory}/${newFileName}`,(err) =>{  
-                        if(err){
-                            console.log('renameFolderAsync Error: folder rename',err);
-                            reject(false);
-                        }
-                        resolve(true);
-                    });
-                }
-             });
-        });
-    }
-
     public async renameFileAsync_TBD(path:string, newFileName:string): Promise<boolean> {
         await this.initBrowserFsAsync();
 
@@ -630,37 +609,30 @@ export class FileService{
         });
     }
 
-    public async renameFileAsync(path:string, newFileName:string): Promise<boolean> {
+    public async renameAsync(path:string, newFileName:string, isFile:boolean): Promise<boolean> {
         await this.initBrowserFsAsync();
 
-       return new Promise<boolean>((resolve, reject) =>{
-            this._fileSystem.readFile(path,(err, contents = Buffer.from('')) =>{
-                if(err){
-                    console.log('getFile in renameFileAsync error:',err)
-                    reject(false)
-                }else{
-                    this._fileSystem.writeFile(`${dirname(path)}/${newFileName}${extname(path)}`,contents,(err)=>{  
+        return new Promise<boolean>((resolve, reject) =>{
+            let rename = ''; let type = ''
+            if(isFile){  rename = `${dirname(path)}/${newFileName}${extname(path)}`; type = 'file';
+            }else{ rename = `${dirname(path)}/${newFileName}`;  type = 'folder'; }
+
+            this._fileSystem.exists(`${rename}`, (err) =>{
+                 if(err){
+                    console.log(`renameAsync Error: ${type} already exists`,err);
+                    reject(false);
+                 }else{
+                    this._fileSystem.rename(`${path}`,rename,(err) =>{  
                         if(err){
-                            console.log('writeFile in renameFileAsync error:',err);
+                            console.log(`renameAsync Error: ${type} rename`,err);
                             reject(false);
-                        }else{
-                            this._fileSystem.unlink(path,(err) =>{
-                                if(err){
-                                    console.log('unlink file error:',err)
-                                    reject(err)
-                                }
-                                console.log('successfully unlinked')
-                                resolve(true);
-                            });
-                            console.log('successfully renamed')
-                            resolve(true);
                         }
+                        resolve(true);
                     });
-                    console.log('successfully fetched')
-                    resolve(true);
-                }
-            });
+                 }
+              });
         });
+
     }
 
 

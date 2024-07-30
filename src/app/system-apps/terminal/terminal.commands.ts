@@ -718,7 +718,7 @@ Mandatory argument to long options are mandotory for short options too.
     
         // Delete the current directory after all its contents have been processed
         const folderName = this.getFileName(sourceArg);
-        const result = await this._fileService.deleteFolderAsync(sourceArg, folderName);
+        const result = await this._fileService.deleteFolderAsync(`${sourceArg}/${folderName}`);
     
         if (result) {
             console.log(`Directory: ${sourceArg} deleted successfully`);
