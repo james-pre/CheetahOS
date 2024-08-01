@@ -249,7 +249,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
 
 
   captureComponentImg():void{
-    const directory ='/osdrive/Documents/Screen-Shots';
+    const directory ='/Documents/Screen-Shots';
     htmlToImage.toPng(this.desktopContainer.nativeElement).then(htmlImg =>{
       //console.log('img data:',htmlImg);
 
@@ -281,12 +281,14 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     })
   }
 
-  createFolder():void{
-    const directory ='/osdrive/Desktop';
+  async createFolder():Promise<void>{
+    const directory ='/Desktop';
     const folderName = 'New Folder';
-    this._fileService.createFolderAsync(directory, folderName);
-    this._fileService.addEventOriginator('filemanager');
-    this._fileService.dirFilesUpdateNotify.next();
+    const result =  await this._fileService.createFolderAsync(directory, folderName);
+    if(result){
+      this._fileService.addEventOriginator('filemanager');
+      this._fileService.dirFilesUpdateNotify.next();
+    }
   }
 
   hideContextMenu():void{
@@ -440,8 +442,8 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     file.setOpensWith = arg0;
 
     if(arg0 ==  this.markDownViewerApp){
-      file.setCurrentPath = 'osdrive/Desktop';
-      file.setContentPath = 'osdrive/Documents/Credits.md';
+      file.setCurrentPath = '/Desktop';
+      file.setContentPath = '/Documents/Credits.md';
     }
 
     this._triggerProcessService.startApplication(file);

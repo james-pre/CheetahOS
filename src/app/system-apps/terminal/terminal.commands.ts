@@ -26,8 +26,8 @@ export class TerminalCommands{
     private  permissionChart!:Map<number, OctalRepresentation>;
     private closingNotAllowed:string[] = ["system", "desktop", "filemanager", "taskbar", "startbutton","clock","taskbarentry"];
     private files:FileInfo[] = [];
-    private readonly defaultDirectoryPath = '/osdrive';
-    private currentDirectoryPath = '/osdrive';
+    private readonly defaultDirectoryPath = '/';
+    private currentDirectoryPath = '/';
     private fallBackDirPath = '';
 
     constructor() { 
@@ -325,7 +325,7 @@ All commands:
                         this.files.forEach(file => {
                             const strPermission =this.getPermission(file.getMode);
                             const fileInfo = `
-${this.addspaces(strPermission,10)} ${this.addspaces('Terminal',8)} ${this.addspaces('staff', 6)} ${this.addspaces(String(file.getSize),6)}  ${this.addspaces(file.getDateTimeModifiedUS,12)} ${this.addspaces(file.getFileName,11)}
+${(file.getIsFile)? '-':'d'}${this.addspaces(strPermission,10)} ${this.addspaces('Terminal',8)} ${this.addspaces('staff', 6)} ${this.addspaces(String(file.getSize),6)}  ${this.addspaces(file.getDateTimeModifiedUS,12)} ${this.addspaces(file.getFileName,11)}
                         `
                             result.push(fileInfo);
                         });
@@ -357,7 +357,7 @@ ${this.addspaces(strPermission,10)} ${this.addspaces('Terminal',8)} ${this.addsp
            this.fallBackDirPath = impliedPath;
            const explicitPath = (arg0 !== '..')? arg0.split("../").splice(-1)[0] : '';
 
-           directory = `${impliedPath}/${explicitPath}`;
+           directory = `${impliedPath}/${explicitPath}`.replace('//','/');
 
         }else{
             if(!arg0.includes(this.defaultDirectoryPath)){
@@ -365,6 +365,9 @@ ${this.addspaces(strPermission,10)} ${this.addspaces('Terminal',8)} ${this.addsp
                 this.fallBackDirPath = this.getFallBackPath(directory);
             }
         }
+
+        console.log('directory:', directory);
+        console.log('fallBackDirPath:', this.fallBackDirPath);
 
         const firstDirectoryCheck = await this._fileService.checkIfExistsAsync(directory);
         let secondDirectoryCheck = false;
@@ -407,7 +410,9 @@ ${this.addspaces(strPermission,10)} ${this.addspaces('Terminal',8)} ${this.addsp
         tmpTraversedPath.shift();
         const traversedPath = tmpTraversedPath.filter(x => x !== '');
         
-        if(traversedPath.length == 1){
+        if(traversedPath.length == 0){
+            return '/';
+        } else if(traversedPath.length == 1){
             directory = traversedPath[0];
             return `/${directory}`;
         }else if(traversedPath.length > 1){
@@ -716,7 +721,7 @@ Mandatory argument to long options are mandotory for short options too.
     }
 
     private sendDirectoryUpdateNotification():void{
-        if(this.currentDirectoryPath.includes('/osdrive/Desktop')){
+        if(this.currentDirectoryPath.includes('/Desktop')){
             this._fileService.addEventOriginator('filemanager');
         }else{
             this._fileService.addEventOriginator('fileexplorer');

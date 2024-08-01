@@ -364,10 +364,10 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
 
     const curNum = this.numCntr++;
 
-    if((this.traversalDepth > 2)){
+    if((this.traversalDepth > 1)){
       console.log('11111111');
       this.terminalForm.setValue({terminalCmd: `${rootCmd} ${this.removeCurrentDir(rootArg)}${this.fetchedDirectoryList[curNum]}`});
-    }else if(this.traversalDepth >= 0 && this.traversalDepth <= 2){
+    }else if(this.traversalDepth >= 0 && this.traversalDepth <= 1){
       console.log('22222222');
       this.terminalForm.setValue({terminalCmd: `${rootCmd} ${this.fetchedDirectoryList[curNum]}`});
     }

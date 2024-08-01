@@ -100,7 +100,7 @@ export class FileService{
        // await this.initZenFSAsync();
 
         return new Promise<boolean>((resolve) =>{
-            fs.access(`${dirPath}`, (exits) =>{
+            fs.exists(`${dirPath}`, (exits) =>{
                  if(exits){
                      console.log('checkIfExistsAsync :Already exists',exits);
                      resolve(true)
@@ -206,7 +206,7 @@ export class FileService{
         //await this.initZenFSAsync();
 
        return new Promise<boolean>((resolve, reject) =>{
-           fs.access(`${directory}/`, (err) =>{
+           fs.exists(`${directory}/`, (err) =>{
                 if(err){
                     fs.rmdir(`${directory}/`,(err) =>{  
                         if(err){
@@ -349,12 +349,17 @@ export class FileService{
 
         if(!extension){
             const sc = await this.setFolderValuesAsync(path) as ShortCut;
+            const fileMetaData = await this.getExtraFileMetaDataAsync(path) as FileMetaData;
+
             this._fileInfo.setIconPath = this.changeFolderIcon(sc.geFileName,sc.getIconPath);
             this._fileInfo.setCurrentPath = path;
             this._fileInfo.setFileType = sc.getFileType;
             this._fileInfo.setFileName = sc.geFileName;
             this._fileInfo.setOpensWith = sc.getOpensWith;
             this._fileInfo.setIsFile = false;
+            this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
+            this._fileInfo.setSize = fileMetaData.getSize;
+            this._fileInfo.setMode = fileMetaData.getMode;
         }
         else{
 
@@ -611,7 +616,7 @@ export class FileService{
             if(isFile){  rename = `${dirname(path)}/${newFileName}${extname(path)}`; type = 'file';
             }else{ rename = `${dirname(path)}/${newFileName}`;  type = 'folder'; }
 
-            fs.access(`${rename}`, (err) =>{
+            fs.exists(`${rename}`, (err) =>{
                  if(err){
                     console.log(`renameAsync Error: ${type} already exists`,err);
                     reject(false);
@@ -626,7 +631,6 @@ export class FileService{
                  }
               });
         });
-
     }
 
 
