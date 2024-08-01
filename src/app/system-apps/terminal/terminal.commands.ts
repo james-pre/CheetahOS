@@ -340,6 +340,8 @@ ${(file.getIsFile)? '-':'d'}${this.addspaces(strPermission,10)} ${this.addspaces
 
     async cd(arg0:string, key=""):Promise<{type: string;  result: any; depth:number;}>{
 
+        console.log('ARG0:', arg0);
+
         let directory = ''
         let depth = 0;
 
@@ -352,6 +354,7 @@ ${(file.getIsFile)? '-':'d'}${this.addspaces(strPermission,10)} ${this.addspaces
         if(filePathRegex.test(arg0)){
            const cmdArg = arg0.split('/');
       
+           //console.log('CMDARG:', cmdArg);
            const moveUps = (cmdArg.length > 1)? cmdArg.filter(x => x == "..") : ['..'] ;
            const impliedPath = this.cdMoveUp(moveUps);
            this.fallBackDirPath = impliedPath;
@@ -359,15 +362,16 @@ ${(file.getIsFile)? '-':'d'}${this.addspaces(strPermission,10)} ${this.addspaces
 
            directory = `${impliedPath}/${explicitPath}`.replace('//','/');
 
+        //    console.log('IMPLIEDPATH:', impliedPath);
+        //    console.log('EXPLICITPATH:', explicitPath);
+        //    console.log('DIRECTORY:', directory);
         }else{
-            if(!arg0.includes(this.defaultDirectoryPath)){
-                directory = `${this.currentDirectoryPath}/${arg0}`.replace('//','/');
-                this.fallBackDirPath = this.getFallBackPath(directory);
-            }
+            directory = `${this.currentDirectoryPath}/${arg0}`.replace('//','/');
+            this.fallBackDirPath = this.getFallBackPath(directory);
         }
 
-        console.log('directory:', directory);
-        console.log('fallBackDirPath:', this.fallBackDirPath);
+        // console.log('directory:', directory);
+        // console.log('fallBackDirPath:', this.fallBackDirPath);
 
         const firstDirectoryCheck = await this._fileService.checkIfExistsAsync(directory);
         let secondDirectoryCheck = false;

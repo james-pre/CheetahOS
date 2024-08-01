@@ -41,20 +41,20 @@ export class FileService{
     }
 
     private async initZenFSAsync():Promise<void>{
-        if(!this._isFileSystemInit){
 
-            await configure<typeof Overlay>({
-                mounts:{
-                    '/':{
-                        backend:Overlay,
-                        readable: { backend: Fetch, index:OSFileSystemIndex as IndexData, baseUrl:'osdrive'},
-                        writable: {backend:IndexedDB, storeName: 'fs-cache'}
-                    }
-                }
-            })
-
-            this._isFileSystemInit = true;
+        if(this._isFileSystemInit) {
+            return;
         }
+        await configure<typeof Overlay>({
+            mounts:{
+                '/':{
+                    backend:Overlay,
+                    readable: { backend: Fetch, index:OSFileSystemIndex as IndexData, baseUrl:'osdrive'},
+                    writable: {backend:IndexedDB, storeName: 'fs-cache'}
+                }
+            }
+        })
+        this._isFileSystemInit = true;
     }
 
     private changeFolderIcon(fileName:string, iconPath:string):string{
@@ -81,8 +81,7 @@ export class FileService{
     }
 
     public async checkIfDirectory(path: string):Promise<boolean> {
-       // await this.initZenFSAsync();
-
+ 
         return new Promise<boolean>((resolve, reject) =>{
             fs.stat(path,(err, stats) =>{
                 if(err){
@@ -97,10 +96,9 @@ export class FileService{
     }
 
     public async checkIfExistsAsync(dirPath:string):Promise<boolean>{
-       // await this.initZenFSAsync();
 
         return new Promise<boolean>((resolve) =>{
-            fs.exists(`${dirPath}`, (exits) =>{
+            fs.exists(`${dirPath}`,(exits) =>{
                  if(exits){
                      console.log('checkIfExistsAsync :Already exists',exits);
                      resolve(true)
@@ -113,7 +111,6 @@ export class FileService{
     }
 
     public async copyFileAsync(sourcepath:string, destinationpath:string):Promise<boolean>{
-        await this.initZenFSAsync();
 
         const fileName = this.getFileName(sourcepath);
         return new Promise<boolean>((resolve, reject) =>{
@@ -145,7 +142,6 @@ export class FileService{
     }
 
     public async copyFilesAsync(sourcepaths:string[], destinationpath:string):Promise<boolean>{
-        await this.initZenFSAsync();
 
         return new Promise<boolean>((resolve, reject) =>{
             for(const sourcepath of sourcepaths){
@@ -179,7 +175,6 @@ export class FileService{
     }
 
     public async createFolderAsync(directory:string, fileName:string):Promise<boolean>{
-       // await this.initZenFSAsync();
 
         return new Promise<boolean>((resolve, reject) =>{
             fs.mkdir(`${directory}/${fileName}`,0o777,(err) =>{  
@@ -203,7 +198,6 @@ export class FileService{
     }
 
     public async deleteFolderAsync(directory:string):Promise<boolean>{
-        //await this.initZenFSAsync();
 
        return new Promise<boolean>((resolve, reject) =>{
            fs.exists(`${directory}/`, (err) =>{
@@ -223,7 +217,6 @@ export class FileService{
     }
 
     public async deleteFileAsync(path:string): Promise<boolean> {
-        //await this.initZenFSAsync();
 
         return new Promise<boolean>((resolve, reject) =>{
            fs.unlink(path,(err) =>{
@@ -256,8 +249,6 @@ export class FileService{
             return Promise.reject(new Error('Path must not be empty'));
         }
 
-        await this.initZenFSAsync();
-
        return new Promise((resolve, reject) =>{
             fs.readFile(path,(err, contents = Buffer.from('')) =>{
                 if(err){
@@ -269,7 +260,6 @@ export class FileService{
             });
         });
     }
-
 
     /**
      * 
@@ -287,8 +277,6 @@ export class FileService{
             console.error('getFileBlobAsync error: Path must not be empty');
             return Promise.reject(new Error('Path must not be empty'));
         }
-
-        await this.initZenFSAsync();
 
         return new Promise((resolve, reject) =>{
             fs.readFile(path,(err, contents = Buffer.from('')) =>{
@@ -310,6 +298,7 @@ export class FileService{
             return Promise.reject(new Error('Path must not be empty'));
         }
 
+        /** This is where ZenFS is initialized */
        const result = await this.initZenFSAsync().then(()=>{
             return new Promise<string[]>((resolve, reject) => {
                 fs.readdir(path, (err, files)=> {
@@ -522,7 +511,7 @@ export class FileService{
 
 
     public async writeFilesAsync(directory:string, files:File[]):Promise<boolean>{
-       // await this.initZenFSAsync();
+
         return new Promise<boolean>((resolve, reject) =>{
             files.forEach((file)=>{
                 const fileReader = new FileReader()
@@ -553,7 +542,7 @@ export class FileService{
     }
 
     public async writeFileAsync(directory:string, file:FileInfo):Promise<boolean>{
-       // await this.initZenFSAsync();
+
         return new Promise<boolean>((resolve, reject) =>{
             fs.writeFile(`${directory}/${file.getFileName}`, file.getContentPath, {flag: 'wx'}, (err) =>{  
                 if(err?.code === 'EEXIST' ){
@@ -609,8 +598,7 @@ export class FileService{
     // }
 
     public async renameAsync(path:string, newFileName:string, isFile:boolean): Promise<boolean> {
-       await this.initZenFSAsync();
-
+ 
         return new Promise<boolean>((resolve, reject) =>{
             let rename = ''; let type = ''
             if(isFile){  rename = `${dirname(path)}/${newFileName}${extname(path)}`; type = 'file';
@@ -650,7 +638,6 @@ export class FileService{
     }
 
     public async setFolderValuesAsync(path: string):Promise<ShortCut>{
-        //await this.initBrowserFsAsync();
 
         return new Promise<ShortCut>((resolve, reject) =>{
             fs.stat(path,(err, stats) =>{
