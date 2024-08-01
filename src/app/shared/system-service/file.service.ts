@@ -11,6 +11,10 @@ import { Subject } from "rxjs";
 import * as BrowserFS from 'browserfs';
 import { Buffer } from 'buffer';
 import osDriveFileSystemIndex from '../../../osdrive.json';
+import OSDriveFileSystemIndex from '../../../index.json';
+import {configure, fs, Overlay, Fetch} from '@zenfs/core';
+import {IndexedDB} from '@zenfs/dom';
+import { IndexData } from "@zenfs/core/backends/index/index.js";
 import ini  from 'ini';
 
 
@@ -63,6 +67,19 @@ export class FileService{
                 resolve();
             });
         }
+    }
+
+
+    private async initZenFSAsync():Promise<void>{
+        await configure<typeof Overlay>({
+            mounts:{
+                '/':{
+                    backend:Overlay,
+                    readable: { backend: Fetch, index:OSDriveFileSystemIndex as IndexData, baseUrl:'osdrive'},
+                    writeable: {backend:IndexedDB, storeName: 'fs-cache'}
+                }
+            }
+        })
     }
 
     private changeFolderIcon(fileName:string, iconPath:string):string{
@@ -314,23 +331,52 @@ export class FileService{
             return Promise.reject(new Error('Path must not be empty'));
         }
 
-        await this.initBrowserFsAsync();
+       console.log(`path:${path}`);
+       const result = await this.initZenFSAsync().then(()=>{
 
-        return new Promise<string[]>((resolve, reject) => {
-            const fs = this._fileSystem;
-            const interval = setInterval(() => {
-                fs.readdir(path, function(err, files) {
-                  if(err){
-                      console.log("Oops! a boo boo happened, filesystem wasn't ready:", err);
-                      reject([]);
-                  }else{
-                    clearInterval(interval);
-                    resolve(files || []);
-                  }
-                });
-            }, this.SECONDS_DELAY);
-        });
+            return new Promise<string[]>((resolve, reject) => {
+                const interval = setInterval(() => {
+                    fs.readdir('/', (err, files)=> {
+                      if(err){
+                          console.log("Oops! a boo boo happened, filesystem wasn't ready:", err);
+                          reject([]);
+                      }else{
+                        clearInterval(interval);
+                        console.log(`file:${files}`);
+                        resolve(files || []);
+                      }
+                    });
+                }, this.SECONDS_DELAY);
+            });
+        })
+
+        return result;
+
     }
+
+    // public async getEntriesFromDirectoryAsync1(path:string):Promise<string[]>{
+    //     if (!path) {
+    //         console.error('getEntriesFromDirectoryAsync error: Path must not be empty');
+    //         return Promise.reject(new Error('Path must not be empty'));
+    //     }
+
+    //     await this.initBrowserFsAsync();
+
+    //     return new Promise<string[]>((resolve, reject) => {
+    //         const fs = this._fileSystem;
+    //         const interval = setInterval(() => {
+    //             fs.readdir(path, function(err, files) {
+    //               if(err){
+    //                   console.log("Oops! a boo boo happened, filesystem wasn't ready:", err);
+    //                   reject([]);
+    //               }else{
+    //                 clearInterval(interval);
+    //                 resolve(files || []);
+    //               }
+    //             });
+    //         }, this.SECONDS_DELAY);
+    //     });
+    // }
 
     public  getFileEntriesFromDirectory(fileList:string[], directory:string):FileEntry[]{
 
