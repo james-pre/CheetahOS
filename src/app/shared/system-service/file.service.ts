@@ -3,16 +3,13 @@ import { FileInfo } from "src/app/system-files/fileinfo";
 import { ShortCut } from "src/app/system-files/shortcut";
 import {extname, basename, resolve, dirname} from 'path';
 import { Constants } from "src/app/system-files/constants";
-import { FSModule } from "browserfs/dist/node/core/FS";
 import { FileEntry } from 'src/app/system-files/fileentry';
 import { FileMetaData } from "src/app/system-files/file.metadata";
 
 import { Subject } from "rxjs";
-import * as BrowserFS from 'browserfs';
 import { Buffer } from 'buffer';
-import osDriveFileSystemIndex from '../../../osdrive.json';
-import OSDriveFileSystemIndex from '../../../index.json';
-import {configure, fs, Overlay, Fetch} from '@zenfs/core';
+import OSFileSystemIndex from '../../../../index.json';
+import {configure, fs, Overlay, Fetch, FileContents} from '@zenfs/core';
 import {IndexedDB} from '@zenfs/dom';
 import { IndexData } from "@zenfs/core/backends/index/index.js";
 import ini  from 'ini';
@@ -28,7 +25,7 @@ export class FileService{
     static instace:FileService;
     private _fileInfo!:FileInfo;
     private _consts:Constants = new Constants();
-    private _fileSystem!:FSModule;
+    private _isFileSystemInit = false;
     private _directoryFileEntires:FileEntry[]=[];
     private _fileExistsMap!:Map<string,number>; 
     private _eventOriginator = '';
@@ -43,43 +40,21 @@ export class FileService{
         FileService.instace = this;
     }
 
-    private async initBrowserFsAsync():Promise<void>{
-        if(!this._fileSystem){
-            return new Promise<void>((resolve, reject) => {
-                BrowserFS.configure({
-                    fs: "MountableFileSystem",
-                    options:{
-                        '/':{
-                            fs: 'OverlayFS',
-                            options:{
-                                readable:{fs: 'XmlHttpRequest', options:{index: osDriveFileSystemIndex}},
-                                writable:{fs:"IndexedDB", options: {storeName: "browser-fs-cache"}}
-                            },
-                        },  
-                    }},
-                (err) =>{
-                    if(err){  
-                        console.log('initBrowserFs Error:', err)
-                        reject(err); 
-                    }
-                });
-                this._fileSystem = BrowserFS.BFSRequire('fs')
-                resolve();
-            });
-        }
-    }
-
-
     private async initZenFSAsync():Promise<void>{
-        await configure<typeof Overlay>({
-            mounts:{
-                '/':{
-                    backend:Overlay,
-                    readable: { backend: Fetch, index:OSDriveFileSystemIndex as IndexData, baseUrl:'osdrive'},
-                    writeable: {backend:IndexedDB, storeName: 'fs-cache'}
+        if(!this._isFileSystemInit){
+
+            await configure<typeof Overlay>({
+                mounts:{
+                    '/':{
+                        backend:Overlay,
+                        readable: { backend: Fetch, index:OSFileSystemIndex as IndexData, baseUrl:'osdrive'},
+                        writable: {backend:IndexedDB, storeName: 'fs-cache'}
+                    }
                 }
-            }
-        })
+            })
+
+            this._isFileSystemInit = true;
+        }
     }
 
     private changeFolderIcon(fileName:string, iconPath:string):string{
@@ -106,10 +81,10 @@ export class FileService{
     }
 
     public async checkIfDirectory(path: string):Promise<boolean> {
-        await this.initBrowserFsAsync();
+       // await this.initZenFSAsync();
 
         return new Promise<boolean>((resolve, reject) =>{
-            this._fileSystem.stat(path,(err, stats) =>{
+            fs.stat(path,(err, stats) =>{
                 if(err){
                     console.log('checkIfDirectory error:',err)
                     reject(err)
@@ -122,9 +97,10 @@ export class FileService{
     }
 
     public async checkIfExistsAsync(dirPath:string):Promise<boolean>{
-        await this.initBrowserFsAsync();
+       // await this.initZenFSAsync();
+
         return new Promise<boolean>((resolve) =>{
-            this._fileSystem.exists(`${dirPath}`, (exits) =>{
+            fs.access(`${dirPath}`, (exits) =>{
                  if(exits){
                      console.log('checkIfExistsAsync :Already exists',exits);
                      resolve(true)
@@ -137,21 +113,21 @@ export class FileService{
     }
 
     public async copyFileAsync(sourcepath:string, destinationpath:string):Promise<boolean>{
-        await this.initBrowserFsAsync();
+        await this.initZenFSAsync();
 
         const fileName = this.getFileName(sourcepath);
         return new Promise<boolean>((resolve, reject) =>{
-             this._fileSystem.readFile(sourcepath,(err, contents = Buffer.from('')) =>{
+             fs.readFile(sourcepath,(err, contents = Buffer.from('')) =>{
                 if(err){
                     console.log('copyFileAsync error:',err)
                     reject(false)
                 }else{
-                    this._fileSystem.writeFile(`${destinationpath}/${fileName}`, contents, {flag: 'wx'}, (err) =>{  
+                    fs.writeFile(`${destinationpath}/${fileName}`, contents, {flag: 'wx'}, (err) =>{  
                         if(err?.code === 'EEXIST' ){
                             console.log('copyFileAsync Error: file already exists',err);
         
                             const itrName = this.iterateFileName(`${destinationpath}/${fileName}`);
-                            this._fileSystem.writeFile(itrName,contents,(err) =>{  
+                            fs.writeFile(itrName,contents,(err) =>{  
                                 if(err){
                                     console.log('copyFileAsync Iterate Error:',err);
                                     reject(false);
@@ -169,22 +145,22 @@ export class FileService{
     }
 
     public async copyFilesAsync(sourcepaths:string[], destinationpath:string):Promise<boolean>{
-        await this.initBrowserFsAsync();
+        await this.initZenFSAsync();
 
         return new Promise<boolean>((resolve, reject) =>{
             for(const sourcepath of sourcepaths){
                 const fileName = this.getFileName(sourcepath);
-                this._fileSystem.readFile(sourcepath,(err, contents = Buffer.from('')) =>{
+                fs.readFile(sourcepath,(err, contents = Buffer.from('')) =>{
                     if(err){
                         console.log('copyFilesAsync error:',err)
                         reject(false)
                     }else{
-                        this._fileSystem.writeFile(`${destinationpath}/${fileName}`, contents, {flag: 'wx'}, (err) =>{  
+                        fs.writeFile(`${destinationpath}/${fileName}`, contents, {flag: 'wx'}, (err) =>{  
                             if(err?.code === 'EEXIST' ){
                                 console.log('copyFilesAsync Error: file already exists',err);
             
                                 const itrName = this.iterateFileName(`${destinationpath}/${fileName}`);
-                                this._fileSystem.writeFile(itrName,contents,(err) =>{  
+                                fs.writeFile(itrName,contents,(err) =>{  
                                     if(err){
                                         console.log('copyFilesAsync Iterate Error:',err);
                                         reject(false);
@@ -203,13 +179,14 @@ export class FileService{
     }
 
     public async createFolderAsync(directory:string, fileName:string):Promise<boolean>{
-        await this.initBrowserFsAsync();
+       // await this.initZenFSAsync();
+
         return new Promise<boolean>((resolve, reject) =>{
-            this._fileSystem.mkdir(`${directory}/${fileName}`,0o777,(err) =>{  
+            fs.mkdir(`${directory}/${fileName}`,0o777,(err) =>{  
                 if(err?.code === 'EEXIST' ){
                     console.log('createFolderAsync Error:folder  already exists',err);
                     const itrName = this.iterateFileName(`${directory}/${fileName}`);
-                    this._fileSystem.mkdir(itrName,0o777,(err) =>{  
+                    fs.mkdir(itrName,0o777,(err) =>{  
                         if(err){
                             console.log('createFolderAsync  Error:',err);
                             reject(err);
@@ -226,10 +203,12 @@ export class FileService{
     }
 
     public async deleteFolderAsync(directory:string):Promise<boolean>{
+        //await this.initZenFSAsync();
+
        return new Promise<boolean>((resolve, reject) =>{
-           this._fileSystem.exists(`${directory}/`, (err) =>{
+           fs.access(`${directory}/`, (err) =>{
                 if(err){
-                    this._fileSystem.rmdir(`${directory}/`,(err) =>{  
+                    fs.rmdir(`${directory}/`,(err) =>{  
                         if(err){
                             console.log('deleteFolderAsync Error: folder delete failed',err);
                             reject(false);
@@ -244,10 +223,10 @@ export class FileService{
     }
 
     public async deleteFileAsync(path:string): Promise<boolean> {
-        await this.initBrowserFsAsync();
+        //await this.initZenFSAsync();
 
         return new Promise<boolean>((resolve, reject) =>{
-            this._fileSystem.unlink(path,(err) =>{
+           fs.unlink(path,(err) =>{
                 if(err){
                     console.log('deleteFileAsync error:',err)
                     reject(false)
@@ -258,10 +237,9 @@ export class FileService{
     }
 
     public async getExtraFileMetaDataAsync(path: string) {
-        await this.initBrowserFsAsync();
-
+  
         return new Promise((resolve, reject) =>{
-            this._fileSystem.stat(path,(err, stats) =>{
+            fs.stat(path,(err, stats) =>{
                 if(err){
                     console.log('getExtraFileMetaDataAsync error:',err)
                     reject(err)
@@ -271,21 +249,22 @@ export class FileService{
         });
     }
 
-    public async getFileAsync(path:string, encoding:BufferEncoding = 'utf8'): Promise<string> {
+
+    public async getFileAsync(path:string): Promise<string> {
         if (!path) {
             console.error('getFileAsync error: Path must not be empty');
             return Promise.reject(new Error('Path must not be empty'));
         }
 
-        await this.initBrowserFsAsync();
+        await this.initZenFSAsync();
 
        return new Promise((resolve, reject) =>{
-            this._fileSystem.readFile(path,(err, contents = Buffer.from('')) =>{
+            fs.readFile(path,(err, contents = Buffer.from('')) =>{
                 if(err){
                     console.log('getFileAsync error:',err)
                     reject(err)
                 }else{
-                    resolve(contents.toString(encoding));
+                    resolve(contents.toString());
                 }
             });
         });
@@ -309,17 +288,17 @@ export class FileService{
             return Promise.reject(new Error('Path must not be empty'));
         }
 
-        await this.initBrowserFsAsync();
+        await this.initZenFSAsync();
 
         return new Promise((resolve, reject) =>{
-            this._fileSystem.readFile(path,(err, contents = Buffer.from('')) =>{
+            fs.readFile(path,(err, contents = Buffer.from('')) =>{
                 if(err){
                     console.log('getFileBlobAsync error:',err)
                     reject(err);
                 }
 
                 contents = contents || new Uint8Array();
-                const fileUrl =  this.bufferToUrl(contents);
+                const fileUrl =  this.bufferToUrl2(contents);
                 resolve(fileUrl);
             });
         });
@@ -331,61 +310,31 @@ export class FileService{
             return Promise.reject(new Error('Path must not be empty'));
         }
 
-       console.log(`path:${path}`);
        const result = await this.initZenFSAsync().then(()=>{
-
             return new Promise<string[]>((resolve, reject) => {
-                const interval = setInterval(() => {
-                    fs.readdir('/', (err, files)=> {
-                      if(err){
-                          console.log("Oops! a boo boo happened, filesystem wasn't ready:", err);
-                          reject([]);
-                      }else{
-                        clearInterval(interval);
-                        console.log(`file:${files}`);
-                        resolve(files || []);
-                      }
-                    });
-                }, this.SECONDS_DELAY);
+                fs.readdir(path, (err, files)=> {
+                    if(err){
+                        console.log("Oops! a boo boo happened, filesystem wasn't ready:", err);
+                        reject([]);
+                    }else{
+                      resolve(files || []);
+                    }
+                  });
             });
         })
 
         return result;
-
     }
 
-    // public async getEntriesFromDirectoryAsync1(path:string):Promise<string[]>{
-    //     if (!path) {
-    //         console.error('getEntriesFromDirectoryAsync error: Path must not be empty');
-    //         return Promise.reject(new Error('Path must not be empty'));
-    //     }
-
-    //     await this.initBrowserFsAsync();
-
-    //     return new Promise<string[]>((resolve, reject) => {
-    //         const fs = this._fileSystem;
-    //         const interval = setInterval(() => {
-    //             fs.readdir(path, function(err, files) {
-    //               if(err){
-    //                   console.log("Oops! a boo boo happened, filesystem wasn't ready:", err);
-    //                   reject([]);
-    //               }else{
-    //                 clearInterval(interval);
-    //                 resolve(files || []);
-    //               }
-    //             });
-    //         }, this.SECONDS_DELAY);
-    //     });
-    // }
 
     public  getFileEntriesFromDirectory(fileList:string[], directory:string):FileEntry[]{
 
         for(let i = 0; i < fileList.length; i++){
             const  file = fileList[i];
-            const fileEntry = new FileEntry()
-            fileEntry.setName = basename(file, extname(file))
+            const fileEntry = new FileEntry();
+            fileEntry.setName = basename(file, extname(file));
             fileEntry.setPath = resolve(directory, file);
-            this._directoryFileEntires.push(fileEntry)
+            this._directoryFileEntires.push(fileEntry);
         }
         return this._directoryFileEntires;
     }
@@ -509,17 +458,16 @@ export class FileService{
 
 
     public async getShortCutFromB64DataUrlAsync(path:string):Promise<ShortCut> {
-        await this.initBrowserFsAsync();
 
         return new Promise((resolve, reject) =>{
-            this._fileSystem.readFile(path, (err, contents = Buffer.from('')) =>{
+            fs.readFile(path, (err, contents = Buffer.from('')) =>{
                 if(err){
                     console.log('getShortCutFromB64DataUrlAsync error:',err)
                     reject(err)
                 }
 
-                const encoding:BufferEncoding = 'utf8';
-                const stringData = contents.toString(encoding);
+ 
+                const stringData = contents.toString();
 
                 if(this.isUtf8Encoded(stringData)){
                     if(stringData.substring(0, 10) == 'data:image' || stringData.substring(0, 10) == 'data:video' || stringData.substring(0, 10) == 'data:audio'){
@@ -545,10 +493,9 @@ export class FileService{
     }
     
     public async getShortCutFromURLAsync(path:string):Promise<ShortCut>{
-        await this.initBrowserFsAsync();
 
         return new Promise<ShortCut>((resolve, reject) =>{
-            this._fileSystem.readFile(path, function(err, contents = Buffer.from('')){
+            fs.readFile(path, function(err, contents = Buffer.from('')){
                 if(err){
                     console.log('getShortCutAsync error:',err)
                     reject(new ShortCut('','','','',''));
@@ -568,8 +515,9 @@ export class FileService{
         });
     }
 
+
     public async writeFilesAsync(directory:string, files:File[]):Promise<boolean>{
-        await this.initBrowserFsAsync();
+       // await this.initZenFSAsync();
         return new Promise<boolean>((resolve, reject) =>{
             files.forEach((file)=>{
                 const fileReader = new FileReader()
@@ -577,12 +525,12 @@ export class FileService{
 
                 fileReader.onload = (evt) =>{
                     
-                    this._fileSystem.writeFile(`${directory}/${file.name}`,evt.target?.result, {flag: 'wx'}, (err) =>{  
+                    fs.writeFile(`${directory}/${file.name}`,evt.target?.result as FileContents, {flag: 'wx'}, (err) =>{  
                         if(err?.code === 'EEXIST' ){
                             console.log('writeFileAsync Error: file already exists',err);
     
                             const itrName = this.iterateFileName(`${directory}/${file.name}`);
-                            this._fileSystem.writeFile(itrName,evt.target?.result,(err) =>{  
+                            fs.writeFile(itrName,evt.target?.result as FileContents,(err) =>{  
                                 if(err){
                                     console.log('writeFileAsync Iterate Error:',err);
                                     reject(err);
@@ -600,14 +548,14 @@ export class FileService{
     }
 
     public async writeFileAsync(directory:string, file:FileInfo):Promise<boolean>{
-        await this.initBrowserFsAsync();
+       // await this.initZenFSAsync();
         return new Promise<boolean>((resolve, reject) =>{
-            this._fileSystem.writeFile(`${directory}/${file.getFileName}`, file.getContentPath, {flag: 'wx'}, (err) =>{  
+            fs.writeFile(`${directory}/${file.getFileName}`, file.getContentPath, {flag: 'wx'}, (err) =>{  
                 if(err?.code === 'EEXIST' ){
                     console.log('writeFileAsync Error: file already exists',err);
 
                     const itrName = this.iterateFileName(`${directory}/${file.getFileName}`);
-                    this._fileSystem.writeFile(itrName,file.getContentPath,(err) =>{  
+                    fs.writeFile(itrName,file.getContentPath,(err) =>{  
                         if(err){
                             console.log('writeFileAsync Iterate Error:',err);
                             reject(false);
@@ -622,53 +570,53 @@ export class FileService{
         });
     }
 
-    private async renameFileAsync_TBD(path:string, newFileName:string): Promise<boolean> {
-        await this.initBrowserFsAsync();
+    // private async renameFileAsync_TBD(path:string, newFileName:string): Promise<boolean> {
+    //     //await this.initBrowserFsAsync();
 
-       return new Promise<boolean>((resolve, reject) =>{
-            this._fileSystem.readFile(path,(err, contents = Buffer.from('')) =>{
-                if(err){
-                    console.log('getFile in renameFileAsync error:',err)
-                    reject(false)
-                }else{
-                    this._fileSystem.writeFile(`${dirname(path)}/${newFileName}${extname(path)}`,contents,(err)=>{  
-                        if(err){
-                            console.log('writeFile in renameFileAsync error:',err);
-                            reject(false);
-                        }else{
-                            this._fileSystem.unlink(path,(err) =>{
-                                if(err){
-                                    console.log('unlink file error:',err)
-                                    reject(err)
-                                }
-                                console.log('successfully unlinked')
-                                resolve(true);
-                            });
-                            console.log('successfully renamed')
-                            resolve(true);
-                        }
-                    });
-                    console.log('successfully fetched')
-                    resolve(true);
-                }
-            });
-        });
-    }
+    //    return new Promise<boolean>((resolve, reject) =>{
+    //         this._fileSystem.readFile(path,(err, contents = Buffer.from('')) =>{
+    //             if(err){
+    //                 console.log('getFile in renameFileAsync error:',err)
+    //                 reject(false)
+    //             }else{
+    //                 this._fileSystem.writeFile(`${dirname(path)}/${newFileName}${extname(path)}`,contents,(err)=>{  
+    //                     if(err){
+    //                         console.log('writeFile in renameFileAsync error:',err);
+    //                         reject(false);
+    //                     }else{
+    //                         this._fileSystem.unlink(path,(err) =>{
+    //                             if(err){
+    //                                 console.log('unlink file error:',err)
+    //                                 reject(err)
+    //                             }
+    //                             console.log('successfully unlinked')
+    //                             resolve(true);
+    //                         });
+    //                         console.log('successfully renamed')
+    //                         resolve(true);
+    //                     }
+    //                 });
+    //                 console.log('successfully fetched')
+    //                 resolve(true);
+    //             }
+    //         });
+    //     });
+    // }
 
     public async renameAsync(path:string, newFileName:string, isFile:boolean): Promise<boolean> {
-        await this.initBrowserFsAsync();
+       await this.initZenFSAsync();
 
         return new Promise<boolean>((resolve, reject) =>{
             let rename = ''; let type = ''
             if(isFile){  rename = `${dirname(path)}/${newFileName}${extname(path)}`; type = 'file';
             }else{ rename = `${dirname(path)}/${newFileName}`;  type = 'folder'; }
 
-            this._fileSystem.exists(`${rename}`, (err) =>{
+            fs.access(`${rename}`, (err) =>{
                  if(err){
                     console.log(`renameAsync Error: ${type} already exists`,err);
                     reject(false);
                  }else{
-                    this._fileSystem.rename(`${path}`,rename,(err) =>{  
+                    fs.rename(`${path}`,rename,(err) =>{  
                         if(err){
                             console.log(`renameAsync Error: ${type} rename`,err);
                             reject(false);
@@ -698,10 +646,10 @@ export class FileService{
     }
 
     public async setFolderValuesAsync(path: string):Promise<ShortCut>{
-        await this.initBrowserFsAsync();
+        //await this.initBrowserFsAsync();
 
         return new Promise<ShortCut>((resolve, reject) =>{
-            this._fileSystem.stat(path,(err, stats) =>{
+            fs.stat(path,(err, stats) =>{
                 if(err){
                     console.log('setFolderValuesAsync error:',err)
                     reject(new ShortCut('','','','',''));
@@ -719,6 +667,11 @@ export class FileService{
     private bufferToUrl(buffer:Buffer):string{
        return URL.createObjectURL(new Blob([new Uint8Array(buffer)]));
     }
+
+
+    private bufferToUrl2(arr:Uint8Array):string{
+        return URL.createObjectURL(new Blob([arr]));
+     }
 
     private uint8ToBase64(arr:Uint8Array):string{
         const base64String = btoa(String.fromCharCode(...new Uint8Array(arr)));

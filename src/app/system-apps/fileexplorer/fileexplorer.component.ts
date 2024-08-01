@@ -94,8 +94,8 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
   prevPathEntries:string[] = [];
   nextPathEntries:string[] = [];
   recentPathEntries:string[] = [];
-  upPathEntries:string[] = ['/osdrive/Desktop'];
-  _directoryHops:string[] = ['osdrive'];
+  upPathEntries:string[] = ['/Desktop'];
+  _directoryHops:string[] = ['This PC'];
   SECONDS_DELAY:number[] = [100, 1500, 6000, 12000, 250];
   
   defaultviewOption = ViewOptions.MEDIUM_ICON_VIEW;
@@ -116,7 +116,7 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
   searchForm!: FormGroup;
 
   searchHistory =['Java','ProgramFile', 'Perenne'];
-  pathHistory =['/osdrive/icons','/osdrive/Games', '/osdrive/Videos'];
+  pathHistory =['/icons','/Games', '/Videos'];
 
   menuData = [
     {icon:'', label: 'Open', action: this.onTriggerRunProcess.bind(this) },
@@ -142,7 +142,7 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
   name = 'fileexplorer';
   processId = 0;
   type = ComponentType.System;
-  directory ='/osdrive/';
+  directory ='/';
   displayName = 'fileexplorer';
 
 
@@ -203,7 +203,7 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
     this.changeTabLayoutIconCntnrCSS(this.currentViewOptionId,false);
 
     this.pathForm.setValue({
-      pathInput: (this.directory !== '/osdrive/')? this.directory : '/osdrive/'
+      pathInput: (this.directory !== '/')? this.directory : '/'
     })
   
     await this.loadFilesInfoAsync().then(()=>{
@@ -673,28 +673,31 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
   }
 
   setNavPathIcon(fileName:string, directory:string){
-    if(fileName === 'Desktop' && directory === '/osdrive/Desktop'){
+
+    console.log(`fileexplorer - setNavPathIcon: fileName:${fileName} -----  directory:${directory}`)
+
+    if(fileName === 'Desktop' && directory === '/Desktop'){
       this.navPathIcon = 'osdrive/icons/desktop.ico';
     }
-    else if(fileName === 'Documents' && directory === '/osdrive/Documents'){
+    else if(fileName === 'Documents' && directory === '/Documents'){
       this.navPathIcon = 'osdrive/icons/documents.ico';
     }
-    else if(fileName === 'Downloads' && directory === '/osdrive/Downloads'){
+    else if(fileName === 'Downloads' && directory === '/Downloads'){
       this.navPathIcon = 'osdrive/icons/downloads.png';
     }
-    else if(fileName === 'Music' && directory === '/osdrive/Music'){
+    else if(fileName === 'Music' && directory === '/Music'){
       this.navPathIcon = 'osdrive/icons/music.png';
     }
-    else if(fileName === 'Pictures' && directory === '/osdrive/Pictures'){
+    else if(fileName === 'Pictures' && directory === '/Pictures'){
       this.navPathIcon = 'osdrive/icons/pictures.ico';
     }
-    else if(fileName === 'Videos' && directory === '/osdrive/Videos'){
+    else if(fileName === 'Videos' && directory === '/Videos'){
       this.navPathIcon = 'osdrive/icons/video.ico';
     }
-    else if(fileName === 'Games' && directory === '/osdrive/Games'){
+    else if(fileName === 'Games' && directory === '/Games'){
       this.navPathIcon = 'osdrive/icons/games.ico';
     }
-    else if((fileName === 'fileexplorer' && directory === '/osdrive/') || fileName === 'osdrive' && directory === '/osdrive/'){
+    else if((fileName === 'fileexplorer' && directory === '/') || fileName === '' && directory === '/'){
       this.navPathIcon = 'osdrive/icons/my_computer.ico';
     }else{
       this.navPathIcon = 'osdrive/icons/folder.ico';
@@ -1133,9 +1136,9 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
       pathTxtBoxElement.style.display = 'block';
 
       if(this.showPathHistory){
-        if(this.directory === '/osdrive/'){
+        if(this.directory === '/'){
           this.pathForm.setValue({
-            pathInput:'osdrive'
+            pathInput:'/'
           })
         }
       }else{

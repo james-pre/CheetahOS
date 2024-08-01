@@ -69,7 +69,7 @@ export class FileManagerComponent implements BaseComponent, OnInit, AfterViewIni
   processId = 0;
   type = ComponentType.System;
   displayName = '';
-  directory ='/osdrive/Desktop';
+  directory ='/Desktop';
   files:FileInfo[] = [];
 
   menuData = [
