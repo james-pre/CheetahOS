@@ -122,6 +122,8 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
     {icon:'', label: 'Open', action: this.onTriggerRunProcess.bind(this) },
     {icon:'', label: 'Open in new window', action: this.doNothing.bind(this) },
     {icon:'', label: 'Pin to Start', action: this.doNothing.bind(this) },
+    {icon:'', label: 'Cut', action: this.doNothing.bind(this) },
+    {icon:'', label: 'Copy', action: this.doNothing.bind(this) },
     {icon:'', label: 'Delete', action: this.onDeleteFile.bind(this) },
     {icon:'', label: 'Rename', action: this.onRenameFileTxtBoxShow.bind(this) },
     {icon:'', label: 'Properties', action: this.doNothing.bind(this) }

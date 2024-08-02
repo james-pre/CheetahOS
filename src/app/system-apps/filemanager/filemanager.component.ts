@@ -76,6 +76,8 @@ export class FileManagerComponent implements BaseComponent, OnInit, AfterViewIni
     {icon:'', label: 'Open', action: this.onTriggerRunProcess.bind(this) },
     {icon:'', label: 'Pin to Start', action: this.doNothing.bind(this) },
     {icon:'', label: 'Pin to Taskbar', action: this.pinIconToTaskBar.bind(this) },
+    {icon:'', label: 'Cut', action: this.onCopy.bind(this) },
+    {icon:'', label: 'Copy', action: this.onCut.bind(this) },
     {icon:'', label: 'Delete', action: this.onDeleteFile.bind(this) },
     {icon:'', label: 'Rename', action: this.onRenameFileTxtBoxShow.bind(this) },
     {icon:'', label: 'Properties', action: this.doNothing.bind(this) }
@@ -216,6 +218,14 @@ export class FileManagerComponent implements BaseComponent, OnInit, AfterViewIni
   }
 
   doNothing():void{
+    console.log('do nothing called');
+  }
+
+  onCopy():void{
+    console.log('do nothing called');
+  }
+
+  onCut():void{
     console.log('do nothing called');
   }
 

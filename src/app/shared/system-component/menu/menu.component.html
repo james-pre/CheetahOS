@@ -13,9 +13,9 @@
             <span class="span dm-tail"> <figure class="dm-fig-cntxt-menu"> </figure> </span>
         </div>
 
-        <div class="dm-empty-line-container" *ngIf="i === 2 || i === 4"></div>
-        <div class="dm-line-container" *ngIf="i === 2 || i === 4"><div class="dm-line"></div></div>
-        <div class="dm-empty-line-container" *ngIf="i === 2 || i === 4"></div>
+        <div class="dm-empty-line-container" *ngIf="i === 2 || i === 4 || i === 6"></div>
+        <div class="dm-line-container" *ngIf="i === 2 || i === 4 || i === 6"><div class="dm-line"></div></div>
+        <div class="dm-empty-line-container" *ngIf="i === 2 || i === 4 || i === 6"></div>
     </div>
 
     <div class="dm-empty-line-container"></div>
@@ -44,17 +44,32 @@
     <div class="dm-dsktp-empty-line-container"></div>
 
     <div class="dm-dsktp-vertical-sub-menu" *ngFor="let menuItem of desktopMenu" >
-      <div class="dm-dsktp-vertical-menu-item" (click)="onMenuItemClick(menuItem.action)">
+
+      <div  *ngIf="menuItem.label !== paste" class="dm-dsktp-vertical-menu-item" (click)="onMenuItemClick(menuItem.action)">
         <div class="dm-dsktp-head"><figure class="dm-dsktp-figure"><img *ngIf="menuItem.icon1" class="dm-dsktp-img" [src]="menuItem.icon1"/></figure></div>
         <div class="dm-dsktp-mid"><p class="dm-dsktp-p"> {{menuItem.label}}</p></div>
         <div class="dm-dsktp-tail"><figure class="dm-dsktp-figure"> <img *ngIf="menuItem.icon2" class="dm-dsktp-img" [src]="menuItem.icon2"/></figure></div>
       </div>
+
+      <div  *ngIf="menuItem.label === paste  && isPasteActive" class="dm-dsktp-vertical-menu-item" (click)="onMenuItemClick(menuItem.action)">
+        <div class="dm-dsktp-head"><figure class="dm-dsktp-figure"><img *ngIf="menuItem.icon1" class="dm-dsktp-img" [src]="menuItem.icon1"/></figure></div>
+        <div class="dm-dsktp-mid"><p class="dm-dsktp-p"> {{menuItem.label}}</p></div>
+        <div class="dm-dsktp-tail"><figure class="dm-dsktp-figure"> <img *ngIf="menuItem.icon2" class="dm-dsktp-img" [src]="menuItem.icon2"/></figure></div>
+      </div>
+
+
+      <div  *ngIf="menuItem.label === paste  && !isPasteActive" class="dm-dsktp-vertical-menu-item turnOffHoverEffect ">
+        <div class="dm-dsktp-head"><figure class="dm-dsktp-figure"><img *ngIf="menuItem.icon1" class="dm-dsktp-img" [src]="menuItem.icon1"/></figure></div>
+        <div class="dm-dsktp-mid-disabled"><p class="dm-dsktp-p"> {{menuItem.label}}</p></div>
+        <div class="dm-dsktp-tail"><figure class="dm-dsktp-figure"> <img *ngIf="menuItem.icon2" class="dm-dsktp-img" [src]="menuItem.icon2"/></figure></div>
+      </div>
+
+
       <div  *ngIf="menuItem.nest.length" class="dm-dsktp-vertical-sub-menu-content" >
         <div class="dm-dsktp-empty-line-container"></div>
           <div *ngFor="let item of menuItem.nest" (click)="onMenuItemClick(item.action)">
             <div class="dm-dsktp-vertical-menu-item">
               <div class="dm-dsktp-head"><figure [ngClass]=" item.styleOption === 'A' ?'dm-dsktp-figure-alt' : 'dm-dsktp-figure-alt2'">
-
                                           <img *ngIf="item.variables" [ngClass]=" item.styleOption === 'A' ?'dm-dsktp-img-alt' : 'dm-dsktp-img-alt2' " [src]="item.icon"/>
                                         </figure>
               </div>

@@ -19,5 +19,6 @@ export class MenuService{
     hideTaskBarMenu: Subject<void> = new Subject<void>();
     keepTaskBarMenu: Subject<void> = new Subject<void>();
     hideContextMenus: Subject<void> = new Subject<void>();
+    storeData: Subject<string[]> = new Subject<string[]>();
 
 }

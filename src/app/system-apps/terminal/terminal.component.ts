@@ -256,7 +256,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       }
 
       //console.log('rootArg:',rootArg);
-      if(rootCmd == "cd"){
+      if(rootCmd == "cd" || rootCmd == "rm"){
         rootArg  =  cmdStringArr[1];
         this.isWhiteSpaceAtTheEnd = this.checkForWhitSpaceAtTheEnd(cmdString);
         console.log('Has-White-Space-At-The- sEnd:', this.isWhiteSpaceAtTheEnd);
@@ -266,31 +266,34 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
           this.terminalForm.setValue({terminalCmd:`${rootCmd} ${whiteSpace}`});
         }
 
-        await this.handleChangeDirectoryRequest(cmdString,rootCmd,rootArg);
-      }else if(rootCmd == "cp"){
-        const option = cmdStringArr[1];
-        const source = cmdStringArr[2];
-        const destination = cmdStringArr[3];
+        //await this.handleChangeDirectoryRequest(cmdString,rootCmd,rootArg);
+      }else if(rootCmd == "cp" || rootCmd == "mv"){
+        const optionA = cmdStringArr[1];
+        const optionB = cmdStringArr[2];
+        const source = cmdStringArr[3];
+        const destination = cmdStringArr[4];
 
+        //this.shiftRight(rootCmd,optionA,optionB,source,destination);
+        
+        //await this.handleChangeDirectoryRequest(cmdString,rootCmd,rootArg);
       } else{
-        // if(!this.generatedArguments.includes(rootArg)){
-        //   const autoCmpltReslt = this.getAutoCompelete(rootArg, this.generatedArguments);
-        //   if(autoCmpltReslt.length === 1){
-        //     this.terminalForm.setValue({terminalCmd: `${rootCmd} ${autoCmpltReslt[0]}`});
-        //   }else{
-        //     const terminalCommand = new TerminalCommand(cmdString, 0, " ");
-        //     terminalCommand.setResponseCode = this.Options;
-        //     terminalCommand.setCommandOutput = autoCmpltReslt.join(" ");
-        //     this.commandHistory.push(terminalCommand);
-        //   }
-        // }
+        if(!this.generatedArguments.includes(rootArg)){
+          const autoCmpltReslt = this.getAutoCompelete(rootArg, this.generatedArguments);
+          if(autoCmpltReslt.length === 1){
+            this.terminalForm.setValue({terminalCmd: `${rootCmd} ${autoCmpltReslt[0]}`});
+          }else{
+            const terminalCommand = new TerminalCommand(cmdString, 0, " ");
+            terminalCommand.setResponseCode = this.Options;
+            terminalCommand.setCommandOutput = autoCmpltReslt.join(" ");
+            this.commandHistory.push(terminalCommand);
+          }
+        }
       }
       evt.preventDefault();
     }else{
       this.isInLoopState = false;
     }
   }
-
 
   async handleChangeDirectoryRequest(cmdString:string, rootCmd:string, rootArg:string):Promise<void>{
     if(rootArg !== undefined && rootArg.length > 0 && !rootArg.includes(" ")){
@@ -353,7 +356,6 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
     }
   }
 
-
   loopThroughDirectory(rootCmd:string, rootArg:string,  alteredRootArg:string):void{
 
     //const cnt = this.countSlashes(rootArg);
@@ -376,12 +378,6 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       this.numCntr = 0;
     }
   }
-
-  countSlashes(input: string): number {
-    const matches = input.match(/\//g);
-    return matches ? matches.length : 0;
-  }
-
 
   evaluateChangeDirectoryRequest(cmdString:string, rootCmd:string, rootArg:string, alteredRootArg:string):boolean{
     console.log('ecdr-cmdString:',cmdString);
@@ -476,6 +472,69 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
   checkForWhitSpaceAtTheEnd(arg0:string):boolean {
     const whitespaceChars = [' ', '\t', '\n'];
     return whitespaceChars.some(char => arg0.slice(-1).includes(char));
+  }
+
+  countSlashes(input: string): number {
+    const matches = input.match(/\//g);
+    return matches ? matches.length : 0;
+  }
+
+
+
+  shiftRight(...params:string[]):void{
+
+    const noUndefineds = params.filter(x => x !==undefined);
+    console.log(`params:${noUndefineds}`);
+
+    //get rootCmd
+    const rootCmd = noUndefineds[0];
+    let optionA = undefined;
+    let optionB = undefined
+    let src = undefined;
+    let dest = undefined
+    noUndefineds.shift();
+
+    for(const el of noUndefineds){
+      if(this.isOption(el)){
+        if(!optionA  && !optionB){
+          optionA = el;
+        }else if(optionA && !optionB){
+          optionB = el;
+        }
+      }else{
+        if(!src  && !dest){
+          src = el;
+        }else if(src && !dest){
+          dest = el;
+        }
+      }
+
+    }
+
+    console.log(`After --- optA:${optionA} optB:${optionB} src:${src} dest:${dest}`)
+
+
+  }
+
+  // shiftRight(arg0:string, arg1:any, arg2:any, arg3:any, arg4:any):void{
+
+  //   //rootCmd
+  //   if(arg0 === "cp"){
+
+  //     if(arg1 === undefined || arg2 === undefined || arg3 === undefined || arg4 === undefined){
+
+  //       console.log(`Before --- arg1:${arg1} arg2:${arg2} arg3:${arg3} arg4:${arg4}`)
+  //       arg4 = arg3; arg3 = arg2; arg2 = arg1;
+
+  //       arg1 = undefined
+  //     }
+  //   }
+
+  // }
+
+  isOption(arg0:string):boolean{
+    const firstChar = arg0[0];
+    return (firstChar === '-')? true : false;
   }
 
   getCommandHistory(direction:string):void{
