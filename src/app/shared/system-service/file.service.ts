@@ -110,20 +110,21 @@ export class FileService{
         })
     }
 
-    public async copyFileAsync(sourcepath:string, destinationpath:string):Promise<boolean>{
-
-        const fileName = this.getFileName(sourcepath);
+    public async copyFileAsync(sourcePath:string, destinationPath:string):Promise<boolean>{
+        const fileName = this.getFileName(sourcePath);
+        console.log(`Destination: ${destinationPath}/${fileName}`);
         return new Promise<boolean>((resolve, reject) =>{
-             fs.readFile(sourcepath,(err, contents = Buffer.from('')) =>{
+             fs.readFile(sourcePath,(err, contents = Buffer.from('')) =>{
                 if(err){
                     console.log('copyFileAsync error:',err)
                     reject(false)
                 }else{
-                    fs.writeFile(`${destinationpath}/${fileName}`, contents, {flag: 'wx'}, (err) =>{  
+                    fs.writeFile(`${destinationPath}/${fileName}`, contents, {flag: 'wx'}, (err) =>{  
                         if(err?.code === 'EEXIST' ){
                             console.log('copyFileAsync Error: file already exists',err);
         
-                            const itrName = this.iterateFileName(`${destinationpath}/${fileName}`);
+                            // if file exists, increment it simple.txt, simple(1).txt ...
+                            const itrName = this.iterateFileName(`${destinationPath}/${fileName}`);
                             fs.writeFile(itrName,contents,(err) =>{  
                                 if(err){
                                     console.log('copyFileAsync Iterate Error:',err);
@@ -132,7 +133,8 @@ export class FileService{
                                 resolve(true);
                             });
                         }else{
-                            this._fileExistsMap.set(`${destinationpath}/${fileName}`,0);
+                            console.log('copyFileAsync Error:',err);
+                            this._fileExistsMap.set(`${destinationPath}/${fileName}`,0);
                             resolve(true);
                         }
                     });
@@ -140,6 +142,7 @@ export class FileService{
             });
         });
     }
+
 
     public async copyFilesAsync(sourcepaths:string[], destinationpath:string):Promise<boolean>{
 
@@ -306,6 +309,7 @@ export class FileService{
                         console.log("Oops! a boo boo happened, filesystem wasn't ready:", err);
                         reject([]);
                     }else{
+                     console.log(`${path}  contents`, files);
                       resolve(files || []);
                     }
                   });
@@ -542,7 +546,6 @@ export class FileService{
     }
 
     public async writeFileAsync(directory:string, file:FileInfo):Promise<boolean>{
-
         return new Promise<boolean>((resolve, reject) =>{
             fs.writeFile(`${directory}/${file.getFileName}`, file.getContentPath, {flag: 'wx'}, (err) =>{  
                 if(err?.code === 'EEXIST' ){

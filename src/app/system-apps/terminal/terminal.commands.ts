@@ -493,7 +493,7 @@ ${(file.getIsFile)? '-':'d'}${this.addspaces(strPermission,10)} ${this.addspaces
                     return `folder: ${arg0} successfully created`;
                 }
 
-                this.sendDirectoryUpdateNotification();
+                this.sendDirectoryUpdateNotification(this.currentDirectoryPath);
             }
         }else{
             return `
@@ -520,7 +520,13 @@ usage: mkdir direcotry_name [-v]
         folderQueue.push(sourceArg);
         const result =  await this.mvhandler(destinationArg, folderQueue);
         if(result){
-            this.sendDirectoryUpdateNotification();
+
+            if(destinationArg.includes('/Desktop')){
+                this.sendDirectoryUpdateNotification(sourceArg);
+                this.sendDirectoryUpdateNotification(destinationArg);
+            }
+            else
+                this.sendDirectoryUpdateNotification(sourceArg);
         }
 
         return ''
@@ -573,9 +579,9 @@ usage: mkdir direcotry_name [-v]
 
     async cp(optionArg:any, sourceArg:string, destinationArg:string):Promise<string>{
 
-        console.log(`source ${optionArg}`);
-        console.log(`source ${sourceArg}`);
-        console.log(`destination ${destinationArg}`);
+        console.log(`copy-source ${optionArg}`);
+        console.log(`copy-destination ${sourceArg}`);
+        //console.log(`destination ${destinationArg}`);
 
         const folderQueue:string[] = []
         if(destinationArg === undefined){
@@ -629,7 +635,7 @@ Mandatory argument to long options are mandotory for short options too.
                 //const result = await this.cp_dir_handler(optionArg,destinationArg, folderQueue);
                 const result = await this.cpHandler(optionArg,sourceArg, destinationArg);
                 if(result){
-                    this.sendDirectoryUpdateNotification();
+                    this.sendDirectoryUpdateNotification(destinationArg);
                 }
             }
         }else{
@@ -637,7 +643,7 @@ Mandatory argument to long options are mandotory for short options too.
             //const result = await this.cp_file_handler(sourceArg,destinationArg);
             const result = await this.cpHandler(optionArg,sourceArg, destinationArg);
             if(result){
-                this.sendDirectoryUpdateNotification();
+                this.sendDirectoryUpdateNotification(destinationArg);
             }
         }        
         return '';
@@ -682,7 +688,6 @@ Mandatory argument to long options are mandotory for short options too.
 
         return true
     }
-
 
     async rm(optionArg:any, sourceArg:string):Promise<string>{
 
@@ -731,14 +736,14 @@ Mandatory argument to long options are mandotory for short options too.
                 folderQueue.push(sourceArg);
                 const result = await this.rmHandler(optionArg,sourceArg);
                 if(result){
-                    this.sendDirectoryUpdateNotification();
+                    this.sendDirectoryUpdateNotification(sourceArg);
                 }
             }
         }else{
             // just copy regular file
             const result = await this.rmHandler(sourceArg,sourceArg);
             if(result){
-                this.sendDirectoryUpdateNotification();
+                this.sendDirectoryUpdateNotification(sourceArg);
             }
         }        
         return '';
@@ -787,8 +792,8 @@ Mandatory argument to long options are mandotory for short options too.
         return `${basename(path, extname(path))}${ extname(path)}`;
     }
 
-    private sendDirectoryUpdateNotification():void{
-        if(this.currentDirectoryPath.includes('/Desktop')){
+    private sendDirectoryUpdateNotification(arg0:string):void{
+        if(arg0.includes('/Desktop')){
             this._fileService.addEventOriginator('filemanager');
         }else{
             this._fileService.addEventOriginator('fileexplorer');
