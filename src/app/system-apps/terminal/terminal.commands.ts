@@ -504,9 +504,72 @@ usage: mkdir direcotry_name [-v]
         return '';
     }
 
-    async mv(arg0:string, arg1:string):Promise<void>{
-        1
+    async mv(sourceArg:string, destinationArg:string):Promise<string>{
+
+        console.log(`sourceArg:${sourceArg}`);
+        console.log(`destinationArg:${destinationArg}`);
+
+        const folderQueue:string[] =  [];
+
+        if(sourceArg === undefined || sourceArg.length === 0)
+            return 'source path required';
+
+        if(destinationArg === undefined || destinationArg.length === 0)
+            return 'destination path required';
+
+        folderQueue.push(sourceArg);
+        const result =  await this.mvhandler(destinationArg, folderQueue);
+        if(result){
+            this.sendDirectoryUpdateNotification();
+        }
+
+        return ''
     }
+
+    private async mvhandler(destinationArg:string, folderQueue:string[]):Promise<boolean>{
+
+        if(folderQueue.length === 0)
+            return true;
+
+        const sourcePath = folderQueue.shift() || '';
+        const folderName = this.getFileName(sourcePath);
+
+
+        const checkIfDirResult = await this._fileService.checkIfDirectory(`${sourcePath}`);
+
+        if(checkIfDirResult){
+            const loadedDirectoryEntries = await this._fileService.getEntriesFromDirectoryAsync(sourcePath);
+            const  moveFolderResult = await this._fileService.moveAsync(sourcePath, destinationArg, false);
+            if(moveFolderResult){
+                for(const directoryEntry of loadedDirectoryEntries){
+                    const checkIfDirResult = await this._fileService.checkIfDirectory(`${sourcePath}/${directoryEntry}`);
+                    if(checkIfDirResult){
+                        folderQueue.push(`${sourcePath}/${directoryEntry}`);
+                    }else{
+                        const result = await this._fileService.moveAsync(`${sourcePath}/${directoryEntry}`, `${destinationArg}/${folderName}`, true);
+                        if(result){
+                            console.log(`file:${sourcePath}/${directoryEntry} successfully moved to destination:${destinationArg}/${folderName}`);
+                        }else{
+                            console.log(`file:${sourcePath}/${directoryEntry} failed to move to destination:${destinationArg}/${folderName}`)
+                        }
+                    }
+                }
+            }else{
+                console.log(`folder:${destinationArg}/${folderName}  creation failed`);
+                return false;
+            }
+        }else{
+            const result = await this._fileService.moveAsync(`${sourcePath}`,`${destinationArg}`, true);
+            if(result){
+                console.log(`file:${sourcePath} successfully moved to destination:${destinationArg}`);
+            }else{
+                console.log(`file:${sourcePath} failed to move to destination:${destinationArg}`)
+            }
+        }
+
+        return this.mvhandler(`${destinationArg}/${folderName}`, folderQueue);
+    }
+
 
     async cp(optionArg:any, sourceArg:string, destinationArg:string):Promise<string>{
 

@@ -13,6 +13,7 @@ import { FileManagerService } from 'src/app/shared/system-service/file.manager.s
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { MenuService } from 'src/app/shared/system-service/menu.services';
 
+
 @Component({
   selector: 'cos-filemanager',
   templateUrl: './filemanager.component.html',
@@ -76,8 +77,8 @@ export class FileManagerComponent implements BaseComponent, OnInit, AfterViewIni
     {icon:'', label: 'Open', action: this.onTriggerRunProcess.bind(this) },
     {icon:'', label: 'Pin to Start', action: this.doNothing.bind(this) },
     {icon:'', label: 'Pin to Taskbar', action: this.pinIconToTaskBar.bind(this) },
-    {icon:'', label: 'Cut', action: this.onCopy.bind(this) },
-    {icon:'', label: 'Copy', action: this.onCut.bind(this) },
+    {icon:'', label: 'Cut', action: this.onCut.bind(this) },
+    {icon:'', label: 'Copy', action: this.onCopy.bind(this) },
     {icon:'', label: 'Delete', action: this.onDeleteFile.bind(this) },
     {icon:'', label: 'Rename', action: this.onRenameFileTxtBoxShow.bind(this) },
     {icon:'', label: 'Properties', action: this.doNothing.bind(this) }
@@ -222,11 +223,16 @@ export class FileManagerComponent implements BaseComponent, OnInit, AfterViewIni
   }
 
   onCopy():void{
-    console.log('do nothing called');
+    const action = 'copy';
+    const result = this.selectedFile.getCurrentPath;
+    this._menuService.storeData.next([result, action]);
   }
 
   onCut():void{
-    console.log('do nothing called');
+    const action = 'copy';
+    const action1 = 'remove';
+    const result = this.selectedFile.getCurrentPath;
+    this._menuService.storeData.next([result, action, action1]);
   }
 
   pinIconToTaskBar():void{

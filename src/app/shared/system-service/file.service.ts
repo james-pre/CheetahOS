@@ -315,7 +315,6 @@ export class FileService{
         return result;
     }
 
-
     public  getFileEntriesFromDirectory(fileList:string[], directory:string):FileEntry[]{
 
         for(let i = 0; i < fileList.length; i++){
@@ -367,7 +366,7 @@ export class FileService{
                 this._fileInfo.setMode = fileMetaData.getMode;
             }
              else if(this._consts.IMAGE_FILE_EXTENSIONS.includes(extension)){    
-                const sc = await this.getShortCutFromB64DataUrlAsync(path);
+                const sc = await this.getShortCutFromB64DataUrlAsync(path,'image');
                 this._fileInfo.setIconPath = sc.getIconPath;
                 this._fileInfo.setCurrentPath = path;
                 this._fileInfo.setContentPath = sc.getContentPath;
@@ -379,7 +378,7 @@ export class FileService{
                 this._fileInfo.setMode = fileMetaData.getMode;
             }
             else if(this._consts.VIDEO_FILE_EXTENSIONS.includes(extension)){    
-                const sc = await this.getShortCutFromB64DataUrlAsync(path);
+                const sc = await this.getShortCutFromB64DataUrlAsync(path, 'video');
                 this._fileInfo.setIconPath = '/osdrive/icons/video_file.ico';
                 this._fileInfo.setCurrentPath = path;
                 this._fileInfo.setContentPath = sc.getContentPath;
@@ -390,7 +389,7 @@ export class FileService{
                 this._fileInfo.setSize = fileMetaData.getSize;
                 this._fileInfo.setMode = fileMetaData.getMode;
             }else if(this._consts.AUDIO_FILE_EXTENSIONS.includes(extension)){    
-                const sc = await this.getShortCutFromB64DataUrlAsync(path);
+                const sc = await this.getShortCutFromB64DataUrlAsync(path, 'audio');
                 this._fileInfo.setIconPath = '/osdrive/icons/music_file.ico';
                 this._fileInfo.setCurrentPath = path;
                 this._fileInfo.setContentPath = sc.getContentPath;
@@ -451,7 +450,7 @@ export class FileService{
     }
 
 
-    public async getShortCutFromB64DataUrlAsync(path:string):Promise<ShortCut> {
+    public async getShortCutFromB64DataUrlAsync(path:string, contentType:string):Promise<ShortCut> {
 
         return new Promise((resolve, reject) =>{
             fs.readFile(path, (err, contents = Buffer.from('')) =>{
@@ -460,9 +459,7 @@ export class FileService{
                     reject(err)
                 }
 
- 
                 const stringData = contents.toString();
-
                 if(this.isUtf8Encoded(stringData)){
                     if(stringData.substring(0, 10) == 'data:image' || stringData.substring(0, 10) == 'data:video' || stringData.substring(0, 10) == 'data:audio'){
 
@@ -477,10 +474,14 @@ export class FileService{
                         else
                             resolve(new ShortCut('', basename(path, extname(path)),'',fileUrl,''));
                     }else{
-                        resolve(new ShortCut(path, basename(path, extname(path)),'',basename(path, extname(path)),''));
+                        const fileUrl = this.bufferToUrl2(contents)
+                        if(contentType === 'image')
+                            resolve(new ShortCut(fileUrl, basename(path, extname(path)),'',fileUrl,''));
+                        else
+                            resolve(new ShortCut('', basename(path, extname(path)),'',fileUrl,''));
                     }
                 }else{
-                    resolve(new ShortCut(stringData, basename(path, extname(path)),'',stringData,''));
+                    resolve(new ShortCut('', basename(path, extname(path)),'',this.bufferToUrl2(contents),''));
                 }
             });
         });
@@ -508,7 +509,6 @@ export class FileService{
             });
         });
     }
-
 
     public async writeFilesAsync(directory:string, files:File[]):Promise<boolean>{
 
@@ -564,7 +564,91 @@ export class FileService{
         });
     }
 
-    // private async renameFileAsync_TBD(path:string, newFileName:string): Promise<boolean> {
+    public async renameAsync(path:string, newFileName:string, isFile:boolean): Promise<boolean> {
+ 
+        return new Promise<boolean>((resolve, reject) =>{
+            let rename = ''; let type = ''
+            if(isFile){  rename = `${dirname(path)}/${newFileName}${extname(path)}`; type = 'file';
+            }else{ rename = `${dirname(path)}/${newFileName}`;  type = 'folder'; }
+
+            fs.exists(`${rename}`, (err) =>{
+                 if(err){
+                    console.log(`renameAsync Error: ${type} already exists`,err);
+                    reject(false);
+                 }else{
+                    fs.rename(`${path}`,rename,(err) =>{  
+                        if(err){
+                            console.log(`renameAsync Error: ${type} rename`,err);
+                            reject(false);
+                        }
+                        resolve(true);
+                    });
+                 }
+              });
+        });
+    }
+
+
+    //virtual filesystem, use copy and then delete
+    public async moveAsync(currentPath:string, newPath:string, isFile:boolean): Promise<boolean> {
+ 
+        return new Promise<boolean>((resolve, reject) =>{
+            let rename = ''; let type = ''
+            if(isFile){  
+                const fileName = this.getFileName(currentPath)
+                rename = `${newPath}/${fileName}`; type = 'file';
+            }else{ 
+                const fileName = this.getFileName(currentPath)
+                rename = `${newPath}/${fileName}`;  type = 'folder'; 
+            }
+
+
+            console.log(`currentPath: ${currentPath}`);
+            console.log(`newPath: ${newPath}`);
+            console.log(`rename:${rename}`);
+
+            fs.readFile(currentPath, (err, contents = Buffer.from('')) =>{
+                if(err){
+                    console.log('getFile in moveAsync error:',err)
+                    reject(false)
+                }else{
+                    fs.writeFile(`${rename}`, contents,(err)=>{  
+                        if(err){
+                            console.log('writeFile in moveAsync error:',err);
+                            reject(false);
+                        }else{
+                            if(isFile){
+                                fs.unlink(currentPath,(err) =>{
+                                    if(err){
+                                        console.log('unlink file error:',err)
+                                        reject(err)
+                                    }
+                                    console.log('successfully unlinked')
+                                    resolve(true);
+                                });
+                            }else{
+                                fs.rmdir(currentPath,(err) =>{  
+                                    if(err){
+                                        console.log('moveAsync Error: folder delete failed',err);
+                                        reject(false);
+                                    }
+                                    console.log('successfully deleted')
+                                    resolve(true);
+                                });
+                            }
+                            console.log('successfully renamed')
+                            resolve(true);
+                        }
+                    });
+                    console.log('successfully fetched')
+                    resolve(true);
+                }
+            });
+        });
+    }
+
+
+    //     private async renameFileAsync_TBD(path:string, newFileName:string): Promise<boolean> {
     //     //await this.initBrowserFsAsync();
 
     //    return new Promise<boolean>((resolve, reject) =>{
@@ -596,30 +680,6 @@ export class FileService{
     //         });
     //     });
     // }
-
-    public async renameAsync(path:string, newFileName:string, isFile:boolean): Promise<boolean> {
- 
-        return new Promise<boolean>((resolve, reject) =>{
-            let rename = ''; let type = ''
-            if(isFile){  rename = `${dirname(path)}/${newFileName}${extname(path)}`; type = 'file';
-            }else{ rename = `${dirname(path)}/${newFileName}`;  type = 'folder'; }
-
-            fs.exists(`${rename}`, (err) =>{
-                 if(err){
-                    console.log(`renameAsync Error: ${type} already exists`,err);
-                    reject(false);
-                 }else{
-                    fs.rename(`${path}`,rename,(err) =>{  
-                        if(err){
-                            console.log(`renameAsync Error: ${type} rename`,err);
-                            reject(false);
-                        }
-                        resolve(true);
-                    });
-                 }
-              });
-        });
-    }
 
 
     public iterateFileName(path:string):string{

@@ -363,7 +363,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
         onload:()=>{
           const duration =audioPlayer.duration();
           this.duration = this.formatTime(duration);
-          this.track = basename(this.audioSrc, extname(this.audioSrc))
+          this.track = this._fileInfo.getFileName;
           resolve(audioPlayer);
         },
         onseek:()=>{
@@ -380,7 +380,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
   loadHowlPlayListObjectAsync(): Promise<any> {
 
     return new Promise<any>((resolve, reject) => { 
-      this.track = basename(this.audioSrc, extname(this.audioSrc))
+      this.track = this._fileInfo.getFileName;
       const ext = extname(this.audioSrc)
 
       const audioPlayer = new Howl({
@@ -453,7 +453,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
     }else if(this.checkForExt(pathOne,pathTwo)){
       audioSrc = '/' + this._fileInfo.getContentPath;
     }else{
-      audioSrc =  this._fileInfo.getCurrentPath;
+      audioSrc = this._fileInfo.getCurrentPath;
     }
     return audioSrc;
   }

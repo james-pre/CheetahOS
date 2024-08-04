@@ -20,6 +20,7 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
 import { Constants } from 'src/app/system-files/constants';
 import * as htmlToImage from 'html-to-image';
 import { TaskBarPreviewImage } from '../taskbarpreview/taskbar.preview';
+import { MenuService } from 'src/app/shared/system-service/menu.services';
 
 @Component({
   selector: 'cos-fileexplorer',
@@ -40,6 +41,7 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
   private _triggerProcessService:TriggerProcessService;
   private _stateManagmentService: StateManagmentService;
   private _sessionManagmentService: SessionManagmentService;
+  private _menuService:MenuService;
   private _formBuilder;
   private _appState!:AppState;
   private _consts:Constants = new Constants();
@@ -150,13 +152,15 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
 
 
   constructor(processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, triggerProcessService:TriggerProcessService, 
-              fileManagerService:FileManagerService, formBuilder: FormBuilder, stateManagmentService:StateManagmentService, sessionManagmentService:SessionManagmentService ) { 
+              fileManagerService:FileManagerService, formBuilder: FormBuilder, stateManagmentService:StateManagmentService, sessionManagmentService:SessionManagmentService,        
+              menuService:MenuService ) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this._fileService = fileInfoService;
     this._triggerProcessService = triggerProcessService;
     this._stateManagmentService = stateManagmentService;
     this._sessionManagmentService = sessionManagmentService;
+    this._menuService = menuService;
     this._formBuilder = formBuilder;
 
     this.processId = this._processIdService.getNewProcessId();
@@ -621,8 +625,6 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
         await this.loadFilesInfoAsync();
       }
     }
-
-
   }
 
   private async loadFilesInfoAsync():Promise<void>{
@@ -834,6 +836,19 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
   }
 
   doNothing():void{/** */}
+
+  onCopy():void{
+    const action = 'copy';
+    const result = this.selectedFile.getCurrentPath;
+    this._menuService.storeData.next([result, action]);
+  }
+
+  onCut():void{
+    const action = 'copy';
+    const action1 = 'remove';
+    const result = this.selectedFile.getCurrentPath;
+    this._menuService.storeData.next([result, action, action1]);
+  }
   
   onHideIconContextMenu():void{
     this.showCntxtMenu = false;
@@ -972,7 +987,7 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
 
     if(this._consts.IMAGE_FILE_EXTENSIONS.includes(file.getFileType)){
       const img = new Image();
-      img.src = file.getCurrentPath;
+      img.src = file.getIconPath;
       const width = img?.naturalWidth;
       const height = img?.naturalHeight;
       const imgDimesions = `${width} x ${height}`;

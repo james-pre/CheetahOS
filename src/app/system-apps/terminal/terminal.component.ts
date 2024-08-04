@@ -266,12 +266,12 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
           this.terminalForm.setValue({terminalCmd:`${rootCmd} ${whiteSpace}`});
         }
 
-        //await this.handleChangeDirectoryRequest(cmdString,rootCmd,rootArg);
+        await this.handleChangeDirectoryRequest(cmdString,rootCmd,rootArg);
       }else if(rootCmd == "cp" || rootCmd == "mv"){
-        const optionA = cmdStringArr[1];
-        const optionB = cmdStringArr[2];
-        const source = cmdStringArr[3];
-        const destination = cmdStringArr[4];
+        // const optionA = cmdStringArr[1];
+        // const optionB = cmdStringArr[2];
+        // const source = cmdStringArr[3];
+        // const destination = cmdStringArr[4];
 
         //this.shiftRight(rootCmd,optionA,optionB,source,destination);
         
@@ -304,7 +304,6 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       if(!this.isInLoopState){
         console.log('i am now here');
         if(!this.fetchedDirectoryList.includes(alteredRootArg)){
-
           console.log('fetchedDirectoryList does not have:',alteredRootArg );
           const terminalCommand = new TerminalCommand(cmdString, 0, " ");
           await this.processCommand(terminalCommand).then(() =>{
@@ -312,18 +311,14 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
             this.isInLoopState = true;
             this.numCntr = 0;
           });
-
         }else{
           console.log('fetchedDirectoryList does have:',alteredRootArg );
           this.evaluateChangeDirectoryRequest(cmdString, rootCmd, rootArg, alteredRootArg);
           this.isInLoopState = true;
         }
       }else{
-
         console.log('i am now here 1');
-
         this.loopThroughDirectory(rootCmd,rootArg, alteredRootArg);
-
         console.log('this.numCntr++:', this.numCntr);
       }
 
@@ -479,8 +474,6 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
     return matches ? matches.length : 0;
   }
 
-
-
   shiftRight(...params:string[]):void{
 
     const noUndefineds = params.filter(x => x !==undefined);
@@ -508,29 +501,10 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
           dest = el;
         }
       }
-
     }
 
     console.log(`After --- optA:${optionA} optB:${optionB} src:${src} dest:${dest}`)
-
-
   }
-
-  // shiftRight(arg0:string, arg1:any, arg2:any, arg3:any, arg4:any):void{
-
-  //   //rootCmd
-  //   if(arg0 === "cp"){
-
-  //     if(arg1 === undefined || arg2 === undefined || arg3 === undefined || arg4 === undefined){
-
-  //       console.log(`Before --- arg1:${arg1} arg2:${arg2} arg3:${arg3} arg4:${arg4}`)
-  //       arg4 = arg3; arg3 = arg2; arg2 = arg1;
-
-  //       arg1 = undefined
-  //     }
-  //   }
-
-  // }
 
   isOption(arg0:string):boolean{
     const firstChar = arg0[0];
@@ -692,6 +666,21 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
         terminalCmd.setResponseCode = this.Success;
         terminalCmd.setCommandOutput = result;
       }
+
+      if(rootCmd == "rm"){
+        const result = await this._terminaCommandsImpl.rm(cmdStringArr[1], cmdStringArr[2]);
+        terminalCmd.setResponseCode = this.Success;
+        terminalCmd.setCommandOutput = result;
+      }
+
+
+
+      if(rootCmd == "mv"){
+        const result = await this._terminaCommandsImpl.mv(cmdStringArr[1], cmdStringArr[2]);
+        terminalCmd.setResponseCode = this.Success;
+        terminalCmd.setCommandOutput = result;
+      }
+
 
       if (rootCmd == "cp"){
 
