@@ -19,6 +19,7 @@
                     <div class="tab-empty-line-container "></div>
                     <div class="view-tab-pane-top-cntnr">
                         <div class="view-tab-pane-top1">
+                            <div class="tab-empty-space"></div>
                             <figure class="figure-tab-view-pane">
                                 <img class="img-tab-view-pane" [src]="'osdrive/icons/navigation_pane.ico' | safeResourceUrl"/>
                             </figure>
@@ -30,21 +31,22 @@
                             </span>
                         </div>
                         <div class="view-tab-pane-top2">
+                            <div class="tab-empty-space"></div>
                             <div class="tab-pane-top2-1">
                                 <span class="span-tab-pane-cntnr">
                                     <figure class="figure-tab-view-pane1">
                                         <img class="img-tab-view-pane1" [src]="'osdrive/icons/preview_pane.ico' | safeResourceUrl"/>
                                     </figure>
-                                    <div class="div-tab-view-pane">Preview pane</div>
+                                    <div class="div-tab-view-pane"><span class="span-tab-view-pane-cntnt"> Preview pane</span></div>
                                 </span>
                             </div>
-                            <div class="tab-empty-space"></div>
+                            <div class="tab-empty-space1"></div>
                             <div class="tab-pane-top2-2">
                                 <span class="span-tab-pane-cntnr">
                                     <figure class="figure-tab-view-pane1">
                                         <img class="img-tab-view-pane1" [src]="'osdrive/icons/details_pane.ico' | safeResourceUrl"/>
                                     </figure>
-                                    <div class="div-tab-view-pane">Details pane</div>
+                                    <div class="div-tab-view-pane"><span class="span-tab-view-pane-cntnt"> Details pane </span></div>
                                 </span>
                             </div>
                         </div>
@@ -80,7 +82,7 @@
                                     <div class="div-tab-view-layout">Medium icons</div>
                                 </span>
                             </div>
-                            <div class="view-tab-layout-content">
+                            <div class="view-tab-layout-content1">
                                 <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.smallIconsView, 4)" (mouseleave)="onMouseLeaveTabLayoutBtn(4)" (click)="onClickTabLayoutBtn(this.smallIconsView, 4)"  id="tabLayoutIconCntnr-{{this.processId}}-4">
                                     <figure class="figure-tab-view-layout">
                                         <img class="img-tab-view-layout" [src]="'osdrive/icons/small_icons_view.ico' | safeResourceUrl"/>
@@ -102,7 +104,7 @@
                                     <div class="div-tab-view-layout">Details</div>
                                 </span>
                             </div>
-                            <div class="view-tab-layout-content">
+                            <div class="view-tab-layout-content2">
                                 <span class="span-tab-layout-cntnr" (mouseenter)="onMouseEnterTabLayoutBtn(this.tilesView, 7)" (mouseleave)="onMouseLeaveTabLayoutBtn(7)" (click)="onClickTabLayoutBtn(this.tilesView, 7)" id="tabLayoutIconCntnr-{{this.processId}}-7">
                                     <figure class="figure-tab-view-layout">
                                         <img class="img-tab-view-layout" [src]="'osdrive/icons/tiles_view.ico' | safeResourceUrl"/>

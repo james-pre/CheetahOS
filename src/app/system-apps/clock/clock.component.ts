@@ -61,7 +61,7 @@ export class ClockComponent implements AfterViewInit,OnDestroy {
   private oberserableDate():void{
     this._dateSubscription = timer(50, 360000).subscribe(() => {
       const dateTime = new Date();  
-      this.subscribeDate = `${dateTime.getMonth() + 1}/${this.padSingleDigits(dateTime.getDate())}/${dateTime.getFullYear()}`;
+      this.subscribeDate = `${dateTime.getMonth() + 1}/${dateTime.getDate()}/${dateTime.getFullYear()}`;
     });
   }
 

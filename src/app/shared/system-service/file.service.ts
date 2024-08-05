@@ -354,12 +354,17 @@ export class FileService{
 
         if(!extension){
             const sc = await this.setFolderValuesAsync(path) as ShortCut;
+            const fileMetaData = await this.getExtraFileMetaDataAsync(path) as FileMetaData;
+
             this._fileInfo.setIconPath = this.changeFolderIcon(sc.geFileName,sc.getIconPath);
             this._fileInfo.setCurrentPath = path;
             this._fileInfo.setFileType = sc.getFileType;
             this._fileInfo.setFileName = sc.geFileName;
             this._fileInfo.setOpensWith = sc.getOpensWith;
             this._fileInfo.setIsFile = false;
+            this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
+            this._fileInfo.setSize = fileMetaData.getSize;
+            this._fileInfo.setMode = fileMetaData.getMode;
         }
         else{
 
@@ -635,6 +640,63 @@ export class FileService{
 
     }
 
+        //virtual filesystem, use copy and then delete
+        public async moveAsync(currentPath:string, newPath:string, isFile:boolean): Promise<boolean> {
+ 
+            return new Promise<boolean>((resolve, reject) =>{
+                let rename = ''; let type = ''
+                if(isFile){  
+                    const fileName = this.getFileName(currentPath)
+                    rename = `${newPath}/${fileName}`; type = 'file';
+                }else{ 
+                    const fileName = this.getFileName(currentPath)
+                    rename = `${newPath}/${fileName}`;  type = 'folder'; 
+                }
+    
+    
+                console.log(`currentPath: ${currentPath}`);
+                console.log(`newPath: ${newPath}`);
+                console.log(`rename:${rename}`);
+    
+                this._fileSystem.readFile(currentPath, (err, contents = Buffer.from('')) =>{
+                    if(err){
+                        console.log('getFile in moveAsync error:',err)
+                        reject(false)
+                    }else{
+                        this._fileSystem.writeFile(`${rename}`, contents,(err)=>{  
+                            if(err){
+                                console.log('writeFile in moveAsync error:',err);
+                                reject(false);
+                            }else{
+                                if(isFile){
+                                    this._fileSystem.unlink(currentPath,(err) =>{
+                                        if(err){
+                                            console.log('unlink file error:',err)
+                                            reject(err)
+                                        }
+                                        console.log('successfully unlinked')
+                                        resolve(true);
+                                    });
+                                }else{
+                                    this._fileSystem.rmdir(currentPath,(err) =>{  
+                                        if(err){
+                                            console.log('moveAsync Error: folder delete failed',err);
+                                            reject(false);
+                                        }
+                                        console.log('successfully deleted')
+                                        resolve(true);
+                                    });
+                                }
+                                console.log('successfully renamed')
+                                resolve(true);
+                            }
+                        });
+                        console.log('successfully fetched')
+                        resolve(true);
+                    }
+                });
+            });
+        }
 
     public iterateFileName(path:string):string{
         const extension = extname(path);

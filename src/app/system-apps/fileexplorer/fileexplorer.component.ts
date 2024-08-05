@@ -20,6 +20,7 @@ import { SessionManagmentService } from 'src/app/shared/system-service/session.m
 import { Constants } from 'src/app/system-files/constants';
 import * as htmlToImage from 'html-to-image';
 import { TaskBarPreviewImage } from '../taskbarpreview/taskbar.preview';
+import { MenuService } from 'src/app/shared/system-service/menu.services';
 
 @Component({
   selector: 'cos-fileexplorer',
@@ -40,6 +41,7 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
   private _triggerProcessService:TriggerProcessService;
   private _stateManagmentService: StateManagmentService;
   private _sessionManagmentService: SessionManagmentService;
+  private _menuService:MenuService;
   private _formBuilder;
   private _appState!:AppState;
   private _consts:Constants = new Constants();
@@ -122,10 +124,13 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
     {icon:'', label: 'Open', action: this.onTriggerRunProcess.bind(this) },
     {icon:'', label: 'Open in new window', action: this.doNothing.bind(this) },
     {icon:'', label: 'Pin to Start', action: this.doNothing.bind(this) },
+    {icon:'', label: 'Cut', action: this.doNothing.bind(this) },
+    {icon:'', label: 'Copy', action: this.doNothing.bind(this) },
     {icon:'', label: 'Delete', action: this.onDeleteFile.bind(this) },
     {icon:'', label: 'Rename', action: this.onRenameFileTxtBoxShow.bind(this) },
     {icon:'', label: 'Properties', action: this.doNothing.bind(this) }
   ];
+
   fileExplrMngrMenuOption = "file-explorer-file-manager-menu";
 
   fileInfoTipData = [{label:'', data:''}];
@@ -148,13 +153,15 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
 
 
   constructor(processIdService:ProcessIDService, runningProcessService:RunningProcessService, fileInfoService:FileService, triggerProcessService:TriggerProcessService, 
-              fileManagerService:FileManagerService, formBuilder: FormBuilder, stateManagmentService:StateManagmentService, sessionManagmentService:SessionManagmentService ) { 
+              fileManagerService:FileManagerService, formBuilder: FormBuilder, stateManagmentService:StateManagmentService, sessionManagmentService:SessionManagmentService,
+              menuService:MenuService ) { 
     this._processIdService = processIdService;
     this._runningProcessService = runningProcessService;
     this._fileService = fileInfoService;
     this._triggerProcessService = triggerProcessService;
     this._stateManagmentService = stateManagmentService;
     this._sessionManagmentService = sessionManagmentService;
+    this._menuService = menuService;
     this._formBuilder = formBuilder;
 
     this.processId = this._processIdService.getNewProcessId();
@@ -283,7 +290,7 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
     if(this.currentViewOptionId == id){
       if(btnElement){
         btnElement.style.border = '0.5px solid #ccc';
-        btnElement.style.margin = '-0.5px';
+        // btnElement.style.margin = '-0.5px';
 
         if(isMouseHover){
           btnElement.style.backgroundColor = '#807c7c';
@@ -298,7 +305,7 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
         if(isMouseHover){
           btnElement.style.backgroundColor = '#403c3c';
           btnElement.style.border = '0.5px solid #ccc';
-          btnElement.style.margin = '-0.5px';
+          // btnElement.style.margin = '-0.5px';
         }else{
           btnElement.style.backgroundColor = '';
           btnElement.style.border = '';
@@ -307,6 +314,7 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
       }    
     }
   }
+
 
   changeLayoutCss(iconSize:string):void{
 
@@ -829,6 +837,19 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
   }
 
   doNothing():void{/** */}
+
+  onCopy():void{
+    const action = 'copy';
+    const result = this.selectedFile.getCurrentPath;
+    this._menuService.storeData.next([result, action]);
+  }
+
+  onCut():void{
+    const action = 'copy';
+    const action1 = 'remove';
+    const result = this.selectedFile.getCurrentPath;
+    this._menuService.storeData.next([result, action, action1]);
+  }
   
   onHideIconContextMenu():void{
     this.showCntxtMenu = false;
