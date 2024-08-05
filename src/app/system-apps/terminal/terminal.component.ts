@@ -634,6 +634,20 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
         terminalCmd.setCommandOutput = result;
       }
 
+      if(rootCmd == "rm"){
+        const result = await this._terminaCommandsImpl.rm(cmdStringArr[1], cmdStringArr[2]);
+        terminalCmd.setResponseCode = this.Success;
+        terminalCmd.setCommandOutput = result;
+      }
+
+
+
+      if(rootCmd == "mv"){
+        const result = await this._terminaCommandsImpl.mv(cmdStringArr[1], cmdStringArr[2]);
+        terminalCmd.setResponseCode = this.Success;
+        terminalCmd.setCommandOutput = result;
+      }
+
       if (rootCmd == "cp"){
 
         const option = cmdStringArr[1];
