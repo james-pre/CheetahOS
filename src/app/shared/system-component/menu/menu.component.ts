@@ -26,16 +26,18 @@ export class MenuComponent implements OnChanges, OnDestroy{
   paste = 'Paste';
   actions:string[]=[];
 
-  isPasteActive = false;
+  isPasteActive!:boolean;
 
   constructor(menuService:MenuService) { 
     this._menuService = menuService;
+
+    this.isPasteActive = this._menuService.getPasteState();
     this._storeDataSub = this._menuService.storeData.subscribe(p => {
       this.data = p[0];
       p.shift();
       this.actions = [...p]
 
-      this.isPasteActive = this.activatePaste();
+      this._menuService.setPasteState(this.activatePaste());
     })
   }
 
