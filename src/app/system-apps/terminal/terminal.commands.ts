@@ -520,13 +520,15 @@ usage: mkdir direcotry_name [-v]
         folderQueue.push(sourceArg);
         const result =  await this.mvhandler(destinationArg, folderQueue);
         if(result){
-
-            if(destinationArg.includes('/Desktop')){
-                this.sendDirectoryUpdateNotification(sourceArg);
-                this.sendDirectoryUpdateNotification(destinationArg);
+            const result = await this.rm('-rf', sourceArg);
+            if(result === ''){
+                if(destinationArg.includes('/Desktop')){
+                    this.sendDirectoryUpdateNotification(sourceArg);
+                    this.sendDirectoryUpdateNotification(destinationArg);
+                }
+                else
+                    this.sendDirectoryUpdateNotification(sourceArg);
             }
-            else
-                this.sendDirectoryUpdateNotification(sourceArg);
         }
 
         return ''
@@ -540,19 +542,17 @@ usage: mkdir direcotry_name [-v]
         const sourcePath = folderQueue.shift() || '';
         const folderName = this.getFileName(sourcePath);
 
-
         const checkIfDirResult = await this._fileService.checkIfDirectory(`${sourcePath}`);
-
         if(checkIfDirResult){
             const loadedDirectoryEntries = await this._fileService.getEntriesFromDirectoryAsync(sourcePath);
-            const  moveFolderResult = await this._fileService.moveAsync(sourcePath, destinationArg, false);
+            const  moveFolderResult = await this._fileService.createFolderAsync(destinationArg,folderName);
             if(moveFolderResult){
                 for(const directoryEntry of loadedDirectoryEntries){
                     const checkIfDirResult = await this._fileService.checkIfDirectory(`${sourcePath}/${directoryEntry}`);
                     if(checkIfDirResult){
                         folderQueue.push(`${sourcePath}/${directoryEntry}`);
                     }else{
-                        const result = await this._fileService.moveAsync(`${sourcePath}/${directoryEntry}`, `${destinationArg}/${folderName}`, true);
+                        const result = await this._fileService.moveFileAsync(`${sourcePath}/${directoryEntry}`, `${destinationArg}/${folderName}`);
                         if(result){
                             console.log(`file:${sourcePath}/${directoryEntry} successfully moved to destination:${destinationArg}/${folderName}`);
                         }else{
@@ -565,7 +565,7 @@ usage: mkdir direcotry_name [-v]
                 return false;
             }
         }else{
-            const result = await this._fileService.moveAsync(`${sourcePath}`,`${destinationArg}`, true);
+            const result = await this._fileService.moveFileAsync(`${sourcePath}`,`${destinationArg}`);
             if(result){
                 console.log(`file:${sourcePath} successfully moved to destination:${destinationArg}`);
             }else{
@@ -737,6 +737,7 @@ Mandatory argument to long options are mandotory for short options too.
                 const result = await this.rmHandler(optionArg,sourceArg);
                 if(result){
                     this.sendDirectoryUpdateNotification(sourceArg);
+                    return '';
                 }
             }
         }else{
@@ -744,9 +745,10 @@ Mandatory argument to long options are mandotory for short options too.
             const result = await this.rmHandler(sourceArg,sourceArg);
             if(result){
                 this.sendDirectoryUpdateNotification(sourceArg);
+                return '';
             }
         }        
-        return '';
+        return 'error';
     }
 
     private async rmHandler(arg0: string, sourceArg: string): Promise<boolean> {
@@ -774,9 +776,9 @@ Mandatory argument to long options are mandotory for short options too.
             }
         }
     
-        // Delete the current directory after all its contents have been processed
-        const folderName = this.getFileName(sourceArg);
-        const result = await this._fileService.deleteFolderAsync(`${sourceArg}/${folderName}`);
+        // Delete the current directory after all its contents have been  deleted
+        console.log(`folder to delete: ${sourceArg}`);
+        const result = await this._fileService.deleteFolderAsync(`${sourceArg}`);
     
         if (result) {
             console.log(`Directory: ${sourceArg} deleted successfully`);

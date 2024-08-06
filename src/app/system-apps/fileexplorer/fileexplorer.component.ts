@@ -289,7 +289,7 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
     if(this.currentViewOptionId == id){
       if(btnElement){
         btnElement.style.border = '0.5px solid #ccc';
-        btnElement.style.margin = '-0.5px';
+        // btnElement.style.margin = '-0.5px';
 
         if(isMouseHover){
           btnElement.style.backgroundColor = '#807c7c';
@@ -304,7 +304,7 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
         if(isMouseHover){
           btnElement.style.backgroundColor = '#403c3c';
           btnElement.style.border = '0.5px solid #ccc';
-          btnElement.style.margin = '-0.5px';
+          // btnElement.style.margin = '-0.5px';
         }else{
           btnElement.style.backgroundColor = '';
           btnElement.style.border = '';
@@ -313,6 +313,7 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
       }    
     }
   }
+
 
   changeLayoutCss(iconSize:string):void{
 
