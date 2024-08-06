@@ -48,7 +48,7 @@ export class FileService{
                         '/':{
                             fs: 'OverlayFS',
                             options:{
-                                readable:{fs: 'XmlHttpRequest', options:{index: osDriveFileSystemIndex}},
+                                readable:{fs: 'XmlHttpRequest', options:{index: osDriveFileSystemIndex, baseUrl:'osdrive'}},
                                 writable:{fs:"IndexedDB", options: {storeName: "browser-fs-cache"}}
                             },
                         },  
@@ -316,15 +316,17 @@ export class FileService{
 
         await this.initBrowserFsAsync();
 
+        const path1 = '/Desktop'
         return new Promise<string[]>((resolve, reject) => {
             const fs = this._fileSystem;
             const interval = setInterval(() => {
-                fs.readdir(path, function(err, files) {
+                fs.readdir(path1, function(err, files) {
                   if(err){
                       console.log("Oops! a boo boo happened, filesystem wasn't ready:", err);
                       reject([]);
                   }else{
                     clearInterval(interval);
+                    console.log(`files:${files}`);
                     resolve(files || []);
                   }
                 });

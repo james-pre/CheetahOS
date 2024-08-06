@@ -640,8 +640,6 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
         terminalCmd.setCommandOutput = result;
       }
 
-
-
       if(rootCmd == "mv"){
         const result = await this._terminaCommandsImpl.mv(cmdStringArr[1], cmdStringArr[2]);
         terminalCmd.setResponseCode = this.Success;
@@ -649,9 +647,7 @@ export class TerminalComponent implements BaseComponent, OnInit, AfterViewInit, 
       }
 
       if (rootCmd == "cp"){
-
         const option = cmdStringArr[1];
-
         const source = cmdStringArr[2];
         const destination = cmdStringArr[3];
       
