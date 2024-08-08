@@ -12,7 +12,7 @@ import { FileInfo } from 'src/app/system-files/fileinfo';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 import { ScriptService } from 'src/app/shared/system-service/script.services';
 import { MenuService } from 'src/app/shared/system-service/menu.services';
-import { DesktopMenu, DesktopMenuItem } from 'src/app/shared/system-component/menu/menu.item';
+import { NestedMenu, NestedMenuItem } from 'src/app/shared/system-component/menu/menu.item';
 import * as htmlToImage from 'html-to-image';
 import { FileService } from 'src/app/shared/system-service/file.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
@@ -99,13 +99,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   removeTskBarPrevWindowFromDOMTimeoutId!: NodeJS.Timeout;
   hideTskBarPrevWindowTimeoutId!: NodeJS.Timeout;
 
-  hasWindow = false;
-  icon = 'osdrive/icons/generic-program.ico';
-  name = 'desktop';
-  processId = 0;
-  type = ComponentType.System;
-  displayName = '';
-
+  directory ='/Desktop';
   terminalApp ="terminal";
   textEditorApp ="texteditor";
   codeEditorApp ="codeeditor";
@@ -134,7 +128,15 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     {icon:'', label: '', action: ()=> console.log() },
   ];
 
-  deskTopMenu:DesktopMenu[] = []
+  deskTopMenu:NestedMenu[] = [];
+
+
+  hasWindow = false;
+  icon = 'osdrive/icons/generic-program.ico';
+  name = 'desktop';
+  processId = 0;
+  type = ComponentType.System;
+  displayName = '';
 
 
   constructor( processIdService:ProcessIDService,runningProcessService:RunningProcessService,fileManagerServices:FileManagerService,
@@ -282,9 +284,9 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
   async createFolder():Promise<void>{
-    const directory ='/Desktop';
+
     const folderName = 'New Folder';
-    const result =  await this._fileService.createFolderAsync(directory, folderName);
+    const result =  await this._fileService.createFolderAsync(this.directory, folderName);
     if(result){
       this._fileService.addEventOriginator('filemanager');
       this._fileService.dirFilesUpdateNotify.next();
@@ -436,6 +438,27 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     this.openApplication(this.markDownViewerApp);
   }
 
+  async onPaste():Promise<void>{
+    const cntntPath = this._menuService.getPath();
+    const action = this._menuService.getActions();
+
+    console.log(`path: ${cntntPath}`);
+    console.log(`action: ${action}`);
+
+    if(action === 'copy'){
+      const result = await this._fileService.copyHandler('',cntntPath,this.directory);
+      if(result){
+        this.refresh();
+      }
+    }
+    else if(action === 'cut'){
+      const result = await this._fileService.movehandler(this.directory, [cntntPath]);
+      if(result){
+        this.refresh();
+      }
+    }
+  }
+
   openApplication(arg0:string):void{
     const file = new FileInfo();
 
@@ -450,24 +473,24 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
 
-  buildViewByMenu():DesktopMenuItem[]{
+  buildViewByMenu():NestedMenuItem[]{
 
-    const smallIcon:DesktopMenuItem={ icon:'osdrive/icons/circle.png', label:'Small icons',  action: this.viewBySmallIcon.bind(this),  variables:this.isSmallIcon, 
+    const smallIcon:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Small icons',  action: this.viewBySmallIcon.bind(this),  variables:this.isSmallIcon, 
       emptyline:false, styleOption:'A' }
 
-    const mediumIcon:DesktopMenuItem={ icon:'osdrive/icons/circle.png', label:'Medium icons',  action: this.viewByMediumIcon.bind(this),  variables:this.isMediumIcon, 
+    const mediumIcon:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Medium icons',  action: this.viewByMediumIcon.bind(this),  variables:this.isMediumIcon, 
       emptyline:false, styleOption:'A' }
 
-    const largeIcon:DesktopMenuItem={ icon:'osdrive/icons/circle.png', label:'Large icons', action: this.viewByLargeIcon.bind(this), variables:this.isLargeIcon,
+    const largeIcon:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Large icons', action: this.viewByLargeIcon.bind(this), variables:this.isLargeIcon,
       emptyline:true, styleOption:'A' }
 
-    const autoArrageIcon:DesktopMenuItem={ icon:'osdrive/icons/chkmark32.png', label:'Auto arrange icons',  action: this.autoArrangeIcon.bind(this),  variables:this.autoArrangeIcons, 
+    const autoArrageIcon:NestedMenuItem={ icon:'osdrive/icons/chkmark32.png', label:'Auto arrange icons',  action: this.autoArrangeIcon.bind(this),  variables:this.autoArrangeIcons, 
       emptyline:false, styleOption:'B' }
 
-    const autoAlign:DesktopMenuItem={ icon:'osdrive/icons/chkmark32.png', label:'Align icons to grid',  action: this.autoAlignIcon.bind(this),  variables:this.autoAlignIcons, 
+    const autoAlign:NestedMenuItem={ icon:'osdrive/icons/chkmark32.png', label:'Align icons to grid',  action: this.autoAlignIcon.bind(this),  variables:this.autoAlignIcons, 
       emptyline:true, styleOption:'B' }
 
-    const showDesktopIcons:DesktopMenuItem={ icon:'osdrive/icons/chkmark32.png', label:'Show desktop icons',  action: this.showDesktopIcon.bind(this), variables:this.showDesktopIcons,
+    const showDesktopIcons:NestedMenuItem={ icon:'osdrive/icons/chkmark32.png', label:'Show desktop icons',  action: this.showDesktopIcon.bind(this), variables:this.showDesktopIcons,
       emptyline:false,  styleOption:'B'}
 
     const viewByMenu = [smallIcon,mediumIcon,largeIcon, autoArrageIcon, autoAlign,showDesktopIcons];
@@ -475,18 +498,18 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     return viewByMenu;
   }
 
-  buildSortByMenu(): DesktopMenuItem[]{
+  buildSortByMenu(): NestedMenuItem[]{
 
-    const sortByName:DesktopMenuItem={ icon:'osdrive/icons/circle.png', label:'Name',  action: this.sortByNameM.bind(this),  variables:this.isSortByName , 
+    const sortByName:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Name',  action: this.sortByNameM.bind(this),  variables:this.isSortByName , 
       emptyline:false, styleOption:'A' }
 
-    const sortBySize:DesktopMenuItem={ icon:'osdrive/icons/circle.png', label:'Size',  action: this.sortBySizeM.bind(this),  variables:this.isSortBySize , 
+    const sortBySize:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Size',  action: this.sortBySizeM.bind(this),  variables:this.isSortBySize , 
       emptyline:false, styleOption:'A' }
 
-    const sortByItemType:DesktopMenuItem={ icon:'osdrive/icons/circle.png', label:'Item type',  action: this.sortByItemTypeM.bind(this),  variables:this.isSortByItemType, 
+    const sortByItemType:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Item type',  action: this.sortByItemTypeM.bind(this),  variables:this.isSortByItemType, 
       emptyline:false, styleOption:'A' }
 
-    const sortByDateModified:DesktopMenuItem={ icon:'osdrive/icons/circle.png', label:'Date modified',  action: this.sortByDateModifiedM.bind(this),  variables:this.isSortByDateModified, 
+    const sortByDateModified:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Date modified',  action: this.sortByDateModifiedM.bind(this),  variables:this.isSortByDateModified, 
       emptyline:false, styleOption:'A' }
 
     const sortByMenu = [sortByName, sortBySize, sortByItemType, sortByDateModified ]
@@ -494,15 +517,15 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
     return sortByMenu
   }
 
-  buildNewMenu(): DesktopMenuItem[]{
+  buildNewMenu(): NestedMenuItem[]{
 
-    const newFolder:DesktopMenuItem={ icon:'osdrive/icons/empty_folder.ico', label:'Folder',  action: this.createFolder.bind(this),  variables:true , 
+    const newFolder:NestedMenuItem={ icon:'osdrive/icons/empty_folder.ico', label:'Folder',  action: this.createFolder.bind(this),  variables:true , 
       emptyline:false, styleOption:'C' }
 
-    const textEditor:DesktopMenuItem={ icon:'osdrive/icons/text-editor_48.png', label:'Rich Text',  action: this.openTextEditor.bind(this),  variables:true , 
+    const textEditor:NestedMenuItem={ icon:'osdrive/icons/text-editor_48.png', label:'Rich Text',  action: this.openTextEditor.bind(this),  variables:true , 
       emptyline:false, styleOption:'C' }
 
-    const codeEditor:DesktopMenuItem={ icon:'osdrive/icons/vs-code_48.png', label:'Code Editor',  action: this.openCodeEditor.bind(this),  variables:true , 
+    const codeEditor:NestedMenuItem={ icon:'osdrive/icons/vs-code_48.png', label:'Code Editor',  action: this.openCodeEditor.bind(this),  variables:true , 
         emptyline:false, styleOption:'C' }
 
     const sortByMenu = [newFolder, textEditor, codeEditor ]
@@ -515,7 +538,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit{
           {icon1:'',  icon2: 'osdrive/icons/arrow_next.png', label:'View', nest:this.buildViewByMenu(), action: ()=> console.log(), emptyline:false},
           {icon1:'',  icon2:'osdrive/icons/arrow_next.png', label:'Sort by', nest:this.buildSortByMenu(), action: ()=> console.log(), emptyline:false},
           {icon1:'',  icon2:'', label: 'Refresh', nest:[], action:this.refresh.bind(this), emptyline:true},
-          {icon1:'',  icon2:'', label: 'Paste', nest:[], action: () => console.log('Paste!! Paste!!'), emptyline:false},
+          {icon1:'',  icon2:'', label: 'Paste', nest:[], action:this.onPaste.bind(this), emptyline:false},
           {icon1:'/osdrive/icons/terminal_48.png', icon2:'', label:'Open in Terminal', nest:[], action: this.openTerminal.bind(this), emptyline:false},
           {icon1:'/osdrive/icons/camera_48.png', icon2:'', label:'Screen Shot', nest:[], action: this.captureComponentImg.bind(this), emptyline:false},
           {icon1:'',  icon2:'', label:'Next Background', nest:[], action: this.nextBackground.bind(this), emptyline:false},

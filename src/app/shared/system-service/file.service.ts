@@ -149,6 +149,47 @@ export class FileService{
         });
     }
 
+    public async copyHandler(arg0:string, sourcePathArg:string, destinationArg:string):Promise<boolean>{
+
+        const checkIfDirResult = await this.checkIfDirectory(`${sourcePathArg}`);
+        if(checkIfDirResult){
+            const folderName = this.getFileName(sourcePathArg);
+            const  createFolderResult = await this.createFolderAsync(destinationArg, folderName);
+            if(createFolderResult){
+                const loadedDirectoryEntries = await this.getEntriesFromDirectoryAsync(sourcePathArg);
+                for(const directoryEntry of loadedDirectoryEntries){
+                    const checkIfDirResult = await this.checkIfDirectory(`${sourcePathArg}/${directoryEntry}`);
+                    if(checkIfDirResult){
+                        const result = await this.copyHandler(arg0,`${sourcePathArg}/${directoryEntry}`,`${destinationArg}/${folderName}`);
+                        if(!result){
+                            console.log(`Failed to copy directory: ${sourcePathArg}/${directoryEntry}`);
+                            return false;
+                        }
+                    }else{
+                        const result = await this.copyFileAsync(`${sourcePathArg}/${directoryEntry}`, `${destinationArg}/${folderName}`);
+                        if(result){
+                            console.log(`file:${sourcePathArg}/${directoryEntry} successfully copied to destination:${destinationArg}/${folderName}`);
+                        }else{
+                            console.log(`file:${sourcePathArg}/${directoryEntry} failed to copy to destination:${destinationArg}/${folderName}`)
+                            return false
+                        }
+                    }
+                }
+            }
+        }else{
+            const result = await this.copyFileAsync(`${sourcePathArg}`, `${destinationArg}`);
+            if(result){
+                console.log(`file:${sourcePathArg} successfully copied to destination:${destinationArg}`);
+            }else{
+                console.log(`file:${sourcePathArg} failed to copy to destination:${destinationArg}`)
+                return false
+            }
+        }
+
+        return true
+    }
+
+
     public async createFolderAsync(directory:string, fileName:string):Promise<boolean>{
         return new Promise<boolean>((resolve, reject) =>{
             this._fileSystem.mkdir(`${directory}/${fileName}`,0o777,(err) =>{  
@@ -489,6 +530,48 @@ export class FileService{
         });
     }
 
+    public async movehandler(destinationArg:string, folderQueue:string[]):Promise<boolean>{
+
+        if(folderQueue.length === 0)
+            return true;
+
+        const sourcePath = folderQueue.shift() || '';
+        const folderName = this.getFileName(sourcePath);
+
+        const checkIfDirResult = await this.checkIfDirectory(`${sourcePath}`);
+        if(checkIfDirResult){
+            const loadedDirectoryEntries = await this.getEntriesFromDirectoryAsync(sourcePath);
+            const  moveFolderResult = await this.createFolderAsync(destinationArg,folderName);
+            if(moveFolderResult){
+                for(const directoryEntry of loadedDirectoryEntries){
+                    const checkIfDirResult = await this.checkIfDirectory(`${sourcePath}/${directoryEntry}`);
+                    if(checkIfDirResult){
+                        folderQueue.push(`${sourcePath}/${directoryEntry}`);
+                    }else{
+                        const result = await this.moveFileAsync(`${sourcePath}/${directoryEntry}`, `${destinationArg}/${folderName}`);
+                        if(result){
+                            console.log(`file:${sourcePath}/${directoryEntry} successfully moved to destination:${destinationArg}/${folderName}`);
+                        }else{
+                            console.log(`file:${sourcePath}/${directoryEntry} failed to move to destination:${destinationArg}/${folderName}`)
+                        }
+                    }
+                }
+            }else{
+                console.log(`folder:${destinationArg}/${folderName}  creation failed`);
+                return false;
+            }
+        }else{
+            const result = await this.moveFileAsync(`${sourcePath}`,`${destinationArg}`);
+            if(result){
+                console.log(`file:${sourcePath} successfully moved to destination:${destinationArg}`);
+            }else{
+                console.log(`file:${sourcePath} failed to move to destination:${destinationArg}`)
+            }
+        }
+
+        return this.movehandler(`${destinationArg}/${folderName}`, folderQueue);
+    }
+
     public async writeFilesAsync(directory:string, files:File[]):Promise<boolean>{
 
         return new Promise<boolean>((resolve, reject) =>{
@@ -542,6 +625,45 @@ export class FileService{
         });
     }
 
+
+    public async removeHandler(arg0: string, sourceArg: string): Promise<boolean> {
+        const loadedDirectoryEntries = await this.getEntriesFromDirectoryAsync(sourceArg);
+    
+        for (const directoryEntry of loadedDirectoryEntries) {
+            const entryPath = `${sourceArg}/${directoryEntry}`;
+            const checkIfDirectory = await this.checkIfDirectory(entryPath);
+    
+            if (checkIfDirectory) {
+                // Recursively call the rm_dir_handler for the subdirectory
+                const success = await this.removeHandler(arg0, entryPath);
+                if (!success) {
+                    console.log(`Failed to delete directory: ${entryPath}`);
+                    return false;
+                }
+            } else {
+                const result = await this.deleteFileAsync(entryPath);
+                if (result) {
+                    console.log(`File: ${directoryEntry} in ${entryPath} deleted successfully`);
+                } else {
+                    console.log(`File: ${directoryEntry} in ${entryPath} failed deletion`);
+                    return false;
+                }
+            }
+        }
+    
+        // Delete the current directory after all its contents have been  deleted
+        console.log(`folder to delete: ${sourceArg}`);
+        const result = await this.deleteFolderAsync(`${sourceArg}`);
+    
+        if (result) {
+            console.log(`Directory: ${sourceArg} deleted successfully`);
+            return true;
+        } else {
+            console.log(`Failed to delete directory: ${sourceArg}`);
+            return false;
+        }
+    }
+
     public async renameAsync(path:string, newFileName:string, isFile:boolean): Promise<boolean> {
  
         return new Promise<boolean>((resolve, reject) =>{
@@ -564,6 +686,10 @@ export class FileService{
                  }
               });
         });
+    }
+
+    public resetDirectoryFiles(){
+        this._directoryFileEntires=[]
     }
 
     //virtual filesystem, use copy and then delete
@@ -611,10 +737,6 @@ export class FileService{
         this._fileExistsMap.set(path, count);
 
         return `${dirname(path)}/${filename} (${count})${extension}`;
-    }
-
-    public resetDirectoryFiles(){
-        this._directoryFileEntires=[]
     }
 
     public async setFolderValuesAsync(path: string):Promise<ShortCut>{

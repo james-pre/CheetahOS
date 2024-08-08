@@ -17,6 +17,7 @@ import {basename} from 'path';
 import { AppState, BaseState } from 'src/app/system-files/state/state.interface';
 import { StateType } from 'src/app/system-files/state/state.type';
 import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
+import { NestedMenu, NestedMenuItem } from 'src/app/shared/system-component/menu/menu.item';
 import { Constants } from 'src/app/system-files/constants';
 import * as htmlToImage from 'html-to-image';
 import { TaskBarPreviewImage } from '../taskbarpreview/taskbar.preview';
@@ -840,15 +841,14 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
 
   onCopy():void{
     const action = 'copy';
-    const result = this.selectedFile.getCurrentPath;
-    this._menuService.storeData.next([result, action]);
+    const path = this.selectedFile.getCurrentPath;
+    this._menuService.storeData.next([path, action]);
   }
 
   onCut():void{
-    const action = 'copy';
-    const action1 = 'remove';
-    const result = this.selectedFile.getCurrentPath;
-    this._menuService.storeData.next([result, action, action1]);
+    const action = 'cut';
+    const path = this.selectedFile.getCurrentPath;
+    this._menuService.storeData.next([path, action]);
   }
   
   onHideIconContextMenu():void{
@@ -1415,6 +1415,88 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
 
     }
   }
+
+
+
+  // buildViewByMenu():NestedMenuItem[]{
+
+  //   const extraLargeIcon:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Extra Large icons',  action: this.viewBySmallIcon.bind(this),  variables:this., 
+  //     emptyline:false, styleOption:'A' }
+
+  //   const largeIcon:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Large icons',  action: this.viewByMediumIcon.bind(this),  variables:this.isMediumIcon, 
+  //     emptyline:false, styleOption:'A' }
+
+  //   const mediumIcon:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Medium icons', action: this.viewByLargeIcon.bind(this), variables:this.isLargeIcon,
+  //     emptyline:true, styleOption:'A' }
+
+  //   const smallIcon:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Medium icons', action: this.viewByLargeIcon.bind(this), variables:this.isLargeIcon,
+  //   emptyline:true, styleOption:'A' }
+
+  //   const listIcon:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Medium icons', action: this.viewByLargeIcon.bind(this), variables:this.isLargeIcon,
+  //   emptyline:true, styleOption:'A' }
+
+  //   const detailsIcon:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Medium icons', action: this.viewByLargeIcon.bind(this), variables:this.isLargeIcon,
+  //     emptyline:true, styleOption:'A' }
+
+  //   const titlesIcon:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Medium icons', action: this.viewByLargeIcon.bind(this), variables:this.isLargeIcon,
+  //       emptyline:true, styleOption:'A' }
+
+
+
+  //   const viewByMenu = [extraLargeIcon, largeIcon, mediumIcon, smallIcon, listIcon,detailsIcon, titlesIcon];
+
+  //   return viewByMenu;
+  // }
+
+  // buildSortByMenu(): NestedMenuItem[]{
+
+  //   const sortByName:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Name',  action: this.sortByNameM.bind(this),  variables:this.isSortByName , 
+  //     emptyline:false, styleOption:'A' }
+
+  //   const sortBySize:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Size',  action: this.sortBySizeM.bind(this),  variables:this.isSortBySize , 
+  //     emptyline:false, styleOption:'A' }
+
+  //   const sortByItemType:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Item type',  action: this.sortByItemTypeM.bind(this),  variables:this.isSortByItemType, 
+  //     emptyline:false, styleOption:'A' }
+
+  //   const sortByDateModified:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Date modified',  action: this.sortByDateModifiedM.bind(this),  variables:this.isSortByDateModified, 
+  //     emptyline:false, styleOption:'A' }
+
+  //   const sortByMenu = [sortByName, sortBySize, sortByItemType, sortByDateModified ]
+
+  //   return sortByMenu
+  // }
+
+  // buildNewMenu(): NestedMenuItem[]{
+
+  //   const newFolder:NestedMenuItem={ icon:'osdrive/icons/empty_folder.ico', label:'Folder',  action: this.createFolder.bind(this),  variables:true , 
+  //     emptyline:false, styleOption:'C' }
+
+  //   const textEditor:NestedMenuItem={ icon:'osdrive/icons/text-editor_48.png', label:'Rich Text',  action: this.openTextEditor.bind(this),  variables:true , 
+  //     emptyline:false, styleOption:'C' }
+
+  //   const codeEditor:NestedMenuItem={ icon:'osdrive/icons/vs-code_48.png', label:'Code Editor',  action: this.openCodeEditor.bind(this),  variables:true , 
+  //       emptyline:false, styleOption:'C' }
+
+  //   const sortByMenu = [newFolder, textEditor, codeEditor ]
+
+  //   return sortByMenu
+  // }
+
+  // getDesktopMenuData():void{
+  //   this.deskTopMenu = [
+  //         {icon1:'',  icon2: 'osdrive/icons/arrow_next.png', label:'View', nest:this.buildViewByMenu(), action: ()=> console.log(), emptyline:false},
+  //         {icon1:'',  icon2:'osdrive/icons/arrow_next.png', label:'Sort by', nest:this.buildSortByMenu(), action: ()=> console.log(), emptyline:false},
+  //         {icon1:'',  icon2:'', label: 'Refresh', nest:[], action:this.refresh.bind(this), emptyline:true},
+  //         {icon1:'',  icon2:'', label: 'Paste', nest:[], action: () => console.log('Paste!! Paste!!'), emptyline:false},
+  //         {icon1:'/osdrive/icons/terminal_48.png', icon2:'', label:'Open in Terminal', nest:[], action: this.openTerminal.bind(this), emptyline:false},
+  //         {icon1:'/osdrive/icons/camera_48.png', icon2:'', label:'Screen Shot', nest:[], action: this.captureComponentImg.bind(this), emptyline:false},
+  //         {icon1:'',  icon2:'', label:'Next Background', nest:[], action: this.nextBackground.bind(this), emptyline:false},
+  //         {icon1:'',  icon2:'', label:'Previous Background', nest:[], action: this.previousBackground.bind(this), emptyline:true},
+  //         {icon1:'',  icon2:'osdrive/icons/arrow_next.png', label:'New', nest:this.buildNewMenu(), action: ()=> console.log(), emptyline:true},
+  //         {icon1:'',  icon2:'', label:'Many Thanks', nest:[], action: this.openMarkDownViewer.bind(this), emptyline:false}
+  //     ]
+  // }
 
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type);

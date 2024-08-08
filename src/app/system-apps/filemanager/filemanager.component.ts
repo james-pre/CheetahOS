@@ -224,17 +224,15 @@ export class FileManagerComponent implements BaseComponent, OnInit, AfterViewIni
 
   onCopy():void{
     const action = 'copy';
-    const result = this.selectedFile.getCurrentPath;
-    this._menuService.storeData.next([result, action]);
+    const path = this.selectedFile.getCurrentPath;
+    this._menuService.storeData.next([path, action]);
   }
 
   onCut():void{
-    const action = 'copy';
-    const action1 = 'remove';
-    const result = this.selectedFile.getCurrentPath;
-    this._menuService.storeData.next([result, action, action1]);
+    const action = 'cut';
+    const path = this.selectedFile.getCurrentPath;
+    this._menuService.storeData.next([path, action]);
   }
-
   pinIconToTaskBar():void{
     this._menuService.pinToTaskBar.next(this.selectedFile);
   }

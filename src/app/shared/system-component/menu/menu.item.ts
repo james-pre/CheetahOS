@@ -4,16 +4,16 @@ export interface GeneralMenu {
     action: () => void;
 }
 
-export interface DesktopMenu{
+export interface NestedMenu{
     icon1: string; 
     icon2: string; 
     label: string; 
-    nest: DesktopMenuItem[]; 
+    nest: NestedMenuItem[]; 
     action: () => void; 
     emptyline: boolean; 
 }
 
-export interface DesktopMenuItem {
+export interface NestedMenuItem {
     icon:string;
     label: string;
     action: () => void;

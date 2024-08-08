@@ -10,7 +10,9 @@ import { Process } from "src/app/system-files/process";
 
 export class MenuService{
 
-    private _isPasteActive = false
+    private _isPasteActive = false;
+    private _path = 'NOPATH';
+    private _actions = '';
 
     pinToTaskBar: Subject<FileInfo> = new Subject<FileInfo>();
     unPinFromTaskBar: Subject<FileInfo> = new Subject<FileInfo>();
@@ -31,5 +33,21 @@ export class MenuService{
 
     getPasteState():boolean{
         return this._isPasteActive;
+    }
+
+    setPath(path:string):void{
+        this._path = path;
+    }
+
+    getPath():string{
+        return this._path;
+    }
+
+    setActions(action:string):void{
+        this._actions = action;
+    }
+
+    getActions():string{
+        return this._actions;
     }
 }

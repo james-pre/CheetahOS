@@ -518,7 +518,7 @@ usage: mkdir direcotry_name [-v]
             return 'destination path required';
 
         folderQueue.push(sourceArg);
-        const result =  await this.mvhandler(destinationArg, folderQueue);
+        const result =  await this._fileService.movehandler(destinationArg, folderQueue);
         if(result){
             const result = await this.rm('-rf', sourceArg);
             if(result === ''){
@@ -533,49 +533,6 @@ usage: mkdir direcotry_name [-v]
 
         return ''
     }
-
-    private async mvhandler(destinationArg:string, folderQueue:string[]):Promise<boolean>{
-
-        if(folderQueue.length === 0)
-            return true;
-
-        const sourcePath = folderQueue.shift() || '';
-        const folderName = this.getFileName(sourcePath);
-
-        const checkIfDirResult = await this._fileService.checkIfDirectory(`${sourcePath}`);
-        if(checkIfDirResult){
-            const loadedDirectoryEntries = await this._fileService.getEntriesFromDirectoryAsync(sourcePath);
-            const  moveFolderResult = await this._fileService.createFolderAsync(destinationArg,folderName);
-            if(moveFolderResult){
-                for(const directoryEntry of loadedDirectoryEntries){
-                    const checkIfDirResult = await this._fileService.checkIfDirectory(`${sourcePath}/${directoryEntry}`);
-                    if(checkIfDirResult){
-                        folderQueue.push(`${sourcePath}/${directoryEntry}`);
-                    }else{
-                        const result = await this._fileService.moveFileAsync(`${sourcePath}/${directoryEntry}`, `${destinationArg}/${folderName}`);
-                        if(result){
-                            console.log(`file:${sourcePath}/${directoryEntry} successfully moved to destination:${destinationArg}/${folderName}`);
-                        }else{
-                            console.log(`file:${sourcePath}/${directoryEntry} failed to move to destination:${destinationArg}/${folderName}`)
-                        }
-                    }
-                }
-            }else{
-                console.log(`folder:${destinationArg}/${folderName}  creation failed`);
-                return false;
-            }
-        }else{
-            const result = await this._fileService.moveFileAsync(`${sourcePath}`,`${destinationArg}`);
-            if(result){
-                console.log(`file:${sourcePath} successfully moved to destination:${destinationArg}`);
-            }else{
-                console.log(`file:${sourcePath} failed to move to destination:${destinationArg}`)
-            }
-        }
-
-        return this.mvhandler(`${destinationArg}/${folderName}`, folderQueue);
-    }
-
 
     async cp(optionArg:any, sourceArg:string, destinationArg:string):Promise<string>{
 
@@ -633,7 +590,7 @@ Mandatory argument to long options are mandotory for short options too.
             if(option === '-r' || (option === '-R' || option === '--recursive')){
                 folderQueue.push(sourceArg);
                 //const result = await this.cp_dir_handler(optionArg,destinationArg, folderQueue);
-                const result = await this.cpHandler(optionArg,sourceArg, destinationArg);
+                const result = await this._fileService.copyHandler(optionArg,sourceArg, destinationArg);
                 if(result){
                     this.sendDirectoryUpdateNotification(destinationArg);
                 }
@@ -641,52 +598,12 @@ Mandatory argument to long options are mandotory for short options too.
         }else{
             // just copy regular file
             //const result = await this.cp_file_handler(sourceArg,destinationArg);
-            const result = await this.cpHandler(optionArg,sourceArg, destinationArg);
+            const result = await this._fileService.copyHandler(optionArg,sourceArg, destinationArg);
             if(result){
                 this.sendDirectoryUpdateNotification(destinationArg);
             }
         }        
         return '';
-    }
-
-    private async cpHandler(arg0:string, sourcePathArg:string, destinationArg:string):Promise<boolean>{
-
-        const checkIfDirResult = await this._fileService.checkIfDirectory(`${sourcePathArg}`);
-        if(checkIfDirResult){
-            const folderName = this.getFileName(sourcePathArg);
-            const  createFolderResult = await this._fileService.createFolderAsync(destinationArg, folderName);
-            if(createFolderResult){
-                const loadedDirectoryEntries = await this._fileService.getEntriesFromDirectoryAsync(sourcePathArg);
-                for(const directoryEntry of loadedDirectoryEntries){
-                    const checkIfDirResult = await this._fileService.checkIfDirectory(`${sourcePathArg}/${directoryEntry}`);
-                    if(checkIfDirResult){
-                        const result = await this.cpHandler(arg0,`${sourcePathArg}/${directoryEntry}`,`${destinationArg}/${folderName}`);
-                        if(!result){
-                            console.log(`Failed to copy directory: ${sourcePathArg}/${directoryEntry}`);
-                            return false;
-                        }
-                    }else{
-                        const result = await this._fileService.copyFileAsync(`${sourcePathArg}/${directoryEntry}`, `${destinationArg}/${folderName}`);
-                        if(result){
-                            console.log(`file:${sourcePathArg}/${directoryEntry} successfully copied to destination:${destinationArg}/${folderName}`);
-                        }else{
-                            console.log(`file:${sourcePathArg}/${directoryEntry} failed to copy to destination:${destinationArg}/${folderName}`)
-                            return false
-                        }
-                    }
-                }
-            }
-        }else{
-            const result = await this._fileService.copyFileAsync(`${sourcePathArg}`, `${destinationArg}`);
-            if(result){
-                console.log(`file:${sourcePathArg} successfully copied to destination:${destinationArg}`);
-            }else{
-                console.log(`file:${sourcePathArg} failed to copy to destination:${destinationArg}`)
-                return false
-            }
-        }
-
-        return true
     }
 
     async rm(optionArg:any, sourceArg:string):Promise<string>{
@@ -734,7 +651,7 @@ Mandatory argument to long options are mandotory for short options too.
 
             if(option === '-rf'){
                 folderQueue.push(sourceArg);
-                const result = await this.rmHandler(optionArg,sourceArg);
+                const result = await this._fileService.removeHandler(optionArg,sourceArg);
                 if(result){
                     this.sendDirectoryUpdateNotification(sourceArg);
                     return '';
@@ -742,56 +659,13 @@ Mandatory argument to long options are mandotory for short options too.
             }
         }else{
             // just copy regular file
-            const result = await this.rmHandler(sourceArg,sourceArg);
+            const result = await this._fileService.removeHandler(sourceArg,sourceArg);
             if(result){
                 this.sendDirectoryUpdateNotification(sourceArg);
                 return '';
             }
         }        
         return 'error';
-    }
-
-    private async rmHandler(arg0: string, sourceArg: string): Promise<boolean> {
-        const loadedDirectoryEntries = await this._fileService.getEntriesFromDirectoryAsync(sourceArg);
-    
-        for (const directoryEntry of loadedDirectoryEntries) {
-            const entryPath = `${sourceArg}/${directoryEntry}`;
-            const checkIfDirectory = await this._fileService.checkIfDirectory(entryPath);
-    
-            if (checkIfDirectory) {
-                // Recursively call the rm_dir_handler for the subdirectory
-                const success = await this.rmHandler(arg0, entryPath);
-                if (!success) {
-                    console.log(`Failed to delete directory: ${entryPath}`);
-                    return false;
-                }
-            } else {
-                const result = await this._fileService.deleteFileAsync(entryPath);
-                if (result) {
-                    console.log(`File: ${directoryEntry} in ${entryPath} deleted successfully`);
-                } else {
-                    console.log(`File: ${directoryEntry} in ${entryPath} failed deletion`);
-                    return false;
-                }
-            }
-        }
-    
-        // Delete the current directory after all its contents have been  deleted
-        console.log(`folder to delete: ${sourceArg}`);
-        const result = await this._fileService.deleteFolderAsync(`${sourceArg}`);
-    
-        if (result) {
-            console.log(`Directory: ${sourceArg} deleted successfully`);
-            return true;
-        } else {
-            console.log(`Failed to delete directory: ${sourceArg}`);
-            return false;
-        }
-    }
-    
-
-    private getFileName(path:string):string{
-        return `${basename(path, extname(path))}${ extname(path)}`;
     }
 
     private sendDirectoryUpdateNotification(arg0:string):void{
