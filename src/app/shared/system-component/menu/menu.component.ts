@@ -12,6 +12,7 @@ export class MenuComponent implements OnChanges, OnDestroy{
 
   @Input() generalMenu: GeneralMenu[] = [];
   @Input() desktopMenu: NestedMenu[] = [];
+  @Input() fileExplorerMenu: NestedMenu[] = [];
   @Input() menuType = '';
 
   private _menuService:MenuService;
@@ -22,6 +23,7 @@ export class MenuComponent implements OnChanges, OnDestroy{
   fileExplrMngrMenuOption = "file-explorer-file-manager-menu";
   tskBarMenuOption =  "taskbar-menu";
   deskTopMenuOption =  "desktop-menu";
+  fileExplrMenuOption =  "file-explorer-menu";
   keys: string[] = [];
   paste = 'Paste';
 

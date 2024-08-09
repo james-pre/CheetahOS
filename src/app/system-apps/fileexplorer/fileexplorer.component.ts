@@ -77,6 +77,7 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
   onClearSearchIconHover = false;
   onSearchIconHover = false;
   showCntxtMenu = false;
+  showFileExplrCntxtMenu = false;
   showInformationTip = false;
   hasWindow = true;
   //hideInformationTip = false;
@@ -114,6 +115,15 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
   readonly contentView = ViewOptions.CONTENT_VIEW;
   readonly tilesView = ViewOptions.TILES_VIEW;
 
+  isExtraLargeIcon = false;
+  isLargeIcon = false;
+  isMediumIcon = true;
+  isSmallIcon = false;
+  isListIcon = false;
+  isDetailsIcon = false;
+  isContentIcon = false;
+  isTitleIcon = false;
+
   renameForm!: FormGroup;
   pathForm!: FormGroup;
   searchForm!: FormGroup;
@@ -131,7 +141,11 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
     {icon:'', label: 'Rename', action: this.onRenameFileTxtBoxShow.bind(this) },
     {icon:'', label: 'Properties', action: this.doNothing.bind(this) }
   ];
+
+  fileExplrMenu:NestedMenu[] = [];
+
   fileExplrMngrMenuOption = "file-explorer-file-manager-menu";
+  fileExplrMenuOption = "file-explorer-menu";
 
   fileInfoTipData = [{label:'', data:''}];
 
@@ -887,10 +901,23 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
     }
   }
 
-  preventDesktopContextMenu(evt:MouseEvent,):void{
+  showFileExplorerContextMenu(evt:MouseEvent,):void{
+
+    const rect =  this.fileExplrCntntCntnr.nativeElement.getBoundingClientRect();
+    const x = evt.clientX - rect.left;
+    const y = evt.clientY - rect.top;
+    
     const uid = `${this.name}-${this.processId}`;
     this._runningProcessService.addEventOriginator(uid);
 
+
+    this.showFileExplrCntxtMenu = !this.showFileExplrCntxtMenu;
+
+    this.fxIconCntxtMenuStyle = {
+      'position': 'absolute', 
+      'transform':`translate(${String(x)}px, ${String(y)}px)`,
+      'z-index': 2,
+    }
     evt.preventDefault();
   }
 
@@ -1417,36 +1444,35 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
   }
 
 
+  buildViewByMenu():NestedMenuItem[]{
 
-  // buildViewByMenu():NestedMenuItem[]{
+    const extraLargeIcon:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Extra Large icons', action: () => this.isExtraLargeIcon = !this.isExtraLargeIcon,  variables:this.isExtraLargeIcon, 
+      emptyline:false, styleOption:'A' }
 
-  //   const extraLargeIcon:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Extra Large icons',  action: this.viewBySmallIcon.bind(this),  variables:this., 
-  //     emptyline:false, styleOption:'A' }
+    const largeIcon:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Large icons', action: () => this.isLargeIcon = !this.isLargeIcon,  variables:this.isMediumIcon, 
+      emptyline:false, styleOption:'A' }
 
-  //   const largeIcon:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Large icons',  action: this.viewByMediumIcon.bind(this),  variables:this.isMediumIcon, 
-  //     emptyline:false, styleOption:'A' }
+    const mediumIcon:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Medium icons', action: () => this.isMediumIcon = !this.isMediumIcon, variables:this.isLargeIcon,
+      emptyline:false, styleOption:'A' }
 
-  //   const mediumIcon:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Medium icons', action: this.viewByLargeIcon.bind(this), variables:this.isLargeIcon,
-  //     emptyline:true, styleOption:'A' }
+    const smallIcon:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Small icons', action: () => this.isSmallIcon = !this.isSmallIcon, variables:this.isLargeIcon,
+    emptyline:false, styleOption:'A' }
 
-  //   const smallIcon:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Medium icons', action: this.viewByLargeIcon.bind(this), variables:this.isLargeIcon,
-  //   emptyline:true, styleOption:'A' }
+    const listIcon:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'List icons', action: () => this.isListIcon = !this.isListIcon, variables:this.isListIcon,
+    emptyline:false, styleOption:'A' }
 
-  //   const listIcon:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Medium icons', action: this.viewByLargeIcon.bind(this), variables:this.isLargeIcon,
-  //   emptyline:true, styleOption:'A' }
+    const detailsIcon:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Details icons', action: () => this.isDetailsIcon = !this.isDetailsIcon, variables:this.isDetailsIcon,
+      emptyline:false, styleOption:'A' }
 
-  //   const detailsIcon:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Medium icons', action: this.viewByLargeIcon.bind(this), variables:this.isLargeIcon,
-  //     emptyline:true, styleOption:'A' }
-
-  //   const titlesIcon:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Medium icons', action: this.viewByLargeIcon.bind(this), variables:this.isLargeIcon,
-  //       emptyline:true, styleOption:'A' }
-
+    const titlesIcon:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Titles icons', action: () => this.isTitleIcon = !this.isTitleIcon, variables:this.isTitleIcon,
+        emptyline:false, styleOption:'A' }
 
 
-  //   const viewByMenu = [extraLargeIcon, largeIcon, mediumIcon, smallIcon, listIcon,detailsIcon, titlesIcon];
 
-  //   return viewByMenu;
-  // }
+    const viewByMenu = [extraLargeIcon, largeIcon, mediumIcon, smallIcon, listIcon,detailsIcon, titlesIcon];
+
+    return viewByMenu;
+  }
 
   // buildSortByMenu(): NestedMenuItem[]{
 
@@ -1484,7 +1510,7 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
   // }
 
   // getDesktopMenuData():void{
-  //   this.deskTopMenu = [
+  //   this.fileExplrMenu = [
   //         {icon1:'',  icon2: 'osdrive/icons/arrow_next.png', label:'View', nest:this.buildViewByMenu(), action: ()=> console.log(), emptyline:false},
   //         {icon1:'',  icon2:'osdrive/icons/arrow_next.png', label:'Sort by', nest:this.buildSortByMenu(), action: ()=> console.log(), emptyline:false},
   //         {icon1:'',  icon2:'', label: 'Refresh', nest:[], action:this.refresh.bind(this), emptyline:true},
