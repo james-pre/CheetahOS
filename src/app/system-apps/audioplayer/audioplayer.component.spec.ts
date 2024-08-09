@@ -3,21 +3,20 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AudioplayerComponent } from './audioplayer.component';
 
 describe('AudioplayerComponent', () => {
-  let component: AudioplayerComponent;
-  let fixture: ComponentFixture<AudioplayerComponent>;
+	let component: AudioplayerComponent;
+	let fixture: ComponentFixture<AudioplayerComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ AudioplayerComponent ]
-    })
-    .compileComponents();
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			declarations: [AudioplayerComponent],
+		}).compileComponents();
 
-    fixture = TestBed.createComponent(AudioplayerComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+		fixture = TestBed.createComponent(AudioplayerComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

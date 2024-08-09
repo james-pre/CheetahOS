@@ -1,96 +1,113 @@
-<ng-container [ngTemplateOutlet]="menuOption === fileExplrMngrMenuOption ? fileExplrMngrMenu :
-                                  menuOption === tskBarMenuOption ? tskBarMenu: dsktpMenu ">
-</ng-container>
+<ng-container [ngTemplateOutlet]="menuOption === fileExplrMngrMenuOption ? fileExplrMngrMenu : menuOption === tskBarMenuOption ? tskBarMenu : dsktpMenu"> </ng-container>
 
 <ng-template #fileExplrMngrMenu>
-  <div class="dm-vertical-menu">
-    <div class="dm-empty-line-container"></div>
+	<div class="dm-vertical-menu">
+		<div class="dm-empty-line-container"></div>
 
-    <div lass="dm-vertical-menu-cntnr" *ngFor="let menuItem of generalMenu; let i = index">
-        <div class="dm-vertical-menu-item"  (click)="onMenuItemClick(menuItem.action)">
-            <span class="span dm-head"> <figure class="dm-fig-cntxt-menu"> </figure></span>
-            <span class="span dm-mid">{{menuItem.label}}</span>
-            <span class="span dm-tail"> <figure class="dm-fig-cntxt-menu"> </figure> </span>
-        </div>
+		<div lass="dm-vertical-menu-cntnr" *ngFor="let menuItem of generalMenu; let i = index">
+			<div class="dm-vertical-menu-item" (click)="onMenuItemClick(menuItem.action)">
+				<span class="span dm-head"> <figure class="dm-fig-cntxt-menu"></figure></span>
+				<span class="span dm-mid">{{ menuItem.label }}</span>
+				<span class="span dm-tail"> <figure class="dm-fig-cntxt-menu"></figure> </span>
+			</div>
 
-        <div class="dm-empty-line-container" *ngIf="i === 2 || i === 4 || i === 6"></div>
-        <div class="dm-line-container" *ngIf="i === 2 || i === 4 || i === 6"><div class="dm-line"></div></div>
-        <div class="dm-empty-line-container" *ngIf="i === 2 || i === 4 || i === 6"></div>
-    </div>
+			<div class="dm-empty-line-container" *ngIf="i === 2 || i === 4 || i === 6"></div>
+			<div class="dm-line-container" *ngIf="i === 2 || i === 4 || i === 6"><div class="dm-line"></div></div>
+			<div class="dm-empty-line-container" *ngIf="i === 2 || i === 4 || i === 6"></div>
+		</div>
 
-    <div class="dm-empty-line-container"></div>
-</div>
+		<div class="dm-empty-line-container"></div>
+	</div>
 </ng-template>
 
 <ng-template #tskBarMenu>
-  <div class="dm-vertical-menu">
-    <div class="dm-empty-line-container"></div>
-  
-    <div lass="dm-vertical-menu-cntnr" *ngFor="let menuItem of generalMenu; let i = index">
-        <div class="dm-vertical-menu-item"  (click)="onMenuItemClick(menuItem.action)">
-            <div class="dm-tskbar-head"> <figure class="dm-tskbar-fig-cntxt-menu"><img *ngIf="menuItem.icon.length > 0" class="dm-tskbar-img-alt" [src]="menuItem.icon"/></figure></div>
-            <div class="dm-tskbar-mid"><p class="dm-p">{{menuItem.label}}</p></div>
-            <div class="dm-tskbar-tail"> <figure class="dm-tskbar-fig-cntxt-menu"> </figure> </div>
-        </div>
-    </div>
-  
-    <div class="dm-empty-line-container"></div>
-  </div>
-  
+	<div class="dm-vertical-menu">
+		<div class="dm-empty-line-container"></div>
+
+		<div lass="dm-vertical-menu-cntnr" *ngFor="let menuItem of generalMenu; let i = index">
+			<div class="dm-vertical-menu-item" (click)="onMenuItemClick(menuItem.action)">
+				<div class="dm-tskbar-head">
+					<figure class="dm-tskbar-fig-cntxt-menu"><img *ngIf="menuItem.icon.length > 0" class="dm-tskbar-img-alt" [src]="menuItem.icon" /></figure>
+				</div>
+				<div class="dm-tskbar-mid">
+					<p class="dm-p">{{ menuItem.label }}</p>
+				</div>
+				<div class="dm-tskbar-tail"><figure class="dm-tskbar-fig-cntxt-menu"></figure></div>
+			</div>
+		</div>
+
+		<div class="dm-empty-line-container"></div>
+	</div>
 </ng-template>
 
 <ng-template #dsktpMenu>
-  <div class="dm-dsktp-vertical-menu">
-    <div class="dm-dsktp-empty-line-container"></div>
+	<div class="dm-dsktp-vertical-menu">
+		<div class="dm-dsktp-empty-line-container"></div>
 
-    <div class="dm-dsktp-vertical-sub-menu" *ngFor="let menuItem of desktopMenu" >
+		<div class="dm-dsktp-vertical-sub-menu" *ngFor="let menuItem of desktopMenu">
+			<div *ngIf="menuItem.label !== paste" class="dm-dsktp-vertical-menu-item" (click)="onMenuItemClick(menuItem.action)">
+				<div class="dm-dsktp-head">
+					<figure class="dm-dsktp-figure"><img *ngIf="menuItem.icon1" class="dm-dsktp-img" [src]="menuItem.icon1" /></figure>
+				</div>
+				<div class="dm-dsktp-mid">
+					<p class="dm-dsktp-p">{{ menuItem.label }}</p>
+				</div>
+				<div class="dm-dsktp-tail">
+					<figure class="dm-dsktp-figure"><img *ngIf="menuItem.icon2" class="dm-dsktp-img" [src]="menuItem.icon2" /></figure>
+				</div>
+			</div>
 
-      <div  *ngIf="menuItem.label !== paste" class="dm-dsktp-vertical-menu-item" (click)="onMenuItemClick(menuItem.action)">
-        <div class="dm-dsktp-head"><figure class="dm-dsktp-figure"><img *ngIf="menuItem.icon1" class="dm-dsktp-img" [src]="menuItem.icon1"/></figure></div>
-        <div class="dm-dsktp-mid"><p class="dm-dsktp-p"> {{menuItem.label}}</p></div>
-        <div class="dm-dsktp-tail"><figure class="dm-dsktp-figure"> <img *ngIf="menuItem.icon2" class="dm-dsktp-img" [src]="menuItem.icon2"/></figure></div>
-      </div>
+			<div *ngIf="menuItem.label === paste && isPasteActive" class="dm-dsktp-vertical-menu-item" (click)="onMenuItemClick(menuItem.action)">
+				<div class="dm-dsktp-head">
+					<figure class="dm-dsktp-figure"><img *ngIf="menuItem.icon1" class="dm-dsktp-img" [src]="menuItem.icon1" /></figure>
+				</div>
+				<div class="dm-dsktp-mid">
+					<p class="dm-dsktp-p">{{ menuItem.label }}</p>
+				</div>
+				<div class="dm-dsktp-tail">
+					<figure class="dm-dsktp-figure"><img *ngIf="menuItem.icon2" class="dm-dsktp-img" [src]="menuItem.icon2" /></figure>
+				</div>
+			</div>
 
-      <div  *ngIf="menuItem.label === paste  && isPasteActive" class="dm-dsktp-vertical-menu-item" (click)="onMenuItemClick(menuItem.action)">
-        <div class="dm-dsktp-head"><figure class="dm-dsktp-figure"><img *ngIf="menuItem.icon1" class="dm-dsktp-img" [src]="menuItem.icon1"/></figure></div>
-        <div class="dm-dsktp-mid"><p class="dm-dsktp-p"> {{menuItem.label}}</p></div>
-        <div class="dm-dsktp-tail"><figure class="dm-dsktp-figure"> <img *ngIf="menuItem.icon2" class="dm-dsktp-img" [src]="menuItem.icon2"/></figure></div>
-      </div>
+			<div *ngIf="menuItem.label === paste && !isPasteActive" class="dm-dsktp-vertical-menu-item turnOffHoverEffect">
+				<div class="dm-dsktp-head">
+					<figure class="dm-dsktp-figure"><img *ngIf="menuItem.icon1" class="dm-dsktp-img" [src]="menuItem.icon1" /></figure>
+				</div>
+				<div class="dm-dsktp-mid-disabled">
+					<p class="dm-dsktp-p">{{ menuItem.label }}</p>
+				</div>
+				<div class="dm-dsktp-tail">
+					<figure class="dm-dsktp-figure"><img *ngIf="menuItem.icon2" class="dm-dsktp-img" [src]="menuItem.icon2" /></figure>
+				</div>
+			</div>
 
+			<div *ngIf="menuItem.nest.length" class="dm-dsktp-vertical-sub-menu-content">
+				<div class="dm-dsktp-empty-line-container"></div>
+				<div *ngFor="let item of menuItem.nest" (click)="onMenuItemClick(item.action)">
+					<div class="dm-dsktp-vertical-menu-item">
+						<div class="dm-dsktp-head">
+							<figure [ngClass]="item.styleOption === 'A' ? 'dm-dsktp-figure-alt' : 'dm-dsktp-figure-alt2'">
+								<img *ngIf="item.variables" [ngClass]="item.styleOption === 'A' ? 'dm-dsktp-img-alt' : 'dm-dsktp-img-alt2'" [src]="item.icon" />
+							</figure>
+						</div>
+						<div class="dm-dsktp-mid" *ngIf="item.styleOption === 'A' || item.styleOption === 'B'">{{ item.label }}</div>
+						<div class="dm-dsktp-mid" *ngIf="item.styleOption === 'C'">
+							<p class="dm-dsktp-p">{{ item.label }}</p>
+						</div>
+						<div class="dm-dsktp-tail"><figure class="dm-dsktp-figure"></figure></div>
+					</div>
 
-      <div  *ngIf="menuItem.label === paste  && !isPasteActive" class="dm-dsktp-vertical-menu-item turnOffHoverEffect ">
-        <div class="dm-dsktp-head"><figure class="dm-dsktp-figure"><img *ngIf="menuItem.icon1" class="dm-dsktp-img" [src]="menuItem.icon1"/></figure></div>
-        <div class="dm-dsktp-mid-disabled"><p class="dm-dsktp-p"> {{menuItem.label}}</p></div>
-        <div class="dm-dsktp-tail"><figure class="dm-dsktp-figure"> <img *ngIf="menuItem.icon2" class="dm-dsktp-img" [src]="menuItem.icon2"/></figure></div>
-      </div>
+					<div *ngIf="item.emptyline" class="dm-dsktp-empty-line-container"></div>
+					<div *ngIf="item.emptyline" class="dm-dsktp-line-container"><div class="dm-dsktp-line"></div></div>
+					<div *ngIf="item.emptyline" class="dm-dsktp-empty-line-container"></div>
+				</div>
+				<div class="dm-dsktp-empty-line-container"></div>
+			</div>
 
-
-      <div  *ngIf="menuItem.nest.length" class="dm-dsktp-vertical-sub-menu-content" >
-        <div class="dm-dsktp-empty-line-container"></div>
-          <div *ngFor="let item of menuItem.nest" (click)="onMenuItemClick(item.action)">
-            <div class="dm-dsktp-vertical-menu-item">
-              <div class="dm-dsktp-head"><figure [ngClass]=" item.styleOption === 'A' ?'dm-dsktp-figure-alt' : 'dm-dsktp-figure-alt2'">
-                                          <img *ngIf="item.variables" [ngClass]=" item.styleOption === 'A' ?'dm-dsktp-img-alt' : 'dm-dsktp-img-alt2' " [src]="item.icon"/>
-                                        </figure>
-              </div>
-              <div class="dm-dsktp-mid" *ngIf="item.styleOption === 'A' || item.styleOption === 'B'">{{item.label}}</div>
-              <div class="dm-dsktp-mid"  *ngIf="item.styleOption === 'C'" ><p class="dm-dsktp-p"> {{item.label}}</p></div>
-              <div class="dm-dsktp-tail"><figure class="dm-dsktp-figure"></figure></div>
-            </div>
-    
-            <div *ngIf="item.emptyline" class="dm-dsktp-empty-line-container"></div>
-            <div *ngIf="item.emptyline" class="dm-dsktp-line-container"><div class="dm-dsktp-line"></div></div>
-            <div *ngIf="item.emptyline" class="dm-dsktp-empty-line-container"></div>
-          </div>
-        <div class="dm-dsktp-empty-line-container"></div>
-      </div>
-
-      <div *ngIf="menuItem.emptyline" class="dm-dsktp-empty-line-container"></div>
-      <div *ngIf="menuItem.emptyline" class="dm-dsktp-line-container"><div class="dm-dsktp-line"></div></div>
-      <div *ngIf="menuItem.emptyline" class="dm-dsktp-empty-line-container"></div>
-    </div>
-    <div style="position: relative; z-index:1; top: 248px;" class="dm-dsktp-empty-line-container"></div>
-  </div>
+			<div *ngIf="menuItem.emptyline" class="dm-dsktp-empty-line-container"></div>
+			<div *ngIf="menuItem.emptyline" class="dm-dsktp-line-container"><div class="dm-dsktp-line"></div></div>
+			<div *ngIf="menuItem.emptyline" class="dm-dsktp-empty-line-container"></div>
+		</div>
+		<div style="position: relative; z-index: 1; top: 248px" class="dm-dsktp-empty-line-container"></div>
+	</div>
 </ng-template>
-
-

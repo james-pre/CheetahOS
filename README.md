@@ -16,9 +16,9 @@ Run `npm run build` to generate the filesystem(osdrive.json). Once the filesyste
 
 It should look like this {"osdrive":{"Desktop":{"audioplayer.url":null,"fileexplorer.url":null,"heat.url":null,"hello.url":null,"taskmanager.url":null,"terminal.url":null,"videoplayer.url":null}}}
 
-***Note - npm will throw an error that it is unable to find make_http_index.js. All you have to do, is to got `CheetahOs/node_modules/browserfs/dist/scripts folder` and make a copy of `make_xhrfs_index.js` and rename it to `make_http_index.js`
+\*\*\*Note - npm will throw an error that it is unable to find make_http_index.js. All you have to do, is to got `CheetahOs/node_modules/browserfs/dist/scripts folder` and make a copy of `make_xhrfs_index.js` and rename it to `make_http_index.js`
 
-***Note Some other error might occur in browserfs as a result of missing libs.
+\*\*\*Note Some other error might occur in browserfs as a result of missing libs.
 
 We are not utilizing the DropBox feature, so we can comment it out
 comment out this line `/// <reference types="dropboxjs" />` change it to `/* /// <reference types="dropboxjs" />*/`
@@ -29,13 +29,14 @@ comment out this line `/// <reference types="dropboxjs" />` change it to `/* ///
 
 |---> Property `put` in type `IndexedDBRWTransaction` is not assignable to the same property in base type 'AsyncKeyValueRWTransaction'.
 
- |---> change `(key: string, data: Buffer, overwrite: boolean, cb: BFSCallback<boolean>)`  to `(key: string, data: Buffer, overwrite: boolean, cb: any)`
+|---> change `(key: string, data: Buffer, overwrite: boolean, cb: BFSCallback<boolean>)` to `(key: string, data: Buffer, overwrite: boolean, cb: any)`
 
 |---> Type `Stats` is missing the following properties from type `StatsBase<number>: atimeMs, mtimeMs, ctimeMs, birthtimeMs`
 
- |---> add this line of code:`atimeMs: number; mtimeMs: number; ctimeMs: number; birthtimeMs: number;`
+|---> add this line of code:`atimeMs: number; mtimeMs: number; ctimeMs: number; birthtimeMs: number;`
 
 ## Code scaffolding
+
 ## Build
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.

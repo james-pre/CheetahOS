@@ -13,112 +13,107 @@ import * as htmlToImage from 'html-to-image';
 import { TaskBarPreviewImage } from 'src/app/system-apps/taskbarpreview/taskbar.preview';
 // import { DiffEditorModel } from 'ngx-monaco-editor-v2';
 
-
 @Component({
-  selector: 'cos-codeeditor',
-  templateUrl: './codeeditor.component.html',
-  styleUrl: './codeeditor.component.css'
+	selector: 'cos-codeeditor',
+	templateUrl: './codeeditor.component.html',
+	styleUrl: './codeeditor.component.css',
 })
-export class CodeEditorComponent  implements BaseComponent,  OnDestroy, AfterViewInit, OnInit {
+export class CodeEditorComponent implements BaseComponent, OnDestroy, AfterViewInit, OnInit {
+	@ViewChild('monacoContent', { static: true }) monacoContent!: ElementRef;
 
-  @ViewChild('monacoContent', {static: true}) monacoContent!: ElementRef;
+	private _processIdService: ProcessIDService;
+	private _runningProcessService: RunningProcessService;
+	private _stateManagmentService: StateManagmentService;
+	private _triggerProcessService: TriggerProcessService;
 
-  private _processIdService:ProcessIDService;
-  private _runningProcessService:RunningProcessService;
-  private _stateManagmentService:StateManagmentService;
-  private _triggerProcessService:TriggerProcessService;
+	private _maximizeWindowSub!: Subscription;
+	SECONDS_DELAY = 250;
 
-  private _maximizeWindowSub!: Subscription;
-  SECONDS_DELAY = 250;
+	editorOptions = {
+		language: 'javascript', // java, javascript, python, csharp, html, markdown, ruby
+		theme: 'vs-dark', // vs, vs-dark, hc-black
+		automaticLayout: true,
+	};
+	code = this.getCode();
 
-  editorOptions = {
-    language: 'javascript', // java, javascript, python, csharp, html, markdown, ruby
-    theme: 'vs-dark', // vs, vs-dark, hc-black
-    automaticLayout: true,
-  };
-  code = this.getCode();
+	hasWindow = true;
+	icon = 'osdrive/icons/vs-code_48.png';
+	name = 'codeeditor';
+	processId = 0;
+	type = ComponentType.User;
+	displayName = '';
 
+	constructor(
+		processIdService: ProcessIDService,
+		runningProcessService: RunningProcessService,
+		triggerProcessService: TriggerProcessService,
+		stateManagmentService: StateManagmentService
+	) {
+		this._processIdService = processIdService;
+		this.processId = this._processIdService.getNewProcessId();
+		this._runningProcessService = runningProcessService;
+		this._stateManagmentService = stateManagmentService;
+		this._triggerProcessService = triggerProcessService;
 
-  hasWindow = true;
-  icon = 'osdrive/icons/vs-code_48.png';
-  name = 'codeeditor';
-  processId = 0;
-  type = ComponentType.User;
-  displayName = '';
+		this._runningProcessService.addProcess(this.getComponentDetail());
+	}
 
-  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService,
-                stateManagmentService:StateManagmentService){
-    this._processIdService = processIdService
-    this.processId = this._processIdService.getNewProcessId()
-    this._runningProcessService = runningProcessService;
-    this._stateManagmentService = stateManagmentService;
-    this._triggerProcessService = triggerProcessService;
+	ngOnInit(): void {
+		1;
+	}
 
+	ngAfterViewInit(): void {
+		this.setCodeEditorWindowToFocus(this.processId);
 
-    this._runningProcessService.addProcess(this.getComponentDetail());
-  }
+		// setTimeout(()=>{
+		//   this.captureComponentImg();
+		// },this.SECONDS_DELAY)
+	}
 
-  ngOnInit(): void {
-    1
-  }
+	ngOnDestroy(): void {
+		this._maximizeWindowSub?.unsubscribe();
+	}
 
-  ngAfterViewInit(): void {
-    this.setCodeEditorWindowToFocus(this.processId); 
+	captureComponentImg(): void {
+		htmlToImage.toPng(this.monacoContent.nativeElement).then(htmlImg => {
+			//console.log('img data:',htmlImg);
 
-    // setTimeout(()=>{
-    //   this.captureComponentImg();
-    // },this.SECONDS_DELAY) 
-  }
+			const cmpntImg: TaskBarPreviewImage = {
+				pid: this.processId,
+				imageData: htmlImg,
+			};
+			this._runningProcessService.addProcessImage(this.name, cmpntImg);
+		});
+	}
 
-  ngOnDestroy():void{
-    this._maximizeWindowSub?.unsubscribe();
-  }
+	maximizeWindow(): void {
+		const uid = `${this.name}-${this.processId}`;
+		const evtOriginator = this._runningProcessService.getEventOrginator();
 
-  captureComponentImg():void{
-    htmlToImage.toPng(this.monacoContent.nativeElement).then(htmlImg =>{
-      //console.log('img data:',htmlImg);
+		if (uid === evtOriginator) {
+			this._runningProcessService.removeEventOriginator();
+			const mainWindow = document.getElementById('vanta');
+			//window title and button bar, and windows taskbar height
+			const pixelTosubtract = 30 + 40;
+			this.monacoContent.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
+			this.monacoContent.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+		}
+	}
 
-      const cmpntImg:TaskBarPreviewImage = {
-        pid: this.processId,
-        imageData: htmlImg
-      }
-      this._runningProcessService.addProcessImage(this.name, cmpntImg);
-    })
-  }
+	getCode(): string {
+		// return (
+		//   '<html><!-- // !!! Tokens can be inspected using F1 > Developer: Inspect Tokens !!! -->\n<head>\n	<!-- HTML comment -->\n	<style type="text/css">\n		/* CSS comment */\n	</style>\n	<script type="javascript">\n		// JavaScript comment\n	</' +
+		//   'script>\n</head>\n<body></body>\n</html>'
+		// );
 
-  maximizeWindow():void{
+		return 'function x() {\nconsole.log("Hello world!");\n}';
+	}
 
-    const uid = `${this.name}-${this.processId}`;
-    const evtOriginator = this._runningProcessService.getEventOrginator();
+	setCodeEditorWindowToFocus(pid: number): void {
+		this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
+	}
 
-    if(uid === evtOriginator){
-
-      this._runningProcessService.removeEventOriginator();
-      const mainWindow = document.getElementById('vanta');
-      //window title and button bar, and windows taskbar height
-      const pixelTosubtract = 30 + 40;
-      this.monacoContent.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
-      this.monacoContent.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
-
-    }
-  }
-
-  getCode():string{
-    // return (
-    //   '<html><!-- // !!! Tokens can be inspected using F1 > Developer: Inspect Tokens !!! -->\n<head>\n	<!-- HTML comment -->\n	<style type="text/css">\n		/* CSS comment */\n	</style>\n	<script type="javascript">\n		// JavaScript comment\n	</' +
-    //   'script>\n</head>\n<body></body>\n</html>'
-    // );
-
-    return 'function x() {\nconsole.log("Hello world!");\n}';
-  }
-
-
-  setCodeEditorWindowToFocus(pid:number):void{
-    this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
-  }
-
-  private getComponentDetail():Process{
-    return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type, this._triggerProcessService.getLastProcessTrigger)
-  }
-
+	private getComponentDetail(): Process {
+		return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type, this._triggerProcessService.getLastProcessTrigger);
+	}
 }

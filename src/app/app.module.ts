@@ -31,7 +31,7 @@ import { TextEditorComponent } from './system-apps/texteditor/texteditor.compone
 import { RuffleComponent } from './user-apps/ruffle/ruffle.component';
 import { DialogComponent } from './shared/system-component/dialog/dialog.component';
 import { CodeEditorComponent } from './user-apps/codeeditor/codeeditor.component';
-import { PropertiesComponent } from './shared/system-component/properties/properties.component'; 
+import { PropertiesComponent } from './shared/system-component/properties/properties.component';
 import { MarkDownViewerComponent } from './user-apps/markdownviewer/markdownviewer.component';
 
 import { SafeUrlPipe } from './shared/system-pipes/safe.resource.url.pipe';
@@ -43,57 +43,54 @@ import { LongPressDirective } from './system-apps/audioplayer/long.press.directi
 import { ColumnResizeDirective } from './system-apps/taskmanager/taskmanager.column-resize.directive';
 import { KeyPressCaptureDirective } from './system-apps/terminal/key.press.capture.directive';
 
-
 @NgModule({
-  declarations: [
-    TitleComponent,
-    AppComponent,
-    DesktopComponent,
-    TaskbarComponent,
-    ClockComponent,
-    StartButtonComponent,
-    TaskBarPreviewComponent,
-    TaskBarEntriesComponent,
-    TaskBarEntryComponent,
-    FileExplorerComponent,
-    WindowComponent,
-    FileManagerComponent,
-    GreetingComponent,
-    TaskmanagerComponent,
-    TaskmanagerMiniComponent,
-    JSdosComponent,
-    VideoPlayerComponent,
-    AudioPlayerComponent,
-    TerminalComponent,
-    MenuComponent,
-    PhotoViewerComponent,
-    TextEditorComponent,
-    PropertiesComponent,
-    RuffleComponent,
-    DialogComponent,
-    CodeEditorComponent,
-    MarkDownViewerComponent,
- 
+	declarations: [
+		TitleComponent,
+		AppComponent,
+		DesktopComponent,
+		TaskbarComponent,
+		ClockComponent,
+		StartButtonComponent,
+		TaskBarPreviewComponent,
+		TaskBarEntriesComponent,
+		TaskBarEntryComponent,
+		FileExplorerComponent,
+		WindowComponent,
+		FileManagerComponent,
+		GreetingComponent,
+		TaskmanagerComponent,
+		TaskmanagerMiniComponent,
+		JSdosComponent,
+		VideoPlayerComponent,
+		AudioPlayerComponent,
+		TerminalComponent,
+		MenuComponent,
+		PhotoViewerComponent,
+		TextEditorComponent,
+		PropertiesComponent,
+		RuffleComponent,
+		DialogComponent,
+		CodeEditorComponent,
+		MarkDownViewerComponent,
 
-    HighlightDirective,
-    TaskBarEntryHighlightDirective,
-    LongPressDirective,
-    ColumnResizeDirective,
-    KeyPressCaptureDirective,
+		HighlightDirective,
+		TaskBarEntryHighlightDirective,
+		LongPressDirective,
+		ColumnResizeDirective,
+		KeyPressCaptureDirective,
 
-    SafeUrlPipe,
-    TruncatePipe
-    
-  ],
-  imports: [
-    BrowserModule,
-    AngularDraggableModule,
-    BrowserAnimationsModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MonacoEditorModule.forRoot(), // use forRoot() in main app module only.
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+		SafeUrlPipe,
+		TruncatePipe,
+	],
+	imports: [
+		BrowserModule,
+		AngularDraggableModule,
+		BrowserAnimationsModule,
+		ReactiveFormsModule,
+		FormsModule,
+		MonacoEditorModule.forRoot(), // use forRoot() in main app module only.
+	],
+	providers: [],
+	bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

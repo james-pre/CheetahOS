@@ -1,8 +1,8 @@
 import { Component, ElementRef, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
-import {DosPlayerFactoryType } from "js-dos";
-import {DosPlayerOptions} from './js.dos';
-import {CommandInterface, Emulators} from "emulators";
-import {extname} from 'path';
+import { DosPlayerFactoryType } from 'js-dos';
+import { DosPlayerOptions } from './js.dos';
+import { CommandInterface, Emulators } from 'emulators';
+import { extname } from 'path';
 import { FileService } from 'src/app/shared/system-service/file.service';
 import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { ComponentType } from 'src/app/system-files/component.types';
@@ -20,167 +20,168 @@ import * as htmlToImage from 'html-to-image';
 import { TaskBarPreviewImage } from 'src/app/system-apps/taskbarpreview/taskbar.preview';
 
 declare const Dos: DosPlayerFactoryType;
-declare const emulators:Emulators
+declare const emulators: Emulators;
 
 @Component({
-  selector: 'cos-jsdos',
-  templateUrl: './jsdos.component.html',
-  styleUrls: ['./jsdos.component.css']
+	selector: 'cos-jsdos',
+	templateUrl: './jsdos.component.html',
+	styleUrls: ['./jsdos.component.css'],
 })
 export class JSdosComponent implements BaseComponent, OnInit, OnDestroy, AfterViewInit {
-  @ViewChild('doswindow') dosWindow!: ElementRef; 
+	@ViewChild('doswindow') dosWindow!: ElementRef;
 
-  private _fileService:FileService;
-  private _processIdService:ProcessIDService;
-  private _runningProcessService:RunningProcessService;
-  private _triggerProcessService:TriggerProcessService;
-  private _stateManagmentService:StateManagmentService;
-  private _sessionManagmentService: SessionManagmentService;
-  private _scriptService: ScriptService;
-  
-  private _ci!: CommandInterface;
-  private _fileInfo!:FileInfo;
-  private _appState!:AppState;
-  private gameSrc = '';
+	private _fileService: FileService;
+	private _processIdService: ProcessIDService;
+	private _runningProcessService: RunningProcessService;
+	private _triggerProcessService: TriggerProcessService;
+	private _stateManagmentService: StateManagmentService;
+	private _sessionManagmentService: SessionManagmentService;
+	private _scriptService: ScriptService;
 
-  SECONDS_DELAY = 250;
+	private _ci!: CommandInterface;
+	private _fileInfo!: FileInfo;
+	private _appState!: AppState;
+	private gameSrc = '';
 
-  name= 'jsdos';
-  hasWindow = true;
-  icon = '/osdrive/icons/js-dos-logo.png';
-  isMaximizable = false;
-  processId = 0;
-  type = ComponentType.User;
-  displayName = 'JS-Dos';
+	SECONDS_DELAY = 250;
 
-  dosOptions:DosPlayerOptions = {
-    style: "none",
-    noSideBar: true,
-    noFullscreen: true,
-    noSocialLinks:true
-  }
+	name = 'jsdos';
+	hasWindow = true;
+	icon = '/osdrive/icons/js-dos-logo.png';
+	isMaximizable = false;
+	processId = 0;
+	type = ComponentType.User;
+	displayName = 'JS-Dos';
 
-  constructor(fileService:FileService, processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService,
-              stateManagmentService: StateManagmentService, sessionManagmentService: SessionManagmentService, scriptService: ScriptService) { 
-    this._fileService = fileService
-    this._processIdService = processIdService;
-    this._triggerProcessService = triggerProcessService;
-    this._stateManagmentService = stateManagmentService;
-    this._sessionManagmentService = sessionManagmentService;
-    this._scriptService = scriptService;
-    this.processId = this._processIdService.getNewProcessId();
-    
-    this.retrievePastSessionData();
+	dosOptions: DosPlayerOptions = {
+		style: 'none',
+		noSideBar: true,
+		noFullscreen: true,
+		noSocialLinks: true,
+	};
 
-    this._runningProcessService = runningProcessService;
-    this._runningProcessService.addProcess(this.getComponentDetail());
-  }
+	constructor(
+		fileService: FileService,
+		processIdService: ProcessIDService,
+		runningProcessService: RunningProcessService,
+		triggerProcessService: TriggerProcessService,
+		stateManagmentService: StateManagmentService,
+		sessionManagmentService: SessionManagmentService,
+		scriptService: ScriptService
+	) {
+		this._fileService = fileService;
+		this._processIdService = processIdService;
+		this._triggerProcessService = triggerProcessService;
+		this._stateManagmentService = stateManagmentService;
+		this._sessionManagmentService = sessionManagmentService;
+		this._scriptService = scriptService;
+		this.processId = this._processIdService.getNewProcessId();
 
-  ngOnInit(): void {
-    this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
-  }
+		this.retrievePastSessionData();
 
-  ngOnDestroy(): void {
-    if(this.dosOptions){
+		this._runningProcessService = runningProcessService;
+		this._runningProcessService.addProcess(this.getComponentDetail());
+	}
 
-      if(this._ci != undefined)
-          this._ci.exit();
-    }
-  }
+	ngOnInit(): void {
+		this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
+	}
 
-  async ngAfterViewInit() {
-    
-    this.setJSDosWindowToFocus(this.processId); 
-      
-    this.gameSrc = (this.gameSrc !=='')? 
-      this.gameSrc : this.getGamesSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
+	ngOnDestroy(): void {
+		if (this.dosOptions) {
+			if (this._ci != undefined) this._ci.exit();
+		}
+	}
 
-    this._scriptService.loadScript("js-dos", "assets/js-dos/js-dos.js").then(async() =>{
+	async ngAfterViewInit() {
+		this.setJSDosWindowToFocus(this.processId);
 
-      emulators.pathPrefix= '/';
+		this.gameSrc = this.gameSrc !== '' ? this.gameSrc : this.getGamesSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
 
-      const data = await this._fileService.getFileBlobAsync(this.gameSrc);
-      this._ci = await  Dos(this.dosWindow.nativeElement, this.dosOptions).run(data);
-      this.storeAppState(this.gameSrc);
-      URL.revokeObjectURL(this.gameSrc);
+		this._scriptService.loadScript('js-dos', 'assets/js-dos/js-dos.js').then(async () => {
+			emulators.pathPrefix = '/';
 
-      this.displayName = this._fileInfo.getFileName;
-    })
+			const data = await this._fileService.getFileBlobAsync(this.gameSrc);
+			this._ci = await Dos(this.dosWindow.nativeElement, this.dosOptions).run(data);
+			this.storeAppState(this.gameSrc);
+			URL.revokeObjectURL(this.gameSrc);
 
-    setTimeout(()=>{
-      this.captureComponentImg();
-    },this.SECONDS_DELAY) 
-  }
+			this.displayName = this._fileInfo.getFileName;
+		});
 
-  captureComponentImg():void{
-    htmlToImage.toPng(this.dosWindow.nativeElement).then(htmlImg =>{
-      //console.log('img data:',htmlImg);
-      const cmpntImg:TaskBarPreviewImage = {
-        pid: this.processId,
-        imageData: htmlImg
-      }
-      this._runningProcessService.addProcessImage(this.name, cmpntImg);
-    })
-  }
+		setTimeout(() => {
+			this.captureComponentImg();
+		}, this.SECONDS_DELAY);
+	}
 
-  setJSDosWindowToFocus(pid:number):void{
-    this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
-  }
+	captureComponentImg(): void {
+		htmlToImage.toPng(this.dosWindow.nativeElement).then(htmlImg => {
+			//console.log('img data:',htmlImg);
+			const cmpntImg: TaskBarPreviewImage = {
+				pid: this.processId,
+				imageData: htmlImg,
+			};
+			this._runningProcessService.addProcessImage(this.name, cmpntImg);
+		});
+	}
 
-  getGamesSrc(pathOne:string, pathTwo:string):string{
-    let gameSrc = '';
+	setJSDosWindowToFocus(pid: number): void {
+		this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
+	}
 
-    if(this.checkForExt(pathOne,pathTwo)){
-      gameSrc = '/' + this._fileInfo.getContentPath;
-    }else{
-      gameSrc =  this._fileInfo.getCurrentPath;
-    }
+	getGamesSrc(pathOne: string, pathTwo: string): string {
+		let gameSrc = '';
 
-    return gameSrc;
-  }
+		if (this.checkForExt(pathOne, pathTwo)) {
+			gameSrc = '/' + this._fileInfo.getContentPath;
+		} else {
+			gameSrc = this._fileInfo.getCurrentPath;
+		}
 
-  checkForExt(contentPath:string, currentPath:string):boolean{
-    const contentExt = extname(contentPath);
-    const currentPathExt = extname(currentPath);
-    const ext = ".jsdos";
-    let res = false;
+		return gameSrc;
+	}
 
-    if(contentExt != '' && contentExt == ext){
-      res = true;
-    }else if( currentPathExt == ext){
-      res = false;
-    }
-    return res;
-  }
+	checkForExt(contentPath: string, currentPath: string): boolean {
+		const contentExt = extname(contentPath);
+		const currentPathExt = extname(currentPath);
+		const ext = '.jsdos';
+		let res = false;
 
-  storeAppState(app_data:unknown):void{
-    const uid = `${this.name}-${this.processId}`;
-    this._appState = {
-      pid: this.processId,
-      app_data: app_data as string,
-      app_name: this.name,
-      unique_id: uid
-    }
-    this._stateManagmentService.addState(uid, this._appState, StateType.App);
-  }
+		if (contentExt != '' && contentExt == ext) {
+			res = true;
+		} else if (currentPathExt == ext) {
+			res = false;
+		}
+		return res;
+	}
 
-  retrievePastSessionData():void{
-    const pickUpKey = this._sessionManagmentService._pickUpKey;
-    if(this._sessionManagmentService.hasTempSession(pickUpKey)){
-      const tmpSessKey = this._sessionManagmentService.getTempSession(pickUpKey) || ''; 
-      const retrievedSessionData = this._sessionManagmentService.getSession(tmpSessKey) as BaseState[];
+	storeAppState(app_data: unknown): void {
+		const uid = `${this.name}-${this.processId}`;
+		this._appState = {
+			pid: this.processId,
+			app_data: app_data as string,
+			app_name: this.name,
+			unique_id: uid,
+		};
+		this._stateManagmentService.addState(uid, this._appState, StateType.App);
+	}
 
-      if(retrievedSessionData !== undefined){
-        const appSessionData = retrievedSessionData[0] as AppState;
-        if(appSessionData !== undefined  && appSessionData.app_data != ''){
-          this.gameSrc = appSessionData.app_data as string;
-        }
-      }
-    }
-  }
+	retrievePastSessionData(): void {
+		const pickUpKey = this._sessionManagmentService._pickUpKey;
+		if (this._sessionManagmentService.hasTempSession(pickUpKey)) {
+			const tmpSessKey = this._sessionManagmentService.getTempSession(pickUpKey) || '';
+			const retrievedSessionData = this._sessionManagmentService.getSession(tmpSessKey) as BaseState[];
 
-  private getComponentDetail():Process{
-    return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type, this._triggerProcessService.getLastProcessTrigger)
-  }
+			if (retrievedSessionData !== undefined) {
+				const appSessionData = retrievedSessionData[0] as AppState;
+				if (appSessionData !== undefined && appSessionData.app_data != '') {
+					this.gameSrc = appSessionData.app_data as string;
+				}
+			}
+		}
+	}
 
+	private getComponentDetail(): Process {
+		return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type, this._triggerProcessService.getLastProcessTrigger);
+	}
 }

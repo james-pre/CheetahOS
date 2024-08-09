@@ -1,474 +1,474 @@
 /* Custom styles for the card */
 .card {
-  width: 100%;
-  height: 100%;
-  border: 1px solid #ccc; /* Add a border to the card */
+	width: 100%;
+	height: 100%;
+	border: 1px solid #ccc; /* Add a border to the card */
 }
-  
+
 /* Custom styles for the card-body */
 .card-body {
-  width: 100%;
-  height: 100%;
-  padding: 0; /* Add padding inside the card body */
-  background-color: #ffffff; /* Set the background color */
-  color: #000; /* Set the text color */
-  border-top: none; /*Add a top border to separate from the card header */
-  margin-bottom: 43px;
+	width: 100%;
+	height: 100%;
+	padding: 0; /* Add padding inside the card body */
+	background-color: #ffffff; /* Set the background color */
+	color: #000; /* Set the text color */
+	border-top: none; /*Add a top border to separate from the card header */
+	margin-bottom: 43px;
 }
 
 /* Additional styles for links inside the card-body (optional) */
 .card-body a {
-  text-decoration: none; /* Remove underlines from links */
- /*  color: #007BFF; Set link color */
+	text-decoration: none; /* Remove underlines from links */
+	/*  color: #007BFF; Set link color */
 }
 
 /* Hover effect for links (optional) */
 .card-body a:hover {
-  text-decoration: underline; /* Add underline on hover */
+	text-decoration: underline; /* Add underline on hover */
 }
-
 
 /* Custom styles for rows */
 .row {
-  margin: 10px 0px; /* Add margin above and below the row */
-  min-height: 10px;
-  min-width: 10px;
+	margin: 10px 0px; /* Add margin above and below the row */
+	min-height: 10px;
+	min-width: 10px;
 }
 
 /* Custom styles for columns */
 .col {
-  padding: 10px; /* Add padding inside columns */
-  background-color: #ffffff; /* Set a background color for columns */
-  border: 1px solid #cccccc; /* Add a border to columns */
-  /* border-radius: 1px; Add rounded corners to columns */
-  color: #000; /* Set text color for columns */
+	padding: 10px; /* Add padding inside columns */
+	background-color: #ffffff; /* Set a background color for columns */
+	border: 1px solid #cccccc; /* Add a border to columns */
+	/* border-radius: 1px; Add rounded corners to columns */
+	color: #000; /* Set text color for columns */
 }
 
 /* Additional styles for links inside columns (optional) */
 .col a {
-  text-decoration: none; /* Remove underlines from links */
-  color: #007BFF; /* Set link color */
+	text-decoration: none; /* Remove underlines from links */
+	color: #007bff; /* Set link color */
 }
 
 /* Hover effect for links (optional) */
 .col a:hover {
-  text-decoration: underline; /* Add underline on hover */
+	text-decoration: underline; /* Add underline on hover */
 }
-
 
 /*----------------------------------------Table CSS START --------------------------*/
 /* Custom styles for .table-responsive (Optional) */
 .tskmgr-table-cntnr {
-  width: 680px;
-  height:260px;
-  overflow: auto; /* Enable horizontal/vertical scrolling when needed */
-  border-top:  none;
-  /* padding-bottom: 10px; */
+	width: 680px;
+	height: 260px;
+	overflow: auto; /* Enable horizontal/vertical scrolling when needed */
+	border-top: none;
+	/* padding-bottom: 10px; */
 }
 
 /* Custom styles for the table */
 .tskmgr-table {
-    /*overflow: scroll; */   /* Enable horizontal scrolling when needed */
-    border-collapse: collapse; /* Remove spacing between table cells */
-    width: 100%; /* Set the table width to 100% of its container */
-    margin: 1px 0; /* Add margin above and below the table */
-    font-family: Arial, sans-serif; /* Set the font family for the table */
-    table-layout: auto;
+	/*overflow: scroll; */ /* Enable horizontal scrolling when needed */
+	border-collapse: collapse; /* Remove spacing between table cells */
+	width: 100%; /* Set the table width to 100% of its container */
+	margin: 1px 0; /* Add margin above and below the table */
+	font-family: Arial, sans-serif; /* Set the font family for the table */
+	table-layout: auto;
 }
 
 /* Custom styles for the table */
 .taskmgr-table.mini {
-  border-collapse: collapse; /* Remove spacing between table cells */
-  min-width: 100%; /* Set the table width to 100% of its container */
-  margin: 1px 0; /* Add margin above and below the table */
-  font-family: Arial, sans-serif; /* Set the font family for the table */
-  table-layout: auto;
+	border-collapse: collapse; /* Remove spacing between table cells */
+	min-width: 100%; /* Set the table width to 100% of its container */
+	margin: 1px 0; /* Add margin above and below the table */
+	font-family: Arial, sans-serif; /* Set the font family for the table */
+	table-layout: auto;
 }
 
 /* Custom styles for table headers */
 .tskmgr-table th {
-  background-color: #ffffff; /* Header background color */
-  color: #333; /* Header text color */
-  padding: 0; /* Header cell padding */
-  text-align: left; /* Header text alignment */
-  font-weight:lighter;  /* Header text bold */
-  height: 40px;
-  min-width: 80px;
-  border: 1px solid #ccc;   /* Cell border */
-  border-top: none;
-  vertical-align: middle;
+	background-color: #ffffff; /* Header background color */
+	color: #333; /* Header text color */
+	padding: 0; /* Header cell padding */
+	text-align: left; /* Header text alignment */
+	font-weight: lighter; /* Header text bold */
+	height: 40px;
+	min-width: 80px;
+	border: 1px solid #ccc; /* Cell border */
+	border-top: none;
+	vertical-align: middle;
 }
 
-tbody{
-  border-left: 0;
-  border-right: 0;
+tbody {
+	border-left: 0;
+	border-right: 0;
 }
-  
+
 /* Custom styles for table rows */
 .tskmgr-table tr {
-  background-color: #ffffff; /* Row background color */
-}
-  
-/* Alternate row background color (zebra-striping) */
-.tskmgr-table tr:nth-child(even) {
-  background-color: #ffffff; 
-}
-  
-/* Custom styles for table cells */
-.tskmgr-table td {
-  padding: 3px 5px; /* Cell padding */
-  min-width: 80px;
-  margin-left: 5px;
-  margin-right: 5px;
-  font-size: 12px;
-  font-weight:lighter; 
-  text-align: left; /* Header text alignment */
-  border: 1px solid #ccc; /* Cell border  #1a127b*/
-  border-top:none; border-bottom:none;
+	background-color: #ffffff; /* Row background color */
 }
 
-.tskmgr-table td:first-child td:last-child{
-  border-left: 0;
-  border-right: 0;
+/* Alternate row background color (zebra-striping) */
+.tskmgr-table tr:nth-child(even) {
+	background-color: #ffffff;
+}
+
+/* Custom styles for table cells */
+.tskmgr-table td {
+	padding: 3px 5px; /* Cell padding */
+	min-width: 80px;
+	margin-left: 5px;
+	margin-right: 5px;
+	font-size: 12px;
+	font-weight: lighter;
+	text-align: left; /* Header text alignment */
+	border: 1px solid #ccc; /* Cell border  #1a127b*/
+	border-top: none;
+	border-bottom: none;
+}
+
+.tskmgr-table td:first-child td:last-child {
+	border-left: 0;
+	border-right: 0;
 }
 
 /* Add hover effect to table rows (optional) */
 .tskmgr-table tr:hover {
-  background-color: #e8f4fc;
+	background-color: #e8f4fc;
 }
 
 .tskmgr-table tr.active td {
-  background-color:#d0ecfc !important;
+	background-color: #d0ecfc !important;
 }
 
-
 /* Add this to your component's CSS or global styles */
-th[columnResize], td[columnResize] {
-  position: relative;
+th[columnResize],
+td[columnResize] {
+	position: relative;
 }
 
 th[columnResize]::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 1px; /* Adjust the handle width */
-  height: 100%;
-  cursor: col-resize;
-  background-color: #f0f0f0; /* Handle background color */
+	content: '';
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 1px; /* Adjust the handle width */
+	height: 100%;
+	cursor: col-resize;
+	background-color: #f0f0f0; /* Handle background color */
 }
 
 /*----------------------------------------Table CSS END --------------------------*/
 
 span {
-  display: block; /* Ensures each span is on a new line */
+	display: block; /* Ensures each span is on a new line */
 }
 
-.tskmgr-th-div-name-cntnr-l{
-  display: flex;
-  padding-left:5px; 
-  height: 50%;
+.tskmgr-th-div-name-cntnr-l {
+	display: flex;
+	padding-left: 5px;
+	height: 50%;
 }
 
-.tskmgr-th-div-name-cntnr-r{
-  display: flex;
-  padding-right:5px; 
-  height: 50%;
+.tskmgr-th-div-name-cntnr-r {
+	display: flex;
+	padding-right: 5px;
+	height: 50%;
 }
 
-.tskmgr-sort-icon-cntnr-basic{
-  height: 50%;
-  margin-left:50%;
+.tskmgr-sort-icon-cntnr-basic {
+	height: 50%;
+	margin-left: 50%;
 }
 
-.tskmgr-sort-icon{
-  font-size:13px; 
+.tskmgr-sort-icon {
+	font-size: 13px;
 }
 
-.tskmgr-th-span-name{
-  position: relative;
-  font-size: 12px;
-  font-weight: normal;
-  color: #043e7c;
-  text-overflow: ellipsis;
-  top: 18%;
+.tskmgr-th-span-name {
+	position: relative;
+	font-size: 12px;
+	font-weight: normal;
+	color: #043e7c;
+	text-overflow: ellipsis;
+	top: 18%;
 }
 
-.tskmgr-numeric-th-div-cntnr{
-  display:flex;
-  width: 80px;
-  height:50%;
+.tskmgr-numeric-th-div-cntnr {
+	display: flex;
+	width: 80px;
+	height: 50%;
 }
 
-.tskmgr-sort-icon-cntnr{
-  display: flex;
-  width:40%; 
-  height:100%;
+.tskmgr-sort-icon-cntnr {
+	display: flex;
+	width: 40%;
+	height: 100%;
 }
 
-.tskmgr-sort-icon1{
-  font-size:13px; 
-  position: relative;
-  right: -20%;
-  top:0%;
+.tskmgr-sort-icon1 {
+	font-size: 13px;
+	position: relative;
+	right: -20%;
+	top: 0%;
 }
 
-.tskmgr-th-div-number-cntnr{
-  display: flex;
-  height:100%;
-  width:60%;
+.tskmgr-th-div-number-cntnr {
+	display: flex;
+	height: 100%;
+	width: 60%;
 }
 
-.tskmgr-th-div-number{
-  font-size:medium;
-  position: relative;
-  font-weight: normal;
-  width: 58%;
-  /* right: 0%; */
-  top:0%;
+.tskmgr-th-div-number {
+	font-size: medium;
+	position: relative;
+	font-weight: normal;
+	width: 58%;
+	/* right: 0%; */
+	top: 0%;
 }
 
-.tskmgr-th-div-symbol{
-  font-size:medium;
-  position: relative;
-  font-weight: normal;
-  width: 42%;
-  top:0%;
+.tskmgr-th-div-symbol {
+	font-size: medium;
+	position: relative;
+	font-weight: normal;
+	width: 42%;
+	top: 0%;
 }
 
-
-.tskmgr-numeric-th-name-cntnr{
-  position: relative;
-  height:50%;
-  width: 80px;
-  font-size:14px;
+.tskmgr-numeric-th-name-cntnr {
+	position: relative;
+	height: 50%;
+	width: 80px;
+	font-size: 14px;
 }
 
-.tskmgr-th-span-name1{
-  position: relative;
-  font-size: 12px;
-  font-weight: normal;
-  color: #043e7c;
-  text-overflow: ellipsis;
-  text-align: right;
-  padding-right: 5px;
-  top:18%
+.tskmgr-th-span-name1 {
+	position: relative;
+	font-size: 12px;
+	font-weight: normal;
+	color: #043e7c;
+	text-overflow: ellipsis;
+	text-align: right;
+	padding-right: 5px;
+	top: 18%;
 }
 
-.taskmgr-table th:first-child th:last-child{
-  border-left: 0;
-  border-right: 0;
-}
-  
-.tskmgr-figure0{
-  align-items: center;
-  display:inline-flex;
-  width: fit-content;
+.taskmgr-table th:first-child th:last-child {
+	border-left: 0;
+	border-right: 0;
 }
 
-.tskmgr-figcaption0{
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 12px;
-  font-weight: normal;
+.tskmgr-figure0 {
+	align-items: center;
+	display: inline-flex;
+	width: fit-content;
 }
 
-.tskmgr-img0{
-    height: 18px;
-    width: 18px;
-    image-rendering:optimizeQuality;
-    position: relative;
-    margin: 0 4px 0 0;
+.tskmgr-figcaption0 {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-size: 12px;
+	font-weight: normal;
+}
+
+.tskmgr-img0 {
+	height: 18px;
+	width: 18px;
+	image-rendering: optimizeQuality;
+	position: relative;
+	margin: 0 4px 0 0;
 }
 
 /* Styles for the tabbed window container */
 .tskmgr-tabbed-window {
-    min-width: 150px; /* Adjust the width as needed */
-    border: 1px solid #ccc; /**/
-    /* border-radius: 5px;
+	min-width: 150px; /* Adjust the width as needed */
+	border: 1px solid #ccc; /**/
+	/* border-radius: 5px;
     overflow: scroll;  */
 }
 
 .tskmgr-tabbed-window:first-child .tskmgr-tabbed-window:last-child {
-  border-left: 0;
-  border-right: 0;
+	border-left: 0;
+	border-right: 0;
 }
-  
+
 /* Styles for the tab navigation */
 .tskmgr-tabs {
-  display: flex;
-  background-color: #ffffff;
-  color: #000;
-  border-bottom: none;
+	display: flex;
+	background-color: #ffffff;
+	color: #000;
+	border-bottom: none;
 }
 
 .tskmgr-tab {
-  flex: 1;
-  padding: 2px 5px;
-  background-color: #f2f2f2; /*e3e0e0*/
-  text-align: center;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  font-weight: normal;
-  font-size: 12px;
-  border-left: 1px solid #ccc;
-  border-right: 1px solid #ccc;
-  border-top: 1px solid #ccc;
-  max-width: fit-content;
-  max-height: fit-content;
+	flex: 1;
+	padding: 2px 5px;
+	background-color: #f2f2f2; /*e3e0e0*/
+	text-align: center;
+	cursor: pointer;
+	transition: background-color 0.3s;
+	font-weight: normal;
+	font-size: 12px;
+	border-left: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+	border-top: 1px solid #ccc;
+	max-width: fit-content;
+	max-height: fit-content;
 }
 
 .tskmgr-tab.active {
-  background-color: #ffffff; /*f2f2f2*/
-  border-left: 0;
-  border-right: 0;
-  border-top: 1px solid #ccc;
-  color: #000;
+	background-color: #ffffff; /*f2f2f2*/
+	border-left: 0;
+	border-right: 0;
+	border-top: 1px solid #ccc;
+	color: #000;
 }
 
 /* Styles for tab content */
 .tskmgr-tab-content {
-  padding: 0;
-  border-top: none; 
+	padding: 0;
+	border-top: none;
 }
 
 .tskmgr-tab-pane {
-  display: none;
+	display: none;
 }
 
 .tskmgr-tab-pane.active {
-  display: block;
+	display: block;
 }
 
-.just-for-one-span{
-  color: #000; 
-  font-weight: normal;
-  padding-left: 2px;
+.just-for-one-span {
+	color: #000;
+	font-weight: normal;
+	padding-left: 2px;
 }
 
-.just-for-one-span::first-letter{
-  text-decoration: underline;
+.just-for-one-span::first-letter {
+	text-decoration: underline;
 }
 
-.tsksmgr-footer-div-cntnr{
-  display:flex;
-  position: fixed;
-  bottom: 0;
-  left: 0%;
-  width: 100%;
-  height: 45px;
-  font-size: small;
-  font-weight: lighter;
-  border-top: 1px solid #ccc; /* Cell border */
-  background-color: #ffffff;
+.tsksmgr-footer-div-cntnr {
+	display: flex;
+	position: fixed;
+	bottom: 0;
+	left: 0%;
+	width: 100%;
+	height: 45px;
+	font-size: small;
+	font-weight: lighter;
+	border-top: 1px solid #ccc; /* Cell border */
+	background-color: #ffffff;
 }
 
-.tsksmgr-footer-div-cntnt{
-  display: flex;
-  position: relative;
-  width: 50%;
-  left: 0%
+.tsksmgr-footer-div-cntnt {
+	display: flex;
+	position: relative;
+	width: 50%;
+	left: 0%;
 }
 
-.tsksmgr-footer-div-cntnt1{
-  display: flex;
-  position: relative;
-  padding-left: 5%;
-  width: 50%;
-  right: 0%
+.tsksmgr-footer-div-cntnt1 {
+	display: flex;
+	position: relative;
+	padding-left: 5%;
+	width: 50%;
+	right: 0%;
 }
 
-  /* Custom styles for .btn.btn-primary */
+/* Custom styles for .btn.btn-primary */
 .btn.btn-primary {
-  position: relative;
-  background-color: #d0cccc; /* Primary button background color */
-  color: #75787c; /* Text color for the primary button */
-  border: 1px solid #bcbcbc; /* Border color for the primary button */
-  padding: 2px 20px; /* Padding for the primary button (adjust as needed) */
-  font-size: 12px; /* Font size for the text */
-  font-weight: normal;
-  height: 22px;
-  right: -68%;
-  top: 25%;
+	position: relative;
+	background-color: #d0cccc; /* Primary button background color */
+	color: #75787c; /* Text color for the primary button */
+	border: 1px solid #bcbcbc; /* Border color for the primary button */
+	padding: 2px 20px; /* Padding for the primary button (adjust as needed) */
+	font-size: 12px; /* Font size for the text */
+	font-weight: normal;
+	height: 22px;
+	right: -68%;
+	top: 25%;
 }
 
-  /* Custom styles for .btn.btn-primary */
+/* Custom styles for .btn.btn-primary */
 .btn.btn-primary-b {
-    position: relative;
-    background-color: #d0cccc; /* Primary button background color */
-    color: #75787c; /* Text color for the primary button */
-    border: 1px solid #bcbcbc; /* Border color for the primary button */
-    padding: 2px 20px; /* Padding for the primary button (adjust as needed) */
-    font-size: 12px; /* Font size for the text */
-    font-weight: normal;
-    height: 22px;
-    right: -25%;
-    top: 25%;
-  }
+	position: relative;
+	background-color: #d0cccc; /* Primary button background color */
+	color: #75787c; /* Text color for the primary button */
+	border: 1px solid #bcbcbc; /* Border color for the primary button */
+	padding: 2px 20px; /* Padding for the primary button (adjust as needed) */
+	font-size: 12px; /* Font size for the text */
+	font-weight: normal;
+	height: 22px;
+	right: -25%;
+	top: 25%;
+}
 
-.btn.btn-primary::first-letter .btn.btn-primary-b::first-letter{
-  text-decoration: underline;
+.btn.btn-primary::first-letter .btn.btn-primary-b::first-letter {
+	text-decoration: underline;
 }
 
 /* Hover state for the primary button */
 .btn.btn-primary:hover .btn.btn-primary-b:hover {
-  background-color: #84b3e4; /* Background color when hovered */
-  border: 1px solid #0056b3; /* Border color when hovered */
-  color: #000; /* Text color when hovered */
+	background-color: #84b3e4; /* Background color when hovered */
+	border: 1px solid #0056b3; /* Border color when hovered */
+	color: #000; /* Text color when hovered */
 }
 
 /* Active (clicked) state for the primary button */
-.btn.btn-primary.active, .btn.btn-primary.focus  .btn.btn-primary-b.active, .btn.btn-primary-b.focus {
-  background-color: #e4e4e1; /* Background color when active or focused */
-  border: 1px solid #ccc; /* Border color when active or focused */
-  color: #000; /* Text color when active or focused */
+.btn.btn-primary.active,
+.btn.btn-primary.focus .btn.btn-primary-b.active,
+.btn.btn-primary-b.focus {
+	background-color: #e4e4e1; /* Background color when active or focused */
+	border: 1px solid #ccc; /* Border color when active or focused */
+	color: #000; /* Text color when active or focused */
 }
 
 /* Active (clicked) state for the primary button */
-.btn.btn-primary.head:active, .btn.btn-primary.head:focus {
-  background-color: #0056b3; /* Background color when active or focused */
-  border: 1px solid #0056b3; /* Border color when active or focused */
-  color: #fff; /* Text color when active or focused */
+.btn.btn-primary.head:active,
+.btn.btn-primary.head:focus {
+	background-color: #0056b3; /* Background color when active or focused */
+	border: 1px solid #0056b3; /* Border color when active or focused */
+	color: #fff; /* Text color when active or focused */
 }
-
 
 /*-------------------------------------Navigation Menu Start-----------------------------------*/
 
 .tskmgr-nav-btn-cntnr {
-  background-color: #ffffff;
-  display:flex; 
-  position:relative;
+	background-color: #ffffff;
+	display: flex;
+	position: relative;
 }
 
-.tskmgr-nav-btn{
-  display: inline-flex;
-  border: 1px transparent;
-  padding: 1px 5px;
-  height: 20px;
+.tskmgr-nav-btn {
+	display: inline-flex;
+	border: 1px transparent;
+	padding: 1px 5px;
+	height: 20px;
 }
 
-.tskmgr-btn-span{
-  position: relative;
-  font-size: 12px;
-  font-weight: normal;
-  text-align: left;
-  top: 14%;
+.tskmgr-btn-span {
+	position: relative;
+	font-size: 12px;
+	font-weight: normal;
+	text-align: left;
+	top: 14%;
 }
 
-.tskmgr-nav-btn:hover{
-  background-color: #98ccf4;
-  border-color:#8cc8f6 ;
+.tskmgr-nav-btn:hover {
+	background-color: #98ccf4;
+	border-color: #8cc8f6;
 }
 
-
-.tskmgr-nav-menu-cntnr, .tskmgr-nav-menu-cntnr1{
-  display:none; 
-  position:absolute;
-  background-color: #ffffff;
-  padding: 3px;
-  box-shadow: 2px 2px rgba(0,0,0,0.3);
-  z-index: 1;
+.tskmgr-nav-menu-cntnr,
+.tskmgr-nav-menu-cntnr1 {
+	display: none;
+	position: absolute;
+	background-color: #ffffff;
+	padding: 3px;
+	box-shadow: 2px 2px rgba(0, 0, 0, 0.3);
+	z-index: 1;
 }
 
 /* .tskmgr-nav-btn:hover .tskmgr-nav-menu-cntnr{
@@ -482,165 +482,162 @@ span {
   top: 20px;
 } */
 
-.tskmgr-nav-menu-item{
-  display:flex; 
-  position:relative;
-  background-color: #ffffff;
-  width: 140px;
-  padding: 4px 0;
+.tskmgr-nav-menu-item {
+	display: flex;
+	position: relative;
+	background-color: #ffffff;
+	width: 140px;
+	padding: 4px 0;
 }
 
-.tskmgr-nav-sub-menu-cntnr{
-  display:none; 
-  position:absolute;
-  background-color: #ffffff;
-  padding: 3px;
-  box-shadow: 2px 2px rgba(0,0,0,0.3);
-  left: 95%;
-  top: -2px;
-  z-index: 1;
+.tskmgr-nav-sub-menu-cntnr {
+	display: none;
+	position: absolute;
+	background-color: #ffffff;
+	padding: 3px;
+	box-shadow: 2px 2px rgba(0, 0, 0, 0.3);
+	left: 95%;
+	top: -2px;
+	z-index: 1;
 }
 
-.tskmgr-nav-menu-item:hover{
-  background-color: #8cc8f6;
+.tskmgr-nav-menu-item:hover {
+	background-color: #8cc8f6;
 }
 
-.tskmgr-nav-menu-item:hover .tskmgr-nav-sub-menu-cntnr{
-  display: block;
+.tskmgr-nav-menu-item:hover .tskmgr-nav-sub-menu-cntnr {
+	display: block;
 }
 
-.tskmgr-nav-sub-menu-cntnr .tskmgr-nav-menu-item{
-  padding:1px 0;
+.tskmgr-nav-sub-menu-cntnr .tskmgr-nav-menu-item {
+	padding: 1px 0;
 }
 
-.tskmgr-item-span{
-  display: inline-flex;
-  align-items: center;
-  position: relative;
-  padding-left: 10px;
-  font-size: 12px;
-  font-weight: normal;
-  text-align: left;
+.tskmgr-item-span {
+	display: inline-flex;
+	align-items: center;
+	position: relative;
+	padding-left: 10px;
+	font-size: 12px;
+	font-weight: normal;
+	text-align: left;
 }
 
-.tskmgr-nav-div{
-  padding-left: 22px;
-  height: 14px;
+.tskmgr-nav-div {
+	padding-left: 22px;
+	height: 14px;
 }
 
-.tskmgr-nav-figure{
-  position: relative;
-  align-items: center;
-  place-content: center;
-  display: inline-flex;
-  width: 14px;
-  height: 14px;
-  top: -2px;
+.tskmgr-nav-figure {
+	position: relative;
+	align-items: center;
+	place-content: center;
+	display: inline-flex;
+	width: 14px;
+	height: 14px;
+	top: -2px;
 }
 
-.tskmgr-nav-img{
-  height: 12px;
-  width: 12px;
-  image-rendering:optimizeQuality;
-  position: relative;
+.tskmgr-nav-img {
+	height: 12px;
+	width: 12px;
+	image-rendering: optimizeQuality;
+	position: relative;
 }
 
-.tskmgr-nav-sub-menu-div{
-  display: block;
-  width: 19px;
-  height: 19px;
+.tskmgr-nav-sub-menu-div {
+	display: block;
+	width: 19px;
+	height: 19px;
 }
 
-.tskmgr-nav-sub-menu-div.active{
-  background-color: #98ccf4;
+.tskmgr-nav-sub-menu-div.active {
+	background-color: #98ccf4;
 }
 
-.tskmgr-nav-sub-menu-figure{
-  position: relative;
-  display: inline-flex;
-  width: 18px;
-  height: 18px;
-  top: -2px;
-  left: 5px;
+.tskmgr-nav-sub-menu-figure {
+	position: relative;
+	display: inline-flex;
+	width: 18px;
+	height: 18px;
+	top: -2px;
+	left: 5px;
 }
 
-.tskmgr-nav-sub-menu-img{
-  height: 8px;
-  width: 8px;
-  image-rendering:optimizeQuality;
-  position: relative;
+.tskmgr-nav-sub-menu-img {
+	height: 8px;
+	width: 8px;
+	image-rendering: optimizeQuality;
+	position: relative;
 }
-
 
 /*-------------------------------------Navigation Menu End-----------------------------------*/
 
-
 /*-------------------------------------Column Header Context Menu Start-----------------------------------*/
 .tskmgr-vertical-menu {
-  position: absolute;
-  width: 180px;
-  box-shadow: 2px 2px rgba(0, 0, 0, 0.3);
-  border: 1px solid #9c9898;
-  z-index: 2;
+	position: absolute;
+	width: 180px;
+	box-shadow: 2px 2px rgba(0, 0, 0, 0.3);
+	border: 1px solid #9c9898;
+	z-index: 2;
 }
 
 .tskmgr-vertical-menu-item {
-  height: 24px;
-  background-color: #eee;
-  display: inline-flex;
-  width: 100%;
-  z-index: 2;
+	height: 24px;
+	background-color: #eee;
+	display: inline-flex;
+	width: 100%;
+	z-index: 2;
 }
 
 .tskmgr-vertical-menu-item:hover {
-  background-color: #98ccf4; 
-  text-decoration: none;
+	background-color: #98ccf4;
+	text-decoration: none;
 }
 
-.tskmgr-span{
-  display: block;
+.tskmgr-span {
+	display: block;
 }
 
-.tskmgr-span.head{
-  max-width: 25%;
-  padding-left: 4px;
+.tskmgr-span.head {
+	max-width: 25%;
+	padding-left: 4px;
 }
 
-.tskmgr-span.head.active{
-  max-width: 25%;
-  padding-left: 4px;
-  background-color: #98ccf4;
+.tskmgr-span.head.active {
+	max-width: 25%;
+	padding-left: 4px;
+	background-color: #98ccf4;
 }
 
-.tskmgr-span.mid{
-  min-width: 50%;
-  padding: 0 4px;
-  color: black; /* Black text color */
-  text-align: left;
-  font-size: 12px;
-  font-weight: normal;
+.tskmgr-span.mid {
+	min-width: 50%;
+	padding: 0 4px;
+	color: black; /* Black text color */
+	text-align: left;
+	font-size: 12px;
+	font-weight: normal;
 }
 
-.tskmgr-span.tail{
-  max-width: 25%;
-  padding-left: 68px;
+.tskmgr-span.tail {
+	max-width: 25%;
+	padding-left: 68px;
 }
 
-
-.tskmgr-img{
-  height: 16px;
-  width: 16px;
-  image-rendering:optimizeQuality;
-  position: relative;
+.tskmgr-img {
+	height: 16px;
+	width: 16px;
+	image-rendering: optimizeQuality;
+	position: relative;
 }
 
-.tskmgr-figure{
-  position: relative;
-  align-items: center;
-  display: inline-flex;
-  min-width: 18px;
-  top: 0;
-  left: 15%;
+.tskmgr-figure {
+	position: relative;
+	align-items: center;
+	display: inline-flex;
+	min-width: 18px;
+	top: 0;
+	left: 15%;
 }
 
 /*-------------------------------------Column Header Context Menu End-----------------------------------*/

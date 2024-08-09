@@ -1,11 +1,10 @@
 .my-code-editor {
-    min-width: 800px;
-    width: 100%;
-    min-height: 600px;
-    /* height: 100%; */
-    font-family: monospace;
-    font-size: 10pt;
-    letter-spacing: normal; 
-    text-align: left;
-  }
-
+	min-width: 800px;
+	width: 100%;
+	min-height: 600px;
+	/* height: 100%; */
+	font-family: monospace;
+	font-size: 10pt;
+	letter-spacing: normal;
+	text-align: left;
+}

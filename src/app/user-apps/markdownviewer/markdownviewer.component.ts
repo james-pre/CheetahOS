@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, OnInit, OnDestroy, AfterViewInit, Renderer2} from '@angular/core';
+import { Component, ElementRef, ViewChild, OnInit, OnDestroy, AfterViewInit, Renderer2 } from '@angular/core';
 import { BaseComponent } from 'src/app/system-base/base/base.component';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { Subscription } from 'rxjs';
@@ -9,7 +9,7 @@ import { TriggerProcessService } from 'src/app/shared/system-service/trigger.pro
 import { Process } from 'src/app/system-files/process';
 import { AppState, BaseState } from 'src/app/system-files/state/state.interface';
 import { StateType } from 'src/app/system-files/state/state.type';
-import {extname} from 'path';
+import { extname } from 'path';
 
 import * as htmlToImage from 'html-to-image';
 import { TaskBarPreviewImage } from 'src/app/system-apps/taskbarpreview/taskbar.preview';
@@ -18,188 +18,185 @@ import { FileService } from 'src/app/shared/system-service/file.service';
 import { FileInfo } from 'src/app/system-files/fileinfo';
 import { SessionManagmentService } from 'src/app/shared/system-service/session.management.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-declare const marked:any;
+declare const marked: any;
 
 @Component({
-  selector: 'cos-markdownviewer',
-  templateUrl: './markdownviewer.component.html',
-  styleUrl: './markdownviewer.component.css'
+	selector: 'cos-markdownviewer',
+	templateUrl: './markdownviewer.component.html',
+	styleUrl: './markdownviewer.component.css',
 })
+export class MarkDownViewerComponent implements BaseComponent, OnDestroy, AfterViewInit, OnInit {
+	@ViewChild('markDownContent', { static: true }) markDownContent!: ElementRef;
 
-export class MarkDownViewerComponent implements BaseComponent,  OnDestroy, AfterViewInit, OnInit {
+	private _processIdService: ProcessIDService;
+	private _runningProcessService: RunningProcessService;
+	private _stateManagmentService: StateManagmentService;
+	private _sessionManagmentService: SessionManagmentService;
+	private _triggerProcessService: TriggerProcessService;
+	private _scriptService: ScriptService;
+	private _fileService: FileService;
 
-  @ViewChild('markDownContent', {static: true}) markDownContent!: ElementRef;
+	private _sanitizer: DomSanitizer;
+	private _renderer: Renderer2;
 
-  private _processIdService:ProcessIDService;
-  private _runningProcessService:RunningProcessService;
-  private _stateManagmentService:StateManagmentService;
-  private _sessionManagmentService: SessionManagmentService;
-  private _triggerProcessService:TriggerProcessService;
-  private _scriptService: ScriptService;
-  private _fileService:FileService;
+	private _fileInfo!: FileInfo;
+	private _appState!: AppState;
+	private _maximizeWindowSub!: Subscription;
+	private fileSrc = '';
+	mkdDwnHtml: SafeHtml = '';
 
-  private _sanitizer: DomSanitizer;
-  private _renderer: Renderer2;
+	SECONDS_DELAY = 250;
 
-  private _fileInfo!:FileInfo;
-  private _appState!:AppState;
-  private _maximizeWindowSub!: Subscription;
-  private fileSrc = '';
-  mkdDwnHtml:SafeHtml = '';
+	hasWindow = true;
+	icon = 'osdrive/icons/markdown-2_50.png';
+	name = 'markdownviewer';
+	processId = 0;
+	type = ComponentType.System;
+	displayName = '';
 
-  SECONDS_DELAY = 250;
+	constructor(
+		processIdService: ProcessIDService,
+		runningProcessService: RunningProcessService,
+		triggerProcessService: TriggerProcessService,
+		stateManagmentService: StateManagmentService,
+		scriptService: ScriptService,
+		fileService: FileService,
+		sessionManagmentService: SessionManagmentService,
+		renderer: Renderer2,
+		sanitizer: DomSanitizer
+	) {
+		this._processIdService = processIdService;
+		this._runningProcessService = runningProcessService;
+		this._stateManagmentService = stateManagmentService;
+		this._sessionManagmentService = sessionManagmentService;
+		this._triggerProcessService = triggerProcessService;
+		this._scriptService = scriptService;
+		this._fileService = fileService;
+		this._renderer = renderer;
+		this._sanitizer = sanitizer;
 
-  hasWindow = true;
-  icon = 'osdrive/icons/markdown-2_50.png';
-  name = 'markdownviewer';
-  processId = 0;
-  type = ComponentType.System;
-  displayName = '';
+		this.processId = this._processIdService.getNewProcessId();
 
+		this.retrievePastSessionData();
 
-  constructor( processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService,
-                stateManagmentService:StateManagmentService, scriptService: ScriptService,fileService:FileService, 
-                sessionManagmentService: SessionManagmentService, renderer: Renderer2, sanitizer: DomSanitizer){
-    this._processIdService = processIdService
-    this._runningProcessService = runningProcessService;
-    this._stateManagmentService = stateManagmentService;
-    this._sessionManagmentService = sessionManagmentService;
-    this._triggerProcessService = triggerProcessService;
-    this._scriptService = scriptService;
-    this._fileService = fileService;
-    this._renderer = renderer;
-    this._sanitizer = sanitizer
+		this._runningProcessService = runningProcessService;
+		this._runningProcessService.addProcess(this.getComponentDetail());
+	}
 
-    this.processId = this._processIdService.getNewProcessId();
+	ngOnInit(): void {
+		this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
+	}
 
-    this.retrievePastSessionData();
+	ngAfterViewInit(): void {
+		this.setMardkDownViewerWindowToFocus(this.processId);
 
-    this._runningProcessService = runningProcessService;
-    this._runningProcessService.addProcess(this.getComponentDetail());
-  }
+		this.fileSrc = this.fileSrc !== '' ? this.fileSrc : this.getFileSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
 
-  ngOnInit():void{
-    this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
-  }
+		this._scriptService.loadScript('markedjs', 'assets/marked/marked.min.js').then(async () => {
+			const mkd = marked.setOptions({
+				gfm: true,
+				breaks: true,
+			});
 
-  ngAfterViewInit(): void{
-    this.setMardkDownViewerWindowToFocus(this.processId); 
+			const textCntnt = await this._fileService.getFileAsync(this.fileSrc);
+			const htmlCntnt = mkd(textCntnt);
+			const safeHtmlCntnt = this._sanitizer.bypassSecurityTrustHtml(htmlCntnt);
+			this.mkdDwnHtml = safeHtmlCntnt;
+			this.storeAppState(this.fileSrc);
+		});
 
-    this.fileSrc = (this.fileSrc !=='')? 
-    this.fileSrc : this.getFileSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
+		setTimeout(() => {
+			this.captureComponentImg();
+		}, this.SECONDS_DELAY);
+	}
 
-    this._scriptService.loadScript("markedjs","assets/marked/marked.min.js").then(async() =>{  
-     const mkd = marked.setOptions({
-        gfm: true,
-        breaks: true
-      });
+	ngOnDestroy(): void {
+		this._maximizeWindowSub?.unsubscribe();
+	}
 
-      const textCntnt = await this._fileService.getFileAsync(this.fileSrc);
-      const htmlCntnt = mkd(textCntnt);
-      const safeHtmlCntnt = this._sanitizer.bypassSecurityTrustHtml(htmlCntnt);
-      this.mkdDwnHtml = safeHtmlCntnt;
-      this.storeAppState(this.fileSrc);
-    })
+	captureComponentImg(): void {
+		htmlToImage.toPng(this.markDownContent.nativeElement).then(htmlImg => {
+			const cmpntImg: TaskBarPreviewImage = {
+				pid: this.processId,
+				imageData: htmlImg,
+			};
+			this._runningProcessService.addProcessImage(this.name, cmpntImg);
+		});
+	}
 
-    setTimeout(()=>{
-      this.captureComponentImg();
-    },this.SECONDS_DELAY);
+	maximizeWindow(): void {
+		const uid = `${this.name}-${this.processId}`;
+		const evtOriginator = this._runningProcessService.getEventOrginator();
 
-  }
+		if (uid === evtOriginator) {
+			this._runningProcessService.removeEventOriginator();
+			const mainWindow = document.getElementById('vanta');
+			//window title and button bar, and windows taskbar height
+			const pixelTosubtract = 30 + 40;
+			this.markDownContent.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
+			this.markDownContent.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+		}
+	}
 
-  ngOnDestroy():void{
-    this._maximizeWindowSub?.unsubscribe();
-  }
+	setMardkDownViewerWindowToFocus(pid: number): void {
+		this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
+	}
 
-  captureComponentImg():void{
-    htmlToImage.toPng(this.markDownContent.nativeElement).then(htmlImg =>{
+	getFileSrc(pathOne: string, pathTwo: string): string {
+		let fileSrc = '';
 
-      const cmpntImg:TaskBarPreviewImage = {
-        pid: this.processId,
-        imageData: htmlImg
-      }
-      this._runningProcessService.addProcessImage(this.name, cmpntImg);
-    })
-  }
+		if (this.checkForExt(pathOne, pathTwo)) {
+			fileSrc = '/' + this._fileInfo.getContentPath;
+		} else {
+			fileSrc = this._fileInfo.getCurrentPath;
+		}
 
-  maximizeWindow():void{
+		return fileSrc;
+	}
 
-    const uid = `${this.name}-${this.processId}`;
-    const evtOriginator = this._runningProcessService.getEventOrginator();
+	checkForExt(contentPath: string, currentPath: string): boolean {
+		const contentExt = extname(contentPath);
+		const currentPathExt = extname(currentPath);
+		const ext = '.md';
+		let res = false;
 
-    if(uid === evtOriginator){
+		if (contentExt != '' && contentExt == ext) {
+			res = true;
+		} else if (currentPathExt == ext) {
+			res = false;
+		}
+		return res;
+	}
 
-      this._runningProcessService.removeEventOriginator();
-      const mainWindow = document.getElementById('vanta');
-      //window title and button bar, and windows taskbar height
-      const pixelTosubtract = 30 + 40;
-      this.markDownContent.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
-      this.markDownContent.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+	storeAppState(app_data: unknown): void {
+		const uid = `${this.name}-${this.processId}`;
 
-    }
-  }
+		this._appState = {
+			pid: this.processId,
+			app_data: app_data as string,
+			app_name: this.name,
+			unique_id: uid,
+		};
 
+		this._stateManagmentService.addState(uid, this._appState, StateType.App);
+	}
 
-  setMardkDownViewerWindowToFocus(pid:number):void{
-    this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
-  }
+	retrievePastSessionData(): void {
+		const pickUpKey = this._sessionManagmentService._pickUpKey;
+		if (this._sessionManagmentService.hasTempSession(pickUpKey)) {
+			const tmpSessKey = this._sessionManagmentService.getTempSession(pickUpKey) || '';
+			const retrievedSessionData = this._sessionManagmentService.getSession(tmpSessKey) as BaseState[];
 
-  getFileSrc(pathOne:string, pathTwo:string):string{
-    let fileSrc = '';
+			if (retrievedSessionData !== undefined) {
+				const appSessionData = retrievedSessionData[0] as AppState;
+				if (appSessionData !== undefined && appSessionData.app_data != '') {
+					this.fileSrc = appSessionData.app_data as string;
+				}
+			}
+		}
+	}
 
-    if(this.checkForExt(pathOne,pathTwo)){
-      fileSrc = '/' + this._fileInfo.getContentPath;
-    }else{
-      fileSrc =  this._fileInfo.getCurrentPath;
-    }
-
-    return fileSrc;
-  }
-
-  checkForExt(contentPath:string, currentPath:string):boolean{
-    const contentExt = extname(contentPath);
-    const currentPathExt = extname(currentPath);
-    const ext = ".md";
-    let res = false;
-
-    if(contentExt != '' && contentExt == ext){
-      res = true;
-    }else if( currentPathExt == ext){
-      res = false;
-    }
-    return res;
-  }
-
-  storeAppState(app_data:unknown):void{
-    const uid = `${this.name}-${this.processId}`;
-
-    this._appState = {
-      pid: this.processId,
-      app_data: app_data as string,
-      app_name: this.name,
-      unique_id: uid
-    }
-
-    this._stateManagmentService.addState(uid, this._appState, StateType.App);
-  }
-
-  retrievePastSessionData():void{
-    const pickUpKey = this._sessionManagmentService._pickUpKey;
-    if(this._sessionManagmentService.hasTempSession(pickUpKey)){
-      const tmpSessKey = this._sessionManagmentService.getTempSession(pickUpKey) || ''; 
-      const retrievedSessionData = this._sessionManagmentService.getSession(tmpSessKey) as BaseState[];
-
-      if(retrievedSessionData !== undefined){
-        const appSessionData = retrievedSessionData[0] as AppState;
-        if(appSessionData !== undefined  && appSessionData.app_data != ''){
-          this.fileSrc = appSessionData.app_data as string;
-        }
-      }
-    }
-  }
-
-  private getComponentDetail():Process{
-    return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type, this._triggerProcessService.getLastProcessTrigger)
-  }
-
+	private getComponentDetail(): Process {
+		return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type, this._triggerProcessService.getLastProcessTrigger);
+	}
 }

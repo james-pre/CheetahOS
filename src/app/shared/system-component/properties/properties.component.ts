@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'cos-properties',
-  templateUrl: './properties.component.html',
-  styleUrl: './properties.component.css'
+	selector: 'cos-properties',
+	templateUrl: './properties.component.html',
+	styleUrl: './properties.component.css',
 })
-export class PropertiesComponent {
-
-}
+export class PropertiesComponent {}

@@ -15,193 +15,186 @@ import { AppState, BaseState } from 'src/app/system-files/state/state.interface'
 import { StateType } from 'src/app/system-files/state/state.type';
 import { TaskBarPreviewImage } from '../taskbarpreview/taskbar.preview';
 
-import {extname} from 'path';
+import { extname } from 'path';
 import * as htmlToImage from 'html-to-image';
 import { Subscription } from 'rxjs';
 
-declare const Quill:any;
+declare const Quill: any;
 
 @Component({
-  selector: 'cos-texteditor',
-  templateUrl: './texteditor.component.html',
-  styleUrls: ['./texteditor.component.css']
+	selector: 'cos-texteditor',
+	templateUrl: './texteditor.component.html',
+	styleUrls: ['./texteditor.component.css'],
 })
+export class TextEditorComponent implements BaseComponent, OnDestroy, AfterViewInit, OnInit {
+	@ViewChild('editorContainer', { static: true }) editorContainer!: ElementRef;
 
+	private _processIdService: ProcessIDService;
+	private _runningProcessService: RunningProcessService;
+	private _stateManagmentService: StateManagmentService;
+	private _sessionManagmentService: SessionManagmentService;
+	private _triggerProcessService: TriggerProcessService;
+	private _scriptService: ScriptService;
+	private _fileService: FileService;
 
-export class TextEditorComponent  implements BaseComponent, OnDestroy, AfterViewInit, OnInit  {
+	private _fileInfo!: FileInfo;
+	private _appState!: AppState;
+	private _maximizeWindowSub!: Subscription;
+	private fileSrc = '';
+	private quill: any;
 
-  @ViewChild('editorContainer', {static: true}) editorContainer!: ElementRef;
-  
-  private _processIdService:ProcessIDService;
-  private _runningProcessService:RunningProcessService;
-  private _stateManagmentService:StateManagmentService;
-  private _sessionManagmentService: SessionManagmentService;
-  private _triggerProcessService:TriggerProcessService;
-  private _scriptService: ScriptService;
-  private _fileService:FileService;
+	SECONDS_DELAY = 250;
 
-  private _fileInfo!:FileInfo;
-  private _appState!:AppState;
-  private _maximizeWindowSub!: Subscription;
-  private fileSrc = '';
-  private quill: any;
+	hasWindow = true;
+	icon = 'osdrive/icons/text-editor_48.png';
+	name = 'texteditor';
+	processId = 0;
+	type = ComponentType.System;
+	displayName = '';
 
-  SECONDS_DELAY = 250;
+	constructor(
+		processIdService: ProcessIDService,
+		runningProcessService: RunningProcessService,
+		triggerProcessService: TriggerProcessService,
+		fileService: FileService,
+		sessionManagmentService: SessionManagmentService,
+		stateManagmentService: StateManagmentService,
+		scriptService: ScriptService
+	) {
+		this._processIdService = processIdService;
+		this.processId = this._processIdService.getNewProcessId();
+		this._runningProcessService = runningProcessService;
+		this._stateManagmentService = stateManagmentService;
+		this._triggerProcessService = triggerProcessService;
+		this._sessionManagmentService = sessionManagmentService;
+		this._scriptService = scriptService;
+		this._fileService = fileService;
 
-  hasWindow = true;
-  icon = 'osdrive/icons/text-editor_48.png';
-  name = 'texteditor';
-  processId = 0;
-  type = ComponentType.System;
-  displayName = '';
+		this._runningProcessService.addProcess(this.getComponentDetail());
+	}
 
+	ngOnInit(): void {
+		this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
+	}
 
-  constructor(processIdService:ProcessIDService, runningProcessService:RunningProcessService, triggerProcessService:TriggerProcessService,
-              fileService:FileService,  sessionManagmentService: SessionManagmentService,  stateManagmentService:StateManagmentService, 
-              scriptService: ScriptService){
+	ngAfterViewInit(): void {
+		this.setTextEditorWindowToFocus(this.processId);
 
-    this._processIdService = processIdService
-    this.processId = this._processIdService.getNewProcessId()
-    this._runningProcessService = runningProcessService;
-    this._stateManagmentService = stateManagmentService;
-    this._triggerProcessService = triggerProcessService;
-    this._sessionManagmentService = sessionManagmentService;
-    this._scriptService = scriptService;
-    this._fileService = fileService;
+		this.fileSrc = this.fileSrc !== '' ? this.fileSrc : this.getFileSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
 
+		const options = {
+			debug: 'info',
+			modules: {
+				toolbar: true,
+			},
+			placeholder: 'Compose an epic...',
+			theme: 'snow',
+		};
+		this._scriptService.loadScript('quilljs', 'assets/quill/quill.js').then(async () => {
+			const textCntnt = await this._fileService.getFileAsync(this.fileSrc);
+			const index = 0;
 
-    this._runningProcessService.addProcess(this.getComponentDetail());
-  }
+			this.quill = new Quill(this.editorContainer.nativeElement, options);
+			this.quill.insertText(index, textCntnt, {
+				color: '#ffff00',
+				italic: false,
+			});
+		});
 
-  ngOnInit():void{
-    this._fileInfo = this._triggerProcessService.getLastProcessTrigger();
-  }
+		setTimeout(() => {
+			this.captureComponentImg();
+		}, this.SECONDS_DELAY);
+	}
 
+	ngOnDestroy(): void {
+		this._maximizeWindowSub?.unsubscribe();
+	}
 
-  ngAfterViewInit(): void {
-    this.setTextEditorWindowToFocus(this.processId); 
+	captureComponentImg(): void {
+		htmlToImage.toPng(this.editorContainer.nativeElement).then(htmlImg => {
+			//console.log('img data:',htmlImg);
 
-    this.fileSrc = (this.fileSrc !=='')? 
-    this.fileSrc : this.getFileSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
+			const cmpntImg: TaskBarPreviewImage = {
+				pid: this.processId,
+				imageData: htmlImg,
+			};
+			this._runningProcessService.addProcessImage(this.name, cmpntImg);
+		});
+	}
 
-    const options = {
-      debug: 'info',
-      modules: {
-        toolbar: true,
-      },
-      placeholder: 'Compose an epic...',
-      theme: 'snow'
-    };
-    this._scriptService.loadScript("quilljs","assets/quill/quill.js").then( async() =>{
-  
-      const textCntnt = await this._fileService.getFileAsync(this.fileSrc);
-      const index = 0;
+	maximizeWindow(): void {
+		const uid = `${this.name}-${this.processId}`;
+		const evtOriginator = this._runningProcessService.getEventOrginator();
 
-      this.quill = new Quill(this.editorContainer.nativeElement, options)
-      this.quill.insertText(index, textCntnt, {
-        color: '#ffff00',
-        italic: false,
-      });
-    })
+		if (uid === evtOriginator) {
+			this._runningProcessService.removeEventOriginator();
+			const mainWindow = document.getElementById('vanta');
+			//window title and button bar, and windows taskbar height
+			const pixelTosubtract = 30 + 40;
+			this.editorContainer.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
+			this.editorContainer.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+		}
+	}
 
-    setTimeout(()=>{
-      this.captureComponentImg();
-    },this.SECONDS_DELAY) 
-  }
+	setTextEditorWindowToFocus(pid: number): void {
+		this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
+	}
 
-  ngOnDestroy():void{
-    this._maximizeWindowSub?.unsubscribe();
-  }
+	getFileSrc(pathOne: string, pathTwo: string): string {
+		let fileSrc = '';
 
-  captureComponentImg():void{
-    htmlToImage.toPng(this.editorContainer.nativeElement).then(htmlImg =>{
-      //console.log('img data:',htmlImg);
+		if (this.checkForExt(pathOne, pathTwo)) {
+			fileSrc = '/' + this._fileInfo.getContentPath;
+		} else {
+			fileSrc = this._fileInfo.getCurrentPath;
+		}
 
-      const cmpntImg:TaskBarPreviewImage = {
-        pid: this.processId,
-        imageData: htmlImg
-      }
-      this._runningProcessService.addProcessImage(this.name, cmpntImg);
-    })
-  }
+		return fileSrc;
+	}
 
-  maximizeWindow():void{
+	checkForExt(contentPath: string, currentPath: string): boolean {
+		const contentExt = extname(contentPath);
+		const currentPathExt = extname(currentPath);
+		const ext = '.txt';
+		let res = false;
 
-    const uid = `${this.name}-${this.processId}`;
-    const evtOriginator = this._runningProcessService.getEventOrginator();
+		if (contentExt != '' && contentExt == ext) {
+			res = true;
+		} else if (currentPathExt == ext) {
+			res = false;
+		}
+		return res;
+	}
 
-    if(uid === evtOriginator){
+	storeAppState(app_data: unknown): void {
+		const uid = `${this.name}-${this.processId}`;
 
-      this._runningProcessService.removeEventOriginator();
-      const mainWindow = document.getElementById('vanta');
-      //window title and button bar, and windows taskbar height
-      const pixelTosubtract = 30 + 40;
-      this.editorContainer.nativeElement.style.height = `${(mainWindow?.offsetHeight || 0) - pixelTosubtract}px`;
-      this.editorContainer.nativeElement.style.width = `${mainWindow?.offsetWidth}px`;
+		this._appState = {
+			pid: this.processId,
+			app_data: app_data as string,
+			app_name: this.name,
+			unique_id: uid,
+		};
 
-    }
-  }
+		this._stateManagmentService.addState(uid, this._appState, StateType.App);
+	}
 
-  setTextEditorWindowToFocus(pid:number):void{
-    this._runningProcessService.focusOnCurrentProcessNotify.next(pid);
-  }
+	retrievePastSessionData(): void {
+		const pickUpKey = this._sessionManagmentService._pickUpKey;
+		if (this._sessionManagmentService.hasTempSession(pickUpKey)) {
+			const tmpSessKey = this._sessionManagmentService.getTempSession(pickUpKey) || '';
+			const retrievedSessionData = this._sessionManagmentService.getSession(tmpSessKey) as BaseState[];
 
-  getFileSrc(pathOne:string, pathTwo:string):string{
-    let fileSrc = '';
+			if (retrievedSessionData !== undefined) {
+				const appSessionData = retrievedSessionData[0] as AppState;
+				if (appSessionData !== undefined && appSessionData.app_data != '') {
+					this.fileSrc = appSessionData.app_data as string;
+				}
+			}
+		}
+	}
 
-    if(this.checkForExt(pathOne,pathTwo)){
-      fileSrc = '/' + this._fileInfo.getContentPath;
-    }else{
-      fileSrc =  this._fileInfo.getCurrentPath;
-    }
-
-    return fileSrc;
-  }
-
-  checkForExt(contentPath:string, currentPath:string):boolean{
-    const contentExt = extname(contentPath);
-    const currentPathExt = extname(currentPath);
-    const ext = ".txt";
-    let res = false;
-
-    if(contentExt != '' && contentExt == ext){
-      res = true;
-    }else if( currentPathExt == ext){
-      res = false;
-    }
-    return res;
-  }
-
-  storeAppState(app_data:unknown):void{
-    const uid = `${this.name}-${this.processId}`;
-
-    this._appState = {
-      pid: this.processId,
-      app_data: app_data as string,
-      app_name: this.name,
-      unique_id: uid
-    }
-
-    this._stateManagmentService.addState(uid, this._appState, StateType.App);
-  }
-
-  retrievePastSessionData():void{
-    const pickUpKey = this._sessionManagmentService._pickUpKey;
-    if(this._sessionManagmentService.hasTempSession(pickUpKey)){
-      const tmpSessKey = this._sessionManagmentService.getTempSession(pickUpKey) || ''; 
-      const retrievedSessionData = this._sessionManagmentService.getSession(tmpSessKey) as BaseState[];
-
-      if(retrievedSessionData !== undefined){
-        const appSessionData = retrievedSessionData[0] as AppState;
-        if(appSessionData !== undefined  && appSessionData.app_data != ''){
-          this.fileSrc = appSessionData.app_data as string;
-        }
-      }
-    }
-  }
-
-
-  private getComponentDetail():Process{
-    return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type, this._triggerProcessService.getLastProcessTrigger)
-  }
+	private getComponentDetail(): Process {
+		return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type, this._triggerProcessService.getLastProcessTrigger);
+	}
 }

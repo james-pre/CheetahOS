@@ -1,39 +1,36 @@
-.my-video-main-container{
-    display:flex;
-    height: 100%;
-    width: 100%;
+.my-video-main-container {
+	display: flex;
+	height: 100%;
+	width: 100%;
 }
 
-.video-top-menu-bar{
-    display: flex;
-    width: 100%;
-    height: 25px;
-    left: 0%;
-    background-color: #ffffff;
-    color: #000;
+.video-top-menu-bar {
+	display: flex;
+	width: 100%;
+	height: 25px;
+	left: 0%;
+	background-color: #ffffff;
+	color: #000;
 }
 
-
-.video-top-menu{
-    display: block;
-    position: absolute;
-    width: 120px;
-    left: 0%;
-    background-color: #ccc;
-    color: #000;
-    font-size: small;
-    font-weight: normal;
-    text-align: left;
-    padding: 2px 4px;
-    top: 55px;
-    z-index: 2;
-}
-  
-
-.video-top-menu-bar-content{
-    position: relative;
+.video-top-menu {
+	display: block;
+	position: absolute;
+	width: 120px;
+	left: 0%;
+	background-color: #ccc;
+	color: #000;
+	font-size: small;
+	font-weight: normal;
+	text-align: left;
+	padding: 2px 4px;
+	top: 55px;
+	z-index: 2;
 }
 
+.video-top-menu-bar-content {
+	position: relative;
+}
 
 /* .video-js {
     max-height: 100%;
@@ -41,37 +38,37 @@
     aspect-ratio: 2/3;
 } */
 
-
-.my-video-container{
-    display:flex;
-    position: relative;
-    min-width: 640px;
-    min-height: 360px;
-    color: #000;
+.my-video-container {
+	display: flex;
+	position: relative;
+	min-width: 640px;
+	min-height: 360px;
+	color: #000;
 }
 
-span{
-    display: block;
-    padding: 4px 0;
+span {
+	display: block;
+	padding: 4px 0;
 }
 
 .btn.btn-primary.head {
-    background-color: #ffffff; /* Primary button background color */
-    color: #333; /* Text color for the primary button */
-    border: 1px solid #ffffff; /* Border color for the primary button */
-    /* border-radius: 1px;  Rounded corners for the primary button */
-    padding: 0px 4px; /* Padding for the primary button (adjust as needed) */
-    font-size: 13px; /* Font size for the text */
+	background-color: #ffffff; /* Primary button background color */
+	color: #333; /* Text color for the primary button */
+	border: 1px solid #ffffff; /* Border color for the primary button */
+	/* border-radius: 1px;  Rounded corners for the primary button */
+	padding: 0px 4px; /* Padding for the primary button (adjust as needed) */
+	font-size: 13px; /* Font size for the text */
 }
-  
+
 /* Active (clicked) state for the primary button */
-.btn.btn-primary.head:active, .btn.btn-primary.head:focus {
-    background-color: #0056b3; /* Background color when active or focused */
-    border: 1px solid #0056b3; /* Border color when active or focused */
-    color: #fff; /* Text color when active or focused */
+.btn.btn-primary.head:active,
+.btn.btn-primary.head:focus {
+	background-color: #0056b3; /* Background color when active or focused */
+	border: 1px solid #0056b3; /* Border color when active or focused */
+	color: #fff; /* Text color when active or focused */
 }
 
 .btn.btn-primary.head:hover {
-    background-color: #98ccf4; /* Dark grey background on mouse-over */
-    border: 1px solid #0056b3; /* Border color for the primary button */
+	background-color: #98ccf4; /* Dark grey background on mouse-over */
+	border: 1px solid #0056b3; /* Border color for the primary button */
 }
