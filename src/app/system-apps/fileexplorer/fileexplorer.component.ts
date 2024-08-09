@@ -22,6 +22,7 @@ import { Constants } from 'src/app/system-files/constants';
 import * as htmlToImage from 'html-to-image';
 import { TaskBarPreviewImage } from '../taskbarpreview/taskbar.preview';
 import { MenuService } from 'src/app/shared/system-service/menu.services';
+import { SortBys } from '../desktop/desktop.enums';
 
 @Component({
   selector: 'cos-fileexplorer',
@@ -82,7 +83,7 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
   hasWindow = true;
   //hideInformationTip = false;
 
-  fxIconCntxtMenuStyle:Record<string, unknown> = {};
+  fileExplrCntxtMenuStyle:Record<string, unknown> = {};
   clearSearchStyle:Record<string, unknown> = {};
   searchStyle:Record<string, unknown> = {};
   prevNavBtnStyle:Record<string, unknown> = {};
@@ -115,6 +116,11 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
   readonly contentView = ViewOptions.CONTENT_VIEW;
   readonly tilesView = ViewOptions.TILES_VIEW;
 
+  readonly sortByName = SortBys.NAME;
+  readonly sortByItemType = SortBys.ITEM_TYPE;
+  readonly sortBySize = SortBys.SIZE;
+  readonly sortByDateModified = SortBys.DATE_MODIFIED;
+
   isExtraLargeIcon = false;
   isLargeIcon = false;
   isMediumIcon = true;
@@ -123,6 +129,11 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
   isDetailsIcon = false;
   isContentIcon = false;
   isTitleIcon = false;
+
+  isSortByName = false;
+  isSortByItemType = false;
+  isSortBySize = false;
+  isSortByDateModified = false;
 
   renameForm!: FormGroup;
   pathForm!: FormGroup;
@@ -750,7 +761,7 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
     this.doBtnClickThings(id);
     this.setBtnStyle(id, true);
 
-    this.fxIconCntxtMenuStyle = {
+    this.fileExplrCntxtMenuStyle = {
       'position': 'absolute', 
       'transform':`translate(${String(x)}px, ${String(y)}px)`,
       'z-index': 2,
@@ -913,7 +924,7 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
 
     this.showFileExplrCntxtMenu = !this.showFileExplrCntxtMenu;
 
-    this.fxIconCntxtMenuStyle = {
+    this.fileExplrCntxtMenuStyle = {
       'position': 'absolute', 
       'transform':`translate(${String(x)}px, ${String(y)}px)`,
       'z-index': 2,
@@ -1443,6 +1454,53 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
     }
   }
 
+  sortByNameM():void{
+    this.sortBy(this.sortByName)
+  }
+
+  sortBySizeM():void{
+    this.sortBy(this.sortBySize)
+  }
+  sortByItemTypeM():void{
+    this.sortBy(this.sortByItemType)
+  }
+  sortByDateModifiedM():void{
+    this.sortBy(this.sortByDateModified)
+  }
+
+  sortBy(sortBy:string):void{
+
+    if(sortBy === SortBys.DATE_MODIFIED){
+      this.isSortByDateModified = true;
+      this.isSortByItemType = false;
+      this.isSortByName = false;
+      this.isSortBySize = false;
+    }
+
+    if(sortBy === SortBys.ITEM_TYPE){
+      this.isSortByItemType = true;
+      this.isSortByDateModified = false;
+      this.isSortByName = false;
+      this.isSortBySize = false;
+    }
+
+    if(sortBy === SortBys.SIZE){
+      this.isSortBySize  = true;
+      this.isSortByItemType = false;
+      this.isSortByName = false;
+      this.isSortByDateModified = false;
+    }
+
+    if(sortBy === SortBys.NAME){
+      this.isSortByName  = true;
+      this.isSortByItemType = false;
+      this.isSortByDateModified = false;
+      this.isSortBySize = false;
+    }
+
+    this.getFileExplorerMenuData();
+  }
+
 
   buildViewByMenu():NestedMenuItem[]{
 
@@ -1474,24 +1532,24 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
     return viewByMenu;
   }
 
-  // buildSortByMenu(): NestedMenuItem[]{
+  buildSortByMenu(): NestedMenuItem[]{
 
-  //   const sortByName:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Name',  action: this.sortByNameM.bind(this),  variables:this.isSortByName , 
-  //     emptyline:false, styleOption:'A' }
+    const sortByName:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Name',  action: this.sortByNameM.bind(this),  variables:this.isSortByName , 
+      emptyline:false, styleOption:'A' }
 
-  //   const sortBySize:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Size',  action: this.sortBySizeM.bind(this),  variables:this.isSortBySize , 
-  //     emptyline:false, styleOption:'A' }
+    const sortBySize:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Size',  action: this.sortBySizeM.bind(this),  variables:this.isSortBySize , 
+      emptyline:false, styleOption:'A' }
 
-  //   const sortByItemType:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Item type',  action: this.sortByItemTypeM.bind(this),  variables:this.isSortByItemType, 
-  //     emptyline:false, styleOption:'A' }
+    const sortByItemType:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Item type',  action: this.sortByItemTypeM.bind(this),  variables:this.isSortByItemType, 
+      emptyline:false, styleOption:'A' }
 
-  //   const sortByDateModified:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Date modified',  action: this.sortByDateModifiedM.bind(this),  variables:this.isSortByDateModified, 
-  //     emptyline:false, styleOption:'A' }
+    const sortByDateModified:NestedMenuItem={ icon:'osdrive/icons/circle.png', label:'Date modified',  action: this.sortByDateModifiedM.bind(this),  variables:this.isSortByDateModified, 
+      emptyline:false, styleOption:'A' }
 
-  //   const sortByMenu = [sortByName, sortBySize, sortByItemType, sortByDateModified ]
+    const sortByMenu = [sortByName, sortBySize, sortByItemType, sortByDateModified ]
 
-  //   return sortByMenu
-  // }
+    return sortByMenu
+  }
 
   // buildNewMenu(): NestedMenuItem[]{
 
@@ -1509,20 +1567,16 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
   //   return sortByMenu
   // }
 
-  // getDesktopMenuData():void{
-  //   this.fileExplrMenu = [
-  //         {icon1:'',  icon2: 'osdrive/icons/arrow_next.png', label:'View', nest:this.buildViewByMenu(), action: ()=> console.log(), emptyline:false},
-  //         {icon1:'',  icon2:'osdrive/icons/arrow_next.png', label:'Sort by', nest:this.buildSortByMenu(), action: ()=> console.log(), emptyline:false},
-  //         {icon1:'',  icon2:'', label: 'Refresh', nest:[], action:this.refresh.bind(this), emptyline:true},
-  //         {icon1:'',  icon2:'', label: 'Paste', nest:[], action: () => console.log('Paste!! Paste!!'), emptyline:false},
-  //         {icon1:'/osdrive/icons/terminal_48.png', icon2:'', label:'Open in Terminal', nest:[], action: this.openTerminal.bind(this), emptyline:false},
-  //         {icon1:'/osdrive/icons/camera_48.png', icon2:'', label:'Screen Shot', nest:[], action: this.captureComponentImg.bind(this), emptyline:false},
-  //         {icon1:'',  icon2:'', label:'Next Background', nest:[], action: this.nextBackground.bind(this), emptyline:false},
-  //         {icon1:'',  icon2:'', label:'Previous Background', nest:[], action: this.previousBackground.bind(this), emptyline:true},
-  //         {icon1:'',  icon2:'osdrive/icons/arrow_next.png', label:'New', nest:this.buildNewMenu(), action: ()=> console.log(), emptyline:true},
-  //         {icon1:'',  icon2:'', label:'Many Thanks', nest:[], action: this.openMarkDownViewer.bind(this), emptyline:false}
-  //     ]
-  // }
+  getFileExplorerMenuData():void{
+    this.fileExplrMenu = [
+          {icon1:'',  icon2: 'osdrive/icons/arrow_next.png', label:'View', nest:this.buildViewByMenu(), action: ()=> console.log(), emptyline:false},
+          {icon1:'',  icon2:'osdrive/icons/arrow_next.png', label:'Sort by', nest:this.buildSortByMenu(), action: ()=> console.log(), emptyline:false},
+          {icon1:'',  icon2:'', label: 'Refresh', nest:[], action:() => console.log('Refresh'), emptyline:true},
+          {icon1:'',  icon2:'', label: 'Paste', nest:[], action: () => console.log('Paste!! Paste!!'), emptyline:false},
+          {icon1:'/osdrive/icons/terminal_48.png', icon2:'', label:'Open in Terminal', nest:[], action: () => console.log('Open Terminal'), emptyline:false},
+          {icon1:'',  icon2:'', label:'Properties', nest:[], action: () => console.log('Properties'), emptyline:false}
+      ]
+  }
 
   private getComponentDetail():Process{
     return new Process(this.processId, this.name, this.icon, this.hasWindow, this.type);
