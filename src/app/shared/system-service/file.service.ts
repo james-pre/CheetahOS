@@ -113,34 +113,37 @@ export class FileService{
     public async copyFileAsync(sourcePath:string, destinationPath:string):Promise<boolean>{
         const fileName = this.getFileName(sourcePath);
         console.log(`Destination: ${destinationPath}/${fileName}`);
-        return new Promise<boolean>((resolve, reject) =>{
-             fs.readFile(sourcePath,(err, contents = Buffer.from('')) =>{
-                if(err){
-                    console.log('copyFileAsync error:',err)
-                    reject(false)
-                }else{
-                    fs.writeFile(`${destinationPath}/${fileName}`, contents, {flag: 'wx'}, (err) =>{  
-                        if(err?.code === 'EEXIST' ){
-                            console.log('copyFileAsync Error: file already exists',err);
+        const result = await fs.promises.copyFile(sourcePath, `${destinationPath}/${fileName}`);
+
+        return true;
+        // return new Promise<boolean>((resolve, reject) =>{
+        //      fs.readFile(sourcePath,(err, contents = Buffer.from('')) =>{
+        //         if(err){
+        //             console.log('copyFileAsync error:',err)
+        //             reject(false)
+        //         }else{
+        //             fs.writeFile(`${destinationPath}/${fileName}`, contents, {flag: 'wx'}, (err) =>{  
+        //                 if(err?.code === 'EEXIST' ){
+        //                     console.log('copyFileAsync Error: file already exists',err);
         
-                            // if file exists, increment it simple.txt, simple(1).txt ...
-                            const itrName = this.iterateFileName(`${destinationPath}/${fileName}`);
-                            fs.writeFile(itrName,contents,(err) =>{  
-                                if(err){
-                                    console.log('copyFileAsync Iterate Error:',err);
-                                    reject(false);
-                                }
-                                resolve(true);
-                            });
-                        }else{
-                            console.log('copyFileAsync Error:',err);
-                            this._fileExistsMap.set(`${destinationPath}/${fileName}`,0);
-                            resolve(true);
-                        }
-                    });
-                }
-            });
-        });
+        //                     // if file exists, increment it simple.txt, simple(1).txt ...
+        //                     const itrName = this.iterateFileName(`${destinationPath}/${fileName}`);
+        //                     fs.writeFile(itrName,contents,(err) =>{  
+        //                         if(err){
+        //                             console.log('copyFileAsync Iterate Error:',err);
+        //                             reject(false);
+        //                         }
+        //                         resolve(true);
+        //                     });
+        //                 }else{
+        //                     console.log('copyFileAsync Error:',err);
+        //                     this._fileExistsMap.set(`${destinationPath}/${fileName}`,0);
+        //                     resolve(true);
+        //                 }
+        //             });
+        //         }
+        //     });
+        // });
     }
 
 
