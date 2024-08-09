@@ -44,6 +44,7 @@
 		"angular2-draggable": "^16.0.0",
 		"emulators": "^0.73.7",
 		"emulators-ui": "^0.73.7",
+		"howler": "^2.2.4",
 		"html-to-image": "^1.11.11",
 		"ini": "^2.0.0",
 		"js-dos": "^7.4.7",
@@ -51,6 +52,7 @@
 		"ngx-monaco-editor-v2": "18.0.1",
 		"notyf": "^3.10.0",
 		"rxjs": "~7.5.0",
+		"siriwave": "^2.4.0",
 		"tslib": "^2.3.0",
 		"zone.js": "^0.14.7"
 	},
