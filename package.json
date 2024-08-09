@@ -48,12 +48,14 @@
 		"html-to-image": "^1.11.11",
 		"ini": "^2.0.0",
 		"js-dos": "^7.4.7",
+		"marked": "^14.0.0",
 		"monaco-editor": "0.49.0",
 		"ngx-monaco-editor-v2": "18.0.1",
 		"notyf": "^3.10.0",
 		"rxjs": "~7.5.0",
 		"siriwave": "^2.4.0",
 		"tslib": "^2.3.0",
+		"vanta": "^0.5.24",
 		"zone.js": "^0.14.7"
 	},
 	"devDependencies": {
