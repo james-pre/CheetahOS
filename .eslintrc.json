@@ -23,6 +23,7 @@
 				"plugin:@typescript-eslint/recommended"
 			],
 			"rules": {
+				"@typescript-eslint/no-inferrable-types": "off",
 				"@angular-eslint/directive-selector": [
 					"error",
 					{

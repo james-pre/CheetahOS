@@ -34,7 +34,7 @@ export class FileMetaData {
 	get getMode() {
 		return this._mode;
 	}
-	set setMode(mode: number) {
+	set mode(mode: number) {
 		this._mode = mode;
 	}
 }

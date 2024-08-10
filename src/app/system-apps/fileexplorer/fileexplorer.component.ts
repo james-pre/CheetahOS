@@ -191,9 +191,9 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
 
 		if (this._fileInfo) {
 			// is this a URL or and Actual Folder
-			if (this._fileInfo.getOpensWith === 'fileexplorer' && !this._fileInfo.getIsFile)
+			if (this._fileInfo.opensWith === 'fileexplorer' && !this._fileInfo.isFile)
 				//Actual Folder
-				this.directory = this._fileInfo.getCurrentPath;
+				this.directory = this._fileInfo.currentPath;
 		}
 
 		this.renameForm = this._formBuilder.nonNullable.group({
@@ -663,8 +663,8 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
 	async runProcess(file: FileInfo): Promise<void> {
 		console.log('fileexplorer-runProcess:', file);
 		this.showInformationTip = false;
-		// console.log('what was clicked:',file.getFileName +'-----' + file.getOpensWith +'---'+ file.getCurrentPath +'----'+ file.getIcon) TBD
-		if (file.getOpensWith === 'fileexplorer' && file.getFileName !== 'fileexplorer' && file.getFileType === 'folder') {
+		// console.log('what was clicked:',file.fileName +'-----' + file.opensWith +'---'+ file.currentPath +'----'+ file.getIcon) TBD
+		if (file.opensWith === 'fileexplorer' && file.fileName !== 'fileexplorer' && file.fileType === 'folder') {
 			if (!this.isNavigatedBefore) {
 				this.prevPathEntries.push(this.directory);
 				this.upPathEntries.push(this.directory);
@@ -672,9 +672,9 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
 			}
 
 			this.isPrevBtnActive = true;
-			this.directory = file.getCurrentPath;
-			this.displayName = file.getFileName;
-			this.icon = file.getIconPath;
+			this.directory = file.currentPath;
+			this.displayName = file.fileName;
+			this.icon = file.iconPath;
 
 			this.prevPathEntries.push(this.directory);
 			this.upPathEntries.push(this.directory);
@@ -684,8 +684,8 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
 			}
 
 			this.populateHopsList();
-			this.setNavPathIcon(file.getFileName, file.getCurrentPath);
-			this.storeAppState(file.getCurrentPath);
+			this.setNavPathIcon(file.fileName, file.currentPath);
+			this.storeAppState(file.currentPath);
 
 			await this.loadFilesInfoAsync();
 		} else {
@@ -847,14 +847,14 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
 
 	onCopy(): void {
 		const action = 'copy';
-		const result = this.selectedFile.getCurrentPath;
+		const result = this.selectedFile.currentPath;
 		this._menuService.storeData.next([result, action]);
 	}
 
 	onCut(): void {
 		const action = 'copy';
 		const action1 = 'remove';
-		const result = this.selectedFile.getCurrentPath;
+		const result = this.selectedFile.currentPath;
 		this._menuService.storeData.next([result, action, action1]);
 	}
 
@@ -924,16 +924,16 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
 
 	sortIcons(sortBy: string): void {
 		if (sortBy === 'Size') {
-			this.files = this.files.sort((objA, objB) => objB.getSize - objA.getSize);
+			this.files = this.files.sort((objA, objB) => objB.size - objA.size);
 		} else if (sortBy === 'Date Modified') {
-			this.files = this.files.sort((objA, objB) => objB.getDateModified.getTime() - objA.getDateModified.getTime());
+			this.files = this.files.sort((objA, objB) => objB.dateModified.getTime() - objA.dateModified.getTime());
 		} else if (sortBy === 'Name') {
 			this.files = this.files.sort((objA, objB) => {
-				return objA.getFileName < objB.getFileName ? -1 : 1;
+				return objA.fileName < objB.fileName ? -1 : 1;
 			});
 		} else if (sortBy === 'Item Type') {
 			this.files = this.files.sort((objA, objB) => {
-				return objA.getFileType < objB.getFileType ? -1 : 1;
+				return objA.fileType < objB.fileType ? -1 : 1;
 			});
 		}
 	}
@@ -970,24 +970,32 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
 	setInformationTipInfo(file: FileInfo): void {
 		//console.log('file:',file);
 
+		const formatSize = new Intl.NumberFormat('en-US', {
+			style: 'unit',
+			unit: 'byte',
+			unitDisplay: 'narrow',
+			notation: 'compact',
+			maximumFractionDigits: 2,
+		}).format;
+
 		const infoTipFields = ['Author:', 'Item type:', 'Date created:', 'Date modified:', 'Dimesions:', 'General', 'Size:', 'Type:'];
 		const fileAuthor = 'Relampago Del Catatumbo';
-		const fileType = file.getFileType;
-		const fileDateModified = file.getDateModifiedUS;
-		const fileSize = `${String(file.getSize1)}  ${file.getFileSizeUnit}`;
-		const fileName = file.getFileName;
+		const fileType = file.fileType;
+		const fileDateModified = file.dateModifiedUS;
+		const fileSize = formatSize(file.size);
+		const fileName = file.fileName;
 
 		//reset
 		this.fileInfoTipData = [];
 
-		if (this._consts.IMAGE_FILE_EXTENSIONS.includes(file.getFileType)) {
+		if (this._consts.IMAGE_FILE_EXTENSIONS.includes(file.fileType)) {
 			const img = new Image();
-			img.src = file.getIconPath;
+			img.src = file.iconPath;
 			const width = img?.naturalWidth;
 			const height = img?.naturalHeight;
 			const imgDimesions = `${width} x ${height}`;
 
-			this.fileInfoTipData.push({ label: infoTipFields[1], data: `${file.getFileType.replace('.', '').toLocaleUpperCase()} File` });
+			this.fileInfoTipData.push({ label: infoTipFields[1], data: `${file.fileType.replace('.', '').toLocaleUpperCase()} File` });
 			this.fileInfoTipData.push({ label: infoTipFields[4], data: imgDimesions });
 			this.fileInfoTipData.push({ label: infoTipFields[6], data: fileSize });
 		}
@@ -1021,10 +1029,10 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
 
 	async onDeleteFile(): Promise<void> {
 		let result = false;
-		if (this.selectedFile.getIsFile) {
-			result = await this._fileService.deleteFileAsync(this.selectedFile.getCurrentPath);
+		if (this.selectedFile.isFile) {
+			result = await this._fileService.deleteFileAsync(this.selectedFile.currentPath);
 		} else {
-			result = await this._fileService.deleteFolderAsync(this.selectedFile.getCurrentPath);
+			result = await this._fileService.deleteFolderAsync(this.selectedFile.currentPath);
 		}
 
 		if (result) {
@@ -1263,7 +1271,7 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
 
 		if (renameContainerElement) {
 			renameContainerElement.style.display = 'block';
-			this.currentIconName = this.selectedFile.getFileName;
+			this.currentIconName = this.selectedFile.fileName;
 			this.renameForm.setValue({
 				renameInput: this.currentIconName,
 			});
@@ -1281,13 +1289,13 @@ export class FileExplorerComponent implements BaseComponent, OnInit, AfterViewIn
 		const renameText = this.renameForm.value.renameInput as string;
 
 		if (renameText !== '' && renameText.length !== 0 && renameText !== this.currentIconName) {
-			const result = await this._fileService.renameAsync(this.selectedFile.getCurrentPath, renameText, this.selectedFile.getIsFile);
+			const result = await this._fileService.renameAsync(this.selectedFile.currentPath, renameText, this.selectedFile.isFile);
 
 			if (result) {
 				// renamFileAsync, doesn't trigger a reload of the file directory, so to give the user the impression that the file has been updated, the code below
-				const fileIdx = this.files.findIndex(f => f.getCurrentPath == this.selectedFile.getContentPath && f.getFileName == this.selectedFile.getFileName);
-				this.selectedFile.setFileName = renameText;
-				this.selectedFile.setDateModified = Date.now();
+				const fileIdx = this.files.findIndex(f => f.currentPath == this.selectedFile.contentPath && f.fileName == this.selectedFile.fileName);
+				this.selectedFile.fileName = renameText;
+				this.selectedFile.dateModified = Date.now();
 				this.files[fileIdx] = this.selectedFile;
 
 				this.renameForm.reset();

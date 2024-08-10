@@ -1236,7 +1236,7 @@ const {
 	FeatureTest,
 	fetchData,
 	getDocument,
-	getFilenameFromUrl,
+	fileNameFromUrl,
 	getPdfFilenameFromUrl: pdfjs_getPdfFilenameFromUrl,
 	getXfaPageViewport,
 	GlobalWorkerOptions,
@@ -12158,7 +12158,7 @@ const PDFViewerApplication = {
 		let title = pdfjs_getPdfFilenameFromUrl(url, '');
 		if (!title) {
 			try {
-				title = decodeURIComponent(getFilenameFromUrl(url)) || url;
+				title = decodeURIComponent(fileNameFromUrl(url)) || url;
 			} catch {
 				title = url;
 			}

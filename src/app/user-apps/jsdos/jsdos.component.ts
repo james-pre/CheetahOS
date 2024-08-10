@@ -96,7 +96,7 @@ export class JSdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
 	async ngAfterViewInit() {
 		this.setJSDosWindowToFocus(this.processId);
 
-		this.gameSrc = this.gameSrc !== '' ? this.gameSrc : this.getGamesSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
+		this.gameSrc = this.gameSrc !== '' ? this.gameSrc : this.getGamesSrc(this._fileInfo.contentPath, this._fileInfo.currentPath);
 
 		this._scriptService.loadScript('js-dos', 'assets/js-dos/js-dos.js').then(async () => {
 			emulators.pathPrefix = '/';
@@ -106,7 +106,7 @@ export class JSdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
 			this.storeAppState(this.gameSrc);
 			URL.revokeObjectURL(this.gameSrc);
 
-			this.displayName = this._fileInfo.getFileName;
+			this.displayName = this._fileInfo.fileName;
 		});
 
 		setTimeout(() => {
@@ -133,9 +133,9 @@ export class JSdosComponent implements BaseComponent, OnInit, OnDestroy, AfterVi
 		let gameSrc = '';
 
 		if (this.checkForExt(pathOne, pathTwo)) {
-			gameSrc = '/' + this._fileInfo.getContentPath;
+			gameSrc = '/' + this._fileInfo.contentPath;
 		} else {
-			gameSrc = this._fileInfo.getCurrentPath;
+			gameSrc = this._fileInfo.currentPath;
 		}
 
 		return gameSrc;

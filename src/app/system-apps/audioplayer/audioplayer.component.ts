@@ -110,7 +110,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
 	ngAfterViewInit(): void {
 		this.setAudioWindowToFocus(this.processId);
-		this.audioSrc = this.audioSrc !== '' ? this.audioSrc : this.getAudioSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
+		this.audioSrc = this.audioSrc !== '' ? this.audioSrc : this.getAudioSrc(this._fileInfo.contentPath, this._fileInfo.currentPath);
 
 		this._scriptService.loadScript('howler', 'assets/howler/howler.min.js').then(() => {
 			this._scriptService.loadScript('siriwave', 'assets/howler/siriwave.umd.min.js').then(() => {
@@ -346,7 +346,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 	async loadHowlSingleTrackObjectAsync(): Promise<any> {
 		// Your asynchronous code here
 		return new Promise<any>((resolve, reject) => {
-			const ext = this.getExt(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
+			const ext = this.getExt(this._fileInfo.contentPath, this._fileInfo.currentPath);
 			const audioPlayer = new Howl({
 				src: [this.audioSrc],
 				format: [ext.replace('.', '')],
@@ -365,7 +365,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 				onload: () => {
 					const duration = audioPlayer.duration();
 					this.duration = this.formatTime(duration);
-					this.track = this._fileInfo.getFileName;
+					this.track = this._fileInfo.fileName;
 					resolve(audioPlayer);
 				},
 				onseek: () => {
@@ -381,7 +381,7 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 
 	loadHowlPlayListObjectAsync(): Promise<any> {
 		return new Promise<any>((resolve, reject) => {
-			this.track = this._fileInfo.getFileName;
+			this.track = this._fileInfo.fileName;
 			const ext = extname(this.audioSrc);
 
 			const audioPlayer = new Howl({
@@ -451,9 +451,9 @@ export class AudioPlayerComponent implements BaseComponent, OnInit, OnDestroy, A
 		if (pathOne.includes('blob:http')) {
 			return pathOne;
 		} else if (this.checkForExt(pathOne, pathTwo)) {
-			audioSrc = '/' + this._fileInfo.getContentPath;
+			audioSrc = '/' + this._fileInfo.contentPath;
 		} else {
-			audioSrc = this._fileInfo.getCurrentPath;
+			audioSrc = this._fileInfo.currentPath;
 		}
 		return audioSrc;
 	}

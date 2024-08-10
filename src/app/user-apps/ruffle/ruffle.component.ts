@@ -72,7 +72,7 @@ export class RuffleComponent implements BaseComponent, OnInit, AfterViewInit {
 	async ngAfterViewInit() {
 		this.setRuffleWindowToFocus(this.processId);
 
-		this.gameSrc = this.gameSrc !== '' ? this.gameSrc : this.getGamesSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
+		this.gameSrc = this.gameSrc !== '' ? this.gameSrc : this.getGamesSrc(this._fileInfo.contentPath, this._fileInfo.currentPath);
 
 		this._scriptService.loadScript('ruffle', 'assets/ruffle/ruffle.js').then(() => {
 			this.rufflePlayer = (window as any).RufflePlayer.newest();
@@ -116,9 +116,9 @@ export class RuffleComponent implements BaseComponent, OnInit, AfterViewInit {
 		let gameSrc = '';
 
 		if (this.checkForExt(pathOne, pathTwo)) {
-			gameSrc = '/' + this._fileInfo.getContentPath;
+			gameSrc = '/' + this._fileInfo.contentPath;
 		} else {
-			gameSrc = this._fileInfo.getCurrentPath;
+			gameSrc = this._fileInfo.currentPath;
 		}
 
 		return gameSrc;

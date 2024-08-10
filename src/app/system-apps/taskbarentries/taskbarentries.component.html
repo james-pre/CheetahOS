@@ -3,13 +3,13 @@
 		class="li-inactive"
 		taskBarEntryHighlight
 		*ngFor="let pin of pinToTaskBarList; let i = index"
-		id="tskbar-{{ pin.getOpensWith }}"
-		(mouseenter)="onMouseEnter(pin.getOpensWith, pin.getIconPath, pinned)"
+		id="tskbar-{{ pin.opensWith }}"
+		(mouseenter)="onMouseEnter(pin.opensWith, pin.iconPath, pinned)"
 		(mouseleave)="onMouseLeave()"
 		(click)="onPinnedAppIconClick(pin)"
 		(contextmenu)="onShowIconContextMenu($event, pin)"
 	>
-		<cos-taskbarentry [taskBarPid]="appProcessId" [taskBarIconImgUrl]="pin.getIconPath" [taskBarIconName]="pin.getOpensWith"> </cos-taskbarentry>
+		<cos-taskbarentry [taskBarPid]="appProcessId" [taskBarIconImgUrl]="pin.iconPath" [taskBarIconName]="pin.opensWith"> </cos-taskbarentry>
 	</li>
 
 	<li

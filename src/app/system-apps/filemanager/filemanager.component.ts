@@ -192,9 +192,9 @@ export class FileManagerComponent implements BaseComponent, OnInit, AfterViewIni
 		this._triggerProcessService.startApplication(file);
 		this.btnStyleAndValuesReset();
 
-		// console.log('what was clicked:',file.getFileName +'-----' + file.getOpensWith +'---'+ file.getCurrentPath +'----'+ file.getIcon) TBD
-		// if((file.getOpensWith === 'fileexplorer' && file.getFileName !== 'fileexplorer') && file.getFileType ==='folder'){
-		//     //this.directory = file.getCurrentPath;
+		// console.log('what was clicked:',file.fileName +'-----' + file.opensWith +'---'+ file.currentPath +'----'+ file.getIcon) TBD
+		// if((file.opensWith === 'fileexplorer' && file.fileName !== 'fileexplorer') && file.fileType ==='folder'){
+		//     //this.directory = file.currentPath;
 		//    // await this.loadFilesInfoAsync();
 
 		//    this._triggerProcessService.startApplication(file);
@@ -240,14 +240,14 @@ export class FileManagerComponent implements BaseComponent, OnInit, AfterViewIni
 
 	onCopy(): void {
 		const action = 'copy';
-		const result = this.selectedFile.getCurrentPath;
+		const result = this.selectedFile.currentPath;
 		this._menuService.storeData.next([result, action]);
 	}
 
 	onCut(): void {
 		const action = 'copy';
 		const action1 = 'remove';
-		const result = this.selectedFile.getCurrentPath;
+		const result = this.selectedFile.currentPath;
 		this._menuService.storeData.next([result, action, action1]);
 	}
 
@@ -361,16 +361,16 @@ export class FileManagerComponent implements BaseComponent, OnInit, AfterViewIni
 
 	sortIcons(sortBy: string): void {
 		if (sortBy === 'Size') {
-			this.files = this.files.sort((objA, objB) => objB.getSize - objA.getSize);
+			this.files = this.files.sort((objA, objB) => objB.size - objA.size);
 		} else if (sortBy === 'Date Modified') {
-			this.files = this.files.sort((objA, objB) => objB.getDateModified.getTime() - objA.getDateModified.getTime());
+			this.files = this.files.sort((objA, objB) => objB.dateModified.getTime() - objA.dateModified.getTime());
 		} else if (sortBy === 'Name') {
 			this.files = this.files.sort((objA, objB) => {
-				return objA.getFileName < objB.getFileName ? -1 : 1;
+				return objA.fileName < objB.fileName ? -1 : 1;
 			});
 		} else if (sortBy === 'Item Type') {
 			this.files = this.files.sort((objA, objB) => {
-				return objA.getFileType < objB.getFileType ? -1 : 1;
+				return objA.fileType < objB.fileType ? -1 : 1;
 			});
 		}
 	}
@@ -436,10 +436,10 @@ export class FileManagerComponent implements BaseComponent, OnInit, AfterViewIni
 
 	async onDeleteFile(): Promise<void> {
 		let result = false;
-		if (this.selectedFile.getIsFile) {
-			result = await this._fileService.deleteFileAsync(this.selectedFile.getCurrentPath);
+		if (this.selectedFile.isFile) {
+			result = await this._fileService.deleteFileAsync(this.selectedFile.currentPath);
 		} else {
-			result = await this._fileService.deleteFolderAsync(this.selectedFile.getCurrentPath);
+			result = await this._fileService.deleteFolderAsync(this.selectedFile.currentPath);
 		}
 
 		if (result) {
@@ -519,7 +519,7 @@ export class FileManagerComponent implements BaseComponent, OnInit, AfterViewIni
 
 		if (renameContainerElement) {
 			renameContainerElement.style.display = 'block';
-			this.currentIconName = this.selectedFile.getFileName;
+			this.currentIconName = this.selectedFile.fileName;
 			this.renameForm.setValue({
 				renameInput: this.currentIconName,
 			});
@@ -536,13 +536,13 @@ export class FileManagerComponent implements BaseComponent, OnInit, AfterViewIni
 		const renameText = this.renameForm.value.renameInput as string;
 
 		if (renameText !== '' && renameText.length !== 0 && renameText !== this.currentIconName) {
-			const result = await this._fileService.renameAsync(this.selectedFile.getCurrentPath, renameText, this.selectedFile.getIsFile);
+			const result = await this._fileService.renameAsync(this.selectedFile.currentPath, renameText, this.selectedFile.isFile);
 
 			if (result) {
 				// renamFileAsync, doesn't trigger a reload of the file directory, so to give the user the impression that the file has been updated, the code below
-				const fileIdx = this.files.findIndex(f => f.getCurrentPath == this.selectedFile.getContentPath && f.getFileName == this.selectedFile.getFileName);
-				this.selectedFile.setFileName = renameText;
-				this.selectedFile.setDateModified = Date.now();
+				const fileIdx = this.files.findIndex(f => f.currentPath == this.selectedFile.contentPath && f.fileName == this.selectedFile.fileName);
+				this.selectedFile.fileName = renameText;
+				this.selectedFile.dateModified = Date.now();
 				this.files[fileIdx] = this.selectedFile;
 
 				this.renameForm.reset();

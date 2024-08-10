@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FileInfo } from 'src/app/system-files/fileinfo';
 import { ShortCut } from 'src/app/system-files/shortcut';
-import { extname, basename, resolve, dirname } from 'path';
+import { extname, basename, resolve, dirname, join } from 'path';
 import { Constants } from 'src/app/system-files/constants';
 import { FileEntry } from 'src/app/system-files/fileentry';
 import { FileMetaData } from 'src/app/system-files/file.metadata';
@@ -53,169 +53,43 @@ export class FileService {
 	}
 
 	private changeFolderIcon(fileName: string, iconPath: string): string {
-		if (fileName === 'Music') {
-			return '/osdrive/icons/music_folder.ico';
-		} else if (fileName === 'Videos') {
-			return '/osdrive/icons/video_folder.ico';
-		} else if (fileName === 'Pictures') {
-			return '/osdrive/icons/picture_folder.ico';
-		} else if (fileName === 'Desktop') {
-			return '/osdrive/icons/desktop_folder.ico';
-		} else if (fileName === 'Documents') {
-			return '/osdrive/icons/documents_folder.ico';
-		} else if (fileName === 'Downloads') {
-			return '/osdrive/icons/downloads_folder.ico';
-		}
-
-		return iconPath;
+		const iconMaybe = `/osdrive/icons/${fileName}_folder.ico`;
+		return fs.existsSync(iconMaybe) ? iconMaybe : iconPath;
 	}
 
 	public async checkIfDirectory(path: string): Promise<boolean> {
-		return new Promise<boolean>((resolve, reject) => {
-			fs.stat(path, (err, stats) => {
-				if (err) {
-					console.log('checkIfDirectory error:', err);
-					reject(err);
-				}
-
-				const isDirectory = stats ? stats.isDirectory() : false;
-				resolve(isDirectory);
-			});
-		});
+		const stats = await fs.promises.stat(path);
+		return stats?.isDirectory();
 	}
 
 	public async checkIfExistsAsync(dirPath: string): Promise<boolean> {
-		return new Promise<boolean>(resolve => {
-			fs.exists(`${dirPath}`, exits => {
-				if (exits) {
-					console.log('checkIfExistsAsync :Already exists', exits);
-					resolve(true);
-				} else {
-					console.log('checkIfExistsAsync :Does not exists', exits);
-					resolve(false);
-				}
-			});
-		});
+		return fs.promises.exists(dirPath);
 	}
 
 	public async copyFileAsync(sourcePath: string, destinationPath: string): Promise<boolean> {
-		const fileName = this.getFileName(sourcePath);
+		const fileName = this.fileName(sourcePath);
 		console.log(`Destination: ${destinationPath}/${fileName}`);
-		const result = await fs.promises.copyFile(sourcePath, `${destinationPath}/${fileName}`);
-
+		await fs.promises.copyFile(sourcePath, `${destinationPath}/${fileName}`);
 		return true;
-		// return new Promise<boolean>((resolve, reject) =>{
-		//      fs.readFile(sourcePath,(err, contents = Buffer.from('')) =>{
-		//         if(err){
-		//             console.log('copyFileAsync error:',err)
-		//             reject(false)
-		//         }else{
-		//             fs.writeFile(`${destinationPath}/${fileName}`, contents, {flag: 'wx'}, (err) =>{
-		//                 if(err?.code === 'EEXIST' ){
-		//                     console.log('copyFileAsync Error: file already exists',err);
-
-		//                     // if file exists, increment it simple.txt, simple(1).txt ...
-		//                     const itrName = this.iterateFileName(`${destinationPath}/${fileName}`);
-		//                     fs.writeFile(itrName,contents,(err) =>{
-		//                         if(err){
-		//                             console.log('copyFileAsync Iterate Error:',err);
-		//                             reject(false);
-		//                         }
-		//                         resolve(true);
-		//                     });
-		//                 }else{
-		//                     console.log('copyFileAsync Error:',err);
-		//                     this._fileExistsMap.set(`${destinationPath}/${fileName}`,0);
-		//                     resolve(true);
-		//                 }
-		//             });
-		//         }
-		//     });
-		// });
 	}
 
 	public async copyFilesAsync(sourcepaths: string[], destinationpath: string): Promise<boolean> {
-		return new Promise<boolean>((resolve, reject) => {
-			for (const sourcepath of sourcepaths) {
-				const fileName = this.getFileName(sourcepath);
-				fs.readFile(sourcepath, (err, contents = Buffer.from('')) => {
-					if (err) {
-						console.log('copyFilesAsync error:', err);
-						reject(false);
-					} else {
-						fs.writeFile(`${destinationpath}/${fileName}`, contents, { flag: 'wx' }, err => {
-							if (err?.code === 'EEXIST') {
-								console.log('copyFilesAsync Error: file already exists', err);
-
-								const itrName = this.iterateFileName(`${destinationpath}/${fileName}`);
-								fs.writeFile(itrName, contents, err => {
-									if (err) {
-										console.log('copyFilesAsync Iterate Error:', err);
-										reject(false);
-									}
-									resolve(true);
-								});
-							} else {
-								this._fileExistsMap.set(`${destinationpath}/${fileName}`, 0);
-								resolve(true);
-							}
-						});
-					}
-				});
-			}
-		});
+		for (const source of sourcepaths) {
+			await fs.promises.copyFile(source, destinationpath + '/' + basename(source));
+			return true;
+		}
 	}
 
 	public async createFolderAsync(directory: string, fileName: string): Promise<boolean> {
-		return new Promise<boolean>((resolve, reject) => {
-			fs.mkdir(`${directory}/${fileName}`, 0o777, err => {
-				if (err?.code === 'EEXIST') {
-					console.log('createFolderAsync Error:folder  already exists', err);
-					const itrName = this.iterateFileName(`${directory}/${fileName}`);
-					fs.mkdir(itrName, 0o777, err => {
-						if (err) {
-							console.log('createFolderAsync  Error:', err);
-							reject(err);
-						}
-						resolve(true);
-					});
-				} else {
-					console.log(`err:${err}`);
-					this._fileExistsMap.set(`${directory}/${fileName}`, 0);
-					resolve(true);
-				}
-			});
-		});
+		await fs.promises.mkdir(join(directory, fileName));
 	}
 
 	public async deleteFolderAsync(directory: string): Promise<boolean> {
-		return new Promise<boolean>((resolve, reject) => {
-			fs.exists(`${directory}/`, err => {
-				if (err) {
-					fs.rmdir(`${directory}/`, err => {
-						if (err) {
-							console.log('deleteFolderAsync Error: folder delete failed', err);
-							reject(false);
-						}
-						resolve(true);
-					});
-				} else {
-					console.log("deleteFolderAsync Error: folder doesn't exists", err);
-				}
-			});
-		});
+		await fs.promises.rmdir(directory);
 	}
 
 	public async deleteFileAsync(path: string): Promise<boolean> {
-		return new Promise<boolean>((resolve, reject) => {
-			fs.unlink(path, err => {
-				if (err) {
-					console.log('deleteFileAsync error:', err);
-					reject(false);
-				}
-				resolve(true);
-			});
-		});
+		await fs.promises.unlink(path);
 	}
 
 	public async getExtraFileMetaDataAsync(path: string) {
@@ -314,7 +188,7 @@ export class FileService {
 		return this._directoryFileEntires;
 	}
 
-	private getFileName(path: string): string {
+	private fileName(path: string): string {
 		return `${basename(path, extname(path))}${extname(path)}`;
 	}
 
@@ -326,105 +200,105 @@ export class FileService {
 			const sc = (await this.setFolderValuesAsync(path)) as ShortCut;
 			const fileMetaData = (await this.getExtraFileMetaDataAsync(path)) as FileMetaData;
 
-			this._fileInfo.setIconPath = this.changeFolderIcon(sc.geFileName, sc.getIconPath);
-			this._fileInfo.setCurrentPath = path;
-			this._fileInfo.setFileType = sc.getFileType;
-			this._fileInfo.setFileName = sc.geFileName;
-			this._fileInfo.setOpensWith = sc.getOpensWith;
-			this._fileInfo.setIsFile = false;
-			this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
-			this._fileInfo.setSize = fileMetaData.getSize;
-			this._fileInfo.setMode = fileMetaData.getMode;
+			this._fileInfo.iconPath = this.changeFolderIcon(sc.geFileName, sc.iconPath);
+			this._fileInfo.currentPath = path;
+			this._fileInfo.fileType = sc.fileType;
+			this._fileInfo.fileName = sc.geFileName;
+			this._fileInfo.opensWith = sc.opensWith;
+			this._fileInfo.isFile = false;
+			this._fileInfo.dateModified = fileMetaData.getModifiedDate;
+			this._fileInfo.size = fileMetaData.getSize;
+			this._fileInfo.mode = fileMetaData.getMode;
 		} else {
 			const fileMetaData = (await this.getExtraFileMetaDataAsync(path)) as FileMetaData;
 
 			if (extension == '.url') {
 				const sc = (await this.getShortCutFromURLAsync(path)) as ShortCut;
-				this._fileInfo.setIconPath = sc.getIconPath;
-				this._fileInfo.setCurrentPath = path;
-				this._fileInfo.setContentPath = sc.getContentPath;
-				this._fileInfo.setFileType = sc.getFileType;
-				this._fileInfo.setFileName = basename(path, extname(path));
-				this._fileInfo.setOpensWith = sc.getOpensWith;
-				this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
-				this._fileInfo.setSize = fileMetaData.getSize;
-				this._fileInfo.setMode = fileMetaData.getMode;
+				this._fileInfo.iconPath = sc.iconPath;
+				this._fileInfo.currentPath = path;
+				this._fileInfo.contentPath = sc.contentPath;
+				this._fileInfo.fileType = sc.fileType;
+				this._fileInfo.fileName = basename(path, extname(path));
+				this._fileInfo.opensWith = sc.opensWith;
+				this._fileInfo.dateModified = fileMetaData.getModifiedDate;
+				this._fileInfo.size = fileMetaData.getSize;
+				this._fileInfo.mode = fileMetaData.getMode;
 			} else if (this._consts.IMAGE_FILE_EXTENSIONS.includes(extension)) {
 				const sc = await this.getShortCutFromB64DataUrlAsync(path, 'image');
-				this._fileInfo.setIconPath = sc.getIconPath;
-				this._fileInfo.setCurrentPath = path;
-				this._fileInfo.setContentPath = sc.getContentPath;
-				this._fileInfo.setFileType = extension;
-				this._fileInfo.setFileName = sc.geFileName;
-				this._fileInfo.setOpensWith = 'photoviewer';
-				this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
-				this._fileInfo.setSize = fileMetaData.getSize;
-				this._fileInfo.setMode = fileMetaData.getMode;
+				this._fileInfo.iconPath = sc.iconPath;
+				this._fileInfo.currentPath = path;
+				this._fileInfo.contentPath = sc.contentPath;
+				this._fileInfo.fileType = extension;
+				this._fileInfo.fileName = sc.geFileName;
+				this._fileInfo.opensWith = 'photoviewer';
+				this._fileInfo.dateModified = fileMetaData.getModifiedDate;
+				this._fileInfo.size = fileMetaData.getSize;
+				this._fileInfo.mode = fileMetaData.getMode;
 			} else if (this._consts.VIDEO_FILE_EXTENSIONS.includes(extension)) {
 				const sc = await this.getShortCutFromB64DataUrlAsync(path, 'video');
-				this._fileInfo.setIconPath = '/osdrive/icons/video_file.ico';
-				this._fileInfo.setCurrentPath = path;
-				this._fileInfo.setContentPath = sc.getContentPath;
-				this._fileInfo.setFileType = extension;
-				this._fileInfo.setFileName = sc.geFileName;
-				this._fileInfo.setOpensWith = 'videoplayer';
-				this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
-				this._fileInfo.setSize = fileMetaData.getSize;
-				this._fileInfo.setMode = fileMetaData.getMode;
+				this._fileInfo.iconPath = '/osdrive/icons/video_file.ico';
+				this._fileInfo.currentPath = path;
+				this._fileInfo.contentPath = sc.contentPath;
+				this._fileInfo.fileType = extension;
+				this._fileInfo.fileName = sc.geFileName;
+				this._fileInfo.opensWith = 'videoplayer';
+				this._fileInfo.dateModified = fileMetaData.getModifiedDate;
+				this._fileInfo.size = fileMetaData.getSize;
+				this._fileInfo.mode = fileMetaData.getMode;
 			} else if (this._consts.AUDIO_FILE_EXTENSIONS.includes(extension)) {
 				const sc = await this.getShortCutFromB64DataUrlAsync(path, 'audio');
-				this._fileInfo.setIconPath = '/osdrive/icons/music_file.ico';
-				this._fileInfo.setCurrentPath = path;
-				this._fileInfo.setContentPath = sc.getContentPath;
-				this._fileInfo.setFileType = extension;
-				this._fileInfo.setFileName = sc.geFileName;
-				this._fileInfo.setOpensWith = 'audioplayer';
-				this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
-				this._fileInfo.setSize = fileMetaData.getSize;
-				this._fileInfo.setMode = fileMetaData.getMode;
+				this._fileInfo.iconPath = '/osdrive/icons/music_file.ico';
+				this._fileInfo.currentPath = path;
+				this._fileInfo.contentPath = sc.contentPath;
+				this._fileInfo.fileType = extension;
+				this._fileInfo.fileName = sc.geFileName;
+				this._fileInfo.opensWith = 'audioplayer';
+				this._fileInfo.dateModified = fileMetaData.getModifiedDate;
+				this._fileInfo.size = fileMetaData.getSize;
+				this._fileInfo.mode = fileMetaData.getMode;
 			} else if (extension == '.txt' || extension == '.properties') {
-				this._fileInfo.setIconPath = '/osdrive/icons/file.ico';
-				this._fileInfo.setCurrentPath = path;
-				this._fileInfo.setFileType = extname(path);
-				this._fileInfo.setFileName = basename(path, extname(path));
-				this._fileInfo.setOpensWith = 'texteditor';
-				this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
-				this._fileInfo.setSize = fileMetaData.getSize;
-				this._fileInfo.setMode = fileMetaData.getMode;
+				this._fileInfo.iconPath = '/osdrive/icons/file.ico';
+				this._fileInfo.currentPath = path;
+				this._fileInfo.fileType = extname(path);
+				this._fileInfo.fileName = basename(path, extname(path));
+				this._fileInfo.opensWith = 'texteditor';
+				this._fileInfo.dateModified = fileMetaData.getModifiedDate;
+				this._fileInfo.size = fileMetaData.getSize;
+				this._fileInfo.mode = fileMetaData.getMode;
 			} else if (extension == '.md') {
-				this._fileInfo.setIconPath = '/osdrive/icons/markdown-file_50.png';
-				this._fileInfo.setCurrentPath = path;
-				this._fileInfo.setFileType = extname(path);
-				this._fileInfo.setFileName = basename(path, extname(path));
-				this._fileInfo.setOpensWith = 'markdownviewer';
-				this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
-				this._fileInfo.setSize = fileMetaData.getSize;
-				this._fileInfo.setMode = fileMetaData.getMode;
+				this._fileInfo.iconPath = '/osdrive/icons/markdown-file_50.png';
+				this._fileInfo.currentPath = path;
+				this._fileInfo.fileType = extname(path);
+				this._fileInfo.fileName = basename(path, extname(path));
+				this._fileInfo.opensWith = 'markdownviewer';
+				this._fileInfo.dateModified = fileMetaData.getModifiedDate;
+				this._fileInfo.size = fileMetaData.getSize;
+				this._fileInfo.mode = fileMetaData.getMode;
 			} else if (extension == '.jsdos') {
-				this._fileInfo.setIconPath = '/osdrive/icons/emulator-2.png';
-				this._fileInfo.setCurrentPath = path;
-				this._fileInfo.setFileType = extname(path);
-				this._fileInfo.setFileName = basename(path, extname(path));
-				this._fileInfo.setOpensWith = 'jsdos';
-				this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
-				this._fileInfo.setSize = fileMetaData.getSize;
-				this._fileInfo.setMode = fileMetaData.getMode;
+				this._fileInfo.iconPath = '/osdrive/icons/emulator-2.png';
+				this._fileInfo.currentPath = path;
+				this._fileInfo.fileType = extname(path);
+				this._fileInfo.fileName = basename(path, extname(path));
+				this._fileInfo.opensWith = 'jsdos';
+				this._fileInfo.dateModified = fileMetaData.getModifiedDate;
+				this._fileInfo.size = fileMetaData.getSize;
+				this._fileInfo.mode = fileMetaData.getMode;
 			} else if (extension == '.swf') {
-				this._fileInfo.setIconPath = '/osdrive/icons/flash_67.png';
-				this._fileInfo.setCurrentPath = path;
-				this._fileInfo.setFileType = extname(path);
-				this._fileInfo.setFileName = basename(path, extname(path));
-				this._fileInfo.setOpensWith = 'ruffle';
-				this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
-				this._fileInfo.setSize = fileMetaData.getSize;
-				this._fileInfo.setMode = fileMetaData.getMode;
+				this._fileInfo.iconPath = '/osdrive/icons/flash_67.png';
+				this._fileInfo.currentPath = path;
+				this._fileInfo.fileType = extname(path);
+				this._fileInfo.fileName = basename(path, extname(path));
+				this._fileInfo.opensWith = 'ruffle';
+				this._fileInfo.dateModified = fileMetaData.getModifiedDate;
+				this._fileInfo.size = fileMetaData.getSize;
+				this._fileInfo.mode = fileMetaData.getMode;
 			} else {
-				this._fileInfo.setIconPath = '/osdrive/icons/unknown.ico';
-				this._fileInfo.setCurrentPath = path;
-				this._fileInfo.setFileName = basename(path, extname(path));
-				this._fileInfo.setDateModified = fileMetaData.getModifiedDate;
-				this._fileInfo.setSize = fileMetaData.getSize;
-				this._fileInfo.setMode = fileMetaData.getMode;
+				this._fileInfo.iconPath = '/osdrive/icons/unknown.ico';
+				this._fileInfo.currentPath = path;
+				this._fileInfo.fileName = basename(path, extname(path));
+				this._fileInfo.dateModified = fileMetaData.getModifiedDate;
+				this._fileInfo.size = fileMetaData.getSize;
+				this._fileInfo.mode = fileMetaData.getMode;
 			}
 		}
 		return this._fileInfo;
@@ -514,12 +388,12 @@ export class FileService {
 
 	public async writeFileAsync(directory: string, file: FileInfo): Promise<boolean> {
 		return new Promise<boolean>((resolve, reject) => {
-			fs.writeFile(`${directory}/${file.getFileName}`, file.getContentPath, { flag: 'wx' }, err => {
+			fs.writeFile(`${directory}/${file.fileName}`, file.contentPath, { flag: 'wx' }, err => {
 				if (err?.code === 'EEXIST') {
 					console.log('writeFileAsync Error: file already exists', err);
 
-					const itrName = this.iterateFileName(`${directory}/${file.getFileName}`);
-					fs.writeFile(itrName, file.getContentPath, err => {
+					const itrName = this.iterateFileName(`${directory}/${file.fileName}`);
+					fs.writeFile(itrName, file.contentPath, err => {
 						if (err) {
 							console.log('writeFileAsync Iterate Error:', err);
 							reject(false);
@@ -527,7 +401,7 @@ export class FileService {
 						resolve(true);
 					});
 				} else {
-					this._fileExistsMap.set(`${directory}/${file.getFileName}`, 0);
+					this._fileExistsMap.set(`${directory}/${file.fileName}`, 0);
 					resolve(true);
 				}
 			});
@@ -569,11 +443,11 @@ export class FileService {
 			let rename = '';
 			let type = '';
 			if (isFile) {
-				const fileName = this.getFileName(currentPath);
+				const fileName = this.fileName(currentPath);
 				rename = `${newPath}/${fileName}`;
 				type = 'file';
 			} else {
-				const fileName = this.getFileName(currentPath);
+				const fileName = this.fileName(currentPath);
 				rename = `${newPath}/${fileName}`;
 				type = 'folder';
 			}

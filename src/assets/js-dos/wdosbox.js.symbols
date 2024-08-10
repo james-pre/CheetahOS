@@ -239,7 +239,7 @@
 238:fwrite
 239:bool\20std::__2::operator==<wchar_t\2c\20std::__2::char_traits<wchar_t>>\28std::__2::istreambuf_iterator<wchar_t\2c\20std::__2::char_traits<wchar_t>>\20const&\2c\20std::__2::istreambuf_iterator<wchar_t\2c\20std::__2::char_traits<wchar_t>>\20const&\29
 240:Value::ToString\28\29\20const
-241:VGA_SetMode\28VGAModes\29
+241:VGA_mode\28VGAModes\29
 242:OPL3::operator_advance\28OPL3::operator_struct*\2c\20int\29
 243:Module_base::~Module_base\28\29
 244:FM_KEYOFF\28\28anonymous\20namespace\29::OPL3_SLOT*\2c\20unsigned\20int\29
@@ -728,7 +728,7 @@
 727:ECBClass::~ECBClass\28\29
 728:DestroyConditionFlags\28\29
 729:DSP_PrepareDMA_Old\28DMA_MODES\2c\20bool\2c\20bool\29
-730:DOS_MCB::SetFileName\28char\20const*\29
+730:DOS_MCB::fileName\28char\20const*\29
 731:DOS_FindDevice\28char\20const*\29
 732:DOS_FCB::GetSeqData\28unsigned\20char&\2c\20unsigned\20short&\29
 733:DOS_FCB::GetDrive\28\29
@@ -933,7 +933,7 @@
 932:WriteChar\28unsigned\20short\2c\20unsigned\20short\2c\20unsigned\20char\2c\20unsigned\20char\2c\20unsigned\20char\2c\20bool\29
 933:Value::SetValue\28std::__2::basic_string<char\2c\20std::__2::char_traits<char>\2c\20std::__2::allocator<char>>\20const&\2c\20Value::Etype\29
 934:VGA_TANDY_PageHandler::GetHostWritePt\28unsigned\20int\29
-935:VGA_SetModeNow\28VGAModes\29
+935:VGA_modeNow\28VGAModes\29
 936:VGA_SetCGA2Table\28unsigned\20char\2c\20unsigned\20char\29
 937:VGA_SetBlinking\28unsigned\20int\29
 938:VGA_ProcessSplit\28\29
@@ -1013,7 +1013,7 @@
 1012:DOS_AddMultiplexHandler\28bool\20\28*\29\28\29\29
 1013:DOS_21Handler\28\29
 1014:Cross::GetPlatformConfigDir\28std::__2::basic_string<char\2c\20std::__2::char_traits<char>\2c\20std::__2::allocator<char>>&\29
-1015:CommandLine::GetFileName\28\29
+1015:CommandLine::fileName\28\29
 1016:CommandLine::FindEntry\28char\20const*\2c\20std::__2::__list_iterator<std::__2::basic_string<char\2c\20std::__2::char_traits<char>\2c\20std::__2::allocator<char>>\2c\20void*>&\2c\20bool\29
 1017:CheckVoiceIrq\28\29
 1018:CSerial::removeEvent\28unsigned\20short\29
@@ -1880,7 +1880,7 @@
 1879:GUSChannels::WritePanPot\28unsigned\20char\29
 1880:GUS::~GUS\28\29
 1881:GFX_GetRGB\28unsigned\20char\2c\20unsigned\20char\2c\20unsigned\20char\29
-1882:FinishSetMode\28bool\29
+1882:Finishmode\28bool\29
 1883:FPU_ST80\28unsigned\20int\2c\20unsigned\20int\29
 1884:FPU_GetTag\28\29
 1885:FPU_FST_I32\28unsigned\20int\29
@@ -1933,7 +1933,7 @@
 1932:DOS_PSP::SaveVectors\28\29
 1933:DOS_OpenFileExtended\28char\20const*\2c\20unsigned\20short\2c\20unsigned\20short\2c\20unsigned\20short\2c\20unsigned\20short*\2c\20unsigned\20short*\29
 1934:DOS_MakeDir\28char\20const*\29
-1935:DOS_MCB::GetFileName\28char*\29
+1935:DOS_MCB::fileName\28char*\29
 1936:DOS_KeyboardLayout::~DOS_KeyboardLayout\28\29
 1937:DOS_InfoBlock::GetPointer\28\29
 1938:DOS_GetAmount\28\29
@@ -2871,9 +2871,9 @@
 2870:GUS_CallBack\28unsigned\20int\29
 2871:GUS::~GUS\28\29.1
 2872:GUI_StartUp\28Section*\29
-2873:FinishSetMode_PVGA1A\28unsigned\20int\2c\20VGA_ModeExtraData*\29
-2874:FinishSetMode_ET4K\28unsigned\20int\2c\20VGA_ModeExtraData*\29
-2875:FinishSetMode_ET3K\28unsigned\20int\2c\20VGA_ModeExtraData*\29
+2873:Finishmode_PVGA1A\28unsigned\20int\2c\20VGA_ModeExtraData*\29
+2874:Finishmode_ET4K\28unsigned\20int\2c\20VGA_ModeExtraData*\29
+2875:Finishmode_ET3K\28unsigned\20int\2c\20VGA_ModeExtraData*\29
 2876:FPU_Init\28Section*\29
 2877:END_DMA_Event\28unsigned\20int\29
 2878:EMS_ShutDown\28Section*\29

@@ -80,7 +80,7 @@ export class TextEditorComponent implements BaseComponent, OnDestroy, AfterViewI
 	ngAfterViewInit(): void {
 		this.setTextEditorWindowToFocus(this.processId);
 
-		this.fileSrc = this.fileSrc !== '' ? this.fileSrc : this.getFileSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
+		this.fileSrc = this.fileSrc !== '' ? this.fileSrc : this.getFileSrc(this._fileInfo.contentPath, this._fileInfo.currentPath);
 
 		const options = {
 			debug: 'info',
@@ -144,9 +144,9 @@ export class TextEditorComponent implements BaseComponent, OnDestroy, AfterViewI
 		let fileSrc = '';
 
 		if (this.checkForExt(pathOne, pathTwo)) {
-			fileSrc = '/' + this._fileInfo.getContentPath;
+			fileSrc = '/' + this._fileInfo.contentPath;
 		} else {
-			fileSrc = this._fileInfo.getCurrentPath;
+			fileSrc = this._fileInfo.currentPath;
 		}
 
 		return fileSrc;

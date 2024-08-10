@@ -91,7 +91,7 @@ export class PhotoViewerComponent implements BaseComponent, OnInit, OnDestroy, A
 	async ngAfterViewInit(): Promise<void> {
 		this.setImageViewerWindowToFocus(this.processId);
 
-		this.picSrc = this.picSrc !== '' ? this.picSrc : this.getPictureSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
+		this.picSrc = this.picSrc !== '' ? this.picSrc : this.getPictureSrc(this._fileInfo.contentPath, this._fileInfo.currentPath);
 
 		await this.getCurrentPicturePathAndSearchForOthers();
 		if (this.imageList.length > 0) {
@@ -191,9 +191,9 @@ export class PhotoViewerComponent implements BaseComponent, OnInit, OnDestroy, A
 		if (pathOne.includes('blob:http')) {
 			return pathOne;
 		} else if (this.checkForExt(pathOne, pathTwo)) {
-			pictureSrc = '/' + this._fileInfo.getContentPath;
+			pictureSrc = '/' + this._fileInfo.contentPath;
 		} else {
-			pictureSrc = this._fileInfo.getCurrentPath;
+			pictureSrc = this._fileInfo.currentPath;
 		}
 		return pictureSrc;
 	}

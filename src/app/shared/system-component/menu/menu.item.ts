@@ -1,7 +1,7 @@
 export interface GeneralMenu {
 	icon: string;
 	label: string;
-	action: () => void;
+	action(): void;
 }
 
 export interface DesktopMenu {
@@ -16,7 +16,7 @@ export interface DesktopMenu {
 export interface DesktopMenuItem {
 	icon: string;
 	label: string;
-	action: () => void;
+	action(): void;
 	variables?: boolean;
 	emptyline: boolean;
 	styleOption: string;

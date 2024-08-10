@@ -169,7 +169,7 @@ All commands:
 
 		if (this._appDirctory.appExist(arg1)) {
 			const file = new FileInfo();
-			file.setOpensWith = arg1;
+			file.opensWith = arg1;
 
 			if (this._triggerProcessService) {
 				this._triggerProcessService.startApplication(file);
@@ -268,14 +268,13 @@ All commands:
 		this.permissionChart.set(0, ___);
 	}
 
-	getPermission(arg0: string): string {
+	getPermission(perms: string): string {
 		let result = '';
 		const argSplit = arg0.split('');
 		argSplit.shift();
 
 		argSplit.forEach(x => {
-			const permission = this.permissionChart.get(Number(x));
-			result += permission?.symbolic;
+			result += this.permissionChart.get(Number(x))?.symbolic;
 		});
 
 		return result;
@@ -286,7 +285,7 @@ All commands:
 			if (arg0 == undefined || arg0 == '') {
 				const onlyFileNames: string[] = [];
 				this.files.forEach(file => {
-					onlyFileNames.push(file.getFileName);
+					onlyFileNames.push(file.fileName);
 				});
 				return { type: 'string[]', result: onlyFileNames };
 			}
@@ -301,16 +300,16 @@ All commands:
 				splitOptions.forEach(i => {
 					// sort by time
 					if (i === 't') {
-						this.files = this.files.sort((objA, objB) => objB.getDateModified.getTime() - objA.getDateModified.getTime());
+						this.files = this.files.sort((objA, objB) => objB.dateModified.getTime() - objA.dateModified.getTime());
 					} else if (i === 'r') {
 						// reverse the order
 						this.files.reverse();
 					} else {
 						// present in list format
 						this.files.forEach(file => {
-							const strPermission = this.getPermission(file.getMode);
+							const strPermission = this.getPermission(file.mode);
 							const fileInfo = `
-${file.getIsFile ? '-' : 'd'}${this.addspaces(strPermission, 10)} ${this.addspaces('Terminal', 8)} ${this.addspaces('staff', 6)} ${this.addspaces(String(file.getSize), 6)}  ${this.addspaces(file.getDateTimeModifiedUS, 12)} ${this.addspaces(file.getFileName, 11)}
+${file.isFile ? '-' : 'd'}${this.addspaces(strPermission, 10)} ${this.addspaces('Terminal', 8)} ${this.addspaces('staff', 6)} ${this.addspaces(String(file.size), 6)}  ${this.addspaces(file.dateTimeModifiedUS, 12)} ${this.addspaces(file.fileName, 11)}
                         `;
 							result.push(fileInfo);
 						});
@@ -376,8 +375,8 @@ ${file.getIsFile ? '-' : 'd'}${this.addspaces(strPermission, 10)} ${this.addspac
 			const fetchedFiles = await this.loadFilesInfoAsync(directory).then(() => {
 				const files: string[] = [];
 				this.files.forEach(file => {
-					if (file.getFileType === 'folder') files.push(`${file.getFileName}/`);
-					else files.push(file.getFileName);
+					if (file.fileType === 'folder') files.push(`${file.fileName}/`);
+					else files.push(file.fileName);
 				});
 				return { type: 'string[]', result: files, depth: depth };
 			});
@@ -509,7 +508,7 @@ usage: mkdir direcotry_name [-v]
 		if (folderQueue.length === 0) return true;
 
 		const sourcePath = folderQueue.shift() || '';
-		const folderName = this.getFileName(sourcePath);
+		const folderName = this.fileName(sourcePath);
 
 		const checkIfDirResult = await this._fileService.checkIfDirectory(`${sourcePath}`);
 
@@ -616,7 +615,7 @@ Mandatory argument to long options are mandotory for short options too.
 	private async cpHandler(arg0: string, sourcePathArg: string, destinationArg: string): Promise<boolean> {
 		const checkIfDirResult = await this._fileService.checkIfDirectory(`${sourcePathArg}`);
 		if (checkIfDirResult) {
-			const folderName = this.getFileName(sourcePathArg);
+			const folderName = this.fileName(sourcePathArg);
 			const createFolderResult = await this._fileService.createFolderAsync(destinationArg, folderName);
 			if (createFolderResult) {
 				const loadedDirectoryEntries = await this._fileService.getEntriesFromDirectoryAsync(sourcePathArg);
@@ -732,7 +731,7 @@ Mandatory argument to long options are mandotory for short options too.
 		}
 
 		// Delete the current directory after all its contents have been processed
-		const folderName = this.getFileName(sourceArg);
+		const folderName = this.fileName(sourceArg);
 		const result = await this._fileService.deleteFolderAsync(`${sourceArg}/${folderName}`);
 
 		if (result) {
@@ -744,7 +743,7 @@ Mandatory argument to long options are mandotory for short options too.
 		}
 	}
 
-	private getFileName(path: string): string {
+	private fileName(path: string): string {
 		return `${basename(path, extname(path))}${extname(path)}`;
 	}
 

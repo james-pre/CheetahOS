@@ -90,7 +90,7 @@ export class MarkDownViewerComponent implements BaseComponent, OnDestroy, AfterV
 	ngAfterViewInit(): void {
 		this.setMardkDownViewerWindowToFocus(this.processId);
 
-		this.fileSrc = this.fileSrc !== '' ? this.fileSrc : this.getFileSrc(this._fileInfo.getContentPath, this._fileInfo.getCurrentPath);
+		this.fileSrc = this.fileSrc !== '' ? this.fileSrc : this.getFileSrc(this._fileInfo.contentPath, this._fileInfo.currentPath);
 
 		this._scriptService.loadScript('markedjs', 'assets/marked/marked.min.js').then(async () => {
 			const mkd = marked.setOptions({
@@ -146,9 +146,9 @@ export class MarkDownViewerComponent implements BaseComponent, OnDestroy, AfterV
 		let fileSrc = '';
 
 		if (this.checkForExt(pathOne, pathTwo)) {
-			fileSrc = '/' + this._fileInfo.getContentPath;
+			fileSrc = '/' + this._fileInfo.contentPath;
 		} else {
-			fileSrc = this._fileInfo.getCurrentPath;
+			fileSrc = this._fileInfo.currentPath;
 		}
 
 		return fileSrc;

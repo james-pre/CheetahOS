@@ -85,7 +85,7 @@ __webpack_require__.d(__webpack_exports__, {
 	createValidAbsoluteUrl: () => /* reexport */ createValidAbsoluteUrl,
 	fetchData: () => /* reexport */ fetchData,
 	getDocument: () => /* reexport */ getDocument,
-	getFilenameFromUrl: () => /* reexport */ getFilenameFromUrl,
+	fileNameFromUrl: () => /* reexport */ fileNameFromUrl,
 	getPdfFilenameFromUrl: () => /* reexport */ getPdfFilenameFromUrl,
 	getXfaPageViewport: () => /* reexport */ getXfaPageViewport,
 	isDataScheme: () => /* reexport */ isDataScheme,
@@ -1492,7 +1492,7 @@ function isDataScheme(url) {
 function isPdfFile(filename) {
 	return typeof filename === 'string' && /\.pdf$/i.test(filename);
 }
-function getFilenameFromUrl(url) {
+function fileNameFromUrl(url) {
 	[url] = url.split(/[#?]/, 1);
 	return url.substring(url.lastIndexOf('/') + 1);
 }
@@ -9149,7 +9149,7 @@ class PDFDataTransportStreamRangeReader {
 	}
 } // CONCATENATED MODULE: ./src/display/content_disposition.js
 
-function getFilenameFromContentDispositionHeader(contentDisposition) {
+function fileNameFromContentDispositionHeader(contentDisposition) {
 	let needsEncodingFixup = true;
 	let tmp = toParamRegExp('filename\\*', 'i').exec(contentDisposition);
 	if (tmp) {
@@ -9307,7 +9307,7 @@ function validateRangeRequestCapabilities({ getResponseHeader, isHttp, rangeChun
 function extractFilenameFromHeader(getResponseHeader) {
 	const contentDisposition = getResponseHeader('Content-Disposition');
 	if (contentDisposition) {
-		let filename = getFilenameFromContentDispositionHeader(contentDisposition);
+		let filename = fileNameFromContentDispositionHeader(contentDisposition);
 		if (filename.includes('%')) {
 			try {
 				filename = decodeURIComponent(filename);
@@ -19388,7 +19388,7 @@ var __webpack_exports__build = __webpack_exports__.build;
 var __webpack_exports__createValidAbsoluteUrl = __webpack_exports__.createValidAbsoluteUrl;
 var __webpack_exports__fetchData = __webpack_exports__.fetchData;
 var __webpack_exports__getDocument = __webpack_exports__.getDocument;
-var __webpack_exports__getFilenameFromUrl = __webpack_exports__.getFilenameFromUrl;
+var __webpack_exports__fileNameFromUrl = __webpack_exports__.fileNameFromUrl;
 var __webpack_exports__getPdfFilenameFromUrl = __webpack_exports__.getPdfFilenameFromUrl;
 var __webpack_exports__getXfaPageViewport = __webpack_exports__.getXfaPageViewport;
 var __webpack_exports__isDataScheme = __webpack_exports__.isDataScheme;
@@ -19435,7 +19435,7 @@ export {
 	__webpack_exports__createValidAbsoluteUrl as createValidAbsoluteUrl,
 	__webpack_exports__fetchData as fetchData,
 	__webpack_exports__getDocument as getDocument,
-	__webpack_exports__getFilenameFromUrl as getFilenameFromUrl,
+	__webpack_exports__fileNameFromUrl as fileNameFromUrl,
 	__webpack_exports__getPdfFilenameFromUrl as getPdfFilenameFromUrl,
 	__webpack_exports__getXfaPageViewport as getXfaPageViewport,
 	__webpack_exports__isDataScheme as isDataScheme,

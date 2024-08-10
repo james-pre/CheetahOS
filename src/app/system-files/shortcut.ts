@@ -13,38 +13,38 @@ export class ShortCut {
 		this._opensWith = OpensWith;
 	}
 
-	get getIconPath() {
+	get iconPath() {
 		return this._iconPath;
 	}
-	set setIconPath(iconFile: string) {
+	set iconPath(iconFile: string) {
 		this._iconPath = iconFile;
 	}
 
 	get geFileName() {
 		return this._fileName;
 	}
-	set setFileName(fileName: string) {
+	set fileName(fileName: string) {
 		this._fileName = fileName;
 	}
 
-	get getContentPath() {
+	get contentPath() {
 		return this._contentPath;
 	}
-	set setContentPath(contentUrl: string) {
+	set contentPath(contentUrl: string) {
 		this._contentPath = contentUrl;
 	}
 
-	get getFileType() {
+	get fileType() {
 		return this._fileType;
 	}
-	set setFileType(fileType: string) {
+	set fileType(fileType: string) {
 		this._fileType = fileType;
 	}
 
-	get getOpensWith() {
+	get opensWith() {
 		return this._opensWith;
 	}
-	set setOpensWith(opensWith: string) {
+	set opensWith(opensWith: string) {
 		this._opensWith = opensWith;
 	}
 }

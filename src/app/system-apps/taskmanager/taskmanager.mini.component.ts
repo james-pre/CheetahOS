@@ -52,9 +52,9 @@ export class TaskmanagerMiniComponent implements BaseComponent, OnInit, OnDestro
 
 	onMoreDetailsBtnClick(): void {
 		const file: FileInfo = new FileInfo();
-		file.setIconPath = '/osdrive/icons/taskmanger.png';
-		file.setOpensWith = 'taskmanager';
-		file.setFileType = '.png';
+		file.iconPath = '/osdrive/icons/taskmanger.png';
+		file.opensWith = 'taskmanager';
+		file.fileType = '.png';
 
 		const processToClose = this._runningProcessService.getProcess(this.processId);
 		this._triggerProcessService.startApplication(file);

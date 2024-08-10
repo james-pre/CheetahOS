@@ -4,10 +4,9 @@ import { ProcessIDService } from 'src/app/shared/system-service/process.id.servi
 import { RunningProcessService } from 'src/app/shared/system-service/running.process.service';
 import { ComponentType } from 'src/app/system-files/component.types';
 import { Process } from 'src/app/system-files/process';
-import { BIRDS, GLOBE, HALO, RINGS, WAVE } from './vanta-object/vanta.interfaces';
-import { IconsSizes, SortBys } from './desktop.enums';
+import { BIRDS, GLOBE, HALO, RINGS, WAVE } from './vanta.interfaces';
 import { FileManagerService } from 'src/app/shared/system-service/file.manager.services';
-import { Colors } from './colorutil/colors';
+import { changeHue } from './colors';
 import { FileInfo } from 'src/app/system-files/fileinfo';
 import { TriggerProcessService } from 'src/app/shared/system-service/trigger.process.service';
 import { ScriptService } from 'src/app/shared/system-service/script.services';
@@ -18,6 +17,19 @@ import { FileService } from 'src/app/shared/system-service/file.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
 declare let VANTA: { HALO: any; BIRDS: any; WAVES: any; GLOBE: any; RINGS: any };
+
+export enum IconSize {
+	LARGE = 'Large Icons',
+	MEDIUM = 'Medium Icons',
+	SMALL = 'Small Icons',
+}
+
+export enum SortOrder {
+	NAME = 'Name',
+	DATE_MODIFIED = 'Date Modified',
+	ITEM_TYPE = 'Item Type',
+	SIZE = 'Size',
+}
 
 @Component({
 	selector: 'cos-desktop',
@@ -36,14 +48,6 @@ declare let VANTA: { HALO: any; BIRDS: any; WAVES: any; GLOBE: any; RINGS: any }
 export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit {
 	@ViewChild('desktopContainer', { static: true }) desktopContainer!: ElementRef;
 
-	private _processIdService: ProcessIDService;
-	private _runningProcessService: RunningProcessService;
-	private _fileManagerServices: FileManagerService;
-	private _fileService: FileService;
-	private _triggerProcessService: TriggerProcessService;
-	private _scriptService: ScriptService;
-	private _menuService: MenuService;
-
 	private _timerSubscription!: Subscription;
 	private _showTaskBarMenuSub!: Subscription;
 	private _hideMenuSub!: Subscription;
@@ -53,28 +57,30 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit {
 
 	private _vantaEffect: any;
 
-	readonly largeIcons = IconsSizes.LARGE_ICONS;
-	readonly mediumIcons = IconsSizes.MEDIUM_ICONS;
-	readonly smallIcons = IconsSizes.SMALL_ICONS;
+	private _iconSize: IconSize = IconSize.LARGE;
+	public get iconSize(): IconSize {
+		return this._iconSize;
+	}
+	public set iconSize(value: IconSize) {
+		this._iconSize = value;
+		this.fileManagerServices.viewByNotify.next(value);
+		this.getDesktopMenuData();
+	}
 
-	isLargeIcon = true;
-	isMediumIcon = false;
-	isSmallIcon = false;
+	private _sortOrder?: SortOrder;
+	public get sortOrder(): SortOrder | undefined {
+		return this._sortOrder;
+	}
+	public set sortOrder(value: SortOrder) {
+		this._sortOrder = value;
+		this.fileManagerServices.sortByNotify.next(value);
+		this.getDesktopMenuData();
+	}
 
-	readonly sortByName = SortBys.NAME;
-	readonly sortByItemType = SortBys.ITEM_TYPE;
-	readonly sortBySize = SortBys.SIZE;
-	readonly sortByDateModified = SortBys.DATE_MODIFIED;
-
-	isSortByName = false;
-	isSortByItemType = false;
-	isSortBySize = false;
-	isSortByDateModified = false;
-
-	autoAlignIcons = true;
-	autoArrangeIcons = true;
-	showDesktopIcons = true;
-	showDesktopScreenShotPreview = false;
+	private _autoAlignIcons = true;
+	private _autoArrangeIcons = true;
+	private _showDesktopIcons = true;
+	_showDesktopScreenShotPreview = false;
 	dsktpPrevImg = '';
 	slideState = 'slideIn';
 
@@ -91,8 +97,8 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit {
 	appToPreview = '';
 	appToPreviewIcon = '';
 	previousDisplayedTaskbarPreview = '';
-	removeTskBarPrevWindowFromDOMTimeoutId!: NodeJS.Timeout;
-	hideTskBarPrevWindowTimeoutId!: NodeJS.Timeout;
+	removeTaskBarPreviousWindowFromDOMTimeoutId!: NodeJS.Timeout;
+	hideTaskbarPreviousWindowTimeoutId!: NodeJS.Timeout;
 
 	hasWindow = false;
 	icon = 'osdrive/icons/generic-program.ico';
@@ -100,11 +106,6 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit {
 	processId = 0;
 	type = ComponentType.System;
 	displayName = '';
-
-	terminalApp = 'terminal';
-	textEditorApp = 'texteditor';
-	codeEditorApp = 'codeeditor';
-	markDownViewerApp = 'markdownviewer';
 
 	waveBkgrnd: WAVE = { el: '#vanta' };
 	ringsBkgrnd: RINGS = { el: '#vanta' };
@@ -121,56 +122,45 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit {
 	private MAX_DEG = 360;
 	private CURRENT_DEG = 0;
 	private defaultColor = 0x274c;
-	private nextColor: Colors = new Colors();
 	private animationId: any;
 
-	taskBarMenuData = [
+	public taskBarMenuData = [
 		{ icon: '', label: '', action: this.openApplicationFromTaskBar.bind(this) },
 		{ icon: '', label: '', action: () => console.log() },
 	];
 
-	deskTopMenu: DesktopMenu[] = [];
+	public deskTopMenu: DesktopMenu[] = [];
 
-	constructor(
-		processIdService: ProcessIDService,
-		runningProcessService: RunningProcessService,
-		fileManagerServices: FileManagerService,
-		triggerProcessService: TriggerProcessService,
-		scriptService: ScriptService,
-		menuService: MenuService,
-		fileService: FileService
+	public constructor(
+		private processIdService: ProcessIDService,
+		private runningProcessService: RunningProcessService,
+		private fileManagerServices: FileManagerService,
+		private triggerProcessService: TriggerProcessService,
+		private scriptService: ScriptService,
+		private menuService: MenuService,
+		private fileService: FileService
 	) {
-		this._processIdService = processIdService;
-		this._runningProcessService = runningProcessService;
-		this._fileManagerServices = fileManagerServices;
-		this._triggerProcessService = triggerProcessService;
-		this._scriptService = scriptService;
-		this._menuService = menuService;
-		this._fileService = fileService;
-
-		this._showTaskBarMenuSub = this._menuService.showTaskBarMenu.subscribe(p => {
-			this.onShowTaskBarContextMenu(p);
-		});
-		this._showTaskBarPreviewWindowSub = this._runningProcessService.showPreviewWindowNotify.subscribe(p => {
+		this._showTaskBarMenuSub = menuService.showTaskBarMenu.subscribe(p => this.onShowTaskBarContextMenu(p));
+		this._showTaskBarPreviewWindowSub = runningProcessService.showPreviewWindowNotify.subscribe(p => {
 			this.showTaskBarPreviewWindow(p);
 		});
-		this._hideMenuSub = this._menuService.hideContextMenus.subscribe(() => {
+		this._hideMenuSub = this.menuService.hideContextMenus.subscribe(() => {
 			this.hideContextMenu();
 		});
-		this._hideTaskBarPreviewWindowSub = this._runningProcessService.hidePreviewWindowNotify.subscribe(() => {
+		this._hideTaskBarPreviewWindowSub = this.runningProcessService.hidePreviewWindowNotify.subscribe(() => {
 			this.hideTaskBarPreviewWindow();
 		});
-		this._keepTaskBarPreviewWindowSub = this._runningProcessService.keepPreviewWindowNotify.subscribe(() => {
+		this._keepTaskBarPreviewWindowSub = this.runningProcessService.keepPreviewWindowNotify.subscribe(() => {
 			this.keepTaskBarPreviewWindow();
 		});
 
-		this.processId = this._processIdService.getNewProcessId();
-		this._runningProcessService.addProcess(this.getComponentDetail());
+		this.processId = this.processIdService.getNewProcessId();
+		this.runningProcessService.addProcess(this.getComponentDetail());
 		this.CURRENT_DEG = this.getRandomInt(0, 360);
 	}
 
-	ngOnInit(): void {
-		this._scriptService.loadScript('vanta-waves', 'assets/backgrounds/vanta.waves.min.js').then(() => {
+	public ngOnInit(): void {
+		this.scriptService.loadScript('vanta-waves', 'assets/backgrounds/vanta.waves.min.js').then(() => {
 			this._vantaEffect = VANTA.WAVES({
 				el: '#vanta',
 				color: this.defaultColor, //this._numSequence,
@@ -184,13 +174,13 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit {
 		this.getDesktopMenuData();
 	}
 
-	ngAfterViewInit(): void {
+	public ngAfterViewInit(): void {
 		//this.animationId = requestAnimationFrame(this.changeAnimationColor.bind(this));
 		this.hideContextMenu();
 		this.loadOtherBackgrounds();
 	}
 
-	loadOtherBackgrounds(): void {
+	public loadOtherBackgrounds(): void {
 		const names: string[] = ['rings', 'halo', 'globe', 'birds'];
 		const bkgrounds: string[] = [
 			'assets/backgrounds/vanta.rings.min.js',
@@ -200,23 +190,23 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit {
 		];
 
 		for (let i = 0; i <= bkgrounds.length - 1; i++) {
-			this._scriptService.loadScript(names[i], bkgrounds[i]);
+			this.scriptService.loadScript(names[i], bkgrounds[i]);
 		}
 	}
 
-	changeAnimationColor(): void {
+	public changeAnimationColor(): void {
 		this.CURRENT_DEG = this.CURRENT_DEG > this.MAX_DEG ? this.MIN_DEG : this.CURRENT_DEG + 1;
 
-		console.log('nextColor:', Number(this.nextColor.changeHue('#4f32c2', this.CURRENT_DEG)?.replace('#', '0x')));
+		console.log('nextColor:', Number(changeHue('#4f32c2', this.CURRENT_DEG)?.replace('#', '0x')));
 		this._vantaEffect.setOptions({
-			color: Number(this.nextColor.changeHue('#4f32c2', this.CURRENT_DEG)?.replace('#', '0x')),
+			color: Number(changeHue('#4f32c2', this.CURRENT_DEG)?.replace('#', '0x')),
 		});
 
 		// this ain't working
 		//this.animationId = requestAnimationFrame(this.changeAnimationColor.bind(this));
 	}
 
-	ngOnDestroy(): void {
+	public ngOnDestroy(): void {
 		this._timerSubscription?.unsubscribe();
 		this._showTaskBarMenuSub?.unsubscribe();
 		this._hideMenuSub?.unsubscribe();
@@ -228,13 +218,13 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit {
 		this._vantaEffect?.destroy();
 	}
 
-	getRandomInt(min: number, max: number): number {
+	public getRandomInt(min: number, max: number): number {
 		min = Math.ceil(min);
 		max = Math.floor(max);
 		return Math.floor(Math.random() * (max - min) + min);
 	}
 
-	showDesktopContextMenu(evt: MouseEvent): void {
+	public showDesktopContextMenu(evt: MouseEvent): void {
 		/**
 		 * There is a doubling of responses to certain events that exist on the
 		 * desktop compoonent and any other component running at the time the event was triggered.
@@ -242,175 +232,92 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit {
 		 * If there is a count of 2 or more(highly unlikely) reponses for a given event, then, ignore the desktop's response
 		 */
 
-		const evtOriginator = this._runningProcessService.getEventOrginator();
+		const evtOriginator = this.runningProcessService.getEventOrginator();
 
-		if (evtOriginator == '') {
-			this.showDesktopCntxtMenu = true;
-			this.dskTopCntxtMenuStyle = {
-				position: 'absolute',
-				width: '210px',
-				transform: `translate(${String(evt.clientX + 2)}px, ${String(evt.clientY)}px)`,
-				'z-index': 2,
-				opacity: 1,
-			};
-			evt.preventDefault();
-		} else {
-			this._runningProcessService.removeEventOriginator();
+		if (evtOriginator != '') {
+			this.runningProcessService.removeEventOriginator();
+			return;
 		}
+		this.showDesktopCntxtMenu = true;
+		this.dskTopCntxtMenuStyle = {
+			position: 'absolute',
+			width: '210px',
+			transform: `translate(${String(evt.clientX + 2)}px, ${String(evt.clientY)}px)`,
+			'z-index': 2,
+			opacity: 1,
+		};
+		evt.preventDefault();
 	}
 
-	captureComponentImg(): void {
+	public async captureComponentImg(): Promise<void> {
 		const directory = '/Documents/Screen-Shots';
-		htmlToImage.toPng(this.desktopContainer.nativeElement).then(htmlImg => {
-			//console.log('img data:',htmlImg);
+		const img = await htmlToImage.toPng(this.desktopContainer.nativeElement);
+		//console.log('img data:',htmlImg);
 
-			const screenShot: FileInfo = new FileInfo();
-			screenShot.setFileName = 'screen_shot.png';
-			screenShot.setCurrentPath = `${directory}/screen_shot.png`;
-			screenShot.setContentPath = htmlImg;
-			screenShot.setIconPath = htmlImg;
+		const screenshot: FileInfo = new FileInfo();
+		screenshot.fileName = 'screen_shot.png';
+		screenshot.currentPath = `${directory}/screen_shot.png`;
+		screenshot.contentPath = img;
+		screenshot.iconPath = img;
 
-			this.showDesktopScreenShotPreview = true;
-			this.slideState = 'slideIn';
-			this.dsktpPrevImg = htmlImg;
+		this._showDesktopScreenShotPreview = true;
+		this.slideState = 'slideIn';
+		this.dsktpPrevImg = img;
 
-			// const img = new Image();
-			// img.src = htmlImg;
-			// document.body.appendChild(img);
+		// const img = new Image();
+		// img.src = htmlImg;
+		// document.body.appendChild(img);
 
-			setTimeout(() => {
-				this.slideState = 'slideOut';
-				this._fileService.writeFileAsync(directory, screenShot);
-				this._fileService.addEventOriginator('fileexplorer');
-				this._fileService.dirFilesUpdateNotify.next();
-			}, 4000);
+		setTimeout(() => {
+			this.slideState = 'slideOut';
+			this.fileService.writeFileAsync(directory, screenshot);
+			this.fileService.addEventOriginator('fileexplorer');
+			this.fileService.dirFilesUpdateNotify.next();
+		}, 4000);
 
-			setTimeout(() => {
-				this.showDesktopScreenShotPreview = false;
-			}, 6000);
-		});
+		setTimeout(() => {
+			this._showDesktopScreenShotPreview = false;
+		}, 6000);
 	}
 
-	async createFolder(): Promise<void> {
+	public async createFolder(): Promise<void> {
 		const directory = '/Desktop';
 		const folderName = 'New Folder';
-		const result = await this._fileService.createFolderAsync(directory, folderName);
+		const result = await this.fileService.createFolderAsync(directory, folderName);
 		if (result) {
-			this._fileService.addEventOriginator('filemanager');
-			this._fileService.dirFilesUpdateNotify.next();
+			this.fileService.addEventOriginator('filemanager');
+			this.fileService.dirFilesUpdateNotify.next();
 		}
 	}
 
-	hideContextMenu(): void {
+	public hideContextMenu(): void {
 		this.showDesktopCntxtMenu = false;
 		this.showTskBarCntxtMenu = false;
 	}
 
-	viewByLargeIcon(): void {
-		this.viewBy(this.largeIcons);
-	}
-
-	viewByMediumIcon(): void {
-		this.viewBy(this.mediumIcons);
-	}
-
-	viewBySmallIcon(): void {
-		this.viewBy(this.smallIcons);
-	}
-
-	viewBy(viewBy: string): void {
-		if (viewBy === IconsSizes.LARGE_ICONS) {
-			this.isLargeIcon = true;
-			this.isMediumIcon = false;
-			this.isSmallIcon = false;
-		}
-
-		if (viewBy === IconsSizes.MEDIUM_ICONS) {
-			this.isMediumIcon = true;
-			this.isLargeIcon = false;
-			this.isSmallIcon = false;
-		}
-
-		if (viewBy === IconsSizes.SMALL_ICONS) {
-			this.isSmallIcon = true;
-			this.isMediumIcon = false;
-			this.isLargeIcon = false;
-		}
-
-		this._fileManagerServices.viewByNotify.next(viewBy);
+	public autoArrangeIcons(): void {
+		this._autoArrangeIcons = !this._autoArrangeIcons;
+		this.fileManagerServices.autoArrangeIconsNotify.next(this._autoArrangeIcons);
 		this.getDesktopMenuData();
 	}
 
-	sortByNameM(): void {
-		this.sortBy(this.sortByName);
-	}
-
-	sortBySizeM(): void {
-		this.sortBy(this.sortBySize);
-	}
-	sortByItemTypeM(): void {
-		this.sortBy(this.sortByItemType);
-	}
-	sortByDateModifiedM(): void {
-		this.sortBy(this.sortByDateModified);
-	}
-
-	sortBy(sortBy: string): void {
-		if (sortBy === SortBys.DATE_MODIFIED) {
-			this.isSortByDateModified = true;
-			this.isSortByItemType = false;
-			this.isSortByName = false;
-			this.isSortBySize = false;
-		}
-
-		if (sortBy === SortBys.ITEM_TYPE) {
-			this.isSortByItemType = true;
-			this.isSortByDateModified = false;
-			this.isSortByName = false;
-			this.isSortBySize = false;
-		}
-
-		if (sortBy === SortBys.SIZE) {
-			this.isSortBySize = true;
-			this.isSortByItemType = false;
-			this.isSortByName = false;
-			this.isSortByDateModified = false;
-		}
-
-		if (sortBy === SortBys.NAME) {
-			this.isSortByName = true;
-			this.isSortByItemType = false;
-			this.isSortByDateModified = false;
-			this.isSortBySize = false;
-		}
-
-		this._fileManagerServices.sortByNotify.next(sortBy);
+	public autoAlignIcons(): void {
+		this._autoAlignIcons = !this._autoAlignIcons;
+		this.fileManagerServices.alignIconsToGridNotify.next(this._autoAlignIcons);
 		this.getDesktopMenuData();
 	}
 
-	autoArrangeIcon(): void {
-		this.autoArrangeIcons = !this.autoArrangeIcons;
-		this._fileManagerServices.autoArrangeIconsNotify.next(this.autoArrangeIcons);
+	public refresh(): void {
+		this.fileManagerServices.refreshNotify.next();
+	}
+
+	public toggleDesktopIcons(): void {
+		this._showDesktopIcons = !this._showDesktopIcons;
+		this.fileManagerServices.showDesktopIconsNotify.next(this._showDesktopIcons);
 		this.getDesktopMenuData();
 	}
 
-	autoAlignIcon(): void {
-		this.autoAlignIcons = !this.autoAlignIcons;
-		this._fileManagerServices.alignIconsToGridNotify.next(this.autoAlignIcons);
-		this.getDesktopMenuData();
-	}
-
-	refresh(): void {
-		this._fileManagerServices.refreshNotify.next();
-	}
-
-	showDesktopIcon(): void {
-		this.showDesktopIcons = !this.showDesktopIcons;
-		this._fileManagerServices.showDesktopIconsNotify.next(this.showDesktopIcons);
-		this.getDesktopMenuData();
-	}
-
-	previousBackground(): void {
+	public previousBackground(): void {
 		if (this.CURRENT_DESTOP_NUM > this.MIN_NUMS_OF_DESKTOPS) {
 			this.CURRENT_DESTOP_NUM--;
 			const curNum = this.CURRENT_DESTOP_NUM;
@@ -419,7 +326,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit {
 		this.hideContextMenu();
 	}
 
-	nextBackground(): void {
+	public nextBackground(): void {
 		if (this.CURRENT_DESTOP_NUM < this.MAX_NUMS_OF_DESKTOPS) {
 			this.CURRENT_DESTOP_NUM++;
 			const curNum = this.CURRENT_DESTOP_NUM;
@@ -429,182 +336,150 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit {
 		this.hideContextMenu();
 	}
 
-	openTerminal(): void {
-		this.openApplication(this.terminalApp);
-	}
-
-	openTextEditor(): void {
-		this.openApplication(this.textEditorApp);
-	}
-
-	openCodeEditor(): void {
-		this.openApplication(this.codeEditorApp);
-	}
-
-	openMarkDownViewer(): void {
-		this.openApplication(this.markDownViewerApp);
-	}
-
-	openApplication(arg0: string): void {
+	public openApplication(appID: string): void {
 		const file = new FileInfo();
 
-		file.setOpensWith = arg0;
+		file.opensWith = appID;
 
-		if (arg0 == this.markDownViewerApp) {
-			file.setCurrentPath = '/Desktop';
-			file.setContentPath = '/Documents/Credits.md';
+		if (appID == 'markdownviewer') {
+			file.currentPath = '/Desktop';
+			file.contentPath = '/Documents/Credits.md';
 		}
 
-		this._triggerProcessService.startApplication(file);
+		this.triggerProcessService.startApplication(file);
 	}
 
-	buildViewByMenu(): DesktopMenuItem[] {
-		const smallIcon: DesktopMenuItem = {
-			icon: 'osdrive/icons/circle.png',
-			label: 'Small icons',
-			action: this.viewBySmallIcon.bind(this),
-			variables: this.isSmallIcon,
-			emptyline: false,
-			styleOption: 'A',
-		};
-
-		const mediumIcon: DesktopMenuItem = {
-			icon: 'osdrive/icons/circle.png',
-			label: 'Medium icons',
-			action: this.viewByMediumIcon.bind(this),
-			variables: this.isMediumIcon,
-			emptyline: false,
-			styleOption: 'A',
-		};
-
-		const largeIcon: DesktopMenuItem = {
-			icon: 'osdrive/icons/circle.png',
-			label: 'Large icons',
-			action: this.viewByLargeIcon.bind(this),
-			variables: this.isLargeIcon,
-			emptyline: true,
-			styleOption: 'A',
-		};
-
-		const autoArrageIcon: DesktopMenuItem = {
-			icon: 'osdrive/icons/chkmark32.png',
-			label: 'Auto arrange icons',
-			action: this.autoArrangeIcon.bind(this),
-			variables: this.autoArrangeIcons,
-			emptyline: false,
-			styleOption: 'B',
-		};
-
-		const autoAlign: DesktopMenuItem = {
-			icon: 'osdrive/icons/chkmark32.png',
-			label: 'Align icons to grid',
-			action: this.autoAlignIcon.bind(this),
-			variables: this.autoAlignIcons,
-			emptyline: true,
-			styleOption: 'B',
-		};
-
-		const showDesktopIcons: DesktopMenuItem = {
-			icon: 'osdrive/icons/chkmark32.png',
-			label: 'Show desktop icons',
-			action: this.showDesktopIcon.bind(this),
-			variables: this.showDesktopIcons,
-			emptyline: false,
-			styleOption: 'B',
-		};
-
-		const viewByMenu = [smallIcon, mediumIcon, largeIcon, autoArrageIcon, autoAlign, showDesktopIcons];
-
-		return viewByMenu;
+	public buildViewByMenu(): DesktopMenuItem[] {
+		return [
+			{
+				icon: 'osdrive/icons/circle.png',
+				label: 'Small icons',
+				action: () => (this.iconSize = IconSize.SMALL),
+				variables: this.iconSize == IconSize.SMALL,
+				emptyline: false,
+				styleOption: 'A',
+			},
+			{
+				icon: 'osdrive/icons/circle.png',
+				label: 'Medium icons',
+				action: () => (this.iconSize = IconSize.MEDIUM),
+				variables: this.iconSize == IconSize.MEDIUM,
+				emptyline: false,
+				styleOption: 'A',
+			},
+			{
+				icon: 'osdrive/icons/circle.png',
+				label: 'Large icons',
+				action: () => (this.iconSize = IconSize.LARGE),
+				variables: this.iconSize == IconSize.LARGE,
+				emptyline: true,
+				styleOption: 'A',
+			},
+			{
+				icon: 'osdrive/icons/chkmark32.png',
+				label: 'Auto arrange icons',
+				action: this.autoArrangeIcons.bind(this),
+				variables: this._autoArrangeIcons,
+				emptyline: false,
+				styleOption: 'B',
+			},
+			{
+				icon: 'osdrive/icons/chkmark32.png',
+				label: 'Align icons to grid',
+				action: this.autoAlignIcons.bind(this),
+				variables: this._autoAlignIcons,
+				emptyline: true,
+				styleOption: 'B',
+			},
+			{
+				icon: 'osdrive/icons/chkmark32.png',
+				label: 'Show desktop icons',
+				action: this.toggleDesktopIcons.bind(this),
+				variables: this._showDesktopIcons,
+				emptyline: false,
+				styleOption: 'B',
+			},
+		];
 	}
 
-	buildSortByMenu(): DesktopMenuItem[] {
-		const sortByName: DesktopMenuItem = {
-			icon: 'osdrive/icons/circle.png',
-			label: 'Name',
-			action: this.sortByNameM.bind(this),
-			variables: this.isSortByName,
-			emptyline: false,
-			styleOption: 'A',
-		};
-
-		const sortBySize: DesktopMenuItem = {
-			icon: 'osdrive/icons/circle.png',
-			label: 'Size',
-			action: this.sortBySizeM.bind(this),
-			variables: this.isSortBySize,
-			emptyline: false,
-			styleOption: 'A',
-		};
-
-		const sortByItemType: DesktopMenuItem = {
-			icon: 'osdrive/icons/circle.png',
-			label: 'Item type',
-			action: this.sortByItemTypeM.bind(this),
-			variables: this.isSortByItemType,
-			emptyline: false,
-			styleOption: 'A',
-		};
-
-		const sortByDateModified: DesktopMenuItem = {
-			icon: 'osdrive/icons/circle.png',
-			label: 'Date modified',
-			action: this.sortByDateModifiedM.bind(this),
-			variables: this.isSortByDateModified,
-			emptyline: false,
-			styleOption: 'A',
-		};
-
-		const sortByMenu = [sortByName, sortBySize, sortByItemType, sortByDateModified];
-
-		return sortByMenu;
+	public buildSortByMenu(): DesktopMenuItem[] {
+		return [
+			{
+				icon: 'osdrive/icons/circle.png',
+				label: 'Name',
+				action: () => (this.sortOrder = SortOrder.NAME),
+				variables: this.sortOrder == SortOrder.NAME,
+				emptyline: false,
+				styleOption: 'A',
+			},
+			{
+				icon: 'osdrive/icons/circle.png',
+				label: 'Size',
+				action: () => (this.sortOrder = SortOrder.SIZE),
+				variables: this.sortOrder == SortOrder.SIZE,
+				emptyline: false,
+				styleOption: 'A',
+			},
+			{
+				icon: 'osdrive/icons/circle.png',
+				label: 'Item type',
+				action: () => (this.sortOrder = SortOrder.ITEM_TYPE),
+				variables: this.sortOrder == SortOrder.ITEM_TYPE,
+				emptyline: false,
+				styleOption: 'A',
+			},
+			{
+				icon: 'osdrive/icons/circle.png',
+				label: 'Date modified',
+				action: () => (this.sortOrder = SortOrder.DATE_MODIFIED),
+				variables: this.sortOrder == SortOrder.DATE_MODIFIED,
+				emptyline: false,
+				styleOption: 'A',
+			},
+		];
 	}
 
-	buildNewMenu(): DesktopMenuItem[] {
-		const newFolder: DesktopMenuItem = {
-			icon: 'osdrive/icons/empty_folder.ico',
-			label: 'Folder',
-			action: this.createFolder.bind(this),
-			variables: true,
-			emptyline: false,
-			styleOption: 'C',
-		};
-
-		const textEditor: DesktopMenuItem = {
-			icon: 'osdrive/icons/text-editor_48.png',
-			label: 'Rich Text',
-			action: this.openTextEditor.bind(this),
-			variables: true,
-			emptyline: false,
-			styleOption: 'C',
-		};
-
-		const codeEditor: DesktopMenuItem = {
-			icon: 'osdrive/icons/vs-code_48.png',
-			label: 'Code Editor',
-			action: this.openCodeEditor.bind(this),
-			variables: true,
-			emptyline: false,
-			styleOption: 'C',
-		};
-
-		const sortByMenu = [newFolder, textEditor, codeEditor];
-
-		return sortByMenu;
+	public buildNewMenu(): DesktopMenuItem[] {
+		return [
+			{
+				icon: 'osdrive/icons/empty_folder.ico',
+				label: 'Folder',
+				action: this.createFolder.bind(this),
+				variables: true,
+				emptyline: false,
+				styleOption: 'C',
+			},
+			{
+				icon: 'osdrive/icons/text-editor_48.png',
+				label: 'Rich Text',
+				action: () => this.openApplication('texteditor'),
+				variables: true,
+				emptyline: false,
+				styleOption: 'C',
+			},
+			{
+				icon: 'osdrive/icons/vs-code_48.png',
+				label: 'Code Editor',
+				action: () => this.openApplication('codeeditor'),
+				variables: true,
+				emptyline: false,
+				styleOption: 'C',
+			},
+		];
 	}
 
-	getDesktopMenuData(): void {
+	public getDesktopMenuData(): void {
 		this.deskTopMenu = [
 			{ icon1: '', icon2: 'osdrive/icons/arrow_next.png', label: 'View', nest: this.buildViewByMenu(), action: () => console.log(), emptyline: false },
 			{ icon1: '', icon2: 'osdrive/icons/arrow_next.png', label: 'Sort by', nest: this.buildSortByMenu(), action: () => console.log(), emptyline: false },
 			{ icon1: '', icon2: '', label: 'Refresh', nest: [], action: this.refresh.bind(this), emptyline: true },
 			{ icon1: '', icon2: '', label: 'Paste', nest: [], action: () => console.log('Paste!! Paste!!'), emptyline: false },
-			{ icon1: '/osdrive/icons/terminal_48.png', icon2: '', label: 'Open in Terminal', nest: [], action: this.openTerminal.bind(this), emptyline: false },
+			{ icon1: '/osdrive/icons/terminal_48.png', icon2: '', label: 'Open in Terminal', nest: [], action: () => this.openApplication('terminal'), emptyline: false },
 			{ icon1: '/osdrive/icons/camera_48.png', icon2: '', label: 'Screen Shot', nest: [], action: this.captureComponentImg.bind(this), emptyline: false },
 			{ icon1: '', icon2: '', label: 'Next Background', nest: [], action: this.nextBackground.bind(this), emptyline: false },
 			{ icon1: '', icon2: '', label: 'Previous Background', nest: [], action: this.previousBackground.bind(this), emptyline: true },
 			{ icon1: '', icon2: 'osdrive/icons/arrow_next.png', label: 'New', nest: this.buildNewMenu(), action: () => console.log(), emptyline: true },
-			{ icon1: '', icon2: '', label: 'Many Thanks', nest: [], action: this.openMarkDownViewer.bind(this), emptyline: false },
+			{ icon1: '', icon2: '', label: 'Many Thanks', nest: [], action: () => this.openApplication('markdownviewer'), emptyline: false },
 		];
 	}
 
@@ -660,15 +535,7 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit {
 		}
 	}
 
-	hideTaskBarContextMenu(): void {
-		this.showTskBarCntxtMenu = false;
-	}
-
-	showTaskBarContextMenu(): void {
-		this.showTskBarCntxtMenu = true;
-	}
-
-	switchBetweenPinAndUnpin(isAppPinned: boolean): void {
+	public switchBetweenPinAndUnpin(isAppPinned: boolean): void {
 		if (isAppPinned) {
 			const menuEntry = { icon: 'osdrive/icons/unpin_24.png', label: 'Unpin from taskbar', action: this.unPinApplicationFromTaskBar.bind(this) };
 			const rowOne = this.taskBarMenuData[1];
@@ -686,13 +553,13 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit {
 		}
 	}
 
-	countInstaceAndSetMenu(): number {
+	public countInstaceAndSetMenu(): number {
 		const file = this.selectedFileFromTaskBar;
-		const processCount = this._runningProcessService.getProcesses().filter(p => p.getProcessName === file.getOpensWith).length;
+		const processCount = this.runningProcessService.getProcesses().filter(p => p.getProcessName === file.opensWith).length;
 
 		const rowZero = this.taskBarMenuData[0];
-		rowZero.icon = file.getIconPath;
-		rowZero.label = file.getOpensWith;
+		rowZero.icon = file.iconPath;
+		rowZero.label = file.opensWith;
 		this.taskBarMenuData[0] = rowZero;
 
 		if (processCount == 1) {
@@ -713,40 +580,40 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit {
 		return processCount;
 	}
 
-	openApplicationFromTaskBar(): void {
+	public openApplicationFromTaskBar(): void {
 		this.showTskBarCntxtMenu = false;
 		const file = this.selectedFileFromTaskBar;
-		this._triggerProcessService.startApplication(file);
+		this.triggerProcessService.startApplication(file);
 	}
 
-	closeApplicationFromTaskBar(): void {
+	public closeApplicationFromTaskBar(): void {
 		this.showTskBarCntxtMenu = false;
 		const file = this.selectedFileFromTaskBar;
-		const proccesses = this._runningProcessService.getProcesses().filter(p => p.getProcessName === file.getOpensWith);
+		const proccesses = this.runningProcessService.getProcesses().filter(p => p.getProcessName === file.opensWith);
 
-		this._menuService.closeApplicationFromTaskBar.next(proccesses);
+		this.menuService.closeApplicationFromTaskBar.next(proccesses);
 	}
 
-	pinApplicationFromTaskBar(): void {
+	public pinApplicationFromTaskBar(): void {
 		this.showTskBarCntxtMenu = false;
 		const file = this.selectedFileFromTaskBar;
-		this._menuService.pinToTaskBar.next(file);
+		this.menuService.pinToTaskBar.next(file);
 	}
 
-	unPinApplicationFromTaskBar(): void {
+	public unPinApplicationFromTaskBar(): void {
 		this.showTskBarCntxtMenu = false;
 		const file = this.selectedFileFromTaskBar;
-		this._menuService.unPinFromTaskBar.next(file);
+		this.menuService.unPinFromTaskBar.next(file);
 	}
 
-	showTaskBarPreviewWindow(data: unknown[]): void {
+	public showTaskBarPreviewWindow(data: unknown[]): void {
 		const rect = data[0] as DOMRect;
 		const appName = data[1] as string;
 		const iconPath = data[2] as string;
 
 		this.appToPreview = appName;
 		this.appToPreviewIcon = iconPath;
-		this.hideTaskBarContextMenu();
+		this.showTskBarCntxtMenu = false;
 
 		if (this.previousDisplayedTaskbarPreview !== appName) {
 			this.showTskBarPreviewWindow = false;
@@ -769,28 +636,28 @@ export class DesktopComponent implements OnInit, OnDestroy, AfterViewInit {
 		};
 	}
 
-	hideTaskBarPreviewWindow(): void {
-		this.hideTskBarPrevWindowTimeoutId = setTimeout(() => {
+	public hideTaskBarPreviewWindow(): void {
+		this.hideTaskbarPreviousWindowTimeoutId = setTimeout(() => {
 			this.tskBarPreviewWindowState = 'out';
 		}, 100);
 
-		this.removeTskBarPrevWindowFromDOMTimeoutId = setTimeout(() => {
+		this.removeTaskBarPreviousWindowFromDOMTimeoutId = setTimeout(() => {
 			this.showTskBarPreviewWindow = false;
 			//this.hideTaskBarContextMenu();
 		}, 300);
 	}
 
-	keepTaskBarPreviewWindow(): void {
+	public keepTaskBarPreviewWindow(): void {
 		this.clearTimeout();
 	}
 
-	removeOldTaskBarPreviewWindowNow(): void {
+	public removeOldTaskBarPreviewWindowNow(): void {
 		this.showTskBarPreviewWindow = false;
 	}
 
-	clearTimeout(): void {
-		clearTimeout(this.hideTskBarPrevWindowTimeoutId);
-		clearTimeout(this.removeTskBarPrevWindowFromDOMTimeoutId);
+	public clearTimeout(): void {
+		clearTimeout(this.hideTaskbarPreviousWindowTimeoutId);
+		clearTimeout(this.removeTaskBarPreviousWindowFromDOMTimeoutId);
 	}
 
 	private getComponentDetail(): Process {
