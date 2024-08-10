@@ -28,7 +28,7 @@ export class TerminalCommands {
 	private currentDirectoryPath = '/';
 	private fallBackDirPath = '';
 
-	constructor() {
+	public constructor() {
 		this._triggerProcessService = TriggerProcessService.instance;
 		this._runningProcessService = RunningProcessService.instance;
 		this._fileService = FileService.instace;
@@ -36,7 +36,7 @@ export class TerminalCommands {
 		this.genPermissionsRepresentation();
 	}
 
-	help(arg0: string[], arg1: string[], arg2: string): string {
+	public help(arg0: string[], arg1: string[], arg2: string): string {
 		const cmdList = [...arg0, ...arg1];
 		const numPerLine = 10;
 
@@ -83,15 +83,15 @@ All commands:
 		return `unkown command:${arg2}`;
 	}
 
-	clear(arg: TerminalCommand[]): void {
+	public clear(arg: TerminalCommand[]): void {
 		arg = [];
 	}
 
-	date(): string {
+	public date(): string {
 		return new Date().toLocaleDateString();
 	}
 
-	download(uri: string, downloadName: string): void {
+	public download(uri: string, downloadName: string): void {
 		const link = document.createElement('a');
 		link.download = downloadName;
 		link.href = uri;
@@ -99,12 +99,12 @@ All commands:
 		link.remove();
 	}
 
-	hostname(): string {
+	public hostname(): string {
 		const hostname = window.location.hostname;
 		return hostname;
 	}
 
-	async weather(arg0: string): Promise<string> {
+	public async weather(arg0: string): Promise<string> {
 		const city = arg0;
 
 		if (city == undefined || city == '' || city.length == 0) {
@@ -116,15 +116,15 @@ All commands:
 		return weather.text();
 	}
 
-	whoami(): string {
+	public whoami(): string {
 		return 'guest';
 	}
 
-	version(arg: string): string {
+	public version(arg: string): string {
 		return `Terminal version: ${arg}`;
 	}
 
-	list(arg1: string, arg2: string): string {
+	public list(arg1: string, arg2: string): string {
 		const runningProccess = this._runningProcessService.getProcesses();
 		if (arg1 == undefined || arg2 == undefined || arg1.length == 0 || arg2.length == 0) return 'incomplete command, list --apps -i  or list --apps -a';
 
@@ -160,35 +160,34 @@ All commands:
 		return '';
 	}
 
-	open(arg0: string, arg1: string): string {
-		if (arg0 == undefined || arg0.length == 0) return 'incomplete command, open --app <foo>';
+	public open(flag: string, opensWith: string): string {
+		if (flag == undefined || flag.length == 0) return 'incomplete command, open --app <foo>';
 
-		if (arg0 !== '--app') return `unkown command: ${arg0}`;
+		if (flag !== '--app') return `unkown command: ${flag}`;
 
-		if (arg1 == undefined || arg1.length == 0) return `incomplete command: open --app <foo>, <foo> must be provided`;
+		if (opensWith == undefined || opensWith.length == 0) return `incomplete command: open --app <foo>, <foo> must be provided`;
 
-		if (this._appDirctory.appExist(arg1)) {
+		if (this._appDirctory.appExist(opensWith)) {
 			const file = new FileInfo();
-			file.opensWith = arg1;
+			file.opensWith = opensWith;
 
 			if (this._triggerProcessService) {
 				this._triggerProcessService.startApplication(file);
 			}
-			return `opening app ${arg1}`;
+			return `opening app ${opensWith}`;
 		} else {
-			return `${arg1}: No matching application found.`;
+			return `${opensWith}: No matching application found.`;
 		}
 	}
 
-	close(arg0: string, arg1: string): string {
-		if (arg0 == undefined || arg0.length == 0) return 'incomplete command, close --app <pid>';
+	public close(flag: string, pid: string): string {
+		if (flag == undefined || flag.length == 0) return 'incomplete command, close --app <pid>';
 
-		if (arg0 !== '--app') return `unkown command: ${arg0}`;
+		if (flag !== '--app') return `unkown command: ${flag}`;
 
-		if (arg1 == undefined || arg1.length == 0) return `incomplete command: close --app <pid>, <pid> must be provided`;
+		if (pid == undefined || pid.length == 0) return `incomplete command: close --app <pid>, <pid> must be provided`;
 
-		const pid = Number(arg1);
-		const processToClose = this._runningProcessService.getProcess(pid);
+		const processToClose = this._runningProcessService.getProcess(+pid);
 		if (processToClose) {
 			if (this.closingNotAllowed.includes(processToClose.getProcessName)) {
 				return `The app: ${processToClose.getProcessName} is not allowed to be closed`;
@@ -197,19 +196,19 @@ All commands:
 				return `closing app, app name: ${processToClose.getProcessName}  app id: ${processToClose.getProcessId}`;
 			}
 		} else {
-			return `${arg1}: No active process with pid:${arg1} found.`;
+			return `${pid}: No active process with pid:${pid} found.`;
 		}
 	}
 
-	exit(arg0: number): void {
-		const pid = arg0;
+	public exit(code: number): void {
+		const pid = code;
 		const processToClose = this._runningProcessService.getProcess(pid);
 		if (processToClose) {
 			this._runningProcessService.closeProcessNotify.next(processToClose);
 		}
 	}
 
-	async curl(args: string[]): Promise<string> {
+	public async curl(args: string[]): Promise<string> {
 		if (args.length === 0 || args[1] === undefined || args[1].length === 0) {
 			return 'curl: no URL provided';
 		}
@@ -229,7 +228,7 @@ All commands:
 		}
 	}
 
-	addspaces(arg: string, maxSpace = 21): string {
+	public addspaces(arg: string, maxSpace = 21): string {
 		const maxSpaceInput = maxSpace;
 		const argLen = arg.length;
 		const diff = maxSpaceInput - argLen;
@@ -244,11 +243,11 @@ All commands:
 		return strArr.join('');
 	}
 
-	pwd(): string {
+	public pwd(): string {
 		return this.currentDirectoryPath;
 	}
 
-	genPermissionsRepresentation(): void {
+	public genPermissionsRepresentation(): void {
 		const rwx: OctalRepresentation = { symbolic: 'rwx', binary: 111, permission: 'Read + Write + Execute' };
 		const rw_: OctalRepresentation = { symbolic: 'rw-', binary: 110, permission: 'Read + Write' };
 		const r_w: OctalRepresentation = { symbolic: 'r-x', binary: 101, permission: 'Read + Execute' };
@@ -268,58 +267,54 @@ All commands:
 		this.permissionChart.set(0, ___);
 	}
 
-	getPermission(perms: string): string {
+	public getPermission(perms: string): string {
 		let result = '';
-		const argSplit = arg0.split('');
-		argSplit.shift();
 
-		argSplit.forEach(x => {
-			result += this.permissionChart.get(Number(x))?.symbolic;
-		});
+		for (const part of perms.split('')) {
+			result += this.permissionChart.get(Number(part))?.symbolic;
+		}
 
 		return result;
 	}
 
-	async ls(arg0: string): Promise<{ type: string; result: any }> {
-		const result = await this.loadFilesInfoAsync(this.currentDirectoryPath).then(() => {
-			if (arg0 == undefined || arg0 == '') {
-				const onlyFileNames: string[] = [];
-				this.files.forEach(file => {
-					onlyFileNames.push(file.fileName);
-				});
-				return { type: 'string[]', result: onlyFileNames };
+	public async ls(dir: string): Promise<{ type: string; result: any }> {
+		const files = await this.loadFilesInfoAsync(this.currentDirectoryPath);
+		if (dir == undefined || dir == '') {
+			const onlyFileNames: string[] = [];
+			for (const file of this.files) {
+				onlyFileNames.push(file.fileName);
 			}
+			return { type: 'string[]', result: onlyFileNames };
+		}
 
-			const lsOptions: string[] = ['-l', '-r', '-t', '-lr', '-rl', '-lt', '-tl', '-lrt', '-ltr', '-rtl', '-rlt', '-tlr', '-trl'];
-			if (lsOptions.includes(arg0)) {
-				const splitOptions = arg0.replace('-', '').split('').sort().reverse();
-				console.log('splitOptions:', splitOptions);
+		const lsOptions: string[] = ['-l', '-r', '-t', '-lr', '-rl', '-lt', '-tl', '-lrt', '-ltr', '-rtl', '-rlt', '-tlr', '-trl'];
+		if (lsOptions.includes(dir)) {
+			const splitOptions = dir.replace('-', '').split('').sort().reverse();
+			console.log('splitOptions:', splitOptions);
 
-				const result: string[] = [];
+			const result: string[] = [];
 
-				splitOptions.forEach(i => {
-					// sort by time
-					if (i === 't') {
-						this.files = this.files.sort((objA, objB) => objB.dateModified.getTime() - objA.dateModified.getTime());
-					} else if (i === 'r') {
-						// reverse the order
-						this.files.reverse();
-					} else {
-						// present in list format
-						this.files.forEach(file => {
-							const strPermission = this.getPermission(file.mode);
-							const fileInfo = `
+			splitOptions.forEach(i => {
+				// sort by time
+				if (i === 't') {
+					this.files = this.files.sort((objA, objB) => objB.dateModified.getTime() - objA.dateModified.getTime());
+				} else if (i === 'r') {
+					// reverse the order
+					this.files.reverse();
+				} else {
+					// present in list format
+					this.files.forEach(file => {
+						const strPermission = this.getPermission(file.mode);
+						const fileInfo = `
 ${file.isFile ? '-' : 'd'}${this.addspaces(strPermission, 10)} ${this.addspaces('Terminal', 8)} ${this.addspaces('staff', 6)} ${this.addspaces(String(file.size), 6)}  ${this.addspaces(file.dateTimeModifiedUS, 12)} ${this.addspaces(file.fileName, 11)}
                         `;
-							result.push(fileInfo);
-						});
-					}
-				});
-				return { type: 'string', result: result.join('') }; // Join with empty string to avoid commas
-			}
-			return { type: '', result: '' };
-		});
-		return result;
+						result.push(fileInfo);
+					});
+				}
+			});
+			return { type: 'string', result: result.join('') }; // Join with empty string to avoid commas
+		}
+		return { type: '', result: '' };
 	}
 
 	async cd(arg0: string, key = ''): Promise<{ type: string; result: any; depth: number }> {
@@ -747,17 +742,15 @@ Mandatory argument to long options are mandotory for short options too.
 		return `${basename(path, extname(path))}${extname(path)}`;
 	}
 
-	private sendDirectoryUpdateNotification(arg0: string): void {
-		if (arg0.includes('/Desktop')) {
-			this._fileService.addEventOriginator('filemanager');
-		} else {
-			this._fileService.addEventOriginator('fileexplorer');
-		}
+	private sendDirectoryUpdateNotification(dir: string): void {
+		
+		this._fileService.addEventOriginator(dir.includes('/Desktop') ? 'filemanager' : 'fileexplorer');
+	
 		this._fileService.dirFilesUpdateNotify.next();
 	}
 
 	private async loadFilesInfoAsync(directory: string): Promise<void> {
-		this.files = [];
+		const files = [];
 		this._fileService.resetDirectoryFiles();
 		const directoryEntries = await this._fileService.getEntriesFromDirectoryAsync(directory);
 		this._directoryFilesEntries = this._fileService.getFileEntriesFromDirectory(directoryEntries, directory);
@@ -766,7 +759,7 @@ Mandatory argument to long options are mandotory for short options too.
 			const fileEntry = this._directoryFilesEntries[i];
 			const fileInfo = await this._fileService.getFileInfoAsync(fileEntry.getPath);
 
-			this.files.push(fileInfo);
+			files.push(fileInfo);
 		}
 	}
 }

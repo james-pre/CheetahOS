@@ -76,50 +76,37 @@ export class FileService {
 	public async copyFilesAsync(sourcepaths: string[], destinationpath: string): Promise<boolean> {
 		for (const source of sourcepaths) {
 			await fs.promises.copyFile(source, destinationpath + '/' + basename(source));
-			return true;
 		}
+		return true;
 	}
 
 	public async createFolderAsync(directory: string, fileName: string): Promise<boolean> {
 		await fs.promises.mkdir(join(directory, fileName));
+		return true;
 	}
 
 	public async deleteFolderAsync(directory: string): Promise<boolean> {
 		await fs.promises.rmdir(directory);
+		return true;
 	}
 
 	public async deleteFileAsync(path: string): Promise<boolean> {
 		await fs.promises.unlink(path);
+		return true;
 	}
 
 	public async getExtraFileMetaDataAsync(path: string) {
-		return new Promise((resolve, reject) => {
-			fs.stat(path, (err, stats) => {
-				if (err) {
-					console.log('getExtraFileMetaDataAsync error:', err);
-					reject(err);
-				}
-				resolve(new FileMetaData(stats?.ctime, stats?.mtime, stats?.size, stats?.mode));
-			});
-		});
+		const stats = await fs.promises.stat(path);
+		return new FileMetaData(stats?.ctime, stats?.mtime, stats?.size, stats?.mode);
 	}
 
 	public async getFileAsync(path: string): Promise<string> {
 		if (!path) {
 			console.error('getFileAsync error: Path must not be empty');
-			return Promise.reject(new Error('Path must not be empty'));
+			throw new Error('Path must not be empty');
 		}
 
-		return new Promise((resolve, reject) => {
-			fs.readFile(path, (err, contents = Buffer.from('')) => {
-				if (err) {
-					console.log('getFileAsync error:', err);
-					reject(err);
-				} else {
-					resolve(contents.toString());
-				}
-			});
-		});
+		return await fs.promises.readFile(path, 'utf8');
 	}
 
 	/**
@@ -136,21 +123,11 @@ export class FileService {
 	public async getFileBlobAsync(path: string): Promise<string> {
 		if (!path) {
 			console.error('getFileBlobAsync error: Path must not be empty');
-			return Promise.reject(new Error('Path must not be empty'));
+			throw new Error('Path must not be empty');
 		}
 
-		return new Promise((resolve, reject) => {
-			fs.readFile(path, (err, contents = Buffer.from('')) => {
-				if (err) {
-					console.log('getFileBlobAsync error:', err);
-					reject(err);
-				}
-
-				contents = contents || new Uint8Array();
-				const fileUrl = this.bufferToUrl2(contents);
-				resolve(fileUrl);
-			});
-		});
+		const contents = await fs.promises.readFile(path);
+		return URL.createObjectURL(new Blob([contents]));
 	}
 
 	public async getEntriesFromDirectoryAsync(path: string): Promise<string[]> {
@@ -160,21 +137,9 @@ export class FileService {
 		}
 
 		/** This is where ZenFS is initialized */
-		const result = await this.initZenFSAsync().then(() => {
-			return new Promise<string[]>((resolve, reject) => {
-				fs.readdir(path, (err, files) => {
-					if (err) {
-						console.log("Oops! a boo boo happened, filesystem wasn't ready:", err);
-						reject([]);
-					} else {
-						console.log(`${path}  contents`, files);
-						resolve(files || []);
-					}
-				});
-			});
-		});
+		await this.initZenFSAsync();
+		return await fs.promises.readdir(path);
 
-		return result;
 	}
 
 	public getFileEntriesFromDirectory(fileList: string[], directory: string): FileEntry[] {
@@ -324,12 +289,12 @@ export class FileService {
 						if (stringData.substring(0, 10) == 'data:image') resolve(new ShortCut(fileUrl, basename(path, extname(path)), '', fileUrl, ''));
 						else resolve(new ShortCut('', basename(path, extname(path)), '', fileUrl, ''));
 					} else {
-						const fileUrl = this.bufferToUrl2(contents);
+						const fileUrl = this.bufferToUrl(contents);
 						if (contentType === 'image') resolve(new ShortCut(fileUrl, basename(path, extname(path)), '', fileUrl, ''));
 						else resolve(new ShortCut('', basename(path, extname(path)), '', fileUrl, ''));
 					}
 				} else {
-					resolve(new ShortCut('', basename(path, extname(path)), '', this.bufferToUrl2(contents), ''));
+					resolve(new ShortCut('', basename(path, extname(path)), '', this.bufferToUrl(contents), ''));
 				}
 			});
 		});
@@ -561,17 +526,12 @@ export class FileService {
 		});
 	}
 
-	private bufferToUrl(buffer: Buffer): string {
-		return URL.createObjectURL(new Blob([new Uint8Array(buffer)]));
-	}
-
-	private bufferToUrl2(arr: Uint8Array): string {
-		return URL.createObjectURL(new Blob([arr]));
+	private bufferToUrl(buffer: Uint8Array): string {
+		return URL.createObjectURL(new Blob([buffer]));
 	}
 
 	private uint8ToBase64(arr: Uint8Array): string {
-		const base64String = btoa(String.fromCharCode(...new Uint8Array(arr)));
-		return base64String;
+		return btoa(String.fromCharCode(...new Uint8Array(arr)));
 	}
 
 	private isUtf8Encoded(data: string): boolean {
@@ -586,15 +546,15 @@ export class FileService {
 		}
 	}
 
-	addEventOriginator(eventOrig: string): void {
+	public addEventOriginator(eventOrig: string): void {
 		this._eventOriginator = eventOrig;
 	}
 
-	getEventOrginator(): string {
+	public getEventOrginator(): string {
 		return this._eventOriginator;
 	}
 
-	removeEventOriginator(): void {
+	public removeEventOriginator(): void {
 		this._eventOriginator = '';
 	}
 }
